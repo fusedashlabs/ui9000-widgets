@@ -1,0 +1,47 @@
+{
+  "id": "chart-renderer",
+  "tag": "ui9000-chart-renderer",
+  "title": "Chart Renderer",
+  "description": "FuseDash ChartRenderer dispatcher — resolves chartType from a WidgetItem payload, lazy-loads the matching @ui9000/widgets chart, and mounts it. No Redux.",
+  "chartTypeKeys": ["*"],
+  "source": "client/libs/shared/components/src/Widgets/ChartRenderer/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/chart-renderer",
+  "entry": "@ui9000/widgets/chart-renderer",
+  "tier": "host",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "description": "FuseDash WidgetItem JSON (must include chartType unless chart-type attribute is set)"
+      },
+      "chartType": {
+        "type": "string",
+        "description": "Optional override — wins over widget.chartType (matches FuseDash ChartRenderer chartType prop)"
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showGrid": { "type": "boolean" },
+      "showLegend": { "type": "boolean" },
+      "showTooltip": { "type": "boolean" },
+      "chartTitle": { "type": "string" },
+      "showHeader": {
+        "type": "boolean",
+        "default": true,
+        "description": "Set false when the host renders its own title (custom-widget) — suppresses the mounted chart's header"
+      }
+    },
+    "required": ["data"]
+  }
+}

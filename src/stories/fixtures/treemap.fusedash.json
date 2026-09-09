@@ -1,0 +1,139 @@
+{
+  "name": "Crop Area Distribution by Crop Group",
+  "chartType": "treemapChart",
+  "legend": true,
+  "tooltip": false,
+  "formatting": [
+    {
+      "key": "California, Los Angeles",
+      "color": "1"
+    },
+    {
+      "key": "California, Riverside",
+      "color": "2"
+    },
+    {
+      "key": "California, San Diego",
+      "color": "3"
+    },
+    {
+      "key": "California, Orange",
+      "color": "4"
+    },
+    {
+      "key": "California, San Bernardino",
+      "color": "5"
+    }
+  ],
+  "xAxe": [
+    "County__created"
+  ],
+  "yAxe": [
+    "area Ha"
+  ],
+  "groupBy": [
+    "County__created"
+  ],
+  "subgroup": "MD_Crop_Group  text  autorisatie",
+  "metric": null,
+  "display": [
+    "area Ha"
+  ],
+  "arrangeBy": [
+    "County__created"
+  ],
+  "palette": {},
+  "uniqueValues": {
+    "County__created": [
+      "California, Los Angeles",
+      "California, Riverside",
+      "California, San Diego",
+      "California, Orange",
+      "California, San Bernardino"
+    ],
+    "MD_Crop_Group  text  autorisatie": [
+      "Open field group",
+      "Cucurbit group",
+      "Tomato group",
+      "Allium group",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "County__created": "California, Los Angeles",
+      "area Ha": 1985138.5,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "area Ha": 1112756,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "California, Riverside",
+      "area Ha": 684044.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "area Ha": 588114.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "California, Orange",
+      "area Ha": 465523,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "California, Riverside",
+      "area Ha": 415956,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Riverside",
+      "area Ha": 406264.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "area Ha": 394406,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "area Ha": 391115,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Orange",
+      "area Ha": 376706,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Orange",
+      "area Ha": 365359.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "area Ha": 339468.5,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "area Ha": 307959.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Orange",
+      "area Ha": 302979.5,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, San Bernardino",
+      "area Ha": 281812,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    }
+  ]
+}

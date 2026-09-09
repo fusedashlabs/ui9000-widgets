@@ -1,0 +1,38 @@
+{
+  "chartType": "radialBarChart",
+  "name": "Average Weather Main Distribution by Total Balance",
+  "xAxe": ["weather_main"],
+  "yAxe": ["totalBalance"],
+  "formatting": [
+    { "key": "Haze", "color": "1" },
+    { "key": "Fog", "color": "2" },
+    { "key": "Clouds", "color": "3" },
+    { "key": "Thunderstorm", "color": "4" },
+    { "key": "Rain", "color": "5" },
+    { "key": "Drizzle", "color": "6" },
+    { "key": "Snow", "color": "7" },
+    { "key": "Clear", "color": "8" }
+  ],
+  "uniqueValues": {
+    "weather_main": [
+      "Haze",
+      "Fog",
+      "Clouds",
+      "Thunderstorm",
+      "Rain",
+      "Drizzle",
+      "Snow",
+      "Clear"
+    ]
+  },
+  "data": [
+    { "weather_main": "Haze", "totalBalance": 27613.5 },
+    { "weather_main": "Fog", "totalBalance": 27596.153846153848 },
+    { "weather_main": "Clouds", "totalBalance": 25940.916666666668 },
+    { "weather_main": "Thunderstorm", "totalBalance": 25792.31343283582 },
+    { "weather_main": "Rain", "totalBalance": 25747.261904761905 },
+    { "weather_main": "Drizzle", "totalBalance": 24921.91780821918 },
+    { "weather_main": "Snow", "totalBalance": 24293.75 },
+    { "weather_main": "Clear", "totalBalance": 24219.090909090908 }
+  ]
+}

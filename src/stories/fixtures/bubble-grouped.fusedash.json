@@ -1,0 +1,62 @@
+{
+  "chartType": "bubbleChart",
+  "name": "Quantity vs Price by Market Segment",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "timeline": false,
+  "xAxe": ["quantity"],
+  "yAxe": ["price"],
+  "groupBy": ["MD_Market_segment"],
+  "formatting": [
+    { "key": "Fresh", "color": "1" },
+    { "key": "Fresh market", "color": "2" },
+    { "key": "Processing", "color": "3" },
+    { "key": "Not specified", "color": "4" },
+    { "key": "Other", "color": "5" }
+  ],
+  "uniqueValues": {
+    "MD_Market_segment": [
+      "Fresh",
+      "Fresh market",
+      "Processing",
+      "Not specified",
+      "Other"
+    ]
+  },
+  "palette": {},
+  "data": [
+    { "quantity": 42, "price": 3180, "MD_Market_segment": "Fresh" },
+    { "quantity": 58, "price": 2940, "MD_Market_segment": "Fresh" },
+    { "quantity": 71, "price": 3410, "MD_Market_segment": "Fresh" },
+    { "quantity": 36, "price": 2760, "MD_Market_segment": "Fresh" },
+    { "quantity": 89, "price": 3620, "MD_Market_segment": "Fresh" },
+    { "quantity": 64, "price": 3050, "MD_Market_segment": "Fresh" },
+    { "quantity": 77, "price": 3290, "MD_Market_segment": "Fresh" },
+    { "quantity": 95, "price": 1880, "MD_Market_segment": "Fresh market" },
+    { "quantity": 112, "price": 2140, "MD_Market_segment": "Fresh market" },
+    { "quantity": 128, "price": 1710, "MD_Market_segment": "Fresh market" },
+    { "quantity": 84, "price": 2030, "MD_Market_segment": "Fresh market" },
+    { "quantity": 141, "price": 2290, "MD_Market_segment": "Fresh market" },
+    { "quantity": 103, "price": 1960, "MD_Market_segment": "Fresh market" },
+    { "quantity": 156, "price": 980, "MD_Market_segment": "Processing" },
+    { "quantity": 172, "price": 1210, "MD_Market_segment": "Processing" },
+    { "quantity": 148, "price": 870, "MD_Market_segment": "Processing" },
+    { "quantity": 191, "price": 1340, "MD_Market_segment": "Processing" },
+    { "quantity": 165, "price": 1090, "MD_Market_segment": "Processing" },
+    { "quantity": 183, "price": 760, "MD_Market_segment": "Processing" },
+    { "quantity": 24, "price": 1420, "MD_Market_segment": "Not specified" },
+    { "quantity": 51, "price": 1680, "MD_Market_segment": "Not specified" },
+    { "quantity": 38, "price": 1190, "MD_Market_segment": "Not specified" },
+    { "quantity": 67, "price": 1550, "MD_Market_segment": "Not specified" },
+    { "quantity": 19, "price": 1310, "MD_Market_segment": "Not specified" },
+    { "quantity": 33, "price": 640, "MD_Market_segment": "Other" },
+    { "quantity": 48, "price": 810, "MD_Market_segment": "Other" },
+    { "quantity": 61, "price": 530, "MD_Market_segment": "Other" },
+    { "quantity": 27, "price": 720, "MD_Market_segment": "Other" },
+    { "quantity": 74, "price": 490, "MD_Market_segment": "Other" },
+    { "quantity": 55, "price": 910, "MD_Market_segment": "Other" }
+  ],
+  "kpis": []
+}

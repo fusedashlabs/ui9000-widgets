@@ -1,0 +1,3362 @@
+{
+  "id": "default-pdp-ice",
+  "name": "Partial Dependence (PDP) with ICE",
+  "chartType": "partialDependenceChart",
+  "layout": "card",
+  "legend": false,
+  "tooltip": true,
+  "xAxe": [
+    "humidity"
+  ],
+  "yAxe": [
+    "pd"
+  ],
+  "groupBy": [
+    "series"
+  ],
+  "axisDetails": {
+    "humidity": {
+      "label": "Humidity",
+      "type": "metric",
+      "subtype": "float"
+    },
+    "pd": {
+      "label": "Partial dependence",
+      "type": "metric",
+      "subtype": "float"
+    },
+    "series": {
+      "label": "series",
+      "type": "category",
+      "subtype": "string"
+    }
+  },
+  "uniqueValues": {
+    "humidity": [
+      "0",
+      "0.02",
+      "0.04",
+      "0.06",
+      "0.08",
+      "0.1",
+      "0.12",
+      "0.14",
+      "0.16",
+      "0.18",
+      "0.2",
+      "0.22",
+      "0.24",
+      "0.26",
+      "0.28",
+      "0.3",
+      "0.32",
+      "0.34",
+      "0.36",
+      "0.38",
+      "0.4",
+      "0.42",
+      "0.44",
+      "0.46",
+      "0.48",
+      "0.5",
+      "0.52",
+      "0.54",
+      "0.56",
+      "0.58",
+      "0.6",
+      "0.62",
+      "0.64",
+      "0.66",
+      "0.68",
+      "0.7",
+      "0.72",
+      "0.74",
+      "0.76",
+      "0.78",
+      "0.8"
+    ]
+  },
+  "data": [
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -10.88,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -11.15,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -11.92,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -11.52,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.14,
+      "pd": -11.28,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.16,
+      "pd": -12.23,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -12.32,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.2,
+      "pd": -6.57,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.22,
+      "pd": -2.4,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 1.75,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 7.01,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 11.89,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 16.3,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 19.73,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 24.84,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 26.87,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 31.28,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 32.65,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 34.89,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 36.85,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 38.73,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 40.58,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 42.19,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 42.59,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 40.21,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 35.69,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 37.68,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 33.31,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 36.57,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 36.24,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 35.46,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 34.82,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 38.37,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 44.1,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 49.25,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 53.15,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 55.04,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 57.13,
+      "series": "id-1"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.06,
+      "pd": 0.8,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.08,
+      "pd": 1.72,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 1.94,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 2.91,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 3.37,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 4.22,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 6.61,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 10.72,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 15.71,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 21.78,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 26.33,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 30.82,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 35.83,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 39.84,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 42.3,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 45.64,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 47.59,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 49.87,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 49.49,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 51.05,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 51.61,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 52.12,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 52.11,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 52.35,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 46.28,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 41.76,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 42.53,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 35.9,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 38.3,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 36.22,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 35.12,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 33.75,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 39.56,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 44.76,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 50.18,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 54.73,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 57.05,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 60.1,
+      "series": "id-2"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.06,
+      "pd": 0.62,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.08,
+      "pd": 0.03,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -0.13,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 1.46,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 0.97,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 0.25,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -1.3,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 4.27,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 8.6,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 13.23,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 18.21,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 21.23,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 25.82,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 28.23,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 31.42,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 33.65,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 36.27,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 36.69,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 39.8,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 39.87,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 40.74,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 40.51,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 41.51,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 42.46,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 38.76,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 34.39,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 36.03,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 31,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 34.81,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 34.82,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 34.11,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 34.76,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 40.28,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 46.72,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 53.77,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 59.51,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 63.87,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 66.02,
+      "series": "id-3"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.06,
+      "pd": 2.93,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.08,
+      "pd": 3.25,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 2.83,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 2.65,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 3.11,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 2.9,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 3.12,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 9.26,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 14.05,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 16.76,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 21.53,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 26.51,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 29.91,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 33.44,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 35.51,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 37.92,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 40.79,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 42.15,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 43.4,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 43.5,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 44.33,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 43.62,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 43.88,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 44.01,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 39.04,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 34.49,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 34.23,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 29.07,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 32.56,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 32.56,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 30.8,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 29.61,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 35.1,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 42.4,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 46.69,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 51.61,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 55.57,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 59.33,
+      "series": "id-4"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -0.23,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -0.77,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 0.31,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -0.44,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 0.24,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.16,
+      "pd": -0.21,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -1.07,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 3.57,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 8.86,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 14.11,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 18.16,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 23.22,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 25.71,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 30.15,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 32.69,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 35.93,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 38.82,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 39.81,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 41.13,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 41.8,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 43.75,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 44.39,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 45.32,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 45.3,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 39.91,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 34.69,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 37.81,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 32.92,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 35.76,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 36.45,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 35.51,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 34.07,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 42.15,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 47.88,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 54.88,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 60.03,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 65,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 68.65,
+      "series": "id-5"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.06,
+      "pd": 4.18,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.08,
+      "pd": 3.51,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 2.78,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 3.84,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 3.16,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 3.14,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 2.88,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 8.04,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 12.65,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 15.52,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 19.89,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 24.76,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 28.41,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 31.23,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 35.12,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 37.54,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 39.03,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 41.51,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 41.56,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 42.92,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 44.43,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 44.38,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 45.03,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 45.31,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 41.37,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 36.85,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 38.39,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 31.66,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 35.08,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 36.93,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 34.58,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 34.68,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 42.81,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 48.52,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 55.55,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 60.25,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 65.6,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 68.97,
+      "series": "id-6"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -2.1,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -0.48,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 0.08,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -0.05,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 1.07,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 0.91,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 2.24,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 7.23,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 12.48,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 16.71,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 22.85,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 26.79,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 31.1,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 34.72,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 36.16,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 39.08,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 42.29,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 44.26,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 44.14,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 45.88,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 45.72,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 45.01,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 44.33,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 44.8,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 40.86,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 34.91,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 34.77,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 29.39,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 30.34,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 30.72,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 28.33,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 27.96,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 31.72,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 38.39,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 42.2,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 46.34,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 49.31,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 53.02,
+      "series": "id-7"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -9.15,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -9.46,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -11.02,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -10.71,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.14,
+      "pd": -11.88,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.16,
+      "pd": -10.98,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -10.73,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.2,
+      "pd": -6.05,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.22,
+      "pd": -3.01,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 2.74,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 7.24,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 11.67,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 17.38,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 20.06,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 23.68,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 27.53,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 30.93,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 34.68,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 37.19,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 39.31,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 40.8,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 42.05,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 43.56,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 44.84,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 40.86,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 36.93,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 37.85,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 33.36,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 36.29,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 35.68,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 33.8,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 33.5,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 38.42,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 43.62,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 47.5,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 51.43,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 52.83,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 55.43,
+      "series": "id-8"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.06,
+      "pd": 2.21,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.08,
+      "pd": 2.76,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 3.49,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 3.81,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 3.01,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 3.89,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 5.05,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 9.17,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 13.28,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 18.09,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 21.72,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 27.38,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 28.57,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 32.83,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 34.8,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 36.6,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 38.97,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 39.83,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 42.05,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 42.93,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 42.29,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 43.23,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 41.74,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 43.21,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 37.42,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 32.43,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 35.21,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 30.26,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 31.93,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 31.99,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 31.79,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 32.19,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 37.61,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 44.72,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 51.63,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 55.49,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 60.14,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 63.84,
+      "series": "id-9"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -7.3,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -6.9,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -6.61,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -6.74,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.14,
+      "pd": -7.01,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.16,
+      "pd": -6.51,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -6.88,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.2,
+      "pd": -1.93,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 2.33,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 6.91,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 11.51,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 16.33,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 19.99,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 23.3,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 26.8,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 29.66,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 31.81,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 33.82,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 34.56,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 36.08,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 38.56,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 37.76,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 39.85,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 39.47,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 36.47,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 31.94,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 34.28,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 28.63,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 31.26,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 32.13,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 31.83,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 31.74,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 36.84,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 42.6,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 48.64,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 54.58,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 56.6,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 59.73,
+      "series": "id-10"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -2.73,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -2.89,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -1.22,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -1.24,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.14,
+      "pd": -1.02,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 0.37,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -0.06,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 5.4,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 11.2,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 16.57,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 21.23,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 26.67,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 29.6,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 33.52,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 35.92,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 38.27,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 41.16,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 42.51,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 44.77,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 44.28,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 44.92,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 44.52,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 44.92,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 46.77,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 40.96,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 35.05,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 36.44,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 30.92,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 31.58,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 31.88,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 30.12,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 29.97,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 35.87,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 41.63,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 48.06,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 52.76,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 55.89,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 59.06,
+      "series": "id-11"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.06,
+      "pd": 0.08,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.08,
+      "pd": 0.32,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -0.29,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 0.11,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 0.7,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 0.7,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -0.49,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 5.2,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 9.73,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 14.35,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 19.29,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 23.49,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 26.92,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 29.45,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 32.48,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 36.19,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 37.59,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 40.3,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 40.31,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 42.35,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 43.03,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 42.79,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 43.57,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 45.02,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 40.48,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 34.63,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 35.52,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 31.52,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 33.97,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 33.4,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 32.03,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 32.5,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 37.87,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 45.18,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 51.04,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 55.97,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 59.72,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 62.84,
+      "series": "id-12"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -1.51,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -1.44,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.1,
+      "pd": 0.92,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.12,
+      "pd": 1.88,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 2.44,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 3.35,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 4.16,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 10.47,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 17.19,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 22.46,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 27.31,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 33.67,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 37.69,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 41.26,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 44.85,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 47.58,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 50.34,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 50.63,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 53.2,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 54.07,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 52.75,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 53.01,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 53.29,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 53.67,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 46.84,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 40.74,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 42.39,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 35.99,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 36.14,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 36.49,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 33.19,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 32.66,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 37.81,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 43.91,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 49.04,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 54.03,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 57.34,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 60.6,
+      "series": "id-13"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -11.7,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -10.31,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -10.13,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -8.39,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.14,
+      "pd": -8.73,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.16,
+      "pd": -8.01,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -6.49,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.2,
+      "pd": -0.91,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 3.38,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 10.43,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 13.94,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 20.38,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 24.23,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 27.48,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 32.42,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 35.98,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 38.33,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 39.44,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 41.65,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 43.91,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 44.26,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 45.2,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 46.08,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 46.78,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 41.96,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 38.32,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 40.17,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 35.69,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 37.51,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 37.62,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 35.64,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 34.84,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 39.52,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 45.63,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 51.16,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 55.31,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 58.91,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 59.59,
+      "series": "id-14"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -5.56,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -3.14,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -1.73,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -1.72,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.14,
+      "pd": 0.12,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.16,
+      "pd": 0.96,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.18,
+      "pd": 1.09,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 5.37,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 10.79,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 16.87,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 20.41,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 25.63,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 29.93,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 32.94,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 35.31,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 37.97,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 40.49,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 41.77,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 42.63,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 42.33,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 42.19,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 43.5,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 42.88,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 42.22,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 36.96,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 32.04,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 33.08,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 26,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 27.67,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 27.66,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 26.96,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 26.01,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 31.25,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 36.41,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 40.8,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 44.78,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 48.25,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 50.48,
+      "series": "id-15"
+    },
+    {
+      "humidity": 0,
+      "pd": 0,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.02,
+      "pd": 0,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.04,
+      "pd": 0,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.06,
+      "pd": -4.74,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.08,
+      "pd": -3.92,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.1,
+      "pd": -3.2,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.12,
+      "pd": -2.97,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.14,
+      "pd": -4.67,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.16,
+      "pd": -2.79,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.18,
+      "pd": -2.75,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.2,
+      "pd": 1.64,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.22,
+      "pd": 6.65,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.24,
+      "pd": 10.52,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.26,
+      "pd": 15.95,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.28,
+      "pd": 21.01,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.3,
+      "pd": 24.42,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.32,
+      "pd": 26.93,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.34,
+      "pd": 29.8,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.36,
+      "pd": 33.31,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.38,
+      "pd": 35.19,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.4,
+      "pd": 37.27,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.42,
+      "pd": 40.5,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.44,
+      "pd": 40.43,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.46,
+      "pd": 41.68,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.48,
+      "pd": 42.87,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.5,
+      "pd": 43.14,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.52,
+      "pd": 45.84,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.54,
+      "pd": 40.82,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.56,
+      "pd": 35.88,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.58,
+      "pd": 38.78,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.6,
+      "pd": 32.72,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.62,
+      "pd": 35.28,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.64,
+      "pd": 36.38,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.66,
+      "pd": 34.96,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.68,
+      "pd": 35.68,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.7,
+      "pd": 41,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.72,
+      "pd": 45.52,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.74,
+      "pd": 52.64,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.76,
+      "pd": 57.3,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.78,
+      "pd": 60.48,
+      "series": "id-16"
+    },
+    {
+      "humidity": 0.8,
+      "pd": 61.68,
+      "series": "id-16"
+    }
+  ],
+  "description": "Mock PDP with ICE lines for development"
+}

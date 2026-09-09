@@ -1,0 +1,105 @@
+{
+  "id": "punchcard-chart",
+  "tag": "ui9000-punchcard-chart",
+  "title": "Punchcard Chart",
+  "description": "Chat-optimized punchcard rewritten in D3. Single (no groupBy) or Grouped (groupBy as Y rows). Sequential bubble matrix, no Redux.",
+  "chartTypeKeys": ["punchcardChart"],
+  "source": "client/libs/shared/components/src/Widgets/PunchcardChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/punchcard-chart",
+  "entry": "@ui9000/widgets/punchcard-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y", "value"],
+              "properties": {
+                "x": { "type": "string" },
+                "y": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["cells"],
+            "properties": {
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y", "value"],
+                  "properties": {
+                    "x": { "type": "string" },
+                    "y": { "type": "string" },
+                    "value": { "type": "number" },
+                    "color": { "type": "string" }
+                  }
+                }
+              },
+              "xDomain": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "yDomain": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data"],
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": { "type": "object" }
+              },
+              "xAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "yAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "groupBy": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

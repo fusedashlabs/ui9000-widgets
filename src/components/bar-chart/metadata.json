@@ -1,0 +1,176 @@
+{
+  "id": "bar-chart",
+  "tag": "ui9000-bar-chart",
+  "title": "Bar Chart",
+  "description": "Chat-optimized bar chart rewritten in D3 (Visx → D3). Covers all six FuseDash Barchart variants: vertical/horizontal × plain/grouped/stacked, with an optional cumulative overlay. No Redux.",
+  "chartTypeKeys": [
+    "barChart",
+    "barGrouped",
+    "barStacked",
+    "cumulativeBar",
+    "barHorizontal",
+    "barHorizontalGrouped",
+    "barHorizontalStacked"
+  ],
+  "chartTypeMap": {
+    "barChart": { "orientation": "vertical" },
+    "barGrouped": { "orientation": "vertical", "layout": "grouped" },
+    "barStacked": { "orientation": "vertical", "layout": "stacked" },
+    "cumulativeBar": { "orientation": "vertical", "cumulativeLine": true },
+    "barHorizontal": { "orientation": "horizontal" },
+    "barHorizontalGrouped": { "orientation": "horizontal", "layout": "grouped" },
+    "barHorizontalStacked": { "orientation": "horizontal", "layout": "stacked" }
+  },
+  "source": "client/libs/shared/components/src/Widgets/Barchart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/bar-chart",
+  "entry": "@ui9000/widgets/bar-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true,
+    "context": "theme, scale, and mode come from WidgetContext CSS custom properties; series colors from widget formatting"
+  },
+  "allowedActions": ["hover", "resize"],
+  "tier": "engine",
+  "intents": ["comparison"],
+  "dataRoles": [
+    {
+      "id": "category",
+      "required": true,
+      "cardinality": "low-medium",
+      "description": "Discrete label per bar (severity, host, rule id)."
+    },
+    {
+      "id": "metric",
+      "required": true,
+      "type": "number",
+      "description": "Count or score aggregated on the category."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasCategory && profile.hasNumericMetric && profile.categoryCardinality <= 30",
+      "reason": "Bar compares a handful of discrete groups on one metric."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "profile.hasGeo && !profile.hasCategory",
+      "reason": "Spatial-only data belongs on map-chart, not bars."
+    },
+    {
+      "when": "profile.categoryCardinality > 40",
+      "reason": "Too many categories; table or histogram is readable, bars are not."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title or xLabel",
+    "keyboard": ["Tab into chart", "hover/focus equivalent on last point"],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "bar-picks-severity-counts",
+      "intent": "comparison",
+      "profile": { "hasCategory": true, "hasNumericMetric": true, "categoryCardinality": 5 },
+      "expect": "eligible",
+      "reasonIncludes": "discrete groups"
+    },
+    {
+      "id": "bar-rejects-latlng-only",
+      "intent": "spatial",
+      "profile": { "hasGeo": true, "hasCategory": false },
+      "expect": "disqualified",
+      "reasonIncludes": "map-chart"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y"],
+                  "properties": {
+                    "x": { "type": "string" },
+                    "y": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["x", "y"],
+                        "properties": {
+                          "x": { "type": "string" },
+                          "y": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "orientation": {
+        "type": "string",
+        "enum": ["vertical", "horizontal"],
+        "default": "vertical",
+        "description": "FuseDash `orientation` — picks the vertical or horizontal variant family."
+      },
+      "layout": {
+        "type": "string",
+        "enum": ["grouped", "stacked"],
+        "default": "grouped",
+        "description": "FuseDash `stacked`. Only applies with more than one series; a single series always renders as the plain bar chart."
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "cumulativeLine": {
+        "type": "boolean",
+        "default": false,
+        "description": "FuseDash `cumulativeLine` — running-total overlay. Vertical single-series only."
+      },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "id": "sankey-chart",
+  "tag": "ui9000-sankey-chart",
+  "title": "Sankey Chart",
+  "description": "Chat-optimized Sankey rewritten in D3 (Visx + d3-sankey → d3-sankey + d3-shape). Two dimension columns joined by value-coloured ribbons, no Redux.",
+  "chartTypeKeys": ["sankeyChart"],
+  "source": "client/libs/shared/components/src/Widgets/Sankey/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/sankey-chart",
+  "entry": "@ui9000/widgets/sankey-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "select", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["source", "target", "value"],
+              "properties": {
+                "source": { "type": "string" },
+                "target": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["links"],
+            "properties": {
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "label": { "type": "string" }
+                  }
+                }
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["source", "target", "value"],
+                  "properties": {
+                    "source": { "type": "string" },
+                    "target": { "type": "string" },
+                    "value": { "type": "number" }
+                  }
+                }
+              },
+              "sourceLabel": { "type": "string" },
+              "targetLabel": { "type": "string" },
+              "valueLabel": { "type": "string" }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data"],
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": { "type": "object" }
+              },
+              "xAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "yAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "groupBy": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "arrangeBy": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Editor-built Sankeys keep [sourceField, targetField] here."
+              },
+              "display": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Editor-built Sankeys keep [measureField] here."
+              },
+              "axisDetails": { "type": "object" },
+              "palette": {
+                "type": "object",
+                "properties": {
+                  "customColors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["hex"],
+                      "properties": { "hex": { "type": "string" } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "sourceLabel": { "type": "string" },
+      "targetLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

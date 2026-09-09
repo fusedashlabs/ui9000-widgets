@@ -1,0 +1,34 @@
+{
+  "id": "area-chart",
+  "tag": "ui9000-area-chart",
+  "title": "Area Chart",
+  "description": "Chat-optimized area chart (grouped + stacked). FuseDash AreaChart Visx → D3.",
+  "chartTypeKeys": ["areaChart", "areaStackedChart"],
+  "source": "client/libs/shared/components/src/Widgets/AreaChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/area-chart",
+  "entry": "@ui9000/widgets/area-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "description": "FuseDash WidgetItem or { layout, series } chat shape"
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      },
+      "show-points": { "type": "boolean" },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" }
+    }
+  }
+}

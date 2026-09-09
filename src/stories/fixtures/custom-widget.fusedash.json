@@ -1,0 +1,111 @@
+{
+  "id": "custom-widget-fixture",
+  "isCustom": true,
+  "chartType": "lineChart",
+  "name": "Check-ins Overview",
+  "arranging": {
+    "widgets": [
+      "chartWidget"
+    ],
+    "hasKpi": true,
+    "direction": "vertical"
+  },
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "default",
+      "shape": "donut"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "timestamp__m"
+  ],
+  "yAxe": [
+    "count"
+  ],
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {},
+  "data": [
+    {
+      "timestamp__m": "01",
+      "count": 430
+    },
+    {
+      "timestamp__m": "02",
+      "count": 675
+    },
+    {
+      "timestamp__m": "03",
+      "count": 1409
+    },
+    {
+      "timestamp__m": "04",
+      "count": 1257
+    },
+    {
+      "timestamp__m": "05",
+      "count": 1548
+    },
+    {
+      "timestamp__m": "06",
+      "count": 1846
+    },
+    {
+      "timestamp__m": "07",
+      "count": 768
+    }
+  ],
+  "kpis": [
+    {
+      "id": "kpi-1",
+      "type": "single_value",
+      "column": "total_checkins",
+      "name": "Total Check-ins",
+      "aggregations": "sum",
+      "data": [
+        {
+          "value": {
+            "sum_total_checkins": "11137"
+          }
+        }
+      ]
+    },
+    {
+      "id": "kpi-2",
+      "type": "single_value",
+      "column": "total_companies",
+      "name": "Total Companies",
+      "aggregations": "sum",
+      "data": [
+        {
+          "value": {
+            "sum_total_companies": "15"
+          }
+        }
+      ]
+    },
+    {
+      "id": "kpi-3",
+      "type": "single_value",
+      "column": "active_users",
+      "name": "Active Users",
+      "aggregations": "sum",
+      "data": [
+        {
+          "value": {
+            "sum_active_users": "96"
+          }
+        }
+      ]
+    }
+  ]
+}

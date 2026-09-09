@@ -1,0 +1,15 @@
+{
+  "chartType": "KPI",
+  "type": "comparison",
+  "column": "bookings",
+  "name": "Bookings vs last year",
+  "aggregations": "sum",
+  "showPercentage": true,
+  "data": [
+    {
+      "current": { "sum_bookings": "1840" },
+      "previous": { "sum_bookings": "1512" },
+      "percentage": 21.69
+    }
+  ]
+}

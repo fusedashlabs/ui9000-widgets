@@ -1,0 +1,92 @@
+{
+  "id": "image",
+  "tag": "ui9000-image",
+  "title": "Image",
+  "description": "http(s) screenshot / IOC image. Rejects javascript: and data: URLs.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/image",
+  "entry": "@ui9000/widgets/image",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "resize"
+  ],
+  "tier": "engine",
+  "intents": [
+    "evidence"
+  ],
+  "dataRoles": [
+    {
+      "id": "image",
+      "required": true,
+      "description": "http(s) image URL."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasClaim",
+      "reason": "Image supports a claim (screenshot, IOC)."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasClaim",
+      "reason": "An image without a claim is decoration; use evidence-panel."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "alt",
+    "keyboard": [
+      "Tab onto image"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "image-picks-with-claim",
+      "intent": "evidence",
+      "profile": {
+        "hasClaim": true
+      },
+      "expect": "eligible",
+      "reasonIncludes": "screenshot"
+    },
+    {
+      "id": "image-rejects-no-claim",
+      "intent": "evidence",
+      "profile": {
+        "hasClaim": false
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "evidence-panel"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "alt": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

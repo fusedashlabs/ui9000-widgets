@@ -1,0 +1,86 @@
+{
+  "chartType": "barChart",
+  "name": "Product Line Count",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "xAxe": [
+    "Product Line Name"
+  ],
+  "yAxe": [
+    "count"
+  ],
+  "groupBy": null,
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {
+    "Product Line Name": [
+      "Globe G-XTREME® 3.0 Jacket",
+      "Birthday Cake Sippin’ Cream",
+      "Beretta APX A1",
+      "ServiceNow Facilities Management Example",
+      "#1 UCLA Bruins Jordan Brand Game Jersey",
+      "Shell-and-tube heat exchanger",
+      "Sample Watch",
+      "Casa Cristal Mezcal",
+      "Saatva Classic Mattress",
+      "Forklift - Caterpillar GP25N",
+      "Fields Ranch Golf Course",
+      "🌿 TENUTA ARENA EXTRA VIRGIN OLIVE OIL"
+    ]
+  },
+  "data": [
+    {
+      "Product Line Name": "Globe G-XTREME® 3.0 Jacket",
+      "count": 621
+    },
+    {
+      "Product Line Name": "Birthday Cake Sippin’ Cream",
+      "count": 619
+    },
+    {
+      "Product Line Name": "Beretta APX A1",
+      "count": 389
+    },
+    {
+      "Product Line Name": "ServiceNow Facilities Management Example",
+      "count": 335
+    },
+    {
+      "Product Line Name": "#1 UCLA Bruins Jordan Brand Game Jersey",
+      "count": 263
+    },
+    {
+      "Product Line Name": "Shell-and-tube heat exchanger",
+      "count": 233
+    },
+    {
+      "Product Line Name": "Sample Watch",
+      "count": 186
+    },
+    {
+      "Product Line Name": "Casa Cristal Mezcal",
+      "count": 170
+    },
+    {
+      "Product Line Name": "Saatva Classic Mattress",
+      "count": 163
+    },
+    {
+      "Product Line Name": "Forklift - Caterpillar GP25N",
+      "count": 156
+    },
+    {
+      "Product Line Name": "Fields Ranch Golf Course",
+      "count": 138
+    },
+    {
+      "Product Line Name": "🌿 TENUTA ARENA EXTRA VIRGIN OLIVE OIL",
+      "count": 136
+    }
+  ]
+}

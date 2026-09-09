@@ -1,0 +1,306 @@
+{
+  "chartType": "areaGroupedBarChart",
+  "name": "Sum of Average Price by Large Bags",
+  "xAxe": [
+    "age"
+  ],
+  "yAxe": [
+    "oldpeak",
+    "trestbps"
+  ],
+  "groupBy": [
+    "ca"
+  ],
+  "formatting": [
+    {
+      "key": "0",
+      "color": "1"
+    },
+    {
+      "key": "1",
+      "color": "2"
+    },
+    {
+      "key": "2",
+      "color": "3"
+    },
+    {
+      "key": "3",
+      "color": "4"
+    },
+    {
+      "key": "4",
+      "color": "5"
+    }
+  ],
+  "axisDetails": {
+    "age": {
+      "type": "metric",
+      "subtype": "integer"
+    },
+    "trestbps": {
+      "type": "metric",
+      "subtype": "float",
+      "measure_unit": "mmHg"
+    },
+    "oldpeak": {
+      "type": "metric",
+      "subtype": "float",
+      "measure_unit": "°C"
+    }
+  },
+  "markers": [
+    {
+      "key": "default",
+      "shape": "circle"
+    }
+  ],
+  "data": [
+    {
+      "age": 29,
+      "oldpeak": 0,
+      "trestbps": 132.2,
+      "ca": "0"
+    },
+    {
+      "age": 34,
+      "oldpeak": 10.7,
+      "trestbps": 126.61764705882354,
+      "ca": "1"
+    },
+    {
+      "age": 35,
+      "oldpeak": 13,
+      "trestbps": 134.79310344827587,
+      "ca": "2"
+    },
+    {
+      "age": 37,
+      "oldpeak": 13.5,
+      "trestbps": 138.57142857142858,
+      "ca": "3"
+    },
+    {
+      "age": 38,
+      "oldpeak": 13.8,
+      "trestbps": 132,
+      "ca": "4"
+    },
+    {
+      "age": 39,
+      "oldpeak": 11.2,
+      "trestbps": 124.64864864864865,
+      "ca": "0"
+    },
+    {
+      "age": 40,
+      "oldpeak": 3.4,
+      "trestbps": 135.875,
+      "ca": "1"
+    },
+    {
+      "age": 41,
+      "oldpeak": 13.4,
+      "trestbps": 145.33333333333334,
+      "ca": "2"
+    },
+    {
+      "age": 42,
+      "oldpeak": 4,
+      "trestbps": 160,
+      "ca": "3"
+    },
+    {
+      "age": 43,
+      "oldpeak": 10.4,
+      "trestbps": 125,
+      "ca": "4"
+    },
+    {
+      "age": 44,
+      "oldpeak": 4.1,
+      "trestbps": 141.3125,
+      "ca": "0"
+    },
+    {
+      "age": 45,
+      "oldpeak": 5,
+      "trestbps": 141,
+      "ca": "1"
+    },
+    {
+      "age": 46,
+      "oldpeak": 7.6,
+      "trestbps": 139,
+      "ca": "2"
+    },
+    {
+      "age": 47,
+      "oldpeak": 21.1,
+      "trestbps": 138,
+      "ca": "3"
+    },
+    {
+      "age": 48,
+      "oldpeak": 1.9,
+      "trestbps": 130.55,
+      "ca": "4"
+    },
+    {
+      "age": 49,
+      "oldpeak": 3.4,
+      "trestbps": 130.24561403508773,
+      "ca": "0"
+    },
+    {
+      "age": 50,
+      "oldpeak": 16.8,
+      "trestbps": 128,
+      "ca": "1"
+    },
+    {
+      "age": 51,
+      "oldpeak": 15.2,
+      "trestbps": 127.6,
+      "ca": "2"
+    },
+    {
+      "age": 52,
+      "oldpeak": 14.9,
+      "trestbps": 126.61764705882354,
+      "ca": "3"
+    },
+    {
+      "age": 53,
+      "oldpeak": 6.7,
+      "trestbps": 125,
+      "ca": "4"
+    },
+    {
+      "age": 54,
+      "oldpeak": 14.9,
+      "trestbps": 124.64864864864865,
+      "ca": "0"
+    },
+    {
+      "age": 55,
+      "oldpeak": 15.6,
+      "trestbps": 132.2,
+      "ca": "1"
+    },
+    {
+      "age": 56,
+      "oldpeak": 15.4,
+      "trestbps": 126.61764705882354,
+      "ca": "2"
+    },
+    {
+      "age": 57,
+      "oldpeak": 12.2,
+      "trestbps": 134.79310344827587,
+      "ca": "3"
+    },
+    {
+      "age": 58,
+      "oldpeak": 26.400000000000002,
+      "trestbps": 138.57142857142858,
+      "ca": "4"
+    },
+    {
+      "age": 59,
+      "oldpeak": 15.1,
+      "trestbps": 132,
+      "ca": "0"
+    },
+    {
+      "age": 60,
+      "oldpeak": 18.5,
+      "trestbps": 124.64864864864865,
+      "ca": "1"
+    },
+    {
+      "age": 61,
+      "oldpeak": 13.7,
+      "trestbps": 135.875,
+      "ca": "2"
+    },
+    {
+      "age": 62,
+      "oldpeak": 20.5,
+      "trestbps": 145.33333333333334,
+      "ca": "3"
+    },
+    {
+      "age": 63,
+      "oldpeak": 15.3,
+      "trestbps": 160,
+      "ca": "4"
+    },
+    {
+      "age": 64,
+      "oldpeak": 10.8,
+      "trestbps": 125,
+      "ca": "0"
+    },
+    {
+      "age": 65,
+      "oldpeak": 8.6,
+      "trestbps": 141.3125,
+      "ca": "1"
+    },
+    {
+      "age": 66,
+      "oldpeak": 6.4,
+      "trestbps": 141,
+      "ca": "2"
+    },
+    {
+      "age": 67,
+      "oldpeak": 8.9,
+      "trestbps": 139,
+      "ca": "3"
+    },
+    {
+      "age": 68,
+      "oldpeak": 7.5,
+      "trestbps": 138,
+      "ca": "4"
+    },
+    {
+      "age": 69,
+      "oldpeak": 3.9000000000000004,
+      "trestbps": 130.55,
+      "ca": "0"
+    },
+    {
+      "age": 70,
+      "oldpeak": 7.9,
+      "trestbps": 130.24561403508773,
+      "ca": "1"
+    },
+    {
+      "age": 71,
+      "oldpeak": 2,
+      "trestbps": 128,
+      "ca": "2"
+    },
+    {
+      "age": 74,
+      "oldpeak": 0.2,
+      "trestbps": 127.6,
+      "ca": "3"
+    },
+    {
+      "age": 76,
+      "oldpeak": 1.1,
+      "trestbps": 126.61764705882354,
+      "ca": "4"
+    },
+    {
+      "age": 77,
+      "oldpeak": 0,
+      "trestbps": 125,
+      "ca": "0"
+    }
+  ]
+}

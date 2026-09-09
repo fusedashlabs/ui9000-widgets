@@ -1,0 +1,51 @@
+{
+  "id": "bubble-chart",
+  "tag": "ui9000-bubble-chart",
+  "title": "Bubble Chart",
+  "description": "Chat-optimized bubble chart rewritten in D3. Numeric X/Y with abs(y) radius bands, optional groupBy colors, no Redux.",
+  "chartTypeKeys": ["bubbleChart"],
+  "source": "client/libs/shared/components/src/Widgets/BubbleChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/bubble-chart",
+  "entry": "@ui9000/widgets/bubble-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "group": { "type": "string" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload"
+          }
+        ]
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

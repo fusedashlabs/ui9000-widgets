@@ -1,0 +1,94 @@
+{
+  "id": "custom-widget",
+  "tag": "ui9000-custom-widget",
+  "title": "Custom Widget",
+  "description": "FuseDash CustomWidget shell — title, optional KPI band, and up to two arranged panes. Chart panes mount ui9000-chart-renderer, the KPI band mounts ui9000-kpi-widget, table/text/image panes mount those primitives. No Redux.",
+  "chartTypeKeys": ["customWidget"],
+  "source": "client/libs/shared/components/src/Widgets/CustomWidget/",
+  "stack": "composite",
+  "lazyImport": "@ui9000/widgets/lazy/custom-widget",
+  "entry": "@ui9000/widgets/custom-widget",
+  "tier": "host",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true,
+    "requiresArranging": "Reads arranging.widgets / arranging.hasKpi / arranging.direction; renders the default state when both are absent.",
+    "panesSupported": ["chartWidget", "tableWidget", "textWidget", "imageWidget"],
+    "maxPanes": 2
+  },
+  "allowedActions": ["resize", "download"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "description": "FuseDash WidgetItem JSON for the custom widget, including arranging, kpis, and pane fields (text, imageUrl, headers, tableData, tablePreviewRows)",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "chartType": {
+            "type": "string",
+            "description": "Chart type of the chartWidget pane; content types (tableChart, textChart, imageChart) render the pane empty state"
+          },
+          "text": { "type": "string", "description": "Markdown/plain text for a textWidget pane" },
+          "imageUrl": { "type": "string", "description": "http(s) URL for an imageWidget pane" },
+          "alt": { "type": "string" },
+          "headers": {
+            "type": "array",
+            "description": "Table columns. Each contains[].source is dataset | chart | static"
+          },
+          "tableData": { "type": "array", "description": "Personal/static rows for static-sourced columns" },
+          "tablePreviewRows": {
+            "type": "array",
+            "description": "MCP snapshot used as dataset rows when the host has no live select"
+          },
+          "arranging": {
+            "type": "object",
+            "properties": {
+              "widgets": {
+                "type": "array",
+                "maxItems": 2,
+                "items": {
+                  "type": "string",
+                  "enum": ["chartWidget", "tableWidget", "textWidget", "imageWidget"]
+                }
+              },
+              "hasKpi": { "type": "boolean", "default": false },
+              "direction": {
+                "type": "string",
+                "enum": ["vertical", "horizontal"],
+                "default": "vertical",
+                "description": "FuseDash semantics — vertical lays panes side by side, horizontal stacks them"
+              }
+            }
+          },
+          "kpis": {
+            "type": "array",
+            "description": "KPI items rendered in the KPI band when arranging.hasKpi is true"
+          }
+        }
+      },
+      "chartTitle": {
+        "type": "string",
+        "description": "Header title override; falls back to data.name"
+      },
+      "direction": {
+        "type": "string",
+        "enum": ["vertical", "horizontal"],
+        "description": "Overrides data.arranging.direction"
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showHeader": { "type": "boolean", "default": true },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "chartType": "KPI",
+  "type": "high/low_overall",
+  "column": "System Response Time",
+  "name": "Average System Response Time by Tourist ID",
+  "aggregations": "avg",
+  "groupBy": "Tourist ID",
+  "data": [
+    {
+      "high": {
+        "Tourist ID": "2491",
+        "avg_System Response Time": 5
+      },
+      "low": {
+        "Tourist ID": "2733",
+        "avg_System Response Time": 1.5
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "chartType": "punchcardChart",
+  "name": "Yearly Revenue Sum",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "timeline": true,
+  "xAxe": [
+    "year"
+  ],
+  "yAxe": [
+    "revenue euro"
+  ],
+  "uniqueValues": {
+    "year": [
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020"
+    ]
+  },
+  "palette": {
+    "autoRange": true,
+    "paletteId": "SequentialColors1"
+  },
+  "paletteId": "SequentialColors1",
+  "data": [
+    {
+      "year": "2013",
+      "revenue euro": 733538114.9788
+    },
+    {
+      "year": "2014",
+      "revenue euro": 467959441.16341
+    },
+    {
+      "year": "2015",
+      "revenue euro": 381937642.2
+    },
+    {
+      "year": "2016",
+      "revenue euro": 388986891.94
+    },
+    {
+      "year": "2017",
+      "revenue euro": 410670392.9
+    },
+    {
+      "year": "2018",
+      "revenue euro": 418541149.3
+    },
+    {
+      "year": "2019",
+      "revenue euro": 442415460.875
+    },
+    {
+      "year": "2020",
+      "revenue euro": 463927528.77
+    }
+  ],
+  "kpis": []
+}

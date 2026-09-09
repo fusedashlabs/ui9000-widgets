@@ -1,0 +1,18 @@
+export {
+  asDataRows,
+  buildLiveTableRowsFromSources,
+  buildQualifiedChartColumnKey,
+  buildQualifiedDatasetColumnKey,
+  buildQualifiedStaticColumnKey,
+  formatTableCell,
+  getSourceFromContains,
+  normalizeTableModel,
+  parseTableHeaders,
+  stripDataPrefix,
+  type CustomTableModel,
+  type DataRow,
+  type TableCellModel,
+  type TableColumnSource,
+  type TableHeader,
+  type TableHeaderContains,
+} from '../../table/lib/table.js';

@@ -1,0 +1,463 @@
+{
+  "chartType": "punchcardChart",
+  "name": "Commits by Weekday and Hour",
+  "orientation": "vertical",
+  "xAxe": [
+    "hour"
+  ],
+  "yAxe": [
+    "commits"
+  ],
+  "groupBy": [
+    "weekday"
+  ],
+  "uniqueValues": {
+    "hour": [
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19"
+    ],
+    "weekday": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ]
+  },
+  "formatting": null,
+  "markers": null,
+  "data": [
+    {
+      "weekday": "Mon",
+      "hour": "8",
+      "commits": 16
+    },
+    {
+      "weekday": "Mon",
+      "hour": "9",
+      "commits": 22
+    },
+    {
+      "weekday": "Mon",
+      "hour": "10",
+      "commits": 21
+    },
+    {
+      "weekday": "Mon",
+      "hour": "11",
+      "commits": 20
+    },
+    {
+      "weekday": "Mon",
+      "hour": "12",
+      "commits": 12
+    },
+    {
+      "weekday": "Mon",
+      "hour": "13",
+      "commits": 11
+    },
+    {
+      "weekday": "Mon",
+      "hour": "14",
+      "commits": 15
+    },
+    {
+      "weekday": "Mon",
+      "hour": "15",
+      "commits": 21
+    },
+    {
+      "weekday": "Mon",
+      "hour": "16",
+      "commits": 20
+    },
+    {
+      "weekday": "Mon",
+      "hour": "17",
+      "commits": 16
+    },
+    {
+      "weekday": "Mon",
+      "hour": "18",
+      "commits": 15
+    },
+    {
+      "weekday": "Mon",
+      "hour": "19",
+      "commits": 14
+    },
+    {
+      "weekday": "Tue",
+      "hour": "8",
+      "commits": 22
+    },
+    {
+      "weekday": "Tue",
+      "hour": "9",
+      "commits": 28
+    },
+    {
+      "weekday": "Tue",
+      "hour": "10",
+      "commits": 27
+    },
+    {
+      "weekday": "Tue",
+      "hour": "11",
+      "commits": 26
+    },
+    {
+      "weekday": "Tue",
+      "hour": "12",
+      "commits": 18
+    },
+    {
+      "weekday": "Tue",
+      "hour": "13",
+      "commits": 17
+    },
+    {
+      "weekday": "Tue",
+      "hour": "14",
+      "commits": 21
+    },
+    {
+      "weekday": "Tue",
+      "hour": "15",
+      "commits": 27
+    },
+    {
+      "weekday": "Tue",
+      "hour": "16",
+      "commits": 26
+    },
+    {
+      "weekday": "Tue",
+      "hour": "17",
+      "commits": 22
+    },
+    {
+      "weekday": "Tue",
+      "hour": "18",
+      "commits": 21
+    },
+    {
+      "weekday": "Tue",
+      "hour": "19",
+      "commits": 20
+    },
+    {
+      "weekday": "Wed",
+      "hour": "8",
+      "commits": 21
+    },
+    {
+      "weekday": "Wed",
+      "hour": "9",
+      "commits": 27
+    },
+    {
+      "weekday": "Wed",
+      "hour": "10",
+      "commits": 33
+    },
+    {
+      "weekday": "Wed",
+      "hour": "11",
+      "commits": 32
+    },
+    {
+      "weekday": "Wed",
+      "hour": "12",
+      "commits": 24
+    },
+    {
+      "weekday": "Wed",
+      "hour": "13",
+      "commits": 23
+    },
+    {
+      "weekday": "Wed",
+      "hour": "14",
+      "commits": 27
+    },
+    {
+      "weekday": "Wed",
+      "hour": "15",
+      "commits": 26
+    },
+    {
+      "weekday": "Wed",
+      "hour": "16",
+      "commits": 25
+    },
+    {
+      "weekday": "Wed",
+      "hour": "17",
+      "commits": 28
+    },
+    {
+      "weekday": "Wed",
+      "hour": "18",
+      "commits": 27
+    },
+    {
+      "weekday": "Wed",
+      "hour": "19",
+      "commits": 26
+    },
+    {
+      "weekday": "Thu",
+      "hour": "8",
+      "commits": 24
+    },
+    {
+      "weekday": "Thu",
+      "hour": "9",
+      "commits": 30
+    },
+    {
+      "weekday": "Thu",
+      "hour": "10",
+      "commits": 29
+    },
+    {
+      "weekday": "Thu",
+      "hour": "11",
+      "commits": 28
+    },
+    {
+      "weekday": "Thu",
+      "hour": "12",
+      "commits": 20
+    },
+    {
+      "weekday": "Thu",
+      "hour": "13",
+      "commits": 19
+    },
+    {
+      "weekday": "Thu",
+      "hour": "14",
+      "commits": 23
+    },
+    {
+      "weekday": "Thu",
+      "hour": "15",
+      "commits": 29
+    },
+    {
+      "weekday": "Thu",
+      "hour": "16",
+      "commits": 28
+    },
+    {
+      "weekday": "Thu",
+      "hour": "17",
+      "commits": 24
+    },
+    {
+      "weekday": "Thu",
+      "hour": "18",
+      "commits": 23
+    },
+    {
+      "weekday": "Thu",
+      "hour": "19",
+      "commits": 22
+    },
+    {
+      "weekday": "Fri",
+      "hour": "8",
+      "commits": 20
+    },
+    {
+      "weekday": "Fri",
+      "hour": "9",
+      "commits": 26
+    },
+    {
+      "weekday": "Fri",
+      "hour": "10",
+      "commits": 25
+    },
+    {
+      "weekday": "Fri",
+      "hour": "11",
+      "commits": 24
+    },
+    {
+      "weekday": "Fri",
+      "hour": "12",
+      "commits": 16
+    },
+    {
+      "weekday": "Fri",
+      "hour": "13",
+      "commits": 15
+    },
+    {
+      "weekday": "Fri",
+      "hour": "14",
+      "commits": 19
+    },
+    {
+      "weekday": "Fri",
+      "hour": "15",
+      "commits": 25
+    },
+    {
+      "weekday": "Fri",
+      "hour": "16",
+      "commits": 24
+    },
+    {
+      "weekday": "Fri",
+      "hour": "17",
+      "commits": 20
+    },
+    {
+      "weekday": "Fri",
+      "hour": "18",
+      "commits": 19
+    },
+    {
+      "weekday": "Fri",
+      "hour": "19",
+      "commits": 18
+    },
+    {
+      "weekday": "Sat",
+      "hour": "8",
+      "commits": 7
+    },
+    {
+      "weekday": "Sat",
+      "hour": "9",
+      "commits": 13
+    },
+    {
+      "weekday": "Sat",
+      "hour": "10",
+      "commits": 12
+    },
+    {
+      "weekday": "Sat",
+      "hour": "11",
+      "commits": 11
+    },
+    {
+      "weekday": "Sat",
+      "hour": "12",
+      "commits": 10
+    },
+    {
+      "weekday": "Sat",
+      "hour": "13",
+      "commits": 9
+    },
+    {
+      "weekday": "Sat",
+      "hour": "14",
+      "commits": 13
+    },
+    {
+      "weekday": "Sat",
+      "hour": "15",
+      "commits": 12
+    },
+    {
+      "weekday": "Sat",
+      "hour": "16",
+      "commits": 11
+    },
+    {
+      "weekday": "Sat",
+      "hour": "17",
+      "commits": 7
+    },
+    {
+      "weekday": "Sat",
+      "hour": "18",
+      "commits": 6
+    },
+    {
+      "weekday": "Sat",
+      "hour": "19",
+      "commits": 12
+    },
+    {
+      "weekday": "Sun",
+      "hour": "8",
+      "commits": 5
+    },
+    {
+      "weekday": "Sun",
+      "hour": "9",
+      "commits": 11
+    },
+    {
+      "weekday": "Sun",
+      "hour": "10",
+      "commits": 10
+    },
+    {
+      "weekday": "Sun",
+      "hour": "11",
+      "commits": 9
+    },
+    {
+      "weekday": "Sun",
+      "hour": "12",
+      "commits": 8
+    },
+    {
+      "weekday": "Sun",
+      "hour": "13",
+      "commits": 7
+    },
+    {
+      "weekday": "Sun",
+      "hour": "14",
+      "commits": 11
+    },
+    {
+      "weekday": "Sun",
+      "hour": "15",
+      "commits": 10
+    },
+    {
+      "weekday": "Sun",
+      "hour": "16",
+      "commits": 9
+    },
+    {
+      "weekday": "Sun",
+      "hour": "17",
+      "commits": 5
+    },
+    {
+      "weekday": "Sun",
+      "hour": "18",
+      "commits": 4
+    },
+    {
+      "weekday": "Sun",
+      "hour": "19",
+      "commits": 10
+    }
+  ]
+}

@@ -1,0 +1,570 @@
+{
+  "id": "d269c8a3-8b4a-4ae6-a9f6-b95e33b10e6d",
+  "chartType": "mapChart",
+  "apparitionConfig": {},
+  "description": null,
+  "insights": null,
+  "name": "Average Temperature by Country",
+  "pageId": "d85b33d9-06de-40d2-9fcd-6de1db2ca919",
+  "canvasBlockId": null,
+  "userId": "04ec2f5a-74da-4955-acc3-8ce35e1b134f",
+  "datasetId": "98ec54ce-0630-4bf1-8881-99aaac95260e",
+  "query": null,
+  "actions": null,
+  "legend": true,
+  "layout": "fullScreen",
+  "background": null,
+  "blockId": "1768135435989",
+  "search": false,
+  "layers": [
+    {
+      "data": [
+        {
+          "Country__created": "Mongolia",
+          "Temperature": 0.784718309859155
+        },
+        {
+          "Country__created": "Western Sahara",
+          "Temperature": 0.7408142857142858
+        },
+        {
+          "Country__created": "Austria",
+          "Temperature": 0.7038450704225352
+        },
+        {
+          "Country__created": "Switzerland",
+          "Temperature": 0.6971571428571429
+        },
+        {
+          "Country__created": "Tunisia",
+          "Temperature": 0.6895428571428571
+        },
+        {
+          "Country__created": "Liechtenstein",
+          "Temperature": 0.6892112676056338
+        },
+        {
+          "Country__created": "Morocco",
+          "Temperature": 0.685169014084507
+        },
+        {
+          "Country__created": "Kuwait",
+          "Temperature": 0.6835211267605634
+        },
+        {
+          "Country__created": "Finland",
+          "Temperature": 0.6706056338028169
+        },
+        {
+          "Country__created": "Senegal",
+          "Temperature": 0.6685428571428572
+        },
+        {
+          "Country__created": "Germany",
+          "Temperature": 0.6614929577464789
+        },
+        {
+          "Country__created": "Spain",
+          "Temperature": 0.6546142857142857
+        },
+        {
+          "Country__created": "France",
+          "Temperature": 0.6506760563380282
+        },
+        {
+          "Country__created": "Sweden",
+          "Temperature": 0.6497571428571428
+        },
+        {
+          "Country__created": "Algeria",
+          "Temperature": 0.6489859154929578
+        },
+        {
+          "Country__created": "Monaco",
+          "Temperature": 0.6276901408450705
+        },
+        {
+          "Country__created": "Denmark",
+          "Temperature": 0.6196338028169014
+        },
+        {
+          "Country__created": "Portugal",
+          "Temperature": 0.6178714285714285
+        },
+        {
+          "Country__created": "Italy",
+          "Temperature": 0.576718309859155
+        },
+        {
+          "Country__created": "Hungary",
+          "Temperature": 0.5764647887323944
+        },
+        {
+          "Country__created": "Malta",
+          "Temperature": 0.5669014084507042
+        },
+        {
+          "Country__created": "Qatar",
+          "Temperature": 0.5648142857142857
+        },
+        {
+          "Country__created": "Iraq",
+          "Temperature": 0.5545211267605634
+        },
+        {
+          "Country__created": "Canada",
+          "Temperature": 0.5532676056338028
+        },
+        {
+          "Country__created": "Norway",
+          "Temperature": 0.5468591549295775
+        },
+        {
+          "Country__created": "Liberia",
+          "Temperature": 0.537
+        },
+        {
+          "Country__created": "Romania",
+          "Temperature": 0.5287999999999999
+        },
+        {
+          "Country__created": "Mali",
+          "Temperature": 0.5286338028169014
+        },
+        {
+          "Country__created": "Haiti",
+          "Temperature": 0.5241549295774648
+        },
+        {
+          "Country__created": "Jamaica",
+          "Temperature": 0.522943661971831
+        },
+        {
+          "Country__created": "Suriname",
+          "Temperature": 0.5175000000000001
+        },
+        {
+          "Country__created": "Guinea",
+          "Temperature": 0.5174647887323944
+        },
+        {
+          "Country__created": "Sierra Leone",
+          "Temperature": 0.5133714285714286
+        },
+        {
+          "Country__created": "Cuba",
+          "Temperature": 0.5096760563380281
+        },
+        {
+          "Country__created": "Bulgaria",
+          "Temperature": 0.4795492957746479
+        },
+        {
+          "Country__created": "Brazil",
+          "Temperature": 0.47326760563380277
+        },
+        {
+          "Country__created": "Malaysia",
+          "Temperature": 0.4715070422535211
+        },
+        {
+          "Country__created": "Saudi Arabia",
+          "Temperature": 0.4713714285714286
+        },
+        {
+          "Country__created": "Burkina Faso",
+          "Temperature": 0.4664929577464789
+        },
+        {
+          "Country__created": "Somalia",
+          "Temperature": 0.46559999999999996
+        },
+        {
+          "Country__created": "Djibouti",
+          "Temperature": 0.4618028169014084
+        },
+        {
+          "Country__created": "Ghana",
+          "Temperature": 0.46038028169014084
+        },
+        {
+          "Country__created": "Nigeria",
+          "Temperature": 0.4528309859154929
+        },
+        {
+          "Country__created": "Thailand",
+          "Temperature": 0.44804285714285713
+        },
+        {
+          "Country__created": "Guyana",
+          "Temperature": 0.44699999999999995
+        },
+        {
+          "Country__created": "Togo",
+          "Temperature": 0.4459142857142857
+        },
+        {
+          "Country__created": "Philippines",
+          "Temperature": 0.4453142857142857
+        },
+        {
+          "Country__created": "Benin",
+          "Temperature": 0.43274647887323947
+        },
+        {
+          "Country__created": "Ecuador",
+          "Temperature": 0.42959154929577464
+        },
+        {
+          "Country__created": "Albania",
+          "Temperature": 0.4260985915492958
+        },
+        {
+          "Country__created": "Bolivia",
+          "Temperature": 0.424
+        },
+        {
+          "Country__created": "Australia",
+          "Temperature": 0.4232957746478873
+        },
+        {
+          "Country__created": "Uganda",
+          "Temperature": 0.4219142857142857
+        },
+        {
+          "Country__created": "Peru",
+          "Temperature": 0.4206285714285714
+        },
+        {
+          "Country__created": "South Africa",
+          "Temperature": 0.4199142857142857
+        },
+        {
+          "Country__created": "Cambodia",
+          "Temperature": 0.41470422535211265
+        },
+        {
+          "Country__created": "Belize",
+          "Temperature": 0.41343661971830986
+        },
+        {
+          "Country__created": "Myanmar",
+          "Temperature": 0.4130985915492958
+        },
+        {
+          "Country__created": "Angola",
+          "Temperature": 0.41149295774647887
+        },
+        {
+          "Country__created": "Malawi",
+          "Temperature": 0.40492957746478875
+        },
+        {
+          "Country__created": "Niger",
+          "Temperature": 0.4044084507042254
+        },
+        {
+          "Country__created": "Libya",
+          "Temperature": 0.4029014084507042
+        },
+        {
+          "Country__created": "Sri Lanka",
+          "Temperature": 0.3971142857142857
+        },
+        {
+          "Country__created": "Panama",
+          "Temperature": 0.3963857142857143
+        },
+        {
+          "Country__created": "Chad",
+          "Temperature": 0.39067605633802815
+        },
+        {
+          "Country__created": "Nicaragua",
+          "Temperature": 0.38953521126760565
+        },
+        {
+          "Country__created": "United Kingdom",
+          "Temperature": 0.38915714285714287
+        },
+        {
+          "Country__created": "Kenya",
+          "Temperature": 0.38164788732394367
+        },
+        {
+          "Country__created": "Lebanon",
+          "Temperature": 0.38083098591549297
+        },
+        {
+          "Country__created": "Cyprus",
+          "Temperature": 0.38042253521126757
+        },
+        {
+          "Country__created": "United Arab Emirates",
+          "Temperature": 0.37934285714285715
+        },
+        {
+          "Country__created": "Honduras",
+          "Temperature": 0.37783098591549297
+        },
+        {
+          "Country__created": "Samoa",
+          "Temperature": 0.37452857142857143
+        },
+        {
+          "Country__created": "Cameroon",
+          "Temperature": 0.37452112676056337
+        },
+        {
+          "Country__created": "Mexico",
+          "Temperature": 0.37239436619718314
+        },
+        {
+          "Country__created": "Namibia",
+          "Temperature": 0.36838028169014086
+        },
+        {
+          "Country__created": "Guatemala",
+          "Temperature": 0.36495774647887325
+        },
+        {
+          "Country__created": "Vietnam",
+          "Temperature": 0.36474285714285715
+        },
+        {
+          "Country__created": "Solomon Islands",
+          "Temperature": 0.3612571428571429
+        },
+        {
+          "Country__created": "Ireland",
+          "Temperature": 0.356
+        },
+        {
+          "Country__created": "Paraguay",
+          "Temperature": 0.3537857142857143
+        },
+        {
+          "Country__created": "Antigua and Barbuda",
+          "Temperature": 0.34907042253521126
+        },
+        {
+          "Country__created": "Seychelles",
+          "Temperature": 0.3484428571428571
+        },
+        {
+          "Country__created": "Barbados",
+          "Temperature": 0.3465352112676056
+        },
+        {
+          "Country__created": "Zambia",
+          "Temperature": 0.34522857142857144
+        },
+        {
+          "Country__created": "El Salvador",
+          "Temperature": 0.34414084507042253
+        },
+        {
+          "Country__created": "Gabon",
+          "Temperature": 0.3415352112676056
+        },
+        {
+          "Country__created": "Trinidad and Tobago",
+          "Temperature": 0.341
+        },
+        {
+          "Country__created": "Grenada",
+          "Temperature": 0.33807042253521125
+        },
+        {
+          "Country__created": "Dominica",
+          "Temperature": 0.3377042253521127
+        },
+        {
+          "Country__created": "Mauritius",
+          "Temperature": 0.3350985915492958
+        },
+        {
+          "Country__created": "Maldives",
+          "Temperature": 0.3333661971830986
+        },
+        {
+          "Country__created": "Colombia",
+          "Temperature": 0.3322394366197183
+        },
+        {
+          "Country__created": "Tonga",
+          "Temperature": 0.3302
+        },
+        {
+          "Country__created": "Jordan",
+          "Temperature": 0.32866197183098594
+        },
+        {
+          "Country__created": "Japan",
+          "Temperature": 0.3269577464788732
+        },
+        {
+          "Country__created": "Greece",
+          "Temperature": 0.32585915492957745
+        },
+        {
+          "Country__created": "Uruguay",
+          "Temperature": 0.3247428571428571
+        },
+        {
+          "Country__created": "Bhutan",
+          "Temperature": 0.31864788732394367
+        },
+        {
+          "Country__created": "Indonesia",
+          "Temperature": 0.31604225352112675
+        },
+        {
+          "Country__created": "Israel",
+          "Temperature": 0.30125352112676057
+        },
+        {
+          "Country__created": "Vanuatu",
+          "Temperature": 0.3007714285714285
+        },
+        {
+          "Country__created": "Argentina",
+          "Temperature": 0.2961830985915493
+        },
+        {
+          "Country__created": "Papua New Guinea",
+          "Temperature": 0.29505714285714285
+        },
+        {
+          "Country__created": "Iceland",
+          "Temperature": 0.2887323943661972
+        },
+        {
+          "Country__created": "Kiribati",
+          "Temperature": 0.2766338028169014
+        },
+        {
+          "Country__created": "Oman",
+          "Temperature": 0.2606056338028169
+        },
+        {
+          "Country__created": "India",
+          "Temperature": 0.2513943661971831
+        },
+        {
+          "Country__created": "New Zealand",
+          "Temperature": 0.23919718309859156
+        },
+        {
+          "Country__created": "Pakistan",
+          "Temperature": 0.23364788732394365
+        },
+        {
+          "Country__created": "Chile",
+          "Temperature": 0.2330281690140845
+        },
+        {
+          "Country__created": "Bangladesh",
+          "Temperature": 0.19677464788732393
+        },
+        {
+          "Country__created": "Botswana",
+          "Temperature": 0.1916901408450704
+        },
+        {
+          "Country__created": "Nepal",
+          "Temperature": 0.18904225352112677
+        },
+        {
+          "Country__created": "Zimbabwe",
+          "Temperature": 0.1766
+        }
+      ],
+      "name": "Temperature by Country Created",
+      "query": "[{\"$match\": {\"datasetId\": \"056e71b6-8e72-4dca-8e95-77954afc021c\"}}, {\"$match\": {\"data.Country__created\": {\"$nin\": [null, \"\"]}, \"data.Temperature\": {\"$nin\": [null, \"\"]}}}, {\"$project\": {\"datasetId\": \"$datasetId\", \"Country__created\": \"$data.Country__created\", \"Temperature\": \"$data.Temperature\"}}, {\"$group\": {\"_id\": {\"datasetId\": \"$datasetId\", \"Country__created\": \"$Country__created\"}, \"Temperature\": {\"$avg\": \"$Temperature\"}}}, {\"$project\": {\"_id\": 0, \"data\": {\"Country__created\": \"$_id.Country__created\", \"Temperature\": \"$Temperature\"}, \"datasetId\": \"$_id.datasetId\"}}, {\"$sort\": {\"data.Temperature\": -1}}]",
+      "colour": "green",
+      "format": "geojson",
+      "tooltip": true,
+      "analytics": "average",
+      "datasetId": "98ec54ce-0630-4bf1-8881-99aaac95260e",
+      "timePeriod": null,
+      "description": null,
+      "labelTemplate": {
+        "title": "{Country__created}",
+        "metrics": [
+          {
+            "title": "Temperature",
+            "template": "{values}"
+          }
+        ],
+        "representation": {
+          "chart_type": "mapChart",
+          "geospatial_data": [
+            "Country__created"
+          ],
+          "arrange_by_metric": [
+            "Temperature"
+          ],
+          "aggregation_function": "avg"
+        }
+      },
+      "query_results": [],
+      "geospatialData": [
+        "Country__created"
+      ],
+      "arrangeByMetric": [
+        "Temperature"
+      ],
+      "visualisationType": "choropleth",
+      "possibleVisualisationTypes": [
+        "choropleth"
+      ]
+    }
+  ],
+  "tooltip": false,
+  "markers": null,
+  "timeline": true,
+  "terrain": false,
+  "stacked": false,
+  "orientation": "vertical",
+  "paletteId": "SequentialColors1",
+  "formatting": null,
+  "xAxe": [],
+  "yAxe": [],
+  "groupBy": null,
+  "subgroup": null,
+  "metric": null,
+  "axisLabels": null,
+  "display": null,
+  "arrangeBy": null,
+  "palette": null,
+  "dataFormat": {},
+  "uniqueValues": {},
+  "allowedSubtypes": null,
+  "combination": [
+    "location",
+    "metric"
+  ],
+  "difficulty": null,
+  "groupbySubgroup": false,
+  "xSubgroup": false,
+  "headers": null,
+  "imageUrl": null,
+  "alt": null,
+  "tableQuery": null,
+  "text": null,
+  "isCustom": false,
+  "kpis": [],
+  "color": null,
+  "filter": "",
+  "arranging": {
+    "hasKpi": false,
+    "widgets": [
+      "chartWidget"
+    ],
+    "direction": "vertical"
+  },
+  "interchangeableWidgetCount": null,
+  "createdAt": "2025-08-13T14:25:03.368Z",
+  "updatedAt": "2025-08-13T14:25:03.368Z"
+}

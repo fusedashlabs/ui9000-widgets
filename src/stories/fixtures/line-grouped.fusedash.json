@@ -1,0 +1,333 @@
+{
+  "chartType": "lineChart",
+  "name": "Revenue by Crop Group Over Years",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "Open field group",
+      "shape": "donut"
+    },
+    {
+      "key": "Tomato group",
+      "shape": "donut"
+    },
+    {
+      "key": "Allium group",
+      "shape": "donut"
+    },
+    {
+      "key": "Cucumber group",
+      "shape": "donut"
+    },
+    {
+      "key": "Cucurbit group",
+      "shape": "donut"
+    },
+    {
+      "key": "Other",
+      "shape": "donut"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "year"
+  ],
+  "yAxe": [
+    "revenue euro"
+  ],
+  "groupBy": [
+    "MD_Crop_Group  text  autorisatie"
+  ],
+  "formatting": [
+    {
+      "key": "Open field group",
+      "color": "1"
+    },
+    {
+      "key": "Tomato group",
+      "color": "2"
+    },
+    {
+      "key": "Allium group",
+      "color": "3"
+    },
+    {
+      "key": "Cucumber group",
+      "color": "4"
+    },
+    {
+      "key": "Cucurbit group",
+      "color": "5"
+    },
+    {
+      "key": "Other",
+      "color": "6"
+    }
+  ],
+  "uniqueValues": {
+    "year": [
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020"
+    ],
+    "MD_Crop_Group  text  autorisatie": [
+      "Open field group",
+      "Tomato group",
+      "Cucumber group",
+      "Allium group",
+      "Cucurbit group",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "year": "2013",
+      "revenue euro": 232246386,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2013",
+      "revenue euro": 174889787.8788,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2013",
+      "revenue euro": 120501291.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2013",
+      "revenue euro": 107469350.8,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2013",
+      "revenue euro": 61703912,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2013",
+      "revenue euro": 36727386.8,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2014",
+      "revenue euro": 144871356.58,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2014",
+      "revenue euro": 113890583.71201,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2014",
+      "revenue euro": 75772064.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2014",
+      "revenue euro": 66867602.3714,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2014",
+      "revenue euro": 43272329,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2014",
+      "revenue euro": 23285505,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2015",
+      "revenue euro": 133089587.6,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2015",
+      "revenue euro": 92203242.1,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2015",
+      "revenue euro": 56052735.5,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2015",
+      "revenue euro": 52024550,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2015",
+      "revenue euro": 29451178,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2015",
+      "revenue euro": 19116349,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2016",
+      "revenue euro": 137324171.9,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2016",
+      "revenue euro": 91922507.54,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2016",
+      "revenue euro": 59808427.5,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2016",
+      "revenue euro": 51632000,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2016",
+      "revenue euro": 29409875,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2016",
+      "revenue euro": 18889910,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2017",
+      "revenue euro": 146890739.4,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2017",
+      "revenue euro": 93843997,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2017",
+      "revenue euro": 62082395,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2017",
+      "revenue euro": 55658012.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2017",
+      "revenue euro": 30612444,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2017",
+      "revenue euro": 21582805,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2018",
+      "revenue euro": 150648999.3,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2018",
+      "revenue euro": 97455328,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2018",
+      "revenue euro": 63124837,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2018",
+      "revenue euro": 53468420,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2018",
+      "revenue euro": 31164384,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2018",
+      "revenue euro": 22679181,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2019",
+      "revenue euro": 159333749.25,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2019",
+      "revenue euro": 102544495.125,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2019",
+      "revenue euro": 65786432.75,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2019",
+      "revenue euro": 55931348.75,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2019",
+      "revenue euro": 34775190.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2019",
+      "revenue euro": 24044244.5,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "year": "2020",
+      "revenue euro": 166182010.82,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "year": "2020",
+      "revenue euro": 106991402.6,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "year": "2020",
+      "revenue euro": 68668573.6,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "year": "2020",
+      "revenue euro": 58183639.75,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "year": "2020",
+      "revenue euro": 38505899,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "year": "2020",
+      "revenue euro": 25396003,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    }
+  ],
+  "kpis": []
+}

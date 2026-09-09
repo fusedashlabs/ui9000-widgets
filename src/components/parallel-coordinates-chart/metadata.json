@@ -1,0 +1,100 @@
+{
+  "id": "parallel-coordinates-chart",
+  "tag": "ui9000-parallel-coordinates-chart",
+  "title": "Parallel Coordinates Chart",
+  "description": "Chat-optimized parallel coordinates rewritten in D3 (client d3-axis/d3-scale + Redux → props-only Lit element). One linear axis per dimension, a polyline per record, coloured by the active axis; click an axis to move the colour ramp onto it.",
+  "chartTypeKeys": ["parallelCoordinatesChart"],
+  "source": "client/libs/shared/components/src/Widgets/ParallelCoordinatesChart/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/parallel-coordinates-chart",
+  "entry": "@fusedashlabs/widgets/parallel-coordinates-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "select", "resize"],
+  "divergences": [
+    {
+      "rule": "Legend is HTML in the shell, above the plot",
+      "deviation": "The colour ramp renders as an SVG gutter legend inside the plot's reserved bottom (horizontal) or right (vertical) band, not as HTML above it.",
+      "why": "The ramp is a continuous scale keyed to the active axis and reads as part of the axis furniture; the client draws it the same way, so keeping it in SVG preserves the layout hosts already expect. Discrete series legends still follow the house rule."
+    },
+    {
+      "rule": "Ports match the client 1:1",
+      "deviation": "Vertical orientation maps the axis maximum to the top of the plot; the client's VerticalParallelCoordinatesChart maps it to the bottom.",
+      "why": "The client transposed the horizontal variant without flipping the SVG y range, leaving its axes inverted and contradicting its own colour ramp. Horizontal is the acceptance path; the vertical fix is deliberate."
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": { "type": "object" },
+            "description": "Plain rows; every key holding a finite number becomes an axis."
+          },
+          {
+            "type": "object",
+            "required": ["rows"],
+            "properties": {
+              "rows": { "type": "array", "items": { "type": "object" } },
+              "axes": { "type": "array", "items": { "type": "string" } },
+              "idKey": { "type": "string" },
+              "orientation": { "enum": ["horizontal", "vertical"] }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data"],
+            "properties": {
+              "data": { "type": "array", "items": { "type": "object" } },
+              "orientation": { "enum": ["horizontal", "vertical"] },
+              "xAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ],
+                "description": "Identity field — rows sort by it and tooltips label by it."
+              },
+              "yAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ],
+                "description": "Colour axis hint; used only when it names one of the dimensions."
+              },
+              "uniqueValues": {
+                "type": "object",
+                "description": "Flattened values supply the dimension axes, in order.",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "formatting": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": { "type": "string" },
+                    "color": { "type": ["string", "number"] }
+                  }
+                },
+                "description": "`defaultMin` / `defaultMax` set the two ends of the colour ramp."
+              }
+            }
+          }
+        ]
+      },
+      "orientation": { "enum": ["horizontal", "vertical"] },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "colorKey": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

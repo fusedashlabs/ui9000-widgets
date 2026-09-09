@@ -1,0 +1,59 @@
+{
+  "chartType": "lineChart",
+  "name": "Count Over Time",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "default",
+      "shape": "donut"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "timestamp__m"
+  ],
+  "yAxe": [
+    "count"
+  ],
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {},
+  "data": [
+    {
+      "timestamp__m": "01",
+      "count": 430
+    },
+    {
+      "timestamp__m": "02",
+      "count": 675
+    },
+    {
+      "timestamp__m": "03",
+      "count": 1409
+    },
+    {
+      "timestamp__m": "04",
+      "count": 1257
+    },
+    {
+      "timestamp__m": "05",
+      "count": 1548
+    },
+    {
+      "timestamp__m": "06",
+      "count": 1846
+    },
+    {
+      "timestamp__m": "07",
+      "count": 768
+    }
+  ],
+  "kpis": []
+}

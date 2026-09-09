@@ -1,0 +1,104 @@
+{
+  "id": "lollipop",
+  "tag": "ui9000-lollipop",
+  "title": "Lollipop Chart",
+  "description": "Chat-optimized lollipop rewritten in D3 (Visx → D3). Vertical/horizontal, stem + head, no Redux.",
+  "chartTypeKeys": ["lollipopChart", "lollipopGroupedChart", "lollipopStackedChart"],
+  "chartTypeMap": {
+    "lollipopChart": {},
+    "lollipopGroupedChart": { "layout": "grouped" },
+    "lollipopStackedChart": { "layout": "stacked" }
+  },
+  "source": "client/libs/shared/components/src/Widgets/Lollipop/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/lollipop",
+  "entry": "@ui9000/widgets/lollipop",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["label", "value"],
+                  "properties": {
+                    "label": { "type": "string" },
+                    "value": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["label", "value"],
+                        "properties": {
+                          "label": { "type": "string" },
+                          "value": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "orientation": {
+        "type": "string",
+        "enum": ["vertical", "horizontal"],
+        "default": "vertical"
+      },
+      "layout": {
+        "type": "string",
+        "enum": ["grouped", "stacked"],
+        "default": "grouped"
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "id": "matrix-chart",
+  "tag": "ui9000-matrix-chart",
+  "title": "Matrix Chart",
+  "description": "Chat-optimized matrix / heatmap rewritten in D3 (Visx → D3). Sequential-palette cell grid with a pinned column header, no Redux.",
+  "chartTypeKeys": ["matrixChart"],
+  "source": "client/libs/shared/components/src/Widgets/MatrixChart/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/matrix-chart",
+  "entry": "@fusedashlabs/widgets/matrix-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize", "scroll"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y", "value"],
+              "properties": {
+                "x": { "type": "string" },
+                "y": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["cells"],
+            "properties": {
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y", "value"],
+                  "properties": {
+                    "x": { "type": "string" },
+                    "y": { "type": "string" },
+                    "value": { "type": "number" }
+                  }
+                }
+              },
+              "xDomain": { "type": "array", "items": { "type": "string" } },
+              "yDomain": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data"],
+            "properties": {
+              "data": { "type": "array", "items": { "type": "object" } },
+              "xAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "yAxe": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "groupBy": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              },
+              "uniqueValues": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "axisDetails": {
+                "type": "object",
+                "description": "Per-field label and measure unit, used for tooltip rows.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "label": { "type": "string" },
+                    "measure_unit_type": { "type": "string" },
+                    "measure_unit": { "type": "string" },
+                    "measure_unit_symbol": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"]
+  }
+}

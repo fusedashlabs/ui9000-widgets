@@ -1,0 +1,11 @@
+{
+  "id": "custom-widget-text-fixture",
+  "isCustom": true,
+  "name": "Weekly notes",
+  "text": "## Check-ins\n\n**North** region led this week.\n\n- 1,409 visits on day 03\n- Follow up with **South**\n\nSee the [dashboard](https://example.com/dash) for detail.",
+  "arranging": {
+    "widgets": ["textWidget"],
+    "hasKpi": false,
+    "direction": "vertical"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "id": "gini-impurity-entropy-chart",
+  "tag": "ui9000-gini-impurity-entropy-chart",
+  "title": "Gini Impurity & Entropy Chart",
+  "description": "Chat-optimized decision-tree impurity chart rewritten in D3. Entropy / Gini / misclassification curves over the class probability p, with optional p-hat, confidence-interval and split annotations.",
+  "chartTypeKeys": ["giniImpurityEntropyChart"],
+  "source": "client/libs/shared/components/src/Widgets/GiniImpurityEntropyChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/gini-impurity-entropy-chart",
+  "entry": "@ui9000/widgets/gini-impurity-entropy-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": ["string", "number"] },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y"],
+                  "properties": {
+                    "x": { "type": ["number", "string"] },
+                    "y": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "dash": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["x", "y"],
+                        "properties": {
+                          "x": { "type": ["number", "string"] },
+                          "y": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xLabel": { "type": "string" },
+              "yLabel": { "type": "string" },
+              "meta": {
+                "type": "object",
+                "properties": {
+                  "pHat": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "ci": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "split": {
+                    "type": "object",
+                    "required": ["pLeft", "pRight"],
+                    "properties": {
+                      "pLeft": { "type": "number" },
+                      "nLeft": { "type": "number" },
+                      "pRight": { "type": "number" },
+                      "nRight": { "type": "number" }
+                    }
+                  },
+                  "showPHat": { "type": "boolean" },
+                  "showCI": { "type": "boolean" },
+                  "showSplit": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "showPHat": { "type": "boolean", "default": false },
+      "showCI": { "type": "boolean", "default": false },
+      "showSplit": { "type": "boolean", "default": false }
+    },
+    "required": ["data"]
+  }
+}

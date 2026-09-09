@@ -1,0 +1,94 @@
+{
+  "id": "step-line-chart",
+  "tag": "ui9000-step-line-chart",
+  "title": "Step Line Chart",
+  "description": "Chat-optimized step line chart rewritten in D3 (Visx → D3). Categorical or time x, multi-series, optional KS / ROC reference overlay. No Redux.",
+  "chartTypeKeys": ["stepLineChart", "ksPlotChart", "rocCurveChart"],
+  "source": "client/libs/shared/components/src/Widgets/StepLineChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/step-line-chart",
+  "entry": "@ui9000/widgets/step-line-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y"],
+                  "properties": {
+                    "x": { "type": "string" },
+                    "y": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["x", "y"],
+                        "properties": {
+                          "x": { "type": "string" },
+                          "y": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "grafType": {
+        "type": "string",
+        "enum": ["none", "curve", "line"],
+        "default": "none",
+        "description": "Reference overlay: 'curve' draws the KS-plot Ideal curve plus the max-deviation marker, 'line' draws the ROC random-guessing diagonal."
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

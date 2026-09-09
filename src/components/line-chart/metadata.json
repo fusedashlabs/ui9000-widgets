@@ -1,0 +1,95 @@
+{
+  "id": "line-chart",
+  "tag": "ui9000-line-chart",
+  "title": "Line Chart",
+  "description": "Chat-optimized line chart rewritten in D3 (Visx → D3). Single or multi-series, no Redux.",
+  "chartTypeKeys": ["lineChart", "lineGroupedChart"],
+  "source": "client/libs/shared/components/src/Widgets/LineChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/line-chart",
+  "entry": "@ui9000/widgets/line-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y"],
+                  "properties": {
+                    "x": { "type": "string" },
+                    "y": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["x", "y"],
+                        "properties": {
+                          "x": { "type": "string" },
+                          "y": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "curve": {
+        "type": "string",
+        "enum": ["linear", "monotone", "step"],
+        "default": "monotone"
+      },
+      "showPoints": { "type": "boolean", "default": true },
+      "showArea": { "type": "boolean", "default": false },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

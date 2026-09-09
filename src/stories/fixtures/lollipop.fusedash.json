@@ -1,0 +1,85 @@
+{
+  "chartType": "lollipopChart",
+  "name": "Average Density by Organic and Non-Organic MD",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "default",
+      "shape": "rhombus"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "MD_Organic_non_organic"
+  ],
+  "yAxe": [
+    "dencity"
+  ],
+  "formatting": [
+    {
+      "key": "Open Field",
+      "color": "1"
+    },
+    {
+      "key": "Green House",
+      "color": "2"
+    },
+    {
+      "key": "Non-heated",
+      "color": "3"
+    },
+    {
+      "key": "Open F Fruit Crop",
+      "color": "4"
+    },
+    {
+      "key": "Processing",
+      "color": "5"
+    },
+    {
+      "key": "Heated",
+      "color": "6"
+    }
+  ],
+  "uniqueValues": {
+    "MD_Organic_non_organic": [
+      "Open Field",
+      "Green House",
+      "Non-heated",
+      "Open F Fruit Crop",
+      "Processing",
+      "Heated"
+    ]
+  },
+  "palette": {},
+  "data": [
+    {
+      "MD_Organic_non_organic": "Open Field",
+      "dencity": 2130944
+    },
+    {
+      "MD_Organic_non_organic": "Green House",
+      "dencity": 437403
+    },
+    {
+      "MD_Organic_non_organic": "Non-heated",
+      "dencity": 76600
+    },
+    {
+      "MD_Organic_non_organic": "Open F Fruit Crop",
+      "dencity": 72065
+    },
+    {
+      "MD_Organic_non_organic": "Processing",
+      "dencity": 6060
+    },
+    {
+      "MD_Organic_non_organic": "Heated",
+      "dencity": 3000
+    }
+  ],
+  "kpis": []
+}

@@ -1,0 +1,52 @@
+{
+  "id": "scatter-plot-chart",
+  "tag": "ui9000-scatter-plot",
+  "title": "Scatter Plot",
+  "description": "Chat-optimized scatter plot rewritten in D3. Numeric X/Y, optional groupBy markers, no Redux.",
+  "chartTypeKeys": ["scatterplotChart", "qqPlot"],
+  "source": "client/libs/shared/components/src/Widgets/ScatterPlot/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/scatter-plot-chart",
+  "entry": "@ui9000/widgets/scatter-plot-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "group": { "type": "string" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload"
+          }
+        ]
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "show-reference-line": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

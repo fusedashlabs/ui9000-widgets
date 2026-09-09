@@ -1,0 +1,77 @@
+{
+  "id": "partial-dependence-chart",
+  "tag": "ui9000-partial-dependence-chart",
+  "title": "Partial Dependence (PDP) with ICE",
+  "description": "Chat-optimized partial dependence plot rewritten in D3. Faint ICE curves under a locally computed dashed average, no Redux.",
+  "chartTypeKeys": ["partialDependenceChart"],
+  "source": "client/libs/shared/components/src/Widgets/PartialDependenceChart/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/partial-dependence-chart",
+  "entry": "@fusedashlabs/widgets/partial-dependence-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "group": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["series"],
+            "properties": {
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["x", "y"],
+                        "properties": {
+                          "x": { "type": "number" },
+                          "y": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload"
+          }
+        ]
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "chartType": "polarAreaChart",
+  "name": "Crop Group Organic vs Non-Organic Area Distribution",
+  "xAxe": [
+    "MD_Crop_Group  text  autorisatie"
+  ],
+  "yAxe": [
+    "area Ha"
+  ],
+  "groupBy": [
+    "MD_Organic_non_organic"
+  ],
+  "formatting": [
+    {
+      "key": "Open field group",
+      "color": "1"
+    },
+    {
+      "key": "Cucurbit group",
+      "color": "2"
+    },
+    {
+      "key": "Tomato group",
+      "color": "3"
+    },
+    {
+      "key": "Cucumber group",
+      "color": "4"
+    },
+    {
+      "key": "Pepper group",
+      "color": "5"
+    },
+    {
+      "key": "Leafy group",
+      "color": "6"
+    },
+    {
+      "key": "Allium group",
+      "color": "7"
+    }
+  ],
+  "uniqueValues": {
+    "MD_Crop_Group  text  autorisatie": [
+      "Open field group",
+      "Cucurbit group",
+      "Tomato group",
+      "Cucumber group",
+      "Pepper group",
+      "Leafy group",
+      "Allium group"
+    ],
+    "MD_Organic_non_organic": [
+      "Open F Fruit Crop",
+      "Open Field",
+      "Green House",
+      "Processing",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "MD_Crop_Group  text  autorisatie": "Open field group",
+      "area Ha": 3598399.5,
+      "MD_Organic_non_organic": "Open Field"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group",
+      "area Ha": 3345525,
+      "MD_Organic_non_organic": "Open F Fruit Crop"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Allium group",
+      "area Ha": 1669673.5,
+      "MD_Organic_non_organic": "Open Field"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Tomato group",
+      "area Ha": 1485384,
+      "MD_Organic_non_organic": "Open F Fruit Crop"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucumber group",
+      "area Ha": 663337.5,
+      "MD_Organic_non_organic": "Open F Fruit Crop"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Pepper group",
+      "area Ha": 368677.5,
+      "MD_Organic_non_organic": "Open F Fruit Crop"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Tomato group",
+      "area Ha": 252848.5,
+      "MD_Organic_non_organic": "Green House"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucumber group",
+      "area Ha": 213209.5,
+      "MD_Organic_non_organic": "Green House"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Tomato group",
+      "area Ha": 194056,
+      "MD_Organic_non_organic": "Processing"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucumber group",
+      "area Ha": 92573,
+      "MD_Organic_non_organic": "Other"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Open field group",
+      "area Ha": 50486,
+      "MD_Organic_non_organic": "Green House"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Leafy group",
+      "area Ha": 41845.5,
+      "MD_Organic_non_organic": "Open Field"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group",
+      "area Ha": 30190,
+      "MD_Organic_non_organic": "Green House"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Pepper group",
+      "area Ha": 21344,
+      "MD_Organic_non_organic": "Green House"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group",
+      "area Ha": 14250,
+      "MD_Organic_non_organic": "Open Field"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Open field group",
+      "area Ha": 8746.5,
+      "MD_Organic_non_organic": "Other"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Pepper group",
+      "area Ha": 6325.5,
+      "MD_Organic_non_organic": "Other"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucumber group",
+      "area Ha": 2687.5,
+      "MD_Organic_non_organic": "Open Field"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Leafy group",
+      "area Ha": 2573.5,
+      "MD_Organic_non_organic": "Green House"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Tomato group",
+      "area Ha": 2242,
+      "MD_Organic_non_organic": "Other"
+    },
+    {
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group",
+      "area Ha": 397.5,
+      "MD_Organic_non_organic": "Other"
+    }
+  ]
+}

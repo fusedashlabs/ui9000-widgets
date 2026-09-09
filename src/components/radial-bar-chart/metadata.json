@@ -1,0 +1,59 @@
+{
+  "id": "radial-bar-chart",
+  "tag": "ui9000-radial-bar-chart",
+  "title": "Radial Bar Chart",
+  "description": "Chat-optimized radial bar chart rewritten in D3. One ring per category over a 270° sweep, no Redux.",
+  "chartTypeKeys": ["radialBarChart"],
+  "source": "client/libs/shared/components/src/Widgets/RadialBarChart/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/radial-bar-chart",
+  "entry": "@fusedashlabs/widgets/radial-bar-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload",
+            "properties": {
+              "chartType": { "type": "string" },
+              "xAxe": { "type": "array", "items": { "type": "string" } },
+              "yAxe": { "type": "array", "items": { "type": "string" } },
+              "uniqueValues": { "type": "object" },
+              "formatting": { "type": "array" },
+              "axisDetails": { "type": "object" },
+              "data": { "type": "array" }
+            }
+          }
+        ]
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

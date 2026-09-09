@@ -1,0 +1,935 @@
+{
+  "chartType": "matrixChart",
+  "name": "Crop Segment and Status Quantity Sum",
+  "paletteId": "SequentialColors1",
+  "palette": {
+    "autoRange": true,
+    "paletteId": "SequentialColors1"
+  },
+  "formatting": null,
+  "tooltip": false,
+  "orientation": "vertical",
+  "xAxe": [
+    "MD_Crop_segment"
+  ],
+  "yAxe": [
+    "quantity kS"
+  ],
+  "groupBy": [
+    "MD_Status"
+  ],
+  "display": [
+    "quantity kS"
+  ],
+  "arrangeBy": [
+    "MD_Crop_segment",
+    "MD_Status"
+  ],
+  "combination": [
+    "categorical",
+    "metric",
+    "categorical"
+  ],
+  "uniqueValues": {
+    "MD_Crop_segment": [
+      "LD (Long day)",
+      "No type",
+      "Round",
+      "Chantenay",
+      "Nantaise",
+      "Red Round",
+      "ID (intermediate)",
+      "Rucola",
+      "White incl pointed",
+      "Overwintering",
+      "Smooth",
+      "French breakfast",
+      "PIT",
+      "Crimson",
+      "Cylindric",
+      "Bunching",
+      "Processing",
+      "Plum DET.",
+      "Rucola selvatica",
+      "SD (short day)",
+      "Beef DET.",
+      "Dill",
+      "Uzbek types",
+      "Conical White",
+      "Basil",
+      "Galia",
+      "Herbs various",
+      "Oriental",
+      "Large Beef (>180gr)",
+      "Half long",
+      "Parsley",
+      "Batavia Lettuce",
+      "BAT",
+      "Tapered-Eskanderany",
+      "White cauliflower",
+      "Supermini",
+      "Blocky ",
+      "Leaf Lettuce",
+      "Iceberg Lettuce",
+      "Chinese",
+      "Butterhead Lettuce",
+      "Various",
+      "Large Beef PINK (>180gr)",
+      "Middle Eastern types",
+      "Ananas",
+      "Dolma",
+      "Blocky",
+      "Pink DET.",
+      "Long type",
+      "Butternut",
+      "Red Cabbage",
+      "Iceberg",
+      "Beef Semi-DET. ",
+      "Grey",
+      "Red",
+      "Russian",
+      "Diverse Pumpkin Maxima",
+      "Rootstock",
+      "Savoy cabbage",
+      "Icebox",
+      "Midi",
+      "Cluster (80-160gr)",
+      "Sugar Baby",
+      "Zucchini",
+      "Lamuyo",
+      "Jubilee",
+      "Musque de Provence",
+      "AST",
+      "Curled",
+      "Kirkagac",
+      "Romaine",
+      "Lollo Rosso/Lollo Bionda",
+      "Long",
+      "Plum (incl San Marzano)",
+      "Oval Type",
+      "Romaine Lettuce",
+      "LET",
+      "Cherry (10-25 gr) loose ",
+      "Piel de Sapo",
+      "Medium Beef (180-160gr)",
+      "White bulb",
+      "Cherry (10-25 gr) Cluster ",
+      "Cocktail round(30-50 gr)",
+      "Cantaloupe fully netted",
+      "Kabocha",
+      "blocky",
+      "Amarillo",
+      "Honeydew",
+      "Italian netted",
+      "Midi Plum (20-50 gr)",
+      "Romanesco",
+      "Loose round",
+      "Small Beef (<160gr)",
+      "Small Beef PINK (<160gr)"
+    ],
+    "MD_Status": [
+      "Onion LDYellow",
+      "Carrot",
+      "Red beetRound",
+      "Onion IDYellow",
+      "RadishRed Round",
+      "RadishRed Round GH",
+      "HerbsChives",
+      "Cabbage white",
+      "Spinach Smooth",
+      "Tomato DET.Processing",
+      "Onion LDWhite",
+      "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink",
+      "RadishFrench Breakfast",
+      "T.ID. ABS. Large B.Large Beef (>180gr) Red",
+      "CucumberPickling",
+      "WatermelonCrimson",
+      "Red beetCylindric",
+      "Bunching Onion",
+      "Tomato DET.Beef DET.",
+      "Onion IDWhite",
+      "Rucola",
+      "Onion SDYellow",
+      "HerbsDill",
+      "MelonUzbek types",
+      "Onion IDRed",
+      "Onion LDRed",
+      "Sweet pepperConical White",
+      "HerbsBasil",
+      "MelonGalia Local type OF",
+      "Sweet pepper",
+      "HerbsHerbs various",
+      "Spinach Oriental",
+      "EggplantHalf long type",
+      "HerbsParsley",
+      "Lettuce HeadBatavia GH",
+      "CucumberBeith Alpha",
+      "SquashTapered type Eskanderany",
+      "CauliflowerWhiteSummer",
+      "CauliflowerWhiteAutumn",
+      "Lettuce HeadIceberg",
+      "Sweet Pepper BlockyRed",
+      "Lettuce HeadButterhead GH",
+      "MelonVarious",
+      "CauliflowerWhiteSpring",
+      "CauliflowerWhiteTropical",
+      "MelonAnanas",
+      "Broccoli",
+      "T.ID. ABS. Small B.Small Beef (<160gr) Red",
+      "Cabbage otherNo combination with ABS",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "MD_Crop_segment": "LD (Long day)",
+      "quantity kS": 1943226765.4,
+      "MD_Status": "Onion LDYellow"
+    },
+    {
+      "MD_Crop_segment": "No type",
+      "quantity kS": 441450196,
+      "MD_Status": "Carrot"
+    },
+    {
+      "MD_Crop_segment": "Round",
+      "quantity kS": 362880044,
+      "MD_Status": "Red beetRound"
+    },
+    {
+      "MD_Crop_segment": "Chantenay",
+      "quantity kS": 328000000,
+      "MD_Status": "Carrot"
+    },
+    {
+      "MD_Crop_segment": "Nantaise",
+      "quantity kS": 276750000,
+      "MD_Status": "Carrot"
+    },
+    {
+      "MD_Crop_segment": "Red Round",
+      "quantity kS": 185709149,
+      "MD_Status": "RadishRed Round"
+    },
+    {
+      "MD_Crop_segment": "ID (intermediate)",
+      "quantity kS": 162219917.4,
+      "MD_Status": "Onion IDYellow"
+    },
+    {
+      "MD_Crop_segment": "Red Round",
+      "quantity kS": 81712647,
+      "MD_Status": "RadishRed Round GH"
+    },
+    {
+      "MD_Crop_segment": "Rucola",
+      "quantity kS": 76035160,
+      "MD_Status": "HerbsChives"
+    },
+    {
+      "MD_Crop_segment": "White incl pointed",
+      "quantity kS": 73845950,
+      "MD_Status": "Cabbage white"
+    },
+    {
+      "MD_Crop_segment": "Overwintering",
+      "quantity kS": 68645085,
+      "MD_Status": "Onion IDYellow"
+    },
+    {
+      "MD_Crop_segment": "Smooth",
+      "quantity kS": 51300000,
+      "MD_Status": "Spinach Smooth"
+    },
+    {
+      "MD_Crop_segment": "LD (Long day)",
+      "quantity kS": 42588504,
+      "MD_Status": "Onion LDWhite"
+    },
+    {
+      "MD_Crop_segment": "French breakfast",
+      "quantity kS": 35069820,
+      "MD_Status": "RadishFrench Breakfast"
+    },
+    {
+      "MD_Crop_segment": "LD (Long day)",
+      "quantity kS": 31843516,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "PIT",
+      "quantity kS": 27379394.142857,
+      "MD_Status": "CucumberPickling"
+    },
+    {
+      "MD_Crop_segment": "Crimson",
+      "quantity kS": 26935008,
+      "MD_Status": "WatermelonCrimson"
+    },
+    {
+      "MD_Crop_segment": "Cylindric",
+      "quantity kS": 26100000,
+      "MD_Status": "Red beetCylindric"
+    },
+    {
+      "MD_Crop_segment": "Bunching",
+      "quantity kS": 25178750,
+      "MD_Status": "Bunching Onion"
+    },
+    {
+      "MD_Crop_segment": "Processing",
+      "quantity kS": 24455432.5,
+      "MD_Status": "Tomato DET.Processing"
+    },
+    {
+      "MD_Crop_segment": "Red Round",
+      "quantity kS": 15802001,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Plum DET.",
+      "quantity kS": 14849432,
+      "MD_Status": "Tomato DET.Beef DET."
+    },
+    {
+      "MD_Crop_segment": "ID (intermediate)",
+      "quantity kS": 14075000,
+      "MD_Status": "Onion IDWhite"
+    },
+    {
+      "MD_Crop_segment": "Rucola selvatica",
+      "quantity kS": 11415000,
+      "MD_Status": "Rucola"
+    },
+    {
+      "MD_Crop_segment": "SD (short day)",
+      "quantity kS": 10925500,
+      "MD_Status": "Onion SDYellow"
+    },
+    {
+      "MD_Crop_segment": "Plum DET.",
+      "quantity kS": 10809273,
+      "MD_Status": "Tomato DET.Processing"
+    },
+    {
+      "MD_Crop_segment": "Beef DET.",
+      "quantity kS": 9882146,
+      "MD_Status": "Tomato DET.Processing"
+    },
+    {
+      "MD_Crop_segment": "Dill",
+      "quantity kS": 8939239,
+      "MD_Status": "HerbsDill"
+    },
+    {
+      "MD_Crop_segment": "Beef DET.",
+      "quantity kS": 7407348.5,
+      "MD_Status": "Tomato DET.Beef DET."
+    },
+    {
+      "MD_Crop_segment": "ID (intermediate)",
+      "quantity kS": 6500000,
+      "MD_Status": "Onion IDRed"
+    },
+    {
+      "MD_Crop_segment": "Uzbek types",
+      "quantity kS": 6497047.5,
+      "MD_Status": "MelonUzbek types"
+    },
+    {
+      "MD_Crop_segment": "LD (Long day)",
+      "quantity kS": 6092500,
+      "MD_Status": "Onion LDRed"
+    },
+    {
+      "MD_Crop_segment": "Conical White",
+      "quantity kS": 5437920,
+      "MD_Status": "Sweet pepperConical White"
+    },
+    {
+      "MD_Crop_segment": "Conical White",
+      "quantity kS": 5018626,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Basil",
+      "quantity kS": 4680158,
+      "MD_Status": "HerbsBasil"
+    },
+    {
+      "MD_Crop_segment": "Galia",
+      "quantity kS": 4006533.5,
+      "MD_Status": "MelonGalia Local type OF"
+    },
+    {
+      "MD_Crop_segment": "Conical White",
+      "quantity kS": 3980812.5,
+      "MD_Status": "Sweet pepper"
+    },
+    {
+      "MD_Crop_segment": "Herbs various",
+      "quantity kS": 3980440,
+      "MD_Status": "HerbsHerbs various"
+    },
+    {
+      "MD_Crop_segment": "Oriental",
+      "quantity kS": 3915000,
+      "MD_Status": "Spinach Oriental"
+    },
+    {
+      "MD_Crop_segment": "Herbs various",
+      "quantity kS": 3643042,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Large Beef (>180gr)",
+      "quantity kS": 3292976.16666,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Half long",
+      "quantity kS": 2981075,
+      "MD_Status": "EggplantHalf long type"
+    },
+    {
+      "MD_Crop_segment": "Parsley",
+      "quantity kS": 2786308,
+      "MD_Status": "HerbsParsley"
+    },
+    {
+      "MD_Crop_segment": "Round",
+      "quantity kS": 2448927,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Batavia Lettuce",
+      "quantity kS": 2377400,
+      "MD_Status": "Lettuce HeadBatavia GH"
+    },
+    {
+      "MD_Crop_segment": "BAT",
+      "quantity kS": 2267873.5,
+      "MD_Status": "CucumberBeith Alpha"
+    },
+    {
+      "MD_Crop_segment": "Tapered-Eskanderany",
+      "quantity kS": 2265372,
+      "MD_Status": "SquashTapered type Eskanderany"
+    },
+    {
+      "MD_Crop_segment": "White cauliflower",
+      "quantity kS": 2127600,
+      "MD_Status": "CauliflowerWhiteSummer"
+    },
+    {
+      "MD_Crop_segment": "Conical White",
+      "quantity kS": 1850942,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "White cauliflower",
+      "quantity kS": 1703000,
+      "MD_Status": "CauliflowerWhiteAutumn"
+    },
+    {
+      "MD_Crop_segment": "Supermini",
+      "quantity kS": 1592216.5,
+      "MD_Status": "CucumberPickling"
+    },
+    {
+      "MD_Crop_segment": "Blocky ",
+      "quantity kS": 1543689,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Leaf Lettuce",
+      "quantity kS": 1254680,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Iceberg Lettuce",
+      "quantity kS": 1233535,
+      "MD_Status": "Lettuce HeadIceberg"
+    },
+    {
+      "MD_Crop_segment": "Chinese",
+      "quantity kS": 1113250,
+      "MD_Status": "Cabbage otherNo combination with ABS"
+    },
+    {
+      "MD_Crop_segment": "Small Beef (<160gr)",
+      "quantity kS": 1111992.115385,
+      "MD_Status": "T.ID. ABS. Small B.Small Beef (<160gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Butterhead Lettuce",
+      "quantity kS": 1087150,
+      "MD_Status": "Lettuce HeadButterhead GH"
+    },
+    {
+      "MD_Crop_segment": "Various",
+      "quantity kS": 1070980,
+      "MD_Status": "MelonVarious"
+    },
+    {
+      "MD_Crop_segment": "Large Beef PINK (>180gr)",
+      "quantity kS": 1035324,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "White cauliflower",
+      "quantity kS": 997125,
+      "MD_Status": "CauliflowerWhiteSpring"
+    },
+    {
+      "MD_Crop_segment": "White cauliflower",
+      "quantity kS": 995135,
+      "MD_Status": "CauliflowerWhiteTropical"
+    },
+    {
+      "MD_Crop_segment": "Middle Eastern types",
+      "quantity kS": 905062,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Ananas",
+      "quantity kS": 886358,
+      "MD_Status": "MelonAnanas"
+    },
+    {
+      "MD_Crop_segment": "Blocky ",
+      "quantity kS": 821485,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Dolma",
+      "quantity kS": 796088,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Blocky",
+      "quantity kS": 744407.5,
+      "MD_Status": "Sweet Pepper BlockyRed"
+    },
+    {
+      "MD_Crop_segment": "No type",
+      "quantity kS": 724925,
+      "MD_Status": "Broccoli"
+    },
+    {
+      "MD_Crop_segment": "Pink DET.",
+      "quantity kS": 612006,
+      "MD_Status": "Tomato DET.Processing"
+    },
+    {
+      "MD_Crop_segment": "Long type",
+      "quantity kS": 577700,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Blocky",
+      "quantity kS": 576510,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "White incl pointed",
+      "quantity kS": 517908,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Half long",
+      "quantity kS": 506060,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "No type",
+      "quantity kS": 498806,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "No type",
+      "quantity kS": 497555,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Butternut",
+      "quantity kS": 494425,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Red Cabbage",
+      "quantity kS": 488400,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Iceberg",
+      "quantity kS": 477652,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Beef Semi-DET. ",
+      "quantity kS": 470270,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Conical White",
+      "quantity kS": 424250,
+      "MD_Status": "Sweet Pepper BlockyRed"
+    },
+    {
+      "MD_Crop_segment": "Conical White",
+      "quantity kS": 373975,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Dolma",
+      "quantity kS": 363229,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "PIT",
+      "quantity kS": 351980,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Dill",
+      "quantity kS": 321790,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Grey",
+      "quantity kS": 268090,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Supermini",
+      "quantity kS": 266875,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Chinese",
+      "quantity kS": 248778,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Red",
+      "quantity kS": 248778,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "White cauliflower",
+      "quantity kS": 246429,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Russian",
+      "quantity kS": 241255,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Grey",
+      "quantity kS": 199681.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Diverse Pumpkin Maxima",
+      "quantity kS": 174435,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Rootstock",
+      "quantity kS": 152625,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Savoy cabbage",
+      "quantity kS": 146400,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Icebox",
+      "quantity kS": 137000,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Midi",
+      "quantity kS": 136536.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Cluster (80-160gr)",
+      "quantity kS": 131726.9999999,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Sugar Baby",
+      "quantity kS": 98510,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "BAT",
+      "quantity kS": 91502.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Tapered-Eskanderany",
+      "quantity kS": 90244,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Parsley",
+      "quantity kS": 87062.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Small Beef PINK (<160gr)",
+      "quantity kS": 78820,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Zucchini",
+      "quantity kS": 77685,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Batavia Lettuce",
+      "quantity kS": 76475,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Lamuyo",
+      "quantity kS": 74658,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Jubilee",
+      "quantity kS": 74400,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Musque de Provence",
+      "quantity kS": 73660,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Tapered-Eskanderany",
+      "quantity kS": 73050,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "AST",
+      "quantity kS": 72000,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Curled",
+      "quantity kS": 69040,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Kirkagac",
+      "quantity kS": 61559,
+      "MD_Status": "MelonUzbek types"
+    },
+    {
+      "MD_Crop_segment": "Lollo Rosso/Lollo Bionda",
+      "quantity kS": 59708,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Romaine",
+      "quantity kS": 59708,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Long",
+      "quantity kS": 54743,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Plum (incl San Marzano)",
+      "quantity kS": 51915,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Uzbek types",
+      "quantity kS": 51744.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Oval Type",
+      "quantity kS": 51465.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "No type",
+      "quantity kS": 47300,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Kirkagac",
+      "quantity kS": 39803,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Middle Eastern types",
+      "quantity kS": 34863,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Iceberg",
+      "quantity kS": 29883,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Zucchini",
+      "quantity kS": 29853,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Herbs various",
+      "quantity kS": 29205,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Romaine Lettuce",
+      "quantity kS": 26300,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Chinese",
+      "quantity kS": 24903,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "LET",
+      "quantity kS": 24640,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Cherry (10-25 gr) loose ",
+      "quantity kS": 21674.5000001,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Galia",
+      "quantity kS": 19175,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Red",
+      "quantity kS": 18630,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Large Beef PINK (>180gr)",
+      "quantity kS": 18415,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Dolma",
+      "quantity kS": 18000,
+      "MD_Status": "Sweet pepper"
+    },
+    {
+      "MD_Crop_segment": "Basil",
+      "quantity kS": 17833.5,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Piel de Sapo",
+      "quantity kS": 13100,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Medium Beef (180-160gr)",
+      "quantity kS": 12050,
+      "MD_Status": "T.ID. ABS. Small B.Small Beef (<160gr) Red"
+    },
+    {
+      "MD_Crop_segment": "PIT",
+      "quantity kS": 11528.5,
+      "MD_Status": "CucumberBeith Alpha"
+    },
+    {
+      "MD_Crop_segment": "White bulb",
+      "quantity kS": 9000,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Cherry (10-25 gr) Cluster ",
+      "quantity kS": 6809,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Grey",
+      "quantity kS": 5970,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Cocktail round(30-50 gr)",
+      "quantity kS": 5904.6666666,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Cantaloupe fully netted",
+      "quantity kS": 5150,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Red",
+      "quantity kS": 4965,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef (>180gr) Red"
+    },
+    {
+      "MD_Crop_segment": "Kabocha",
+      "quantity kS": 4445,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Plum (incl San Marzano)",
+      "quantity kS": 3645,
+      "MD_Status": "T.ID. ABS. Small B.Small Beef (<160gr) Red"
+    },
+    {
+      "MD_Crop_segment": "blocky",
+      "quantity kS": 3412.5,
+      "MD_Status": "Sweet pepper"
+    },
+    {
+      "MD_Crop_segment": "Amarillo",
+      "quantity kS": 3000,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Honeydew",
+      "quantity kS": 2900,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Italian netted",
+      "quantity kS": 2735,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Midi Plum (20-50 gr)",
+      "quantity kS": 2498,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Small Beef (<160gr)",
+      "quantity kS": 2485,
+      "MD_Status": "T.ID. ABS. Large B.Large Beef PINK (>180gr) Pink"
+    },
+    {
+      "MD_Crop_segment": "Romanesco",
+      "quantity kS": 1800,
+      "MD_Status": "Other"
+    },
+    {
+      "MD_Crop_segment": "Loose round",
+      "quantity kS": 1032,
+      "MD_Status": "Other"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "id": "violin-chart",
+  "tag": "ui9000-violin-chart",
+  "title": "Violin Chart",
+  "description": "Chat-optimized violin chart rewritten in D3 (Visx → D3). Horizontal/vertical KDE density + box overlay, no Redux.",
+  "chartTypeKeys": ["violinChart"],
+  "source": "client/libs/shared/components/src/Widgets/ViolinChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/violin-chart",
+  "entry": "@ui9000/widgets/violin-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "orientation": {
+                "type": "string",
+                "enum": ["vertical", "horizontal"]
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["samples"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "label": { "type": "string" },
+                    "samples": {
+                      "type": "array",
+                      "items": { "type": "number" }
+                    },
+                    "color": { "type": "string" }
+                  }
+                }
+              },
+              "xAxe": { "type": ["string", "array"] },
+              "yAxe": { "type": ["string", "array"] },
+              "uniqueValues": { "type": "object" },
+              "data": { "type": "array" }
+            }
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "samples"],
+              "properties": {
+                "id": { "type": "string" },
+                "samples": {
+                  "type": "array",
+                  "items": { "type": "number" }
+                },
+                "color": { "type": "string" }
+              }
+            }
+          }
+        ]
+      },
+      "orientation": {
+        "type": "string",
+        "enum": ["vertical", "horizontal"],
+        "default": "vertical"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": false },
+      "showTooltip": { "type": "boolean", "default": false },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

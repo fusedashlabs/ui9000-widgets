@@ -1,0 +1,418 @@
+{
+  "chartType": "barChart",
+  "name": "Total Revenue by County and Crop Group",
+  "orientation": "horizontal",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "timeline": true,
+  "xAxe": [
+    "revenue euro"
+  ],
+  "yAxe": [
+    "County__created"
+  ],
+  "groupBy": [
+    "MD_Crop_Group  text  autorisatie"
+  ],
+  "formatting": [
+    {
+      "key": "Open field group",
+      "color": "1"
+    },
+    {
+      "key": "Tomato group",
+      "color": "2"
+    },
+    {
+      "key": "Cucumber group",
+      "color": "3"
+    },
+    {
+      "key": "Allium group",
+      "color": "4"
+    },
+    {
+      "key": "Other",
+      "color": "5"
+    }
+  ],
+  "uniqueValues": {
+    "County__created": [
+      "California, Los Angeles",
+      "California, Riverside",
+      "California, Orange",
+      "California, San Bernardino",
+      "California, San Diego",
+      "California, Fresno",
+      "California, Santa Clara",
+      "California, San Francisco",
+      "California, Sacramento",
+      "California, Contra Costa",
+      "California, Kern",
+      "California, Alameda",
+      "California, Ventura",
+      "California, San Joaquin"
+    ],
+    "MD_Crop_Group  text  autorisatie": [
+      "Open field group",
+      "Tomato group",
+      "Cucumber group",
+      "Allium group",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "County__created": "California, Los Angeles",
+      "revenue euro": 818486752.65,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "revenue euro": 297480176,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "revenue euro": 254068170.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "revenue euro": 172882585,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Los Angeles",
+      "revenue euro": 168819203.75,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Riverside",
+      "revenue euro": 160611037.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Orange",
+      "revenue euro": 131283023.75,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, San Bernardino",
+      "revenue euro": 124243266.87481,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, San Bernardino",
+      "revenue euro": 109433698.75,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Orange",
+      "revenue euro": 99297670.375,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Riverside",
+      "revenue euro": 95310681.5,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Orange",
+      "revenue euro": 73789837.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "revenue euro": 71983240.42,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Orange",
+      "revenue euro": 71954451.25,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Riverside",
+      "revenue euro": 70153910.6,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Riverside",
+      "revenue euro": 67712079.11,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "revenue euro": 66135297.55,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Orange",
+      "revenue euro": 65614755,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Fresno",
+      "revenue euro": 57490910.806,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "revenue euro": 54974304.1,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, San Bernardino",
+      "revenue euro": 48759937.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "revenue euro": 41742206.4,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Riverside",
+      "revenue euro": 36036706.3,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Santa Clara",
+      "revenue euro": 35084266.95,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Fresno",
+      "revenue euro": 32345737.5,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, San Bernardino",
+      "revenue euro": 31693437.5,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, San Francisco",
+      "revenue euro": 23224175,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Santa Clara",
+      "revenue euro": 23136555.55,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Sacramento",
+      "revenue euro": 23136555.55,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Fresno",
+      "revenue euro": 21600000,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, San Francisco",
+      "revenue euro": 21278508.65,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Santa Clara",
+      "revenue euro": 21133160,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Sacramento",
+      "revenue euro": 20876335,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, San Diego",
+      "revenue euro": 20097341.55,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Contra Costa",
+      "revenue euro": 19589926.25,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, San Francisco",
+      "revenue euro": 17895637.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Kern",
+      "revenue euro": 16691855,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, San Francisco",
+      "revenue euro": 14224230,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Alameda",
+      "revenue euro": 14180492.05,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Ventura",
+      "revenue euro": 11569250,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, San Joaquin",
+      "revenue euro": 11411450,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Sacramento",
+      "revenue euro": 11226481.9,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Kern",
+      "revenue euro": 10935445,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, Kern",
+      "revenue euro": 10812640,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Alameda",
+      "revenue euro": 9812271.8,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Sacramento",
+      "revenue euro": 9560890.6,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Alameda",
+      "revenue euro": 8925770.8,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "California, San Joaquin",
+      "revenue euro": 7776000,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Alameda",
+      "revenue euro": 7695190.6,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Contra Costa",
+      "revenue euro": 7674162.7,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, San Joaquin",
+      "revenue euro": 7274456.25,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, San Joaquin",
+      "revenue euro": 7195625,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Ventura",
+      "revenue euro": 6872642.5,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Alameda",
+      "revenue euro": 6854570.6,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Sacramento",
+      "revenue euro": 6798032.8,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Kern",
+      "revenue euro": 6074700,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Contra Costa",
+      "revenue euro": 5759077.8,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, San Bernardino",
+      "revenue euro": 5504441.0714,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Kern",
+      "revenue euro": 5473462.5,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, Ventura",
+      "revenue euro": 4752000,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Contra Costa",
+      "revenue euro": 3632151.35,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "California, Fresno",
+      "revenue euro": 3508875,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Ventura",
+      "revenue euro": 3285000,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Santa Clara",
+      "revenue euro": 2389069,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Contra Costa",
+      "revenue euro": 2319096.32,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, Santa Clara",
+      "revenue euro": 1882873.8,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "California, San Joaquin",
+      "revenue euro": 1800000,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Ventura",
+      "revenue euro": 1612500,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "California, San Francisco",
+      "revenue euro": 1569627.5,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "County__created": "California, Fresno",
+      "revenue euro": 1566750,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    }
+  ],
+  "kpis": []
+}

@@ -1,0 +1,99 @@
+{
+  "id": "kpi-widget",
+  "tag": "ui9000-kpi-widget",
+  "title": "KPI Widget",
+  "description": "Chat-optimized KPI cards — client types (single_value, trend, overall, comparison, high/low*) and advanced (nested chart + supporting KPIs). HTML/Lit, no Redux.",
+  "chartTypeKeys": ["KPI", "KPIs"],
+  "source": "client/libs/shared/components/src/Widgets/CustomWidget/components/KPIWidget/",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/kpi-widget",
+  "entry": "@ui9000/widgets/kpi-widget",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "engine",
+  "intents": ["summary"],
+  "dataRoles": [
+    {
+      "id": "metric",
+      "required": true,
+      "type": "number",
+      "description": "One or more headline counts or scores."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasNumericMetric && profile.categoryCardinality <= 12",
+      "reason": "KPI summarises a small set of numeric headlines."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "profile.hasTabularRows && profile.rowCount > 20 && !profile.hasNumericMetric",
+      "reason": "Row-heavy evidence belongs on table, not KPI cards."
+    },
+    {
+      "when": "profile.hasGeo && !profile.hasNumericMetric",
+      "reason": "Spatial-only data belongs on map-chart."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "card name",
+    "keyboard": ["Tab between cards"],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "kpi-picks-counts",
+      "intent": "summary",
+      "profile": { "hasNumericMetric": true, "categoryCardinality": 4 },
+      "expect": "eligible",
+      "reasonIncludes": "headlines"
+    },
+    {
+      "id": "kpi-rejects-geo-only",
+      "intent": "spatial",
+      "profile": { "hasGeo": true, "hasNumericMetric": false },
+      "expect": "disqualified",
+      "reasonIncludes": "map-chart"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Multi-KPI dashboard (chartType KPIs)",
+            "properties": {
+              "chartType": { "const": "KPIs" },
+              "items": { "type": "array" }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Single FuseDash KPI item (chartType KPI)",
+            "properties": {
+              "chartType": { "const": "KPI" },
+              "type": { "type": "string" },
+              "data": { "type": "array" }
+            }
+          },
+          {
+            "type": "array",
+            "description": "Array of KPI items from MCP tool output"
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

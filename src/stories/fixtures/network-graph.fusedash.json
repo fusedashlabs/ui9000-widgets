@@ -1,0 +1,142 @@
+{
+  "chartType": "networkGraphChart",
+  "name": "Network Graph",
+  "legend": true,
+  "tooltip": false,
+  "xAxe": [],
+  "yAxe": [],
+  "groupBy": [],
+  "uniqueValues": {},
+  "data": [
+    {
+      "nodes": [
+        {
+          "id": "citigroup",
+          "label": "Citigroup",
+          "type": "investment_bank",
+          "size": "3xl",
+          "value": 2405.7
+        },
+        {
+          "id": "fifth_third_bancorp",
+          "label": "Fifth Third Bancorp",
+          "type": "super_regional_bank",
+          "size": "sm",
+          "value": 207
+        },
+        {
+          "id": "capital_one",
+          "label": "Capital One Financial",
+          "type": "consumer_focused_bank",
+          "size": "lg",
+          "value": 630.9
+        },
+        {
+          "id": "state_street",
+          "label": "State Street",
+          "type": "asset_management",
+          "size": "md",
+          "value": 325.6
+        },
+        {
+          "id": "bank_of_new_york_mellon",
+          "label": "Bank of New York Mellon",
+          "type": "asset_management",
+          "size": "md",
+          "value": 428.5
+        },
+        {
+          "id": "northern_trust",
+          "label": "Northern Trust Corp.",
+          "type": "asset_management",
+          "size": "sm",
+          "value": 150
+        },
+        {
+          "id": "east_west_bancorp",
+          "label": "East West Bancorp",
+          "type": "super_regional_bank",
+          "size": "xs",
+          "value": 65
+        },
+        {
+          "id": "charles_schwab",
+          "label": "Charles Schwab",
+          "type": "investment_bank",
+          "size": "md",
+          "value": 449.7
+        },
+        {
+          "id": "wells_fargo",
+          "label": "Wells Fargo",
+          "type": "large_national_bank",
+          "size": "xl",
+          "value": 1940.1
+        },
+        {
+          "id": "truist_financial",
+          "label": "Truist Financial",
+          "type": "super_regional_bank",
+          "size": "lg",
+          "value": 519.9
+        }
+      ],
+      "links": [
+        {
+          "id": "link1",
+          "source": "citigroup",
+          "target": "fifth_third_bancorp",
+          "value": 12600
+        },
+        {
+          "id": "link2",
+          "source": "citigroup",
+          "target": "capital_one",
+          "value": 11700
+        },
+        {
+          "id": "link3",
+          "source": "citigroup",
+          "target": "state_street",
+          "value": 4800
+        },
+        {
+          "id": "link4",
+          "source": "citigroup",
+          "target": "bank_of_new_york_mellon",
+          "value": 3200
+        },
+        {
+          "id": "link5",
+          "source": "citigroup",
+          "target": "east_west_bancorp",
+          "value": 2400
+        },
+        {
+          "id": "link6",
+          "source": "citigroup",
+          "target": "charles_schwab",
+          "value": 2400
+        },
+        {
+          "id": "link7",
+          "source": "citigroup",
+          "target": "wells_fargo",
+          "value": 1900
+        },
+        {
+          "id": "link8",
+          "source": "wells_fargo",
+          "target": "truist_financial",
+          "value": 519.9
+        },
+        {
+          "id": "link9",
+          "source": "bank_of_new_york_mellon",
+          "target": "northern_trust",
+          "value": 150
+        }
+      ]
+    }
+  ]
+}

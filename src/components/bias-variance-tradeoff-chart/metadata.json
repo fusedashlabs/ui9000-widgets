@@ -1,0 +1,38 @@
+{
+  "id": "bias-variance-tradeoff-chart",
+  "tag": "ui9000-bias-variance-tradeoff-chart",
+  "title": "Bias-Variance Tradeoff Chart",
+  "description": "Chat-optimized bias-variance tradeoff curves. FuseDash BiasVarianceTradeoffChart Visx → D3.",
+  "chartTypeKeys": ["biasVarianceTradeoffChart"],
+  "source": "client/libs/shared/components/src/Widgets/BiasVarianceTradeoffChart/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/bias-variance-tradeoff-chart",
+  "entry": "@fusedashlabs/widgets/bias-variance-tradeoff-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload (numeric xAxe / yAxe, groupBy series, optional domainsLimits)"
+          },
+          {
+            "type": "object",
+            "description": "Chat shape: { series: [{ id, name, color, points: [{ x, y }] }], domainsLimits }"
+          }
+        ]
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" }
+    }
+  }
+}

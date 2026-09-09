@@ -1,0 +1,76 @@
+{
+  "id": "polar-area-chart",
+  "tag": "ui9000-polar-area-chart",
+  "title": "Polar Area Chart",
+  "description": "Chat-optimized polar area (coxcomb) chart rewritten in D3. Single (client aggregated) or grouped by groupBy. Legend above the plot.",
+  "chartTypeKeys": ["polarAreaChart"],
+  "source": "client/libs/shared/components/src/Widgets/PolarAreaChart/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/polar-area-chart",
+  "entry": "@fusedashlabs/widgets/polar-area-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Chat points payload",
+            "required": ["points"],
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y"],
+                  "properties": {
+                    "x": { "type": ["string", "number"] },
+                    "y": { "type": "number" }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload",
+            "properties": {
+              "chartType": { "type": "string" },
+              "xAxe": { "type": "array", "items": { "type": "string" } },
+              "yAxe": { "type": "array", "items": { "type": "string" } },
+              "uniqueValues": { "type": "object" },
+              "formatting": { "type": "array" },
+              "data": { "type": "array" }
+            }
+          }
+        ]
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "id": "approval-bar",
+  "tag": "ui9000-approval-bar",
+  "title": "Approval Bar",
+  "description": "Propose / approve / reject. Displays only in a foreign host — does not execute.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/approval-bar",
+  "entry": "@ui9000/widgets/approval-bar",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "approve",
+    "reject"
+  ],
+  "tier": "engine",
+  "intents": [
+    "form"
+  ],
+  "dataRoles": [
+    {
+      "id": "proposal",
+      "required": true,
+      "description": "The action being proposed."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasClaim || profile.hasEntityId",
+      "reason": "Approval bar proposes an action on a claim or entity."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasClaim && !profile.hasEntityId",
+      "reason": "Without a claim or entity there is nothing to approve."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "proposal",
+    "keyboard": [
+      "Tab to Approve and Reject"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "approval-picks-claim",
+      "intent": "form",
+      "profile": {
+        "hasClaim": true
+      },
+      "expect": "eligible",
+      "reasonIncludes": "proposes"
+    },
+    {
+      "id": "approval-rejects-empty",
+      "intent": "form",
+      "profile": {
+        "hasClaim": false,
+        "hasEntityId": false
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "nothing to approve"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "proposal": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "proposed",
+              "approved",
+              "rejected"
+            ]
+          }
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "chartType": "radarChart",
+  "name": "Average Total Outcome Over Transaction Time",
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "default",
+      "shape": "circle"
+    }
+  ],
+  "xAxe": [
+    "transactionTime"
+  ],
+  "yAxe": [
+    "totalOutcome"
+  ],
+  "groupBy": null,
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {},
+  "data": [
+    {
+      "transactionTime": "2020-01-01",
+      "totalOutcome": 4760.0675675675675
+    },
+    {
+      "transactionTime": "2020-01-02",
+      "totalOutcome": 4700.0675675675675
+    },
+    {
+      "transactionTime": "2020-01-03",
+      "totalOutcome": 4812.027027027027
+    },
+    {
+      "transactionTime": "2020-01-04",
+      "totalOutcome": 4766.418918918919
+    },
+    {
+      "transactionTime": "2020-01-05",
+      "totalOutcome": 4990.0675675675675
+    },
+    {
+      "transactionTime": "2020-01-06",
+      "totalOutcome": 4700.743243243243
+    },
+    {
+      "transactionTime": "2020-01-07",
+      "totalOutcome": 4754.527027027027
+    }
+  ]
+}

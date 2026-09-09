@@ -1,0 +1,96 @@
+{
+  "id": "button",
+  "tag": "ui9000-button",
+  "title": "Button",
+  "description": "Button control. Fail-closed without a label.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/button",
+  "entry": "@ui9000/widgets/button",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "submit"
+  ],
+  "tier": "engine",
+  "intents": [
+    "form"
+  ],
+  "dataRoles": [
+    {
+      "id": "value",
+      "required": false,
+      "description": "Control value."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.allControlsLabelled && profile.controlCount >= 1",
+      "reason": "Form controls are eligible when every control has a label."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.allControlsLabelled",
+      "reason": "Unlabelled control is refused."
+    },
+    {
+      "when": "profile.controlCount === 0",
+      "reason": "No controls to render."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "label",
+    "keyboard": [
+      "Tab into the labelled control"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "button-picks-labelled",
+      "intent": "form",
+      "profile": {
+        "allControlsLabelled": true,
+        "controlCount": 1
+      },
+      "expect": "eligible",
+      "reasonIncludes": "label"
+    },
+    {
+      "id": "button-rejects-unlabelled",
+      "intent": "form",
+      "profile": {
+        "allControlsLabelled": false,
+        "controlCount": 1
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "Unlabelled"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {}
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "chartType": "KPIs",
+  "name": "Sessions",
+  "items": [
+    {
+      "id": "sess-main",
+      "type": "trend",
+      "variant": "advanced",
+      "column": "sessions",
+      "name": "Active sessions",
+      "aggregations": "sum",
+      "showPercentage": true,
+      "showVisualisation": true,
+      "supportingKpis": true,
+      "groupName": "Sessions-group-kpi-ids-sess-main",
+      "data": [
+        {
+          "sum_sessions": "9640",
+          "percentage": "6.1"
+        }
+      ],
+      "visualisation": {
+        "chartType": "areaChart",
+        "name": "Active sessions visualisation",
+        "orientation": "vertical",
+        "xAxe": ["week"],
+        "yAxe": ["sum_sessions"],
+        "formatting": [{ "key": "default", "color": "1" }],
+        "markers": [{ "key": "default", "shape": "donut" }],
+        "uniqueValues": {},
+        "useNewDesign": true,
+        "data": [
+          { "week": "W1", "sum_sessions": 7200 },
+          { "week": "W2", "sum_sessions": 7800 },
+          { "week": "W3", "sum_sessions": 8100 },
+          { "week": "W4", "sum_sessions": 7600 },
+          { "week": "W5", "sum_sessions": 8900 },
+          { "week": "W6", "sum_sessions": 9640 }
+        ]
+      }
+    },
+    {
+      "id": "sess-new",
+      "type": "single_value",
+      "variant": "simple",
+      "column": "new_sessions",
+      "name": "New sessions",
+      "aggregations": "sum",
+      "groupName": "Sessions-group-kpi-ids-sess-main",
+      "data": [{ "value": { "sum_new_sessions": "2140" } }]
+    },
+    {
+      "id": "sess-bounce",
+      "type": "overall",
+      "variant": "simple",
+      "column": "bounce",
+      "name": "Bounce rate",
+      "aggregations": "avg",
+      "groupName": "Sessions-group-kpi-ids-sess-main",
+      "data": [{ "avg_bounce": "32.1" }]
+    },
+    {
+      "id": "sess-duration",
+      "type": "comparison",
+      "variant": "simple",
+      "column": "duration",
+      "name": "Avg duration",
+      "aggregations": "avg",
+      "showPercentage": true,
+      "groupName": "Sessions-group-kpi-ids-sess-main",
+      "data": [
+        {
+          "current": { "avg_duration": "4.8" },
+          "previous": { "avg_duration": "4.2" },
+          "percentage": 14.29
+        }
+      ]
+    }
+  ]
+}

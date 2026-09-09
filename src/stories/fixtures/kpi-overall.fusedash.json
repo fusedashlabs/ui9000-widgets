@@ -1,0 +1,14 @@
+{
+  "chartType": "KPI",
+  "type": "overall",
+  "column": "nps",
+  "name": "Net Promoter Score",
+  "aggregations": "avg",
+  "status": "Good = above target",
+  "data": [
+    {
+      "avg_nps": "72.4",
+      "subtitle": "Last 90 days"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "chartType": "KPI",
+  "type": "high/low_trend",
+  "column": "churn",
+  "name": "Churn by Segment",
+  "aggregations": "avg",
+  "groupBy": "Segment",
+  "showPercentage": true,
+  "data": [
+    {
+      "high": {
+        "Segment": "SMB",
+        "avg_churn": 8.4,
+        "percentage": 3.2
+      },
+      "low": {
+        "Segment": "Enterprise",
+        "avg_churn": 1.1,
+        "percentage": -0.8
+      }
+    }
+  ]
+}

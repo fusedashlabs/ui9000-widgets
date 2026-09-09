@@ -1,0 +1,67 @@
+{
+  "chartType": "KPIs",
+  "name": "Units",
+  "items": [
+    {
+      "id": "units-main",
+      "type": "single_value",
+      "variant": "advanced",
+      "column": "units",
+      "name": "Units sold",
+      "aggregations": "sum",
+      "showVisualisation": true,
+      "supportingKpis": true,
+      "groupName": "Units-group-kpi-ids-units-main",
+      "data": [{ "value": { "sum_units": "18420" } }],
+      "visualisation": {
+        "chartType": "barChart",
+        "name": "Units sold visualisation",
+        "orientation": "vertical",
+        "xAxe": ["region"],
+        "yAxe": ["sum_units"],
+        "formatting": [{ "key": "default", "color": "1" }],
+        "uniqueValues": {
+          "region": ["North", "South", "East", "West"]
+        },
+        "useNewDesign": true,
+        "data": [
+          { "region": "North", "sum_units": 5200 },
+          { "region": "South", "sum_units": 4100 },
+          { "region": "East", "sum_units": 3900 },
+          { "region": "West", "sum_units": 5220 }
+        ]
+      }
+    },
+    {
+      "id": "units-orders",
+      "type": "single_value",
+      "variant": "simple",
+      "column": "orders",
+      "name": "Orders",
+      "aggregations": "sum",
+      "groupName": "Units-group-kpi-ids-units-main",
+      "data": [{ "value": { "sum_orders": "4120" } }]
+    },
+    {
+      "id": "units-aov",
+      "type": "overall",
+      "variant": "simple",
+      "column": "aov",
+      "name": "AOV",
+      "aggregations": "avg",
+      "groupName": "Units-group-kpi-ids-units-main",
+      "data": [{ "avg_aov": "48.2" }]
+    },
+    {
+      "id": "units-returns",
+      "type": "trend",
+      "variant": "simple",
+      "column": "returns",
+      "name": "Returns",
+      "aggregations": "sum",
+      "showPercentage": true,
+      "groupName": "Units-group-kpi-ids-units-main",
+      "data": [{ "sum_returns": "210", "percentage": "-1.4" }]
+    }
+  ]
+}

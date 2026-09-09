@@ -1,0 +1,153 @@
+{
+  "id": "histogram-chart",
+  "tag": "ui9000-histogram-chart",
+  "title": "Histogram Chart",
+  "description": "Chat-optimized histogram rewritten in D3. Stacked bins, linear x-axis, no Redux.",
+  "chartTypeKeys": ["histogramChart"],
+  "source": "client/libs/shared/components/src/Widgets/HistogramChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/histogram-chart",
+  "entry": "@ui9000/widgets/histogram-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "tier": "engine",
+  "intents": ["comparison"],
+  "dataRoles": [
+    {
+      "id": "distribution",
+      "required": true,
+      "type": "number",
+      "description": "Numeric values binned into a severity or score distribution."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasNumericMetric && profile.rowCount >= 8",
+      "reason": "Histogram shows the shape of a numeric distribution such as severity scores."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "profile.hasCategory && !profile.hasNumericMetric",
+      "reason": "Category-only counts belong on bar-chart, not a histogram."
+    },
+    {
+      "when": "profile.hasGeo && !profile.hasNumericMetric",
+      "reason": "Spatial-only data belongs on map-chart."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title or xLabel",
+    "keyboard": ["Tab into chart"],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "histogram-picks-score-distribution",
+      "intent": "comparison",
+      "profile": { "hasNumericMetric": true, "rowCount": 40 },
+      "expect": "eligible",
+      "reasonIncludes": "distribution"
+    },
+    {
+      "id": "histogram-rejects-categories-only",
+      "intent": "comparison",
+      "profile": { "hasCategory": true, "hasNumericMetric": false },
+      "expect": "disqualified",
+      "reasonIncludes": "bar-chart"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "bins": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x0", "x1", "stacks"],
+                  "properties": {
+                    "x0": { "type": "number" },
+                    "x1": { "type": "number" },
+                    "stacks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["group", "count"],
+                        "properties": {
+                          "group": { "type": "string" },
+                          "count": { "type": "number" },
+                          "color": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xMin": { "type": "number" },
+              "xMax": { "type": "number" }
+            },
+            "required": ["bins"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "xMin": { "type": "number" },
+              "xMax": { "type": "number" },
+              "groups": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["bucketIndex", "count"],
+                  "properties": {
+                    "bucketIndex": { "type": "number" },
+                    "count": { "type": "number" },
+                    "group": { "type": "string" },
+                    "color": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "required": ["xMin", "xMax", "data"]
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

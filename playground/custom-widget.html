@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ui9000/widgets — CustomWidget visual test</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f9fafb;
+        color: #111827;
+      }
+      body[data-embed='true'] { background: transparent; }
+      body[data-embed='true'] > :not(#embed-host) { display: none; }
+      #embed-host { display: none; }
+      body[data-embed='true'] #embed-host {
+        display: block;
+        height: 100vh;
+        padding: 12px;
+      }
+      header {
+        padding: 1.5rem 2rem;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      header h1 { margin: 0 0 0.25rem; font-size: 1.5rem; }
+      header p { margin: 0; color: #6b7280; }
+      main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+      .controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        align-items: end;
+      }
+      label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: #6b7280; }
+      .controls label.slot {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.7rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        background: #fff;
+        color: #111827;
+        font-size: 0.8rem;
+      }
+      .controls label.slot input { margin: 0; }
+      select {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #fff;
+        font-size: 0.875rem;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+      .panel h2 { margin: 0 0 0.25rem; font-size: 1rem; }
+      .panel p { margin: 0 0 1rem; font-size: 0.8rem; color: #6b7280; }
+      #page-host {
+        height: 520px;
+        border: 1px dashed #d1d5db;
+        border-radius: 6px;
+        padding: 12px;
+      }
+      .chat-surface {
+        width: 420px;
+        max-width: 100%;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+      #chat-frame { display: block; width: 100%; height: 520px; border: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="embed-host"></div>
+
+    <header>
+      <h1>CustomWidget — visual test</h1>
+      <p>Toggle KPI + up to two panes (chart, table, text, image). Extra panes past two are disabled, matching the FuseDash custom widget rule.</p>
+    </header>
+
+    <main>
+      <div class="controls">
+        <label class="slot"><input type="checkbox" id="slot-kpi" /> KPI band</label>
+        <label class="slot"><input type="checkbox" id="slot-chart" /> Chart</label>
+        <label class="slot"><input type="checkbox" id="slot-table" /> Table</label>
+        <label class="slot"><input type="checkbox" id="slot-text" /> Text</label>
+        <label class="slot"><input type="checkbox" id="slot-image" /> Image</label>
+        <label>
+          Direction
+          <select id="direction-select">
+            <option value="horizontal" selected>Horizontal (stacked)</option>
+            <option value="vertical">Vertical (side by side)</option>
+          </select>
+        </label>
+        <label>
+          Scale
+          <select id="scale-select">
+            <option value="compact">Compact</option>
+            <option value="default" selected>Default</option>
+            <option value="comfortable">Comfortable</option>
+          </select>
+        </label>
+        <label>
+          Theme
+          <select id="mode-select">
+            <option value="light" selected>Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+
+      <section class="panel">
+        <h2>Plain HTML page</h2>
+        <p>Element mounted directly into the document, sized by its container.</p>
+        <div id="page-host"></div>
+      </section>
+
+      <section class="panel">
+        <h2>MCP chat iframe sandbox</h2>
+        <p>Same payload inside <code>sandbox="allow-scripts allow-same-origin"</code> at chat width.</p>
+        <div class="chat-surface">
+          <iframe
+            id="chat-frame"
+            title="CustomWidget in MCP chat sandbox"
+            sandbox="allow-scripts allow-same-origin"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./custom-widget.ts"></script>
+  </body>
+</html>

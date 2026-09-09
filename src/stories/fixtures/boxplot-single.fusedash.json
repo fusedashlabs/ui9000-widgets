@@ -1,0 +1,128 @@
+{
+  "chartType": "boxplotChart",
+  "name": "Delivery Time by Weekday",
+  "orientation": "horizontal",
+  "stacked": false,
+  "legend": false,
+  "tooltip": false,
+  "timeline": false,
+  "xAxe": ["weekday"],
+  "yAxe": ["hours"],
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {
+    "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  },
+  "data": [
+    {
+      "_id": { "weekday": "Mon" },
+      "sample_count": 48,
+      "min": 1.2,
+      "q1": 3.4,
+      "median": 5.1,
+      "q3": 7.8,
+      "max": 18.4,
+      "iqr": 4.4,
+      "outlierThresholdLower": -3.2,
+      "outlierThresholdUpper": 14.4,
+      "smallestNonOutlier": 1.2,
+      "biggestNonOutlier": 12.6,
+      "outliers": [16.1, 18.4]
+    },
+    {
+      "_id": { "weekday": "Tue" },
+      "sample_count": 52,
+      "min": 1.8,
+      "q1": 4.0,
+      "median": 5.8,
+      "q3": 8.2,
+      "max": 14.9,
+      "iqr": 4.2,
+      "outlierThresholdLower": -2.3,
+      "outlierThresholdUpper": 14.5,
+      "smallestNonOutlier": 1.8,
+      "biggestNonOutlier": 13.7,
+      "outliers": [14.9]
+    },
+    {
+      "_id": { "weekday": "Wed" },
+      "sample_count": 50,
+      "min": 2.0,
+      "q1": 4.2,
+      "median": 6.0,
+      "q3": 8.5,
+      "max": 11.8,
+      "iqr": 4.3,
+      "outlierThresholdLower": -2.25,
+      "outlierThresholdUpper": 14.95,
+      "smallestNonOutlier": 2.0,
+      "biggestNonOutlier": 11.8,
+      "outliers": []
+    },
+    {
+      "_id": { "weekday": "Thu" },
+      "sample_count": 47,
+      "min": 1.5,
+      "q1": 3.8,
+      "median": 5.6,
+      "q3": 8.0,
+      "max": 17.2,
+      "iqr": 4.2,
+      "outlierThresholdLower": -2.5,
+      "outlierThresholdUpper": 14.3,
+      "smallestNonOutlier": 1.5,
+      "biggestNonOutlier": 13.1,
+      "outliers": [15.4, 17.2]
+    },
+    {
+      "_id": { "weekday": "Fri" },
+      "sample_count": 61,
+      "min": 2.4,
+      "q1": 5.1,
+      "median": 7.4,
+      "q3": 10.2,
+      "max": 21.0,
+      "iqr": 5.1,
+      "outlierThresholdLower": -2.55,
+      "outlierThresholdUpper": 17.85,
+      "smallestNonOutlier": 2.4,
+      "biggestNonOutlier": 16.8,
+      "outliers": [19.3, 21.0]
+    },
+    {
+      "_id": { "weekday": "Sat" },
+      "sample_count": 38,
+      "min": 0.8,
+      "q1": 2.2,
+      "median": 3.5,
+      "q3": 5.4,
+      "max": 9.6,
+      "iqr": 3.2,
+      "outlierThresholdLower": -2.6,
+      "outlierThresholdUpper": 10.2,
+      "smallestNonOutlier": 0.8,
+      "biggestNonOutlier": 9.6,
+      "outliers": []
+    },
+    {
+      "_id": { "weekday": "Sun" },
+      "sample_count": 29,
+      "min": 0.6,
+      "q1": 1.9,
+      "median": 2.8,
+      "q3": 4.6,
+      "max": 8.1,
+      "iqr": 2.7,
+      "outlierThresholdLower": -2.15,
+      "outlierThresholdUpper": 8.65,
+      "smallestNonOutlier": 0.6,
+      "biggestNonOutlier": 8.1,
+      "outliers": []
+    }
+  ],
+  "kpis": []
+}

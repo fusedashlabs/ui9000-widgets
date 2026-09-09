@@ -1,0 +1,8 @@
+{
+  "chartType": "KPI",
+  "type": "single_value",
+  "column": "total_checkins",
+  "name": "Total Check-ins",
+  "aggregations": "sum",
+  "data": [{ "value": { "sum_total_checkins": "11137" } }]
+}

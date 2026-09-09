@@ -1,0 +1,57 @@
+{
+  "id": "pie-chart",
+  "tag": "ui9000-pie-chart",
+  "title": "Pie Chart",
+  "description": "Chat-optimized pie chart rewritten in D3. Full disc only — donut is ui9000-donut-chart.",
+  "chartTypeKeys": ["pieChart"],
+  "source": "client/libs/shared/components/src/Widgets/PieChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/pie-chart",
+  "entry": "@ui9000/widgets/pie-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload",
+            "properties": {
+              "chartType": { "type": "string" },
+              "xAxe": { "type": "array", "items": { "type": "string" } },
+              "yAxe": { "type": "array", "items": { "type": "string" } },
+              "uniqueValues": { "type": "object" },
+              "formatting": { "type": "array" },
+              "data": { "type": "array" }
+            }
+          }
+        ]
+      },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

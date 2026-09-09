@@ -1,0 +1,107 @@
+{
+  "id": "entity-detail",
+  "tag": "ui9000-entity-detail",
+  "title": "Entity Detail",
+  "description": "One entity: title, fields, http(s) links, declared actions.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/entity-detail",
+  "entry": "@ui9000/widgets/entity-detail",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "select",
+    "resize"
+  ],
+  "tier": "engine",
+  "intents": [
+    "evidence"
+  ],
+  "dataRoles": [
+    {
+      "id": "entity",
+      "required": true,
+      "description": "Entity id + title + fields."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasEntityId",
+      "reason": "Entity detail inspects a single identified record."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasEntityId",
+      "reason": "Without an entity id use table for the set."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title",
+    "keyboard": [
+      "Tab through fields and actions"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "entity-picks-id",
+      "intent": "evidence",
+      "profile": {
+        "hasEntityId": true
+      },
+      "expect": "eligible",
+      "reasonIncludes": "identified"
+    },
+    {
+      "id": "entity-rejects-set",
+      "intent": "evidence",
+      "profile": {
+        "hasEntityId": false,
+        "hasTabularRows": true
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "table"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "required": [
+          "id",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array"
+          },
+          "links": {
+            "type": "array"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

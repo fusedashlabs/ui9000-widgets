@@ -1,0 +1,281 @@
+{
+  "chartType": "bubbleChart",
+  "name": "Average Income vs Outcome",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "timeline": true,
+  "xAxe": [
+    "numberIncomeTransaction"
+  ],
+  "yAxe": [
+    "totalOutcome"
+  ],
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {
+    "numberIncomeTransaction": [
+      "61",
+      "56",
+      "51",
+      "63",
+      "95",
+      "48",
+      "98",
+      "57",
+      "72",
+      "54",
+      "43",
+      "83",
+      "84",
+      "96",
+      "68",
+      "53",
+      "88",
+      "93",
+      "81",
+      "90",
+      "67",
+      "38",
+      "33",
+      "45",
+      "58",
+      "60",
+      "66",
+      "47",
+      "100",
+      "34",
+      "31",
+      "78",
+      "50",
+      "76",
+      "77",
+      "73",
+      "94",
+      "75",
+      "79",
+      "71",
+      "32",
+      "44",
+      "41",
+      "35",
+      "97",
+      "52",
+      "64",
+      "80",
+      "87",
+      "92"
+    ]
+  },
+  "palette": {},
+  "arrangeBy": [],
+  "display": [],
+  "data": [
+    {
+      "numberIncomeTransaction": 61,
+      "totalOutcome": 6210.555555555556
+    },
+    {
+      "numberIncomeTransaction": 56,
+      "totalOutcome": 5530
+    },
+    {
+      "numberIncomeTransaction": 51,
+      "totalOutcome": 5517.5
+    },
+    {
+      "numberIncomeTransaction": 63,
+      "totalOutcome": 5504.285714285715
+    },
+    {
+      "numberIncomeTransaction": 95,
+      "totalOutcome": 5447.857142857143
+    },
+    {
+      "numberIncomeTransaction": 48,
+      "totalOutcome": 5438
+    },
+    {
+      "numberIncomeTransaction": 98,
+      "totalOutcome": 5390.833333333333
+    },
+    {
+      "numberIncomeTransaction": 57,
+      "totalOutcome": 5265
+    },
+    {
+      "numberIncomeTransaction": 72,
+      "totalOutcome": 5244
+    },
+    {
+      "numberIncomeTransaction": 54,
+      "totalOutcome": 5234
+    },
+    {
+      "numberIncomeTransaction": 43,
+      "totalOutcome": 5234
+    },
+    {
+      "numberIncomeTransaction": 83,
+      "totalOutcome": 5232.5
+    },
+    {
+      "numberIncomeTransaction": 84,
+      "totalOutcome": 5197
+    },
+    {
+      "numberIncomeTransaction": 96,
+      "totalOutcome": 5193.333333333333
+    },
+    {
+      "numberIncomeTransaction": 68,
+      "totalOutcome": 5186.25
+    },
+    {
+      "numberIncomeTransaction": 53,
+      "totalOutcome": 5176
+    },
+    {
+      "numberIncomeTransaction": 88,
+      "totalOutcome": 5172.5
+    },
+    {
+      "numberIncomeTransaction": 93,
+      "totalOutcome": 5157.5
+    },
+    {
+      "numberIncomeTransaction": 81,
+      "totalOutcome": 5124
+    },
+    {
+      "numberIncomeTransaction": 90,
+      "totalOutcome": 5060.833333333333
+    },
+    {
+      "numberIncomeTransaction": 67,
+      "totalOutcome": 5053
+    },
+    {
+      "numberIncomeTransaction": 38,
+      "totalOutcome": 5037.5
+    },
+    {
+      "numberIncomeTransaction": 33,
+      "totalOutcome": 5034.375
+    },
+    {
+      "numberIncomeTransaction": 45,
+      "totalOutcome": 5017.777777777777
+    },
+    {
+      "numberIncomeTransaction": 58,
+      "totalOutcome": 4997.307692307692
+    },
+    {
+      "numberIncomeTransaction": 60,
+      "totalOutcome": 4985
+    },
+    {
+      "numberIncomeTransaction": 66,
+      "totalOutcome": 4978.333333333333
+    },
+    {
+      "numberIncomeTransaction": 47,
+      "totalOutcome": 4971.666666666667
+    },
+    {
+      "numberIncomeTransaction": 100,
+      "totalOutcome": 4961
+    },
+    {
+      "numberIncomeTransaction": 34,
+      "totalOutcome": 4958.181818181818
+    },
+    {
+      "numberIncomeTransaction": 31,
+      "totalOutcome": 4939.285714285715
+    },
+    {
+      "numberIncomeTransaction": 78,
+      "totalOutcome": 4925
+    },
+    {
+      "numberIncomeTransaction": 50,
+      "totalOutcome": 4905
+    },
+    {
+      "numberIncomeTransaction": 76,
+      "totalOutcome": 4901
+    },
+    {
+      "numberIncomeTransaction": 77,
+      "totalOutcome": 4860
+    },
+    {
+      "numberIncomeTransaction": 73,
+      "totalOutcome": 4827.142857142857
+    },
+    {
+      "numberIncomeTransaction": 94,
+      "totalOutcome": 4811.666666666667
+    },
+    {
+      "numberIncomeTransaction": 75,
+      "totalOutcome": 4729.545454545455
+    },
+    {
+      "numberIncomeTransaction": 79,
+      "totalOutcome": 4710.625
+    },
+    {
+      "numberIncomeTransaction": 71,
+      "totalOutcome": 4710
+    },
+    {
+      "numberIncomeTransaction": 32,
+      "totalOutcome": 4681.25
+    },
+    {
+      "numberIncomeTransaction": 44,
+      "totalOutcome": 4675.625
+    },
+    {
+      "numberIncomeTransaction": 41,
+      "totalOutcome": 4669.444444444444
+    },
+    {
+      "numberIncomeTransaction": 35,
+      "totalOutcome": 4656.666666666667
+    },
+    {
+      "numberIncomeTransaction": 97,
+      "totalOutcome": 4642.5
+    },
+    {
+      "numberIncomeTransaction": 52,
+      "totalOutcome": 4596.25
+    },
+    {
+      "numberIncomeTransaction": 64,
+      "totalOutcome": 4570.833333333333
+    },
+    {
+      "numberIncomeTransaction": 80,
+      "totalOutcome": 4537.5
+    },
+    {
+      "numberIncomeTransaction": 87,
+      "totalOutcome": 4532
+    },
+    {
+      "numberIncomeTransaction": 92,
+      "totalOutcome": 4529.545454545455
+    }
+  ],
+  "kpis": []
+}

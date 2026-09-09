@@ -1,0 +1,57 @@
+{
+  "id": "donut-chart",
+  "tag": "ui9000-donut-chart",
+  "title": "Donut Chart",
+  "description": "Chat-optimized donut chart (FuseDash PieChart + inner hole). Same data as pieChart; ring thickness matches DonutChart.",
+  "chartTypeKeys": ["donutChart"],
+  "source": "client/libs/shared/components/src/Widgets/DonutChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/donut-chart",
+  "entry": "@ui9000/widgets/donut-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload (chartType donutChart)",
+            "properties": {
+              "chartType": { "const": "donutChart" },
+              "xAxe": { "type": "array", "items": { "type": "string" } },
+              "yAxe": { "type": "array", "items": { "type": "string" } },
+              "uniqueValues": { "type": "object" },
+              "formatting": { "type": "array" },
+              "data": { "type": "array" }
+            }
+          }
+        ]
+      },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

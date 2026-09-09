@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ui9000.dev/catalog/engine-metadata.schema.json",
+  "title": "UI9000 engine component metadata",
+  "type": "object",
+  "required": [
+    "id",
+    "tag",
+    "title",
+    "entry",
+    "lazyImport",
+    "propsSchema",
+    "tier",
+    "intents",
+    "dataRoles",
+    "eligibility",
+    "disqualify",
+    "allowedActions",
+    "accessibility",
+    "evalCases"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "tag": { "type": "string", "pattern": "^ui9000-" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "entry": { "type": "string" },
+    "lazyImport": { "type": "string" },
+    "propsSchema": { "type": "object" },
+    "tier": { "const": "engine" },
+    "intents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["spatial", "comparison", "summary", "form", "evidence", "graph"]
+      }
+    },
+    "dataRoles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "required", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "required": { "type": "boolean" },
+          "description": { "type": "string", "minLength": 1 },
+          "cardinality": { "type": "string" },
+          "type": { "type": "string" }
+        }
+      }
+    },
+    "eligibility": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["when", "reason"],
+        "properties": {
+          "when": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "disqualify": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["when", "reason"],
+        "properties": {
+          "when": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "hover",
+          "resize",
+          "select",
+          "submit",
+          "approve",
+          "reject",
+          "pan",
+          "zoom",
+          "drag",
+          "filter"
+        ]
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "required": ["nameFrom", "keyboard", "shadowBoundary"],
+      "properties": {
+        "nameFrom": { "type": "string", "minLength": 1 },
+        "keyboard": { "type": "array", "items": { "type": "string" } },
+        "shadowBoundary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evalCases": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["id", "intent", "profile", "expect", "reasonIncludes"],
+        "properties": {
+          "id": { "type": "string" },
+          "intent": {
+            "type": "string",
+            "enum": ["spatial", "comparison", "summary", "form", "evidence", "graph"]
+          },
+          "profile": { "type": "object" },
+          "expect": { "enum": ["eligible", "disqualified"] },
+          "reasonIncludes": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

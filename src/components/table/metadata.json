@@ -1,0 +1,85 @@
+{
+  "id": "table",
+  "tag": "ui9000-table",
+  "title": "Evidence Table",
+  "description": "Snapshot table. Columns + rows; dataset source uses tablePreviewRows, chart uses data, static uses tableData. No live select.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/table",
+  "entry": "@ui9000/widgets/table",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "select",
+    "resize"
+  ],
+  "tier": "engine",
+  "intents": [
+    "evidence",
+    "summary"
+  ],
+  "dataRoles": [
+    {
+      "id": "rows",
+      "required": true,
+      "description": "Tabular rows with named columns (evidence snapshot)."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasTabularRows && profile.rowCount >= 1",
+      "reason": "Table shows a snapshot of rows and columns."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasTabularRows",
+      "reason": "Without rows a table is empty; use text or entity-detail."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title or first column header",
+    "keyboard": [
+      "Tab into table container"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "table-picks-rows",
+      "intent": "evidence",
+      "profile": {
+        "hasTabularRows": true,
+        "rowCount": 12
+      },
+      "expect": "eligible",
+      "reasonIncludes": "snapshot"
+    },
+    {
+      "id": "table-rejects-empty",
+      "intent": "evidence",
+      "profile": {
+        "hasTabularRows": false
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "empty"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "description": "CustomTableModel or FuseDash widget with headers"
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

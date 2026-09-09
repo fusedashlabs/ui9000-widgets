@@ -1,0 +1,37 @@
+{
+  "id": "broken",
+  "tag": "ui9000-broken",
+  "title": "Broken",
+  "entry": "@ui9000/widgets/broken",
+  "lazyImport": "@ui9000/widgets/lazy/broken",
+  "propsSchema": { "type": "object" },
+  "tier": "engine",
+  "intents": ["comparison"],
+  "dataRoles": [
+    { "id": "metric", "required": true, "description": "A number" }
+  ],
+  "eligibility": [{ "when": "profile.hasNumericMetric", "reason": "Has a metric" }],
+  "disqualify": [{ "when": "profile.hasGeo", "reason": "" }],
+  "allowedActions": ["hover"],
+  "accessibility": {
+    "nameFrom": "title",
+    "keyboard": ["Tab"],
+    "shadowBoundary": "Set aria-label on the host."
+  },
+  "evalCases": [
+    {
+      "id": "a",
+      "intent": "comparison",
+      "profile": { "hasNumericMetric": true },
+      "expect": "eligible",
+      "reasonIncludes": "metric"
+    },
+    {
+      "id": "b",
+      "intent": "spatial",
+      "profile": { "hasGeo": true },
+      "expect": "disqualified",
+      "reasonIncludes": "geo"
+    }
+  ]
+}

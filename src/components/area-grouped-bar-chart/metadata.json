@@ -1,0 +1,34 @@
+{
+  "id": "area-grouped-bar-chart",
+  "tag": "ui9000-area-grouped-bar-chart",
+  "title": "Area Grouped Bar Chart",
+  "description": "Chat-optimized combo chart: grouped bars + area/line overlay. Vertical only, no Redux.",
+  "chartTypeKeys": ["areaGroupedBarChart"],
+  "source": "client/libs/shared/components/src/Widgets/AreaGroupedBarChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/area-grouped-bar-chart",
+  "entry": "@ui9000/widgets/area-grouped-bar-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "description": "FuseDash WidgetItem-shaped payload (xAxe, yAxe[0]=line, yAxe[1]=bars, groupBy)"
+      },
+      "show-grid": { "type": "boolean" },
+      "show-legend": { "type": "boolean" },
+      "show-tooltip": { "type": "boolean" },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"]
+      }
+    }
+  }
+}

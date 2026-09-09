@@ -1,0 +1,36 @@
+{
+  "id": "scatter-sparkline-chart",
+  "tag": "ui9000-scatter-sparkline-chart",
+  "title": "Scatter Sparkline Chart",
+  "description": "FuseDash ScatterSparklineChart — datetime aggregated line with gradient fill plus jittered scatter markers. D3 rewrite, no Redux.",
+  "chartTypeKeys": ["scatterSparklineChart"],
+  "source": "client/libs/shared/components/src/Widgets/ScatterSparklineChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/scatter-sparkline-chart",
+  "entry": "@ui9000/widgets/scatter-sparkline-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "description": "FuseDash WidgetItem or normalized scatter-sparkline model"
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"]
+  }
+}

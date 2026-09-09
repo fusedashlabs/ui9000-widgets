@@ -1,0 +1,72 @@
+{
+  "id": "box-plot-chart",
+  "tag": "ui9000-box-plot-chart",
+  "title": "Box Plot Chart",
+  "description": "Chat-optimized box plot rewritten in D3 (Visx → D3). Vertical/horizontal, quartiles, whiskers, outliers, no Redux.",
+  "chartTypeKeys": ["boxplotChart"],
+  "source": "client/libs/shared/components/src/Widgets/VerticalBoxPlotChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/box-plot-chart",
+  "entry": "@ui9000/widgets/box-plot-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "q1", "median", "q3", "smallestNonOutlier", "biggestNonOutlier"],
+              "properties": {
+                "label": { "type": "string" },
+                "group": { "type": "string" },
+                "color": { "type": "string" },
+                "q1": { "type": "number" },
+                "median": { "type": "number" },
+                "q3": { "type": "number" },
+                "smallestNonOutlier": { "type": "number" },
+                "biggestNonOutlier": { "type": "number" },
+                "outliers": {
+                  "type": "array",
+                  "items": { "type": "number" }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "orientation": {
+                "type": "string",
+                "enum": ["vertical", "horizontal"]
+              },
+              "boxes": { "type": "array" },
+              "xAxe": { "type": ["string", "array"] },
+              "groupBy": { "type": ["string", "array"] },
+              "data": { "type": "array" }
+            }
+          }
+        ]
+      },
+      "orientation": {
+        "type": "string",
+        "enum": ["vertical", "horizontal"],
+        "default": "vertical"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true },
+      "xLabel": { "type": "string" },
+      "yLabel": { "type": "string" }
+    },
+    "required": ["data"]
+  }
+}

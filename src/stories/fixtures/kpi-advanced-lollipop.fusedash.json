@@ -1,0 +1,78 @@
+{
+  "chartType": "KPIs",
+  "name": "Response time",
+  "items": [
+    {
+      "id": "rt-main",
+      "type": "high/low_overall",
+      "variant": "advanced",
+      "column": "System Response Time",
+      "name": "Average System Response Time",
+      "aggregations": "avg",
+      "groupBy": "Tourist ID",
+      "showVisualisation": true,
+      "supportingKpis": true,
+      "groupName": "Response time-group-kpi-ids-rt-main",
+      "data": [
+        {
+          "high": {
+            "Tourist ID": "2491",
+            "avg_System Response Time": 5
+          },
+          "low": {
+            "Tourist ID": "2733",
+            "avg_System Response Time": 1.5
+          }
+        }
+      ],
+      "visualisation": {
+        "chartType": "lollipopChart",
+        "name": "Response time visualisation",
+        "orientation": "vertical",
+        "xAxe": ["kpiChartCategory"],
+        "yAxe": ["avg_System Response Time"],
+        "formatting": [{ "key": "default", "color": "1" }],
+        "markers": [{ "key": "default", "shape": "rhombus" }],
+        "uniqueValues": {
+          "kpiChartCategory": ["2491", "2733"]
+        },
+        "useNewDesign": true,
+        "data": [
+          { "kpiChartCategory": "2491", "avg_System Response Time": 5 },
+          { "kpiChartCategory": "2733", "avg_System Response Time": 1.5 }
+        ]
+      }
+    },
+    {
+      "id": "rt-median",
+      "type": "overall",
+      "variant": "simple",
+      "column": "System Response Time",
+      "name": "Median",
+      "aggregations": "avg",
+      "groupName": "Response time-group-kpi-ids-rt-main",
+      "data": [{ "avg_System Response Time": "2.4" }]
+    },
+    {
+      "id": "rt-count",
+      "type": "single_value",
+      "variant": "simple",
+      "column": "requests",
+      "name": "Requests",
+      "aggregations": "count",
+      "groupName": "Response time-group-kpi-ids-rt-main",
+      "data": [{ "value": { "count_requests": "12840" } }]
+    },
+    {
+      "id": "rt-errors",
+      "type": "trend",
+      "variant": "simple",
+      "column": "errors",
+      "name": "Errors",
+      "aggregations": "sum",
+      "showPercentage": true,
+      "groupName": "Response time-group-kpi-ids-rt-main",
+      "data": [{ "sum_errors": "18", "percentage": "-2.1" }]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction" />
+
+# @ui9000/widgets
+
+A charts package (web components) for display in MCP chat / UI9000.
+
+The components are **Lit + D3**, props only — no Redux and no FuseDash editor chrome. Each chart is a custom element you mount with a `data` JSON attribute and optional flags (`show-legend`, `show-tooltip`, `scale`).
+
+## How to use
+
+Charts live in the **Charts** sidebar. Change the theme from the toolbar (**Theme**) via CSS variables on `WidgetContext`.
+
+```bash
+yarn storybook
+```
+
+Published package: `@fusedashlabs/widgets`.

@@ -1,0 +1,121 @@
+{
+  "id": "event-timeline",
+  "tag": "ui9000-event-timeline",
+  "title": "Event Timeline",
+  "description": "Ordered security events (timestamp, actor, action, severity). Not a metric line chart.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/event-timeline",
+  "entry": "@ui9000/widgets/event-timeline",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "select",
+    "resize"
+  ],
+  "tier": "engine",
+  "intents": [
+    "evidence"
+  ],
+  "dataRoles": [
+    {
+      "id": "events",
+      "required": true,
+      "description": "Events with ts, actor, action, severity."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasEvents && profile.hasTemporal",
+      "reason": "Timeline orders events in time."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasEvents",
+      "reason": "Without events this is a line chart of metrics, which is substrate not engine."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title",
+    "keyboard": [
+      "Tab through events"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "timeline-picks-events",
+      "intent": "evidence",
+      "profile": {
+        "hasEvents": true,
+        "hasTemporal": true
+      },
+      "expect": "eligible",
+      "reasonIncludes": "time"
+    },
+    {
+      "id": "timeline-rejects-metrics",
+      "intent": "comparison",
+      "profile": {
+        "hasEvents": false,
+        "hasNumericMetric": true,
+        "hasTemporal": true
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "line chart"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "ts",
+                "actor",
+                "action"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "ts": {
+                  "type": "string"
+                },
+                "actor": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                },
+                "severity": {
+                  "type": "string"
+                },
+                "entityId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "events"
+        ]
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

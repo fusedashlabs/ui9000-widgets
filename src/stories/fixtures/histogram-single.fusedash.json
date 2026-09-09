@@ -1,0 +1,95 @@
+{
+  "chartType": "histogramChart",
+  "name": "Total Number Transaction",
+  "orientation": "horizontal",
+  "xAxe": [],
+  "yAxe": [],
+  "groupBy": [],
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {},
+  "data": [
+    {
+      "_id": null,
+      "sample_count": 518,
+      "min": 81,
+      "q1": 120,
+      "q3": 157,
+      "max": 199,
+      "iqr": 37,
+      "optimalBucketCount": 13,
+      "optimalBucketWidth": 9.076923077,
+      "histogramResults": [
+        {
+          "_id": {},
+          "count": 9,
+          "bucketIndex": 0
+        },
+        {
+          "_id": {},
+          "count": 29,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {},
+          "count": 32,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {},
+          "count": 44,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {},
+          "count": 57,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {},
+          "count": 66,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {},
+          "count": 56,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {},
+          "count": 75,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {},
+          "count": 52,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {},
+          "count": 38,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {},
+          "count": 34,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {},
+          "count": 14,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {},
+          "count": 12,
+          "bucketIndex": 12
+        }
+      ]
+    }
+  ]
+}

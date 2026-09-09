@@ -1,0 +1,41 @@
+{
+  "chartType": "histogramChart",
+  "name": "Average Satisfaction Count by Interests",
+  "orientation": "vertical",
+  "xAxe": [],
+  "yAxe": [],
+  "groupBy": ["Satisfaction"],
+  "formatting": [
+    { "key": "3", "color": "1" },
+    { "key": "4", "color": "2" },
+    { "key": "5", "color": "3" }
+  ],
+  "uniqueValues": {
+    "Satisfaction": ["3", "4", "5"]
+  },
+  "data": [
+    {
+      "_id": null,
+      "sample_count": 6000,
+      "min": 0,
+      "max": 3,
+      "histogramResults": [
+        {
+          "_id": { "Satisfaction": "3" },
+          "count": 3668,
+          "bucketIndex": 0
+        },
+        {
+          "_id": { "Satisfaction": "4" },
+          "count": 1466,
+          "bucketIndex": 1
+        },
+        {
+          "_id": { "Satisfaction": "5" },
+          "count": 866,
+          "bucketIndex": 2
+        }
+      ]
+    }
+  ]
+}

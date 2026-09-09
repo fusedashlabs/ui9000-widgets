@@ -1,0 +1,230 @@
+{
+  "chartType": "sparkAreaChart",
+  "name": "Average Income by Weather Condition Over Time",
+  "xAxe": [
+    "transactionTime"
+  ],
+  "yAxe": [
+    "numberIncomeTransaction"
+  ],
+  "groupBy": [
+    "weather_main"
+  ],
+  "formatting": [
+    {
+      "key": "Rain",
+      "color": "1"
+    },
+    {
+      "key": "Snow",
+      "color": "2"
+    },
+    {
+      "key": "Other",
+      "color": "3"
+    },
+    {
+      "key": "Drizzle",
+      "color": "4"
+    },
+    {
+      "key": "Thunderstorm",
+      "color": "5"
+    }
+  ],
+  "uniqueValues": {
+    "transactionTime": [
+      "2020-01-01",
+      "2020-01-02",
+      "2020-01-03",
+      "2020-01-04",
+      "2020-01-05",
+      "2020-01-06",
+      "2020-01-07"
+    ],
+    "weather_main": [
+      "Rain",
+      "Snow",
+      "Drizzle",
+      "Thunderstorm",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "transactionTime": "2020-01-01",
+      "numberIncomeTransaction": 68.31818181818181,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-01",
+      "numberIncomeTransaction": 63.27272727272727,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-01",
+      "numberIncomeTransaction": 62.45454545454545,
+      "weather_main": "Other"
+    },
+    {
+      "transactionTime": "2020-01-01",
+      "numberIncomeTransaction": 60.81818181818182,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-01",
+      "numberIncomeTransaction": 58.875,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-02",
+      "numberIncomeTransaction": 69.66666666666667,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-02",
+      "numberIncomeTransaction": 69.04761904761905,
+      "weather_main": "Other"
+    },
+    {
+      "transactionTime": "2020-01-02",
+      "numberIncomeTransaction": 67.77777777777777,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-02",
+      "numberIncomeTransaction": 60.0625,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-02",
+      "numberIncomeTransaction": 58.473684210526315,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-03",
+      "numberIncomeTransaction": 67.42857142857143,
+      "weather_main": "Other"
+    },
+    {
+      "transactionTime": "2020-01-03",
+      "numberIncomeTransaction": 64.69565217391305,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-03",
+      "numberIncomeTransaction": 59.68421052631579,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-03",
+      "numberIncomeTransaction": 56.63636363636363,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-03",
+      "numberIncomeTransaction": 53.714285714285715,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-04",
+      "numberIncomeTransaction": 70.16666666666667,
+      "weather_main": "Other"
+    },
+    {
+      "transactionTime": "2020-01-04",
+      "numberIncomeTransaction": 64.61111111111111,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-04",
+      "numberIncomeTransaction": 63.38461538461539,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-04",
+      "numberIncomeTransaction": 58.22222222222222,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-04",
+      "numberIncomeTransaction": 51.9,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-05",
+      "numberIncomeTransaction": 66.85714285714286,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-05",
+      "numberIncomeTransaction": 66.35714285714286,
+      "weather_main": "Other"
+    },
+    {
+      "transactionTime": "2020-01-05",
+      "numberIncomeTransaction": 65.35714285714286,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-05",
+      "numberIncomeTransaction": 63.94736842105263,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-05",
+      "numberIncomeTransaction": 61,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-06",
+      "numberIncomeTransaction": 68.85714285714286,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-06",
+      "numberIncomeTransaction": 67.78571428571429,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-06",
+      "numberIncomeTransaction": 64.94736842105263,
+      "weather_main": "Other"
+    },
+    {
+      "transactionTime": "2020-01-06",
+      "numberIncomeTransaction": 62.666666666666664,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-06",
+      "numberIncomeTransaction": 56.875,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-07",
+      "numberIncomeTransaction": 78.75,
+      "weather_main": "Drizzle"
+    },
+    {
+      "transactionTime": "2020-01-07",
+      "numberIncomeTransaction": 73.78260869565217,
+      "weather_main": "Snow"
+    },
+    {
+      "transactionTime": "2020-01-07",
+      "numberIncomeTransaction": 70,
+      "weather_main": "Rain"
+    },
+    {
+      "transactionTime": "2020-01-07",
+      "numberIncomeTransaction": 62.72727272727273,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "transactionTime": "2020-01-07",
+      "numberIncomeTransaction": 57.42857142857143,
+      "weather_main": "Other"
+    }
+  ]
+}

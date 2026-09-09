@@ -1,0 +1,15 @@
+{
+  "chartType": "KPI",
+  "type": "trend",
+  "column": "revenue",
+  "name": "Monthly Revenue",
+  "aggregations": "sum",
+  "showPercentage": true,
+  "data": [
+    {
+      "sum_revenue": "248500",
+      "percentage": "12.4",
+      "subtitle": "vs previous month"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "chartType": "ksPlotChart",
+  "name": "KS Plot",
+  "legend": true,
+  "tooltip": true,
+  "timeline": false,
+  "xAxe": [
+    "timestamp"
+  ],
+  "yAxe": [
+    "cumProb"
+  ],
+  "groupBy": [],
+  "uniqueValues": {
+    "timestamp": [
+      "2024-01-01",
+      "2024-01-02",
+      "2024-01-03",
+      "2024-01-04",
+      "2024-01-05",
+      "2024-01-06",
+      "2024-01-07",
+      "2024-01-08",
+      "2024-01-09",
+      "2024-01-10",
+      "2024-01-11",
+      "2024-01-12",
+      "2024-01-13",
+      "2024-01-14",
+      "2024-01-15",
+      "2024-01-16",
+      "2024-01-17",
+      "2024-01-18",
+      "2024-01-19",
+      "2024-01-20",
+      "2024-01-21",
+      "2024-01-22",
+      "2024-01-23",
+      "2024-01-24"
+    ]
+  },
+  "axisDetails": {
+    "timestamp": {
+      "label": "timestamp",
+      "type": "datetime",
+      "subtype": "date"
+    },
+    "cumProb": {
+      "label": "cumProb",
+      "type": "metric",
+      "subtype": "float",
+      "measure_unit": "",
+      "measure_unit_type": "number"
+    }
+  },
+  "data": [
+    {
+      "timestamp": "2024-01-01",
+      "cumProb": 0.2
+    },
+    {
+      "timestamp": "2024-01-02",
+      "cumProb": 0.24
+    },
+    {
+      "timestamp": "2024-01-03",
+      "cumProb": 0.28
+    },
+    {
+      "timestamp": "2024-01-04",
+      "cumProb": 0.32
+    },
+    {
+      "timestamp": "2024-01-05",
+      "cumProb": 0.36
+    },
+    {
+      "timestamp": "2024-01-06",
+      "cumProb": 0.41
+    },
+    {
+      "timestamp": "2024-01-07",
+      "cumProb": 0.44
+    },
+    {
+      "timestamp": "2024-01-08",
+      "cumProb": 0.48
+    },
+    {
+      "timestamp": "2024-01-09",
+      "cumProb": 0.52
+    },
+    {
+      "timestamp": "2024-01-10",
+      "cumProb": 0.56
+    },
+    {
+      "timestamp": "2024-01-11",
+      "cumProb": 0.6
+    },
+    {
+      "timestamp": "2024-01-12",
+      "cumProb": 0.64
+    },
+    {
+      "timestamp": "2024-01-13",
+      "cumProb": 0.68
+    },
+    {
+      "timestamp": "2024-01-14",
+      "cumProb": 0.71
+    },
+    {
+      "timestamp": "2024-01-15",
+      "cumProb": 0.75
+    },
+    {
+      "timestamp": "2024-01-16",
+      "cumProb": 0.79
+    },
+    {
+      "timestamp": "2024-01-17",
+      "cumProb": 0.82
+    },
+    {
+      "timestamp": "2024-01-18",
+      "cumProb": 0.86
+    },
+    {
+      "timestamp": "2024-01-19",
+      "cumProb": 0.9
+    },
+    {
+      "timestamp": "2024-01-20",
+      "cumProb": 0.92
+    },
+    {
+      "timestamp": "2024-01-21",
+      "cumProb": 0.94
+    },
+    {
+      "timestamp": "2024-01-22",
+      "cumProb": 0.96
+    },
+    {
+      "timestamp": "2024-01-23",
+      "cumProb": 0.98
+    },
+    {
+      "timestamp": "2024-01-24",
+      "cumProb": 0.99
+    }
+  ]
+}

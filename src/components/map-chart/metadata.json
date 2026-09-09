@@ -1,0 +1,132 @@
+{
+  "id": "map-chart",
+  "tag": "ui9000-map-chart",
+  "title": "Map",
+  "description": "FuseDash MapBox / UniversalMap as a Shadow DOM web component. Choropleth fills come from PMTiles vector tiles; centroid GeoJSON is fetched at runtime for the data-join, bubbles, and spikes. mapbox-gl is an optional peer — not inlined in the D3 chart budget.",
+  "chartTypeKeys": ["mapChart", "UniversalMap"],
+  "source": "client/libs/shared/components/src/Widgets/MapBox/",
+  "stack": "mapbox-gl",
+  "lazyImport": "@ui9000/widgets/lazy/map-chart",
+  "entry": "@ui9000/widgets/map-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": false,
+    "hostReady": true,
+    "requires": ["mapbox-token", "geojson", "pmtiles"]
+  },
+  "allowedActions": ["hover", "pan", "zoom", "resize"],
+  "tier": "engine",
+  "intents": ["spatial"],
+  "dataRoles": [
+    {
+      "id": "geo",
+      "required": true,
+      "description": "lat/lng or a region id that joins to GeoJSON / PMTiles."
+    },
+    {
+      "id": "metric",
+      "required": false,
+      "type": "number",
+      "description": "Optional fill or bubble magnitude."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasGeo && profile.hasMapToken",
+      "reason": "Map is eligible when the profile is spatial and a Mapbox token plus tiles are available (lazy entry)."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasGeo",
+      "reason": "Without geo fields the map has nothing to join; use bar-chart or table."
+    },
+    {
+      "when": "profile.hasGeo && !profile.hasMapToken",
+      "reason": "Map stays lazy until the host injects a token and tile URLs."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title",
+    "keyboard": ["Tab into map chrome", "legend filters"],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "map-picks-geo-with-token",
+      "intent": "spatial",
+      "profile": { "hasGeo": true, "hasMapToken": true },
+      "expect": "eligible",
+      "reasonIncludes": "spatial"
+    },
+    {
+      "id": "map-rejects-no-geo",
+      "intent": "comparison",
+      "profile": { "hasGeo": false, "hasCategory": true, "hasNumericMetric": true },
+      "expect": "disqualified",
+      "reasonIncludes": "bar-chart"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped map payload (layers[].data + geospatialData).",
+            "properties": {
+              "name": { "type": "string" },
+              "chartType": { "type": "string", "const": "mapChart" },
+              "layers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "visualisationType": {
+                      "type": "string",
+                      "enum": ["choropleth", "bubbles", "spike", "markers"]
+                    },
+                    "geospatialData": { "type": "array", "items": { "type": "string" } },
+                    "arrangeByMetric": { "type": "array", "items": { "type": "string" } },
+                    "data": { "type": "array", "items": { "type": "object" } }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "array",
+            "description": "Chat rows { label, value } joined as a country choropleth.",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          }
+        ]
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "show-legend": { "type": "boolean", "default": true },
+      "show-tooltip": { "type": "boolean", "default": true },
+      "mapbox-token": { "type": "string" },
+      "geojson-base-url": {
+        "type": "string",
+        "description": "Base URL that serves {country,state,county,city,province}.json centroid FeatureCollections used for the data-join / bubbles / spikes."
+      },
+      "pmtiles-base-url": {
+        "type": "string",
+        "default": "/pmtiles",
+        "description": "Base URL that serves world-countries.pmtiles (and other admin archives). Choropleth fills use these vector tiles — the GeoJSON files are centroids, not polygons."
+      }
+    },
+    "required": ["data"]
+  }
+}

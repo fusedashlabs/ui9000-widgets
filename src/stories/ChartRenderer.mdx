@@ -1,0 +1,52 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Guides/ChartRenderer" />
+
+# ChartRenderer
+
+`<ui9000-chart-renderer>` is **not a chart**. It is a dispatcher: it reads a FuseDash widget payload, resolves `chartType`, lazy-loads the matching chart, and mounts that tag.
+
+Use it when the host does not know the chart type in advance (MCP chat, package host). For a known type, mount the chart tag directly (`ui9000-line-chart`, `ui9000-bar-chart`, …) — those are the stories under **Charts**.
+
+## How it works
+
+1. `chartType` comes from the `chart-type` attribute, or from `data.chartType` in the widget JSON.
+2. The registry maps that key (and FuseDash aliases such as `areaStackedChart` → area, `radarChartGrouped` → radar) to a lazy `kind` and a custom-element tag.
+3. `loadChart(kind)` registers the element, then the renderer creates that tag, copies `data` / `scale` / show-* / map host attrs onto it, and sizes it to 100%.
+
+Unknown types show an empty state (`Unsupported chart type`). Maps render when the host sets `mapbox-token` / `geojson-base-url` / `pmtiles-base-url`.
+
+## Usage
+
+```html
+<ui9000-chart-renderer
+  style="display:block;width:100%;height:420px;"
+  data='{"chartType":"lineChart","name":"Count Over Time","xAxe":["timestamp__m"],"yAxe":["count"],"data":[{"timestamp__m":"01","count":430}]}'
+  scale="default"
+  show-grid
+  show-legend
+  show-tooltip
+></ui9000-chart-renderer>
+```
+
+```ts
+import { registerChartRenderer } from '@fusedashlabs/widgets';
+// or: import { loadChartRenderer } from '@fusedashlabs/widgets/lazy/chart-renderer';
+
+registerChartRenderer();
+```
+
+`data` is the widget JSON string (same shape as chart stories’ FuseDash fixtures). Optional `chart-type` overrides `data.chartType`.
+
+## Attributes forwarded to the chart
+
+| Attribute | Role |
+|-----------|------|
+| `data` | Widget JSON |
+| `chart-type` | Optional override for `widget.chartType` |
+| `scale` | `compact` \| `default` \| `comfortable` |
+| `show-grid` / `show-legend` / `show-tooltip` | Copied onto the mounted chart |
+| `chart-title` | Else the widget `name` |
+| `mapbox-token` / `geojson-base-url` / `pmtiles-base-url` | Map host only |
+
+Registry: `src/components/chart-renderer/lib/registry.ts`. Each chart’s `metadata.json` `chartTypeKeys` (and optional `chartTypeMap` attrs) feed the dispatch table.

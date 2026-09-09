@@ -1,0 +1,20 @@
+{
+  "chartType": "KPI",
+  "type": "high/low",
+  "column": "satisfaction",
+  "name": "Satisfaction by Region",
+  "aggregations": "avg",
+  "groupBy": "Region",
+  "data": [
+    {
+      "high": {
+        "Region": "West",
+        "avg_satisfaction": 4.8
+      },
+      "low": {
+        "Region": "East",
+        "avg_satisfaction": 3.1
+      }
+    }
+  ]
+}

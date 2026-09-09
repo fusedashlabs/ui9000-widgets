@@ -1,0 +1,12 @@
+{
+  "id": "custom-widget-image-fixture",
+  "isCustom": true,
+  "name": "Store photo",
+  "imageUrl": "https://picsum.photos/seed/fusedash-store/800/480",
+  "alt": "Store front",
+  "arranging": {
+    "widgets": ["imageWidget"],
+    "hasKpi": false,
+    "direction": "vertical"
+  }
+}

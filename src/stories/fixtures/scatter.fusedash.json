@@ -1,0 +1,2742 @@
+{
+  "chartType": "scatterplotChart",
+  "name": "Average Total Income vs Total Outcome by ATM Manufacturer",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "Diebold Nixdorf",
+      "shape": "circle"
+    },
+    {
+      "key": "NCR",
+      "shape": "cross"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "totalIncome"
+  ],
+  "yAxe": [
+    "totalOutcome"
+  ],
+  "groupBy": [
+    "atm_manufacturer"
+  ],
+  "formatting": [
+    {
+      "key": "Diebold Nixdorf",
+      "color": "1"
+    },
+    {
+      "key": "NCR",
+      "color": "2"
+    }
+  ],
+  "uniqueValues": {
+    "totalIncome": [
+      "5425",
+      "2330",
+      "2325",
+      "4055",
+      "4445",
+      "1775",
+      "3730",
+      "4360",
+      "2875",
+      "2790",
+      "3155",
+      "3755",
+      "4850",
+      "5005",
+      "3475",
+      "4535",
+      "1525",
+      "5980",
+      "3990",
+      "4110",
+      "2820",
+      "6520",
+      "4485",
+      "2420",
+      "6230",
+      "3925",
+      "4270",
+      "2855",
+      "5805",
+      "4575",
+      "6210",
+      "2425",
+      "5585",
+      "3735",
+      "5420",
+      "4160",
+      "5885",
+      "4885",
+      "6105",
+      "2085",
+      "1980",
+      "2465",
+      "5830",
+      "2705",
+      "5515",
+      "3135",
+      "4985",
+      "6485",
+      "5415",
+      "3965",
+      "4040",
+      "4095",
+      "3115",
+      "4030",
+      "6750",
+      "4050",
+      "2780",
+      "4205",
+      "3005",
+      "5160",
+      "3685",
+      "5335",
+      "2680",
+      "2280",
+      "6060",
+      "1920",
+      "1815",
+      "7150",
+      "5390",
+      "5470",
+      "3460",
+      "2360",
+      "5480",
+      "5685",
+      "4585",
+      "4635",
+      "4180",
+      "3200",
+      "4335",
+      "6740",
+      "7290",
+      "4810",
+      "6340",
+      "2690",
+      "2935",
+      "3750",
+      "5265",
+      "5630",
+      "5285",
+      "2915",
+      "3165",
+      "4930",
+      "4195",
+      "3240",
+      "1565",
+      "5370",
+      "3860",
+      "4155",
+      "5525",
+      "4025",
+      "2255",
+      "5075",
+      "4395",
+      "5360",
+      "3880",
+      "6065",
+      "3625",
+      "2410",
+      "5660",
+      "5250",
+      "5960",
+      "3375",
+      "2745",
+      "2600",
+      "5305",
+      "4540",
+      "2050",
+      "3480",
+      "1690",
+      "2755",
+      "3085",
+      "4665",
+      "5060",
+      "2895",
+      "1990",
+      "5820",
+      "2220",
+      "4165",
+      "3630",
+      "7640",
+      "5235",
+      "2130",
+      "3575",
+      "2295",
+      "4875",
+      "6045",
+      "1385",
+      "3340",
+      "3590",
+      "4225",
+      "2165",
+      "3645",
+      "5775",
+      "4145",
+      "4135",
+      "5290",
+      "1365",
+      "1795",
+      "3665",
+      "4320",
+      "2215",
+      "2355",
+      "2775",
+      "4565",
+      "5770",
+      "4840",
+      "2900",
+      "3535",
+      "2370",
+      "3935",
+      "5720",
+      "2540",
+      "4835",
+      "2435",
+      "2035",
+      "2620",
+      "1880",
+      "2960",
+      "5120",
+      "3425",
+      "3840",
+      "6110",
+      "5110",
+      "4650",
+      "6220",
+      "3450",
+      "4515",
+      "1465",
+      "4410",
+      "4980",
+      "4350",
+      "3640",
+      "3235",
+      "4600",
+      "5645",
+      "5310",
+      "2595",
+      "2500",
+      "4560",
+      "6040",
+      "2315",
+      "3995",
+      "3330",
+      "4815",
+      "6980",
+      "2520",
+      "4760",
+      "4800",
+      "4900",
+      "6775",
+      "5040",
+      "2180",
+      "4915",
+      "3495",
+      "3765",
+      "2650",
+      "4935",
+      "4290",
+      "2815",
+      "4530",
+      "3920",
+      "6145",
+      "5745",
+      "3580",
+      "5865",
+      "3325",
+      "4655",
+      "3095",
+      "3905",
+      "5600",
+      "3695",
+      "5715",
+      "3060",
+      "5995",
+      "2630",
+      "2670",
+      "5035",
+      "2245",
+      "3170",
+      "4590",
+      "4695",
+      "5145",
+      "3075",
+      "2470",
+      "4380",
+      "5210",
+      "4660",
+      "1905",
+      "2225",
+      "4185",
+      "2880",
+      "4365",
+      "5535",
+      "3555",
+      "2825",
+      "2065",
+      "2990",
+      "4240",
+      "1575",
+      "3945",
+      "3520",
+      "2750",
+      "5575",
+      "6050",
+      "2635",
+      "3915",
+      "6005",
+      "5985",
+      "5930",
+      "2195",
+      "3180",
+      "5090",
+      "4020",
+      "2320",
+      "5940",
+      "2885",
+      "5375",
+      "6465",
+      "5785",
+      "5190",
+      "3250",
+      "4235",
+      "5410",
+      "4015",
+      "7410",
+      "3335",
+      "4420",
+      "2120",
+      "1800",
+      "3310",
+      "5560",
+      "2760",
+      "5300",
+      "6185",
+      "3680",
+      "5240",
+      "6100",
+      "2850",
+      "4260",
+      "3775",
+      "1895",
+      "3565",
+      "7125",
+      "4745",
+      "2375",
+      "5875",
+      "5350",
+      "1765",
+      "6480",
+      "3390",
+      "3420",
+      "4605",
+      "6080",
+      "5365",
+      "5965",
+      "3470",
+      "4385",
+      "6260",
+      "4355",
+      "5045",
+      "2100",
+      "5735",
+      "2640",
+      "4670",
+      "2380",
+      "6330",
+      "4065",
+      "5010",
+      "5080",
+      "5810",
+      "2995",
+      "4960",
+      "5925",
+      "5140",
+      "2735",
+      "3980",
+      "2300",
+      "3175",
+      "4450",
+      "5635",
+      "1695",
+      "4150",
+      "5155",
+      "2835",
+      "3050",
+      "7075",
+      "2830",
+      "2285",
+      "2905",
+      "6375",
+      "5950",
+      "4440",
+      "3540",
+      "5825",
+      "5605",
+      "6195",
+      "1125",
+      "6015",
+      "3510",
+      "5550",
+      "3055",
+      "3380",
+      "3845",
+      "2190",
+      "1860",
+      "5180",
+      "6855",
+      "3740",
+      "6135",
+      "3070",
+      "3350",
+      "6035",
+      "3800",
+      "4940",
+      "3795",
+      "4765",
+      "3295",
+      "4990",
+      "3790",
+      "4905",
+      "7355",
+      "4825",
+      "5650",
+      "1945",
+      "2805",
+      "6630",
+      "3365",
+      "4685",
+      "5195",
+      "3975",
+      "4375",
+      "4310",
+      "4105",
+      "6275",
+      "4005",
+      "2765",
+      "2095",
+      "2655",
+      "4890",
+      "1635",
+      "5050",
+      "3595",
+      "2350",
+      "2700",
+      "3140",
+      "2615",
+      "6180",
+      "6600",
+      "5860",
+      "5245",
+      "2980",
+      "3000",
+      "5070",
+      "2725",
+      "6075",
+      "4120",
+      "2570",
+      "4265",
+      "5640",
+      "1865",
+      "4865",
+      "3600",
+      "1750"
+    ],
+    "atm_manufacturer": [
+      "Diebold Nixdorf",
+      "NCR"
+    ]
+  },
+  "data": [
+    {
+      "totalIncome": 5425,
+      "totalOutcome": 7675,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2330,
+      "totalOutcome": 7340,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2325,
+      "totalOutcome": 7295,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4055,
+      "totalOutcome": 7240,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4445,
+      "totalOutcome": 7230,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1775,
+      "totalOutcome": 7230,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3730,
+      "totalOutcome": 7145,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4360,
+      "totalOutcome": 7105,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2875,
+      "totalOutcome": 7050,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2790,
+      "totalOutcome": 7040,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3155,
+      "totalOutcome": 7035,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3755,
+      "totalOutcome": 6950,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4850,
+      "totalOutcome": 6930,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5005,
+      "totalOutcome": 6865,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3475,
+      "totalOutcome": 6815,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4535,
+      "totalOutcome": 6800,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1525,
+      "totalOutcome": 6770,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5980,
+      "totalOutcome": 6685,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3990,
+      "totalOutcome": 6675,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4110,
+      "totalOutcome": 6660,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2820,
+      "totalOutcome": 6650,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6520,
+      "totalOutcome": 6645,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4485,
+      "totalOutcome": 6620,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2420,
+      "totalOutcome": 6590,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6230,
+      "totalOutcome": 6555,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3925,
+      "totalOutcome": 6530,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4270,
+      "totalOutcome": 6485,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2855,
+      "totalOutcome": 6465,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5805,
+      "totalOutcome": 6450,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4575,
+      "totalOutcome": 6415,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6210,
+      "totalOutcome": 6415,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2425,
+      "totalOutcome": 6385,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5585,
+      "totalOutcome": 6375,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3735,
+      "totalOutcome": 6325,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5420,
+      "totalOutcome": 6315,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4160,
+      "totalOutcome": 6300,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5885,
+      "totalOutcome": 6295,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4885,
+      "totalOutcome": 6290,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6105,
+      "totalOutcome": 6280,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2085,
+      "totalOutcome": 6275,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1980,
+      "totalOutcome": 6255,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5420,
+      "totalOutcome": 6245,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2465,
+      "totalOutcome": 6240,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5830,
+      "totalOutcome": 6225,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2705,
+      "totalOutcome": 6210,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5515,
+      "totalOutcome": 6185,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3135,
+      "totalOutcome": 6170,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4985,
+      "totalOutcome": 6170,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6485,
+      "totalOutcome": 6160,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5415,
+      "totalOutcome": 6120,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3965,
+      "totalOutcome": 6115,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4040,
+      "totalOutcome": 6110,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4095,
+      "totalOutcome": 6105,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3115,
+      "totalOutcome": 6102.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6750,
+      "totalOutcome": 6080,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4030,
+      "totalOutcome": 6080,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4050,
+      "totalOutcome": 6080,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2780,
+      "totalOutcome": 6080,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4205,
+      "totalOutcome": 6075,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3005,
+      "totalOutcome": 6070,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5160,
+      "totalOutcome": 6065,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3685,
+      "totalOutcome": 6062.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5335,
+      "totalOutcome": 6062.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2680,
+      "totalOutcome": 6055,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2280,
+      "totalOutcome": 6055,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6060,
+      "totalOutcome": 6035,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1920,
+      "totalOutcome": 6035,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1815,
+      "totalOutcome": 6025,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 7150,
+      "totalOutcome": 6015,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5390,
+      "totalOutcome": 6010,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5470,
+      "totalOutcome": 6010,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3460,
+      "totalOutcome": 5985,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2360,
+      "totalOutcome": 5980,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5480,
+      "totalOutcome": 5965,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5685,
+      "totalOutcome": 5965,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4585,
+      "totalOutcome": 5955,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4635,
+      "totalOutcome": 5940,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4180,
+      "totalOutcome": 5935,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3200,
+      "totalOutcome": 5920,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4335,
+      "totalOutcome": 5917.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6740,
+      "totalOutcome": 5910,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 7290,
+      "totalOutcome": 5895,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6340,
+      "totalOutcome": 5885,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4810,
+      "totalOutcome": 5885,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2690,
+      "totalOutcome": 5870,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2935,
+      "totalOutcome": 5860,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3750,
+      "totalOutcome": 5860,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5265,
+      "totalOutcome": 5850,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5630,
+      "totalOutcome": 5835,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5285,
+      "totalOutcome": 5825,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2915,
+      "totalOutcome": 5810,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3165,
+      "totalOutcome": 5810,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4930,
+      "totalOutcome": 5800,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4195,
+      "totalOutcome": 5795,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3240,
+      "totalOutcome": 5785,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1565,
+      "totalOutcome": 5775,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5370,
+      "totalOutcome": 5765,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3860,
+      "totalOutcome": 5760,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4155,
+      "totalOutcome": 5755,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5525,
+      "totalOutcome": 5751.666666666667,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4025,
+      "totalOutcome": 5750,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2255,
+      "totalOutcome": 5740,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5075,
+      "totalOutcome": 5720,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5360,
+      "totalOutcome": 5720,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4395,
+      "totalOutcome": 5720,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3880,
+      "totalOutcome": 5710,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6065,
+      "totalOutcome": 5680,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3625,
+      "totalOutcome": 5660,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2410,
+      "totalOutcome": 5650,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5660,
+      "totalOutcome": 5645,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5250,
+      "totalOutcome": 5615,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5960,
+      "totalOutcome": 5610,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3375,
+      "totalOutcome": 5600,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2745,
+      "totalOutcome": 5595,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2600,
+      "totalOutcome": 5570,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5305,
+      "totalOutcome": 5565,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4540,
+      "totalOutcome": 5550,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2050,
+      "totalOutcome": 5540,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3480,
+      "totalOutcome": 5535,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1690,
+      "totalOutcome": 5520,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2050,
+      "totalOutcome": 5505,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2755,
+      "totalOutcome": 5500,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5335,
+      "totalOutcome": 5490,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3085,
+      "totalOutcome": 5480,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2360,
+      "totalOutcome": 5465,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4665,
+      "totalOutcome": 5455,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5060,
+      "totalOutcome": 5450,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2895,
+      "totalOutcome": 5440,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1990,
+      "totalOutcome": 5440,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5820,
+      "totalOutcome": 5435,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2220,
+      "totalOutcome": 5430,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4165,
+      "totalOutcome": 5430,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3630,
+      "totalOutcome": 5425,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 7640,
+      "totalOutcome": 5420,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5235,
+      "totalOutcome": 5410,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2130,
+      "totalOutcome": 5405,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3575,
+      "totalOutcome": 5397.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2295,
+      "totalOutcome": 5380,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4875,
+      "totalOutcome": 5370,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6045,
+      "totalOutcome": 5365,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1385,
+      "totalOutcome": 5365,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3340,
+      "totalOutcome": 5357.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3590,
+      "totalOutcome": 5350,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4225,
+      "totalOutcome": 5345,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3735,
+      "totalOutcome": 5340,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2165,
+      "totalOutcome": 5330,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3645,
+      "totalOutcome": 5330,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5775,
+      "totalOutcome": 5320,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4145,
+      "totalOutcome": 5310,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4135,
+      "totalOutcome": 5310,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5290,
+      "totalOutcome": 5310,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1365,
+      "totalOutcome": 5305,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1795,
+      "totalOutcome": 5295,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3665,
+      "totalOutcome": 5290,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4320,
+      "totalOutcome": 5275,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2215,
+      "totalOutcome": 5275,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2355,
+      "totalOutcome": 5265,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2775,
+      "totalOutcome": 5250,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4565,
+      "totalOutcome": 5215,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5770,
+      "totalOutcome": 5215,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2900,
+      "totalOutcome": 5215,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4840,
+      "totalOutcome": 5215,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3535,
+      "totalOutcome": 5195,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2370,
+      "totalOutcome": 5190,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3935,
+      "totalOutcome": 5190,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5720,
+      "totalOutcome": 5165,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2540,
+      "totalOutcome": 5160,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4835,
+      "totalOutcome": 5160,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2435,
+      "totalOutcome": 5160,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2035,
+      "totalOutcome": 5155,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1880,
+      "totalOutcome": 5140,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2620,
+      "totalOutcome": 5140,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2960,
+      "totalOutcome": 5140,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5120,
+      "totalOutcome": 5135,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3425,
+      "totalOutcome": 5135,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3840,
+      "totalOutcome": 5130,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6110,
+      "totalOutcome": 5125,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5110,
+      "totalOutcome": 5120,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4650,
+      "totalOutcome": 5115,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6220,
+      "totalOutcome": 5105,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3450,
+      "totalOutcome": 5105,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4515,
+      "totalOutcome": 5085,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1465,
+      "totalOutcome": 5080,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4410,
+      "totalOutcome": 5065,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4980,
+      "totalOutcome": 5065,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4350,
+      "totalOutcome": 5053.333333333333,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3640,
+      "totalOutcome": 5025,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3235,
+      "totalOutcome": 5025,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4600,
+      "totalOutcome": 5020,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5645,
+      "totalOutcome": 5015,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5310,
+      "totalOutcome": 5010,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2595,
+      "totalOutcome": 4992.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2500,
+      "totalOutcome": 4980,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4560,
+      "totalOutcome": 4970,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6040,
+      "totalOutcome": 4970,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2315,
+      "totalOutcome": 4955,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3995,
+      "totalOutcome": 4950,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3085,
+      "totalOutcome": 4945,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3330,
+      "totalOutcome": 4940,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4815,
+      "totalOutcome": 4932.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6980,
+      "totalOutcome": 4930,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2520,
+      "totalOutcome": 4920,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4760,
+      "totalOutcome": 4910,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4800,
+      "totalOutcome": 4905,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4900,
+      "totalOutcome": 4892.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6775,
+      "totalOutcome": 4885,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5040,
+      "totalOutcome": 4875,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2180,
+      "totalOutcome": 4860,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4915,
+      "totalOutcome": 4860,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3495,
+      "totalOutcome": 4855,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3630,
+      "totalOutcome": 4852.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3765,
+      "totalOutcome": 4845,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2650,
+      "totalOutcome": 4840,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4935,
+      "totalOutcome": 4825,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4290,
+      "totalOutcome": 4825,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2815,
+      "totalOutcome": 4822.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4530,
+      "totalOutcome": 4797.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4290,
+      "totalOutcome": 4795,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3920,
+      "totalOutcome": 4785,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6145,
+      "totalOutcome": 4785,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4530,
+      "totalOutcome": 4780,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5745,
+      "totalOutcome": 4775,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3580,
+      "totalOutcome": 4750,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5865,
+      "totalOutcome": 4730,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3325,
+      "totalOutcome": 4720,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4655,
+      "totalOutcome": 4720,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3905,
+      "totalOutcome": 4720,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3095,
+      "totalOutcome": 4720,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5600,
+      "totalOutcome": 4717.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3695,
+      "totalOutcome": 4705,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5715,
+      "totalOutcome": 4695,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3060,
+      "totalOutcome": 4685,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5995,
+      "totalOutcome": 4680,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2630,
+      "totalOutcome": 4675,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2670,
+      "totalOutcome": 4670,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5035,
+      "totalOutcome": 4665,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2245,
+      "totalOutcome": 4665,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3170,
+      "totalOutcome": 4660,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4590,
+      "totalOutcome": 4650,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4695,
+      "totalOutcome": 4640,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5145,
+      "totalOutcome": 4640,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3075,
+      "totalOutcome": 4620,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2470,
+      "totalOutcome": 4605,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4380,
+      "totalOutcome": 4602.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5210,
+      "totalOutcome": 4590,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4660,
+      "totalOutcome": 4590,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1905,
+      "totalOutcome": 4577.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2225,
+      "totalOutcome": 4570,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4185,
+      "totalOutcome": 4570,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2880,
+      "totalOutcome": 4560,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4225,
+      "totalOutcome": 4560,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5820,
+      "totalOutcome": 4555,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4365,
+      "totalOutcome": 4545,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5535,
+      "totalOutcome": 4540,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3555,
+      "totalOutcome": 4525,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2825,
+      "totalOutcome": 4520,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2880,
+      "totalOutcome": 4515,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2600,
+      "totalOutcome": 4510,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2065,
+      "totalOutcome": 4505,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2990,
+      "totalOutcome": 4495,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4240,
+      "totalOutcome": 4490,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1575,
+      "totalOutcome": 4475,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3945,
+      "totalOutcome": 4475,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3520,
+      "totalOutcome": 4470,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2750,
+      "totalOutcome": 4465,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5575,
+      "totalOutcome": 4460,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6050,
+      "totalOutcome": 4445,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2635,
+      "totalOutcome": 4420,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3915,
+      "totalOutcome": 4412.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6005,
+      "totalOutcome": 4405,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5985,
+      "totalOutcome": 4405,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5930,
+      "totalOutcome": 4395,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2195,
+      "totalOutcome": 4390,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5090,
+      "totalOutcome": 4380,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3180,
+      "totalOutcome": 4380,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4020,
+      "totalOutcome": 4375,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2320,
+      "totalOutcome": 4370,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5940,
+      "totalOutcome": 4365,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2885,
+      "totalOutcome": 4360,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5515,
+      "totalOutcome": 4352.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5375,
+      "totalOutcome": 4350,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6465,
+      "totalOutcome": 4345,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5785,
+      "totalOutcome": 4340,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2750,
+      "totalOutcome": 4330,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5190,
+      "totalOutcome": 4325,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4235,
+      "totalOutcome": 4320,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3250,
+      "totalOutcome": 4320,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5410,
+      "totalOutcome": 4305,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4015,
+      "totalOutcome": 4305,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 7410,
+      "totalOutcome": 4295,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3335,
+      "totalOutcome": 4295,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4420,
+      "totalOutcome": 4295,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2120,
+      "totalOutcome": 4295,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1800,
+      "totalOutcome": 4290,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3310,
+      "totalOutcome": 4290,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3575,
+      "totalOutcome": 4285,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3340,
+      "totalOutcome": 4285,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5560,
+      "totalOutcome": 4275,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5300,
+      "totalOutcome": 4265,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2760,
+      "totalOutcome": 4265,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6185,
+      "totalOutcome": 4260,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3680,
+      "totalOutcome": 4255,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5240,
+      "totalOutcome": 4230,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6100,
+      "totalOutcome": 4230,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2850,
+      "totalOutcome": 4222.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4260,
+      "totalOutcome": 4215,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3775,
+      "totalOutcome": 4205,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1895,
+      "totalOutcome": 4200,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3565,
+      "totalOutcome": 4190,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 7125,
+      "totalOutcome": 4175,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4745,
+      "totalOutcome": 4170,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2375,
+      "totalOutcome": 4170,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5875,
+      "totalOutcome": 4165,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5350,
+      "totalOutcome": 4165,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1765,
+      "totalOutcome": 4155,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6480,
+      "totalOutcome": 4155,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6040,
+      "totalOutcome": 4150,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3390,
+      "totalOutcome": 4115,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2690,
+      "totalOutcome": 4112.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3420,
+      "totalOutcome": 4110,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4605,
+      "totalOutcome": 4107.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6080,
+      "totalOutcome": 4105,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5365,
+      "totalOutcome": 4090,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5965,
+      "totalOutcome": 4080,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3470,
+      "totalOutcome": 4075,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4050,
+      "totalOutcome": 4070,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4385,
+      "totalOutcome": 4065,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6260,
+      "totalOutcome": 4065,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4355,
+      "totalOutcome": 4050,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5045,
+      "totalOutcome": 4030,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2100,
+      "totalOutcome": 4030,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5735,
+      "totalOutcome": 4020,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2640,
+      "totalOutcome": 4005,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2295,
+      "totalOutcome": 4000,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4670,
+      "totalOutcome": 4000,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2380,
+      "totalOutcome": 3990,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6330,
+      "totalOutcome": 3970,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4065,
+      "totalOutcome": 3950,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5010,
+      "totalOutcome": 3925,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5080,
+      "totalOutcome": 3915,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5810,
+      "totalOutcome": 3905,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2995,
+      "totalOutcome": 3900,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4960,
+      "totalOutcome": 3900,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4110,
+      "totalOutcome": 3890,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5925,
+      "totalOutcome": 3875,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5140,
+      "totalOutcome": 3850,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2735,
+      "totalOutcome": 3845,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3980,
+      "totalOutcome": 3840,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2300,
+      "totalOutcome": 3820,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3175,
+      "totalOutcome": 3810,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4450,
+      "totalOutcome": 3795,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5635,
+      "totalOutcome": 3792.5,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1695,
+      "totalOutcome": 3780,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4150,
+      "totalOutcome": 3780,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5155,
+      "totalOutcome": 3775,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4195,
+      "totalOutcome": 3770,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2835,
+      "totalOutcome": 3740,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3050,
+      "totalOutcome": 3740,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 7075,
+      "totalOutcome": 3740,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3925,
+      "totalOutcome": 3730,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2830,
+      "totalOutcome": 3725,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2285,
+      "totalOutcome": 3715,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2905,
+      "totalOutcome": 3710,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6375,
+      "totalOutcome": 3710,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5950,
+      "totalOutcome": 3705,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4440,
+      "totalOutcome": 3705,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3540,
+      "totalOutcome": 3695,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3480,
+      "totalOutcome": 3685,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5825,
+      "totalOutcome": 3645,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5605,
+      "totalOutcome": 3645,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5290,
+      "totalOutcome": 3640,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4240,
+      "totalOutcome": 3630,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6195,
+      "totalOutcome": 3625,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1125,
+      "totalOutcome": 3620,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6015,
+      "totalOutcome": 3610,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3510,
+      "totalOutcome": 3610,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5550,
+      "totalOutcome": 3605,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3055,
+      "totalOutcome": 3595,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3380,
+      "totalOutcome": 3587.5,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3845,
+      "totalOutcome": 3585,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2190,
+      "totalOutcome": 3580,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1860,
+      "totalOutcome": 3570,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5180,
+      "totalOutcome": 3565,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6855,
+      "totalOutcome": 3550,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3740,
+      "totalOutcome": 3545,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6135,
+      "totalOutcome": 3535,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3070,
+      "totalOutcome": 3530,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3350,
+      "totalOutcome": 3530,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6035,
+      "totalOutcome": 3520,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3800,
+      "totalOutcome": 3520,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4940,
+      "totalOutcome": 3500,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3795,
+      "totalOutcome": 3460,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4765,
+      "totalOutcome": 3450,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3295,
+      "totalOutcome": 3440,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4990,
+      "totalOutcome": 3425,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3790,
+      "totalOutcome": 3420,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4905,
+      "totalOutcome": 3395,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 7355,
+      "totalOutcome": 3395,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4825,
+      "totalOutcome": 3390,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5650,
+      "totalOutcome": 3385,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5830,
+      "totalOutcome": 3385,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1945,
+      "totalOutcome": 3385,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2805,
+      "totalOutcome": 3375,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6630,
+      "totalOutcome": 3355,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3365,
+      "totalOutcome": 3350,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4685,
+      "totalOutcome": 3335,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5195,
+      "totalOutcome": 3335,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5960,
+      "totalOutcome": 3325,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3975,
+      "totalOutcome": 3310,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4135,
+      "totalOutcome": 3310,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4375,
+      "totalOutcome": 3305,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4310,
+      "totalOutcome": 3295,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4105,
+      "totalOutcome": 3285,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 6275,
+      "totalOutcome": 3285,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4005,
+      "totalOutcome": 3280,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2765,
+      "totalOutcome": 3245,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2215,
+      "totalOutcome": 3240,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5120,
+      "totalOutcome": 3240,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2095,
+      "totalOutcome": 3235,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2655,
+      "totalOutcome": 3230,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4890,
+      "totalOutcome": 3220,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5575,
+      "totalOutcome": 3215,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2595,
+      "totalOutcome": 3205,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 1635,
+      "totalOutcome": 3165,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5050,
+      "totalOutcome": 3155,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3595,
+      "totalOutcome": 3135,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2280,
+      "totalOutcome": 3090,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2350,
+      "totalOutcome": 3070,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2700,
+      "totalOutcome": 3070,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3140,
+      "totalOutcome": 3030,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2615,
+      "totalOutcome": 3010,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6180,
+      "totalOutcome": 3005,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6600,
+      "totalOutcome": 2980,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4310,
+      "totalOutcome": 2965,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5860,
+      "totalOutcome": 2950,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 5245,
+      "totalOutcome": 2935,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4940,
+      "totalOutcome": 2920,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2980,
+      "totalOutcome": 2905,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3000,
+      "totalOutcome": 2895,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2765,
+      "totalOutcome": 2895,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5525,
+      "totalOutcome": 2875,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2065,
+      "totalOutcome": 2860,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5070,
+      "totalOutcome": 2835,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 2725,
+      "totalOutcome": 2825,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 6075,
+      "totalOutcome": 2810,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 4120,
+      "totalOutcome": 2810,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 3935,
+      "totalOutcome": 2770,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2570,
+      "totalOutcome": 2730,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2775,
+      "totalOutcome": 2675,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4265,
+      "totalOutcome": 2670,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 5640,
+      "totalOutcome": 2520,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1865,
+      "totalOutcome": 2505,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 4865,
+      "totalOutcome": 2500,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 3600,
+      "totalOutcome": 2475,
+      "atm_manufacturer": "NCR"
+    },
+    {
+      "totalIncome": 2570,
+      "totalOutcome": 2260,
+      "atm_manufacturer": "Diebold Nixdorf"
+    },
+    {
+      "totalIncome": 1750,
+      "totalOutcome": 2160,
+      "atm_manufacturer": "Diebold Nixdorf"
+    }
+  ],
+  "kpis": []
+}

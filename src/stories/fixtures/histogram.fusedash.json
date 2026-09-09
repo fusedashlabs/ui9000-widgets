@@ -1,0 +1,720 @@
+{
+  "chartType": "histogramChart",
+  "name": "Total Number Transaction by Weather Main",
+  "orientation": "horizontal",
+  "xAxe": [
+    "weather-main"
+  ],
+  "yAxe": [],
+  "groupBy": [],
+  "formatting": [
+    {
+      "color": "1",
+      "key": "Clouds"
+    },
+    {
+      "color": "2",
+      "key": "Drizzle"
+    },
+    {
+      "color": "3",
+      "key": "Snow"
+    },
+    {
+      "color": "4",
+      "key": "Fog"
+    },
+    {
+      "color": "5",
+      "key": "Rain"
+    },
+    {
+      "color": "6",
+      "key": "Thunderstorm"
+    },
+    {
+      "color": "7",
+      "key": "Clear"
+    },
+    {
+      "color": "8",
+      "key": "Haze"
+    },
+    {
+      "color": "9",
+      "key": "Mist"
+    }
+  ],
+  "uniqueValues": {
+    "weather-main": [
+      "Clouds",
+      "Drizzle",
+      "Snow",
+      "Fog",
+      "Rain",
+      "Thunderstorm",
+      "Clear",
+      "Haze",
+      "Mist"
+    ]
+  },
+  "data": [
+    {
+      "_id": null,
+      "sample_count": 518,
+      "min": 81,
+      "q1": 120,
+      "q3": 157,
+      "max": 199,
+      "iqr": 37,
+      "optimalBucketCount": 13,
+      "optimalBucketWidth": 9.076923077,
+      "histogramResults": [
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 3,
+          "bucketIndex": 0
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 1,
+          "bucketIndex": 0
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 5,
+          "bucketIndex": 0
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 5,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 5,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 2,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 7,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 5,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 5,
+          "bucketIndex": 1
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 2,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 5,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 6,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 2,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 8,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 4,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 5,
+          "bucketIndex": 2
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 2,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 2,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 11,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 1,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Haze"
+          },
+          "count": 1,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 9,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 10,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 8,
+          "bucketIndex": 3
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 3,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 5,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 5,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 1,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Haze"
+          },
+          "count": 4,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 2,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 15,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 12,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 10,
+          "bucketIndex": 4
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 10,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 5,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 7,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 1,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 20,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 16,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 7,
+          "bucketIndex": 5
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 6,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 5,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 7,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 1,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 15,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 13,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 9,
+          "bucketIndex": 6
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 11,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 14,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 1,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Haze"
+          },
+          "count": 1,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 4,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 18,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 20,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 6,
+          "bucketIndex": 7
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 2,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 8,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 8,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 13,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 17,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 4,
+          "bucketIndex": 8
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 3,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 4,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 5,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 3,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Haze"
+          },
+          "count": 1,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 2,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 4,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 9,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 7,
+          "bucketIndex": 9
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 4,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 4,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 2,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 2,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Haze"
+          },
+          "count": 2,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 1,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 12,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 5,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 2,
+          "bucketIndex": 10
+        },
+        {
+          "_id": {
+            "weather-main": "Clear"
+          },
+          "count": 1,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 2,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Drizzle"
+          },
+          "count": 2,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Fog"
+          },
+          "count": 1,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 3,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 3,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 2,
+          "bucketIndex": 11
+        },
+        {
+          "_id": {
+            "weather-main": "Clouds"
+          },
+          "count": 1,
+          "bucketIndex": 12
+        },
+        {
+          "_id": {
+            "weather-main": "Haze"
+          },
+          "count": 1,
+          "bucketIndex": 12
+        },
+        {
+          "_id": {
+            "weather-main": "Mist"
+          },
+          "count": 1,
+          "bucketIndex": 12
+        },
+        {
+          "_id": {
+            "weather-main": "Rain"
+          },
+          "count": 2,
+          "bucketIndex": 12
+        },
+        {
+          "_id": {
+            "weather-main": "Snow"
+          },
+          "count": 5,
+          "bucketIndex": 12
+        },
+        {
+          "_id": {
+            "weather-main": "Thunderstorm"
+          },
+          "count": 2,
+          "bucketIndex": 12
+        }
+      ]
+    }
+  ]
+}

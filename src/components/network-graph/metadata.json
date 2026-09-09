@@ -1,0 +1,139 @@
+{
+  "id": "network-graph",
+  "tag": "ui9000-network-graph",
+  "title": "Network Graph",
+  "description": "Chat-optimized FuseDash NetworkGraph rewritten in D3 (d3-force/-drag/-zoom). Value-sized nodes, category colours, click-to-focus links, and a size-bucket legend filter. No Redux.",
+  "chartTypeKeys": ["networkGraphChart"],
+  "source": "client/libs/shared/components/src/Widgets/NetworkGraph/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/network-graph",
+  "entry": "@ui9000/widgets/network-graph",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "select", "drag", "zoom", "filter", "resize"],
+  "tier": "engine",
+  "intents": ["graph"],
+  "dataRoles": [
+    {
+      "id": "nodes",
+      "required": true,
+      "description": "Entities in the graph (hosts, users, assets)."
+    },
+    {
+      "id": "links",
+      "required": true,
+      "description": "Relationships between nodes."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasNodes && profile.hasLinks",
+      "reason": "Network graph shows entities and the edges between them."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasNodes || !profile.hasLinks",
+      "reason": "Without both nodes and links the graph is empty; use table or entity-detail."
+    },
+    {
+      "when": "profile.hasGeo && !profile.hasNodes",
+      "reason": "Spatial-only data belongs on map-chart."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "title",
+    "keyboard": ["Tab into graph", "filter legend"],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "network-picks-nodes-links",
+      "intent": "graph",
+      "profile": { "hasNodes": true, "hasLinks": true },
+      "expect": "eligible",
+      "reasonIncludes": "edges"
+    },
+    {
+      "id": "network-rejects-missing-links",
+      "intent": "graph",
+      "profile": { "hasNodes": true, "hasLinks": false },
+      "expect": "disqualified",
+      "reasonIncludes": "table"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem-shaped payload — the graph lives in data[0].",
+            "required": ["data"],
+            "properties": {
+              "name": { "type": "string" },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+                    "links": { "type": "array", "items": { "$ref": "#/$defs/link" } }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Graph payload from chat.",
+            "properties": {
+              "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+              "links": { "type": "array", "items": { "$ref": "#/$defs/link" } }
+            }
+          },
+          {
+            "type": "array",
+            "description": "Links only — node ids are derived from the endpoints.",
+            "items": { "$ref": "#/$defs/link" }
+          }
+        ]
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "show-legend": { "type": "boolean", "default": true },
+      "show-tooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"],
+    "$defs": {
+      "node": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "value": { "type": "number", "description": "Drives the size bucket." },
+          "type": { "type": "string", "description": "Category key → node colour." },
+          "color": { "type": "string" },
+          "img": { "type": "string", "description": "Avatar URL clipped to the node circle." }
+        }
+      },
+      "link": {
+        "type": "object",
+        "required": ["source", "target"],
+        "properties": {
+          "id": { "type": "string" },
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "value": { "type": "number" },
+          "type": { "type": "string", "enum": ["primary", "neutral", "secondary"] }
+        }
+      }
+    }
+  }
+}

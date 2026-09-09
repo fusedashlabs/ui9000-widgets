@@ -1,0 +1,179 @@
+{
+  "chartType": "donutChart",
+  "name": "Monthly Total Volume Distribution",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "timeline": true,
+  "xAxe": [
+    "Date__m"
+  ],
+  "yAxe": [
+    "Total Volume"
+  ],
+  "formatting": [
+    {
+      "key": "January",
+      "color": "1"
+    },
+    {
+      "key": "February",
+      "color": "2"
+    },
+    {
+      "key": "March",
+      "color": "3"
+    },
+    {
+      "key": "April",
+      "color": "4"
+    },
+    {
+      "key": "May",
+      "color": "5"
+    },
+    {
+      "key": "June",
+      "color": "6"
+    },
+    {
+      "key": "July",
+      "color": "7"
+    },
+    {
+      "key": "August",
+      "color": "8"
+    },
+    {
+      "key": "September",
+      "color": "9"
+    },
+    {
+      "key": "October",
+      "color": "10"
+    },
+    {
+      "key": "November",
+      "color": "11"
+    },
+    {
+      "key": "December",
+      "color": "12"
+    }
+  ],
+  "uniqueValues": {
+    "Date__m": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
+  },
+  "axisDetails": {
+    "Date__m": {
+      "label": "Month",
+      "type": "datetime",
+      "subtype": "month_number",
+      "measure_unit": null,
+      "measure_unit_type": null,
+      "measure_unit_symbol": null,
+      "domain_limits": null
+    },
+    "Total Volume": {
+      "label": "Total Volume",
+      "type": "metric",
+      "subtype": "float",
+      "measure_unit": "kg",
+      "measure_unit_type": "mass",
+      "measure_unit_symbol": "kg",
+      "domain_limits": {
+        "min": 0,
+        "max": 1000000000
+      }
+    }
+  },
+  "data": [
+    {
+      "Date__m": "February",
+      "Total Volume": 1830290913.2,
+      "total": 16362977462.4,
+      "percentage": 0.11185561536131008
+    },
+    {
+      "Date__m": "January",
+      "Total Volume": 1818572223.23,
+      "total": 16362977462.4,
+      "percentage": 0.11113944435900149
+    },
+    {
+      "Date__m": "March",
+      "Total Volume": 1705065271.31,
+      "total": 16362977462.4,
+      "percentage": 0.10420262908923629
+    },
+    {
+      "Date__m": "May",
+      "Total Volume": 1561507003.11,
+      "total": 16362977462.4,
+      "percentage": 0.09542927054065438
+    },
+    {
+      "Date__m": "July",
+      "Total Volume": 1366234982.94,
+      "total": 16362977462.4,
+      "percentage": 0.08349549989171781
+    },
+    {
+      "Date__m": "April",
+      "Total Volume": 1299719075.66,
+      "total": 16362977462.4,
+      "percentage": 0.07943047520823066
+    },
+    {
+      "Date__m": "June",
+      "Total Volume": 1274266493.86,
+      "total": 16362977462.4,
+      "percentage": 0.07787497701980578
+    },
+    {
+      "Date__m": "August",
+      "Total Volume": 1208841578.81,
+      "total": 16362977462.4,
+      "percentage": 0.07387662676843265
+    },
+    {
+      "Date__m": "December",
+      "Total Volume": 1144264661.83,
+      "total": 16362977462.4,
+      "percentage": 0.06993010070809984
+    },
+    {
+      "Date__m": "October",
+      "Total Volume": 1087791596.14,
+      "total": 16362977462.4,
+      "percentage": 0.06647882994642046
+    },
+    {
+      "Date__m": "September",
+      "Total Volume": 1039335411.74,
+      "total": 16362977462.4,
+      "percentage": 0.06351749943604446
+    },
+    {
+      "Date__m": "November",
+      "Total Volume": 1027088250.5699999,
+      "total": 16362977462.4,
+      "percentage": 0.06276903167104615
+    }
+  ],
+  "kpis": []
+}

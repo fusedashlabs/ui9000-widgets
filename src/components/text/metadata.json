@@ -1,0 +1,95 @@
+{
+  "id": "text",
+  "tag": "ui9000-text",
+  "title": "Text",
+  "description": "Markdown/plain note. Links http(s) only. No innerHTML.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/text",
+  "entry": "@ui9000/widgets/text",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "resize"
+  ],
+  "tier": "engine",
+  "intents": [
+    "evidence"
+  ],
+  "dataRoles": [
+    {
+      "id": "body",
+      "required": true,
+      "description": "Markdown or plain text note."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.hasClaim || profile.hasTabularRows",
+      "reason": "Text carries a narrative claim or note alongside evidence."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.hasClaim && !profile.hasTabularRows && !profile.hasEvents",
+      "reason": "With no claim or supporting context, prefer KPI or table."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "heading in markdown or aria-label",
+    "keyboard": [
+      "Tab into text, follow http(s) links"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "text-picks-claim",
+      "intent": "evidence",
+      "profile": {
+        "hasClaim": true
+      },
+      "expect": "eligible",
+      "reasonIncludes": "narrative"
+    },
+    {
+      "id": "text-rejects-empty",
+      "intent": "summary",
+      "profile": {
+        "hasClaim": false,
+        "hasTabularRows": false,
+        "hasEvents": false
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "KPI"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

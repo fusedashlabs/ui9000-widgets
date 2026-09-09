@@ -1,0 +1,123 @@
+{
+  "id": "treemap-chart",
+  "tag": "ui9000-treemap-chart",
+  "title": "Treemap",
+  "description": "Chat-optimized treemap rewritten in D3 (Visx → D3). One area-proportional `treemapBinary` layout when the widget has a single category dimension, or the FuseDash card mosaic with a nested treemap per group when `subgroup` adds a second dimension. Tiles are colored by magnitude across seven shades of the group color. No Redux.",
+  "chartTypeKeys": ["treemapChart"],
+  "chartTypeMap": {
+    "treemapChart": { "showLegend": true, "showTooltip": true }
+  },
+  "source": "client/libs/shared/components/src/Widgets/Treemap/",
+  "stack": "d3",
+  "lazyImport": "@fusedashlabs/widgets/lazy/treemap-chart",
+  "entry": "@fusedashlabs/widgets/treemap-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true,
+    "context": "theme, scale, styleId and mode come from WidgetContext CSS custom properties, not props"
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "description": "Chat shorthand — one tile per row, area proportional to `value`.",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" },
+                "color": { "type": "string" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y"],
+                  "properties": {
+                    "x": { "type": "string" },
+                    "y": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "description": "One card per series — the grouped treemap.",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["x", "y"],
+                        "properties": {
+                          "x": { "type": "string" },
+                          "y": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "FuseDash WidgetItem — `data` rows plus `groupBy` / `subgroup` / `metric` / `yAxe` / `formatting`.",
+            "required": ["data"],
+            "properties": {
+              "name": { "type": "string" },
+              "data": { "type": "array", "items": { "type": "object" } },
+              "xAxe": { "type": "array", "items": { "type": "string" } },
+              "yAxe": { "type": "array", "items": { "type": "string" } },
+              "groupBy": { "type": "array", "items": { "type": "string" } },
+              "metric": { "type": "array", "items": { "type": "string" } },
+              "subgroup": {
+                "type": "string",
+                "description": "Second dimension; when set and distinct from `groupBy[0]` the chart renders one card per group."
+              },
+              "formatting": { "type": "array", "items": { "type": "object" } },
+              "palette": {
+                "type": "object",
+                "properties": {
+                  "range": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "description": "Pins the color break points instead of deriving them from the values."
+                  }
+                }
+              },
+              "uniqueValues": { "type": "object" },
+              "axisDetails": { "type": "object" }
+            }
+          }
+        ]
+      },
+      "chartTitle": { "type": "string" },
+      "showHeader": { "type": "boolean", "default": true },
+      "showLegend": {
+        "type": "boolean",
+        "default": true,
+        "description": "Low→High palette strip; single-dimension treemaps only."
+      },
+      "showTooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"]
+  }
+}

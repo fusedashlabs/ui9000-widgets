@@ -1,0 +1,178 @@
+{
+  "id": "default-parallel-coordinates",
+  "name": "Parallel Coordinates Chart",
+  "chartType": "parallelCoordinatesChart",
+  "legend": true,
+  "tooltip": true,
+  "orientation": "horizontal",
+  "xAxe": [
+    "id"
+  ],
+  "yAxe": [
+    "dimensions"
+  ],
+  "axisDetails": {
+    "id": {
+      "label": "ID",
+      "type": "categorical",
+      "subtype": "string"
+    },
+    "dimensions": {
+      "label": "Dimensions",
+      "type": "categorical",
+      "subtype": "string"
+    },
+    "sepalLength": {
+      "label": "Sepal Length",
+      "type": "metric",
+      "subtype": "float"
+    },
+    "sepalWidth": {
+      "label": "Sepal Width",
+      "type": "metric",
+      "subtype": "float"
+    },
+    "petalLength": {
+      "label": "Petal Length",
+      "type": "metric",
+      "subtype": "float"
+    },
+    "petalWidth": {
+      "label": "Petal Width",
+      "type": "metric",
+      "subtype": "float"
+    }
+  },
+  "uniqueValues": {
+    "dimensions": [
+      "sepalLength",
+      "sepalWidth",
+      "petalLength",
+      "petalWidth"
+    ]
+  },
+  "description": "Parallel coordinates chart showing multi-dimensional data across several axes",
+  "insights": "Compare and analyze patterns across multiple variables simultaneously",
+  "data": [
+    {
+      "id": "sample1",
+      "sepalLength": 5.1,
+      "sepalWidth": 3.5,
+      "petalLength": 1.4,
+      "petalWidth": 0.2,
+      "species": "setosa"
+    },
+    {
+      "id": "sample2",
+      "sepalLength": 4.9,
+      "sepalWidth": 3,
+      "petalLength": 1.4,
+      "petalWidth": 0.2,
+      "species": "setosa"
+    },
+    {
+      "id": "sample3",
+      "sepalLength": 4.7,
+      "sepalWidth": 3.2,
+      "petalLength": 1.3,
+      "petalWidth": 0.2,
+      "species": "setosa"
+    },
+    {
+      "id": "sample4",
+      "sepalLength": 4.6,
+      "sepalWidth": 3.1,
+      "petalLength": 1.5,
+      "petalWidth": 0.2,
+      "species": "setosa"
+    },
+    {
+      "id": "sample5",
+      "sepalLength": 5,
+      "sepalWidth": 3.6,
+      "petalLength": 1.4,
+      "petalWidth": 0.2,
+      "species": "setosa"
+    },
+    {
+      "id": "sample6",
+      "sepalLength": 7,
+      "sepalWidth": 3.2,
+      "petalLength": 4.7,
+      "petalWidth": 1.4,
+      "species": "versicolor"
+    },
+    {
+      "id": "sample7",
+      "sepalLength": 6.4,
+      "sepalWidth": 3.2,
+      "petalLength": 4.5,
+      "petalWidth": 1.5,
+      "species": "versicolor"
+    },
+    {
+      "id": "sample8",
+      "sepalLength": 6.9,
+      "sepalWidth": 3.1,
+      "petalLength": 4.9,
+      "petalWidth": 1.5,
+      "species": "versicolor"
+    },
+    {
+      "id": "sample9",
+      "sepalLength": 5.5,
+      "sepalWidth": 2.3,
+      "petalLength": 4,
+      "petalWidth": 1.3,
+      "species": "versicolor"
+    },
+    {
+      "id": "sample10",
+      "sepalLength": 6.5,
+      "sepalWidth": 2.8,
+      "petalLength": 4.6,
+      "petalWidth": 1.5,
+      "species": "versicolor"
+    },
+    {
+      "id": "sample11",
+      "sepalLength": 6.3,
+      "sepalWidth": 3.3,
+      "petalLength": 6,
+      "petalWidth": 2.5,
+      "species": "virginica"
+    },
+    {
+      "id": "sample12",
+      "sepalLength": 5.8,
+      "sepalWidth": 2.7,
+      "petalLength": 5.1,
+      "petalWidth": 1.9,
+      "species": "virginica"
+    },
+    {
+      "id": "sample13",
+      "sepalLength": 7.1,
+      "sepalWidth": 3,
+      "petalLength": 5.9,
+      "petalWidth": 2.1,
+      "species": "virginica"
+    },
+    {
+      "id": "sample14",
+      "sepalLength": 6.3,
+      "sepalWidth": 2.9,
+      "petalLength": 5.6,
+      "petalWidth": 1.8,
+      "species": "virginica"
+    },
+    {
+      "id": "sample15",
+      "sepalLength": 6.5,
+      "sepalWidth": 3,
+      "petalLength": 5.8,
+      "petalWidth": 2.2,
+      "species": "virginica"
+    }
+  ]
+}

@@ -1,0 +1,430 @@
+{
+  "chartType": "rocPlotChart",
+  "name": "ROC Curve",
+  "legend": true,
+  "tooltip": true,
+  "timeline": false,
+  "xAxe": [
+    "timestamp"
+  ],
+  "yAxe": [
+    "tpr"
+  ],
+  "groupBy": [
+    "model"
+  ],
+  "uniqueValues": {
+    "model": [
+      "NetChop C-term 3.0",
+      "TAP + ProteaSMM-i",
+      "ProteaSMM-i"
+    ],
+    "timestamp": [
+      "2024-01-01",
+      "2024-01-02",
+      "2024-01-03",
+      "2024-01-04",
+      "2024-01-05",
+      "2024-01-06",
+      "2024-01-07",
+      "2024-01-08",
+      "2024-01-09",
+      "2024-01-10",
+      "2024-01-11",
+      "2024-01-12",
+      "2024-01-13",
+      "2024-01-14",
+      "2024-01-15",
+      "2024-01-16",
+      "2024-01-17",
+      "2024-01-18",
+      "2024-01-19",
+      "2024-01-20",
+      "2024-01-21",
+      "2024-01-22",
+      "2024-01-23",
+      "2024-01-24"
+    ]
+  },
+  "axisDetails": {
+    "timestamp": {
+      "label": "timestamp",
+      "type": "datetime",
+      "subtype": "date"
+    },
+    "tpr": {
+      "label": "tpr",
+      "type": "metric",
+      "subtype": "float",
+      "measure_unit": "",
+      "measure_unit_type": "number"
+    },
+    "model": {
+      "label": "model",
+      "type": "category",
+      "subtype": "string"
+    }
+  },
+  "data": [
+    {
+      "timestamp": "2024-01-01",
+      "tpr": 0.08,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-02",
+      "tpr": 0.11,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-03",
+      "tpr": 0.16,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-04",
+      "tpr": 0.19,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-05",
+      "tpr": 0.23,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-06",
+      "tpr": 0.27,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-07",
+      "tpr": 0.31,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-08",
+      "tpr": 0.34,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-09",
+      "tpr": 0.36,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-10",
+      "tpr": 0.39,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-11",
+      "tpr": 0.42,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-12",
+      "tpr": 0.44,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-13",
+      "tpr": 0.46,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-14",
+      "tpr": 0.48,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-15",
+      "tpr": 0.5,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-16",
+      "tpr": 0.53,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-17",
+      "tpr": 0.56,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-18",
+      "tpr": 0.58,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-19",
+      "tpr": 0.6,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-20",
+      "tpr": 0.62,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-21",
+      "tpr": 0.64,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-22",
+      "tpr": 0.66,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-23",
+      "tpr": 0.68,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-24",
+      "tpr": 0.7,
+      "model": "NetChop C-term 3.0"
+    },
+    {
+      "timestamp": "2024-01-01",
+      "tpr": 0.07,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-02",
+      "tpr": 0.1,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-03",
+      "tpr": 0.13,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-04",
+      "tpr": 0.17,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-05",
+      "tpr": 0.2,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-06",
+      "tpr": 0.24,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-07",
+      "tpr": 0.28,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-08",
+      "tpr": 0.31,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-09",
+      "tpr": 0.33,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-10",
+      "tpr": 0.36,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-11",
+      "tpr": 0.38,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-12",
+      "tpr": 0.4,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-13",
+      "tpr": 0.42,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-14",
+      "tpr": 0.45,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-15",
+      "tpr": 0.47,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-16",
+      "tpr": 0.49,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-17",
+      "tpr": 0.51,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-18",
+      "tpr": 0.53,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-19",
+      "tpr": 0.55,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-20",
+      "tpr": 0.57,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-21",
+      "tpr": 0.59,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-22",
+      "tpr": 0.61,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-23",
+      "tpr": 0.63,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-24",
+      "tpr": 0.66,
+      "model": "TAP + ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-01",
+      "tpr": 0.09,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-02",
+      "tpr": 0.14,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-03",
+      "tpr": 0.2,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-04",
+      "tpr": 0.23,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-05",
+      "tpr": 0.27,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-06",
+      "tpr": 0.31,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-07",
+      "tpr": 0.35,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-08",
+      "tpr": 0.39,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-09",
+      "tpr": 0.43,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-10",
+      "tpr": 0.47,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-11",
+      "tpr": 0.5,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-12",
+      "tpr": 0.52,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-13",
+      "tpr": 0.54,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-14",
+      "tpr": 0.56,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-15",
+      "tpr": 0.58,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-16",
+      "tpr": 0.59,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-17",
+      "tpr": 0.61,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-18",
+      "tpr": 0.63,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-19",
+      "tpr": 0.64,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-20",
+      "tpr": 0.65,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-21",
+      "tpr": 0.66,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-22",
+      "tpr": 0.67,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-23",
+      "tpr": 0.69,
+      "model": "ProteaSMM-i"
+    },
+    {
+      "timestamp": "2024-01-24",
+      "tpr": 0.71,
+      "model": "ProteaSMM-i"
+    }
+  ]
+}

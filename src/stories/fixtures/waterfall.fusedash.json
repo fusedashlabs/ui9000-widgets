@@ -1,0 +1,40 @@
+{
+  "id": "default-waterfall",
+  "name": "Waterfall Chart",
+  "chartType": "waterfallChart",
+  "legend": true,
+  "tooltip": true,
+  "orientation": "horizontal",
+  "formatting": [
+    { "key": "positive", "color": "#1E61FF" },
+    { "key": "negative", "color": "#FF5A5A" },
+    { "key": "total", "color": "#5F6877" }
+  ],
+  "xAxe": ["category"],
+  "yAxe": ["value"],
+  "groupBy": null,
+  "uniqueValues": {
+    "category": [
+      "Starting Balance",
+      "Product Sales",
+      "Services Revenue",
+      "Operating Costs",
+      "Marketing Expenses",
+      "New Equipment",
+      "Tax Payments",
+      "Ending Balance"
+    ]
+  },
+  "xAxeLabel": "Categories",
+  "yAxeLabel": "Amount",
+  "data": [
+    { "category": "Starting Balance", "value": 5000, "isTotal": true },
+    { "category": "Product Sales", "value": 8500, "isPositive": true },
+    { "category": "Services Revenue", "value": 4200, "isPositive": true },
+    { "category": "Operating Costs", "value": -3800, "isNegative": true },
+    { "category": "Marketing Expenses", "value": -2100, "isNegative": true },
+    { "category": "New Equipment", "value": -4500, "isNegative": true },
+    { "category": "Tax Payments", "value": -1800, "isNegative": true },
+    { "category": "Ending Balance", "value": 5500, "isTotal": true }
+  ]
+}

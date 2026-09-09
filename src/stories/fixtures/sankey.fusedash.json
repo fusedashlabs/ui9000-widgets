@@ -1,0 +1,172 @@
+{
+  "chartType": "sankeyChart",
+  "name": "Crop Area Distribution by County and Crop Group",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": false,
+  "tooltip": false,
+  "timeline": true,
+  "xAxe": [],
+  "yAxe": [],
+  "uniqueValues": {
+    "County__created": [
+      "Mexico, Durango, Los Angeles",
+      "Australia, Tasmania, Riverside",
+      "Colombia, Cesar, San Diego",
+      "Australia, New South Wales, Orange",
+      "Guatemala, Suchitepéquez , San Bernardino",
+      "Argentina, Jujuy, Santa Clara",
+      "Brazil, Minas Gerais, Sacramento",
+      "Colombia, Tolima, Fresno"
+    ],
+    "MD_Crop_Group  text  autorisatie": [
+      "Open field group",
+      "Pepper group",
+      "Cucurbit group",
+      "Leafy group",
+      "Cucumber group",
+      "Tomato group",
+      "Allium group"
+    ]
+  },
+  "palette": {
+    "autoRange": true,
+    "paletteId": "SequentialColors1"
+  },
+  "paletteId": "SequentialColors1",
+  "arrangeBy": [
+    "County__created",
+    "MD_Crop_Group  text  autorisatie"
+  ],
+  "display": [
+    "area Ha"
+  ],
+  "data": [
+    {
+      "County__created": "Mexico, Durango, Los Angeles",
+      "area Ha": 1985138.5,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "Mexico, Durango, Los Angeles",
+      "area Ha": 1112756,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "Australia, Tasmania, Riverside",
+      "area Ha": 684044.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "Colombia, Cesar, San Diego",
+      "area Ha": 588114.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "Australia, New South Wales, Orange",
+      "area Ha": 465523,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "Australia, Tasmania, Riverside",
+      "area Ha": 415956,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "Australia, Tasmania, Riverside",
+      "area Ha": 406264.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "Mexico, Durango, Los Angeles",
+      "area Ha": 394406,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "Colombia, Cesar, San Diego",
+      "area Ha": 391115,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "Australia, New South Wales, Orange",
+      "area Ha": 376706,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "Australia, New South Wales, Orange",
+      "area Ha": 365359.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "Mexico, Durango, Los Angeles",
+      "area Ha": 307959.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "Guatemala, Suchitepéquez , San Bernardino",
+      "area Ha": 281812,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "County__created": "Colombia, Cesar, San Diego",
+      "area Ha": 242279,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "Colombia, Cesar, San Diego",
+      "area Ha": 233357.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "County__created": "Australia, New South Wales, Orange",
+      "area Ha": 229637,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "Mexico, Durango, Los Angeles",
+      "area Ha": 221781,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "Argentina, Jujuy, Santa Clara",
+      "area Ha": 217946.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "Australia, Tasmania, Riverside",
+      "area Ha": 204452,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "Australia, New South Wales, Orange",
+      "area Ha": 195622,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "Guatemala, Suchitepéquez , San Bernardino",
+      "area Ha": 190350,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "Australia, Tasmania, Riverside",
+      "area Ha": 180120.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "County__created": "Colombia, Cesar, San Diego",
+      "area Ha": 152587,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "County__created": "Brazil, Minas Gerais, Sacramento",
+      "area Ha": 144994.5,
+      "MD_Crop_Group  text  autorisatie": "Cucurbit group"
+    },
+    {
+      "County__created": "Colombia, Tolima, Fresno",
+      "area Ha": 127095,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    }
+  ],
+  "kpis": []
+}

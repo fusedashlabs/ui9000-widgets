@@ -1,0 +1,71 @@
+{
+  "chartType": "KPIs",
+  "name": "Revenue overview",
+  "items": [
+    {
+      "id": "rev-main",
+      "type": "single_value",
+      "variant": "advanced",
+      "column": "revenue",
+      "name": "Total Revenue",
+      "aggregations": "sum",
+      "showPercentage": true,
+      "showVisualisation": true,
+      "supportingKpis": true,
+      "status": "Good = ahead of plan",
+      "groupName": "Revenue overview-group-kpi-ids-rev-main",
+      "data": [{ "value": { "sum_revenue": "248500" }, "percentage": "12.4" }],
+      "visualisation": {
+        "chartType": "lineChart",
+        "name": "Total Revenue visualisation",
+        "orientation": "vertical",
+        "xAxe": ["month"],
+        "yAxe": ["sum_revenue"],
+        "formatting": [{ "key": "default", "color": "1" }],
+        "markers": [{ "key": "default", "shape": "donut" }],
+        "uniqueValues": {},
+        "useNewDesign": true,
+        "data": [
+          { "month": "Jan", "sum_revenue": 18000 },
+          { "month": "Feb", "sum_revenue": 22400 },
+          { "month": "Mar", "sum_revenue": 19800 },
+          { "month": "Apr", "sum_revenue": 26100 },
+          { "month": "May", "sum_revenue": 30500 },
+          { "month": "Jun", "sum_revenue": 28700 },
+          { "month": "Jul", "sum_revenue": 33200 }
+        ]
+      }
+    },
+    {
+      "id": "rev-new",
+      "type": "single_value",
+      "variant": "simple",
+      "column": "new_customers",
+      "name": "New customers",
+      "aggregations": "sum",
+      "groupName": "Revenue overview-group-kpi-ids-rev-main",
+      "data": [{ "value": { "sum_new_customers": "186" } }]
+    },
+    {
+      "id": "rev-arpu",
+      "type": "single_value",
+      "variant": "simple",
+      "column": "arpu",
+      "name": "ARPU",
+      "aggregations": "avg",
+      "groupName": "Revenue overview-group-kpi-ids-rev-main",
+      "data": [{ "value": { "avg_arpu": "1336" } }]
+    },
+    {
+      "id": "rev-churn",
+      "type": "trend",
+      "variant": "simple",
+      "column": "churn",
+      "name": "Churn",
+      "aggregations": "avg",
+      "showPercentage": true,
+      "groupName": "Revenue overview-group-kpi-ids-rev-main",
+      "data": [{ "avg_churn": "2.4", "percentage": "-0.6" }]
+    }
+  ]
+}

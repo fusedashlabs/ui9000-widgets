@@ -1,0 +1,298 @@
+{
+  "chartType": "radarChart",
+  "name": "Average Total Income by Weather Main on Day",
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "Snow",
+      "shape": "circle"
+    },
+    {
+      "key": "Rain",
+      "shape": "circle"
+    },
+    {
+      "key": "Drizzle",
+      "shape": "circle"
+    },
+    {
+      "key": "Thunderstorm",
+      "shape": "circle"
+    },
+    {
+      "key": "Clouds",
+      "shape": "circle"
+    },
+    {
+      "key": "Other",
+      "shape": "circle"
+    }
+  ],
+  "xAxe": [
+    "day"
+  ],
+  "yAxe": [
+    "totalIncome"
+  ],
+  "groupBy": [
+    "weather_main"
+  ],
+  "formatting": [
+    {
+      "key": "Snow",
+      "color": "1"
+    },
+    {
+      "key": "Rain",
+      "color": "2"
+    },
+    {
+      "key": "Drizzle",
+      "color": "3"
+    },
+    {
+      "key": "Thunderstorm",
+      "color": "4"
+    },
+    {
+      "key": "Clouds",
+      "color": "5"
+    },
+    {
+      "key": "Other",
+      "color": "6"
+    }
+  ],
+  "uniqueValues": {
+    "day": [
+      "Friday",
+      "Monday",
+      "Saturday",
+      "Sunday",
+      "Thursday",
+      "Tuesday",
+      "Wednesday"
+    ],
+    "weather_main": [
+      "Snow",
+      "Rain",
+      "Drizzle",
+      "Thunderstorm",
+      "Clouds",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "day": "Friday",
+      "totalIncome": 4546.875,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Friday",
+      "totalIncome": 4179.565217391304,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Friday",
+      "totalIncome": 3905,
+      "weather_main": "Clouds"
+    },
+    {
+      "day": "Friday",
+      "totalIncome": 3830.7894736842104,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Friday",
+      "totalIncome": 3390.909090909091,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Friday",
+      "totalIncome": 3110.714285714286,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Monday",
+      "totalIncome": 4339.444444444444,
+      "weather_main": "Clouds"
+    },
+    {
+      "day": "Monday",
+      "totalIncome": 4276.666666666667,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Monday",
+      "totalIncome": 4170.357142857143,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Monday",
+      "totalIncome": 3867.5,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Monday",
+      "totalIncome": 3760.5,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Monday",
+      "totalIncome": 3606.875,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Saturday",
+      "totalIncome": 4726.5,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Saturday",
+      "totalIncome": 4330,
+      "weather_main": "Clouds"
+    },
+    {
+      "day": "Saturday",
+      "totalIncome": 4207.307692307692,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Saturday",
+      "totalIncome": 4150.833333333333,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Saturday",
+      "totalIncome": 3987.222222222222,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Saturday",
+      "totalIncome": 3314.5,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Sunday",
+      "totalIncome": 4340.833333333333,
+      "weather_main": "Clouds"
+    },
+    {
+      "day": "Sunday",
+      "totalIncome": 4198.571428571428,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Sunday",
+      "totalIncome": 4080,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Sunday",
+      "totalIncome": 4051.0714285714284,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Sunday",
+      "totalIncome": 3973.4210526315787,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Sunday",
+      "totalIncome": 3894.375,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Thursday",
+      "totalIncome": 4603.181818181818,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Thursday",
+      "totalIncome": 4598.333333333333,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Thursday",
+      "totalIncome": 4442.777777777777,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Thursday",
+      "totalIncome": 4109.5,
+      "weather_main": "Clouds"
+    },
+    {
+      "day": "Thursday",
+      "totalIncome": 4034.0625,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Thursday",
+      "totalIncome": 3665,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Tuesday",
+      "totalIncome": 4946.739130434783,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Tuesday",
+      "totalIncome": 4597.5,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Tuesday",
+      "totalIncome": 4414.444444444444,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Tuesday",
+      "totalIncome": 3975.4545454545455,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Tuesday",
+      "totalIncome": 3769.285714285714,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Tuesday",
+      "totalIncome": 3701.4285714285716,
+      "weather_main": "Clouds"
+    },
+    {
+      "day": "Wednesday",
+      "totalIncome": 4431.363636363636,
+      "weather_main": "Rain"
+    },
+    {
+      "day": "Wednesday",
+      "totalIncome": 4311.428571428572,
+      "weather_main": "Other"
+    },
+    {
+      "day": "Wednesday",
+      "totalIncome": 4055.909090909091,
+      "weather_main": "Drizzle"
+    },
+    {
+      "day": "Wednesday",
+      "totalIncome": 3975.4545454545455,
+      "weather_main": "Snow"
+    },
+    {
+      "day": "Wednesday",
+      "totalIncome": 3621.875,
+      "weather_main": "Thunderstorm"
+    },
+    {
+      "day": "Wednesday",
+      "totalIncome": 3547.5,
+      "weather_main": "Clouds"
+    }
+  ]
+}

@@ -1,0 +1,504 @@
+{
+  "name": "@fusedashlabs/widgets",
+  "version": "0.5.0",
+  "description": "Props-only chart web components for UI9000 / FuseDash MCP resources",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": [
+    "./dist/components/**/element/*.js",
+    "./dist/components/**/index.js",
+    "./dist/index.js",
+    "./dist/lazy/**/*.js",
+    "./src/components/**/element/*.ts",
+    "./src/components/**/index.ts",
+    "./src/index.ts",
+    "./src/lazy/**/*.ts"
+  ],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./context": {
+      "types": "./dist/context/index.d.ts",
+      "import": "./dist/context/index.js"
+    },
+    "./bar-chart": {
+      "types": "./dist/components/bar-chart/index.d.ts",
+      "import": "./dist/components/bar-chart/index.js"
+    },
+    "./line-chart": {
+      "types": "./dist/components/line-chart/index.d.ts",
+      "import": "./dist/components/line-chart/index.js"
+    },
+    "./area-chart": {
+      "types": "./dist/components/area-chart/index.d.ts",
+      "import": "./dist/components/area-chart/index.js"
+    },
+    "./area-grouped-bar-chart": {
+      "types": "./dist/components/area-grouped-bar-chart/index.d.ts",
+      "import": "./dist/components/area-grouped-bar-chart/index.js"
+    },
+    "./lollipop": {
+      "types": "./dist/components/lollipop/index.d.ts",
+      "import": "./dist/components/lollipop/index.js"
+    },
+    "./step-line-chart": {
+      "types": "./dist/components/step-line-chart/index.d.ts",
+      "import": "./dist/components/step-line-chart/index.js"
+    },
+    "./spark-line-chart": {
+      "types": "./dist/components/spark-line-chart/index.d.ts",
+      "import": "./dist/components/spark-line-chart/index.js"
+    },
+    "./spark-area-chart": {
+      "types": "./dist/components/spark-area-chart/index.d.ts",
+      "import": "./dist/components/spark-area-chart/index.js"
+    },
+    "./scatter-sparkline-chart": {
+      "types": "./dist/components/scatter-sparkline-chart/index.d.ts",
+      "import": "./dist/components/scatter-sparkline-chart/index.js"
+    },
+    "./chart-renderer": {
+      "types": "./dist/components/chart-renderer/index.d.ts",
+      "import": "./dist/components/chart-renderer/index.js"
+    },
+    "./histogram-chart": {
+      "types": "./dist/components/histogram-chart/index.d.ts",
+      "import": "./dist/components/histogram-chart/index.js"
+    },
+    "./punchcard-chart": {
+      "types": "./dist/components/punchcard-chart/index.d.ts",
+      "import": "./dist/components/punchcard-chart/index.js"
+    },
+    "./matrix-chart": {
+      "types": "./dist/components/matrix-chart/index.d.ts",
+      "import": "./dist/components/matrix-chart/index.js"
+    },
+    "./box-plot-chart": {
+      "types": "./dist/components/box-plot-chart/index.d.ts",
+      "import": "./dist/components/box-plot-chart/index.js"
+    },
+    "./violin-chart": {
+      "types": "./dist/components/violin-chart/index.d.ts",
+      "import": "./dist/components/violin-chart/index.js"
+    },
+    "./waterfall-chart": {
+      "types": "./dist/components/waterfall-chart/index.d.ts",
+      "import": "./dist/components/waterfall-chart/index.js"
+    },
+    "./sankey-chart": {
+      "types": "./dist/components/sankey-chart/index.d.ts",
+      "import": "./dist/components/sankey-chart/index.js"
+    },
+    "./parallel-coordinates-chart": {
+      "types": "./dist/components/parallel-coordinates-chart/index.d.ts",
+      "import": "./dist/components/parallel-coordinates-chart/index.js"
+    },
+    "./pie-chart": {
+      "types": "./dist/components/pie-chart/index.d.ts",
+      "import": "./dist/components/pie-chart/index.js"
+    },
+    "./donut-chart": {
+      "types": "./dist/components/donut-chart/index.d.ts",
+      "import": "./dist/components/donut-chart/index.js"
+    },
+    "./polar-area-chart": {
+      "types": "./dist/components/polar-area-chart/index.d.ts",
+      "import": "./dist/components/polar-area-chart/index.js"
+    },
+    "./scatter-plot-chart": {
+      "types": "./dist/components/scatter-plot-chart/index.d.ts",
+      "import": "./dist/components/scatter-plot-chart/index.js"
+    },
+    "./bias-variance-tradeoff-chart": {
+      "types": "./dist/components/bias-variance-tradeoff-chart/index.d.ts",
+      "import": "./dist/components/bias-variance-tradeoff-chart/index.js"
+    },
+    "./bubble-chart": {
+      "types": "./dist/components/bubble-chart/index.d.ts",
+      "import": "./dist/components/bubble-chart/index.js"
+    },
+    "./radar-chart": {
+      "types": "./dist/components/radar-chart/index.d.ts",
+      "import": "./dist/components/radar-chart/index.js"
+    },
+    "./radial-bar-chart": {
+      "types": "./dist/components/radial-bar-chart/index.d.ts",
+      "import": "./dist/components/radial-bar-chart/index.js"
+    },
+    "./treemap-chart": {
+      "types": "./dist/components/treemap-chart/index.d.ts",
+      "import": "./dist/components/treemap-chart/index.js"
+    },
+    "./partial-dependence-chart": {
+      "types": "./dist/components/partial-dependence-chart/index.d.ts",
+      "import": "./dist/components/partial-dependence-chart/index.js"
+    },
+    "./kpi-widget": {
+      "types": "./dist/components/kpi-widget/index.d.ts",
+      "import": "./dist/components/kpi-widget/index.js"
+    },
+    "./network-graph": {
+      "types": "./dist/components/network-graph/index.d.ts",
+      "import": "./dist/components/network-graph/index.js"
+    },
+    "./gini-impurity-entropy-chart": {
+      "types": "./dist/components/gini-impurity-entropy-chart/index.d.ts",
+      "import": "./dist/components/gini-impurity-entropy-chart/index.js"
+    },
+    "./map-chart": {
+      "types": "./dist/components/map-chart/index.d.ts",
+      "import": "./dist/components/map-chart/index.js"
+    },
+    "./custom-widget": {
+      "types": "./dist/components/custom-widget/index.d.ts",
+      "import": "./dist/components/custom-widget/index.js"
+    },
+    "./lazy": {
+      "types": "./dist/lazy/index.d.ts",
+      "import": "./dist/lazy/index.js"
+    },
+    "./lazy/bar-chart": {
+      "types": "./dist/lazy/bar-chart.d.ts",
+      "import": "./dist/lazy/bar-chart.js"
+    },
+    "./lazy/line-chart": {
+      "types": "./dist/lazy/line-chart.d.ts",
+      "import": "./dist/lazy/line-chart.js"
+    },
+    "./lazy/area-chart": {
+      "types": "./dist/lazy/area-chart.d.ts",
+      "import": "./dist/lazy/area-chart.js"
+    },
+    "./lazy/area-grouped-bar-chart": {
+      "types": "./dist/lazy/area-grouped-bar-chart.d.ts",
+      "import": "./dist/lazy/area-grouped-bar-chart.js"
+    },
+    "./lazy/lollipop": {
+      "types": "./dist/lazy/lollipop.d.ts",
+      "import": "./dist/lazy/lollipop.js"
+    },
+    "./lazy/step-line-chart": {
+      "types": "./dist/lazy/step-line-chart.d.ts",
+      "import": "./dist/lazy/step-line-chart.js"
+    },
+    "./lazy/spark-line-chart": {
+      "types": "./dist/lazy/spark-line-chart.d.ts",
+      "import": "./dist/lazy/spark-line-chart.js"
+    },
+    "./lazy/spark-area-chart": {
+      "types": "./dist/lazy/spark-area-chart.d.ts",
+      "import": "./dist/lazy/spark-area-chart.js"
+    },
+    "./lazy/scatter-sparkline-chart": {
+      "types": "./dist/lazy/scatter-sparkline-chart.d.ts",
+      "import": "./dist/lazy/scatter-sparkline-chart.js"
+    },
+    "./lazy/chart-renderer": {
+      "types": "./dist/lazy/chart-renderer.d.ts",
+      "import": "./dist/lazy/chart-renderer.js"
+    },
+    "./lazy/histogram-chart": {
+      "types": "./dist/lazy/histogram-chart.d.ts",
+      "import": "./dist/lazy/histogram-chart.js"
+    },
+    "./lazy/punchcard-chart": {
+      "types": "./dist/lazy/punchcard-chart.d.ts",
+      "import": "./dist/lazy/punchcard-chart.js"
+    },
+    "./lazy/matrix-chart": {
+      "types": "./dist/lazy/matrix-chart.d.ts",
+      "import": "./dist/lazy/matrix-chart.js"
+    },
+    "./lazy/box-plot-chart": {
+      "types": "./dist/lazy/box-plot-chart.d.ts",
+      "import": "./dist/lazy/box-plot-chart.js"
+    },
+    "./lazy/violin-chart": {
+      "types": "./dist/lazy/violin-chart.d.ts",
+      "import": "./dist/lazy/violin-chart.js"
+    },
+    "./lazy/waterfall-chart": {
+      "types": "./dist/lazy/waterfall-chart.d.ts",
+      "import": "./dist/lazy/waterfall-chart.js"
+    },
+    "./lazy/sankey-chart": {
+      "types": "./dist/lazy/sankey-chart.d.ts",
+      "import": "./dist/lazy/sankey-chart.js"
+    },
+    "./lazy/parallel-coordinates-chart": {
+      "types": "./dist/lazy/parallel-coordinates-chart.d.ts",
+      "import": "./dist/lazy/parallel-coordinates-chart.js"
+    },
+    "./lazy/pie-chart": {
+      "types": "./dist/lazy/pie-chart.d.ts",
+      "import": "./dist/lazy/pie-chart.js"
+    },
+    "./lazy/donut-chart": {
+      "types": "./dist/lazy/donut-chart.d.ts",
+      "import": "./dist/lazy/donut-chart.js"
+    },
+    "./lazy/polar-area-chart": {
+      "types": "./dist/lazy/polar-area-chart.d.ts",
+      "import": "./dist/lazy/polar-area-chart.js"
+    },
+    "./lazy/scatter-plot-chart": {
+      "types": "./dist/lazy/scatter-plot-chart.d.ts",
+      "import": "./dist/lazy/scatter-plot-chart.js"
+    },
+    "./lazy/bias-variance-tradeoff-chart": {
+      "types": "./dist/lazy/bias-variance-tradeoff-chart.d.ts",
+      "import": "./dist/lazy/bias-variance-tradeoff-chart.js"
+    },
+    "./lazy/bubble-chart": {
+      "types": "./dist/lazy/bubble-chart.d.ts",
+      "import": "./dist/lazy/bubble-chart.js"
+    },
+    "./lazy/radar-chart": {
+      "types": "./dist/lazy/radar-chart.d.ts",
+      "import": "./dist/lazy/radar-chart.js"
+    },
+    "./lazy/radial-bar-chart": {
+      "types": "./dist/lazy/radial-bar-chart.d.ts",
+      "import": "./dist/lazy/radial-bar-chart.js"
+    },
+    "./lazy/treemap-chart": {
+      "types": "./dist/lazy/treemap-chart.d.ts",
+      "import": "./dist/lazy/treemap-chart.js"
+    },
+    "./lazy/partial-dependence-chart": {
+      "types": "./dist/lazy/partial-dependence-chart.d.ts",
+      "import": "./dist/lazy/partial-dependence-chart.js"
+    },
+    "./lazy/kpi-widget": {
+      "types": "./dist/lazy/kpi-widget.d.ts",
+      "import": "./dist/lazy/kpi-widget.js"
+    },
+    "./lazy/custom-widget": {
+      "types": "./dist/lazy/custom-widget.d.ts",
+      "import": "./dist/lazy/custom-widget.js"
+    },
+    "./lazy/network-graph": {
+      "types": "./dist/lazy/network-graph.d.ts",
+      "import": "./dist/lazy/network-graph.js"
+    },
+    "./lazy/gini-impurity-entropy-chart": {
+      "types": "./dist/lazy/gini-impurity-entropy-chart.d.ts",
+      "import": "./dist/lazy/gini-impurity-entropy-chart.js"
+    },
+    "./lazy/map-chart": {
+      "types": "./dist/lazy/map-chart.d.ts",
+      "import": "./dist/lazy/map-chart.js"
+    },
+    "./catalog": {
+      "types": "./dist/catalog/index.d.ts",
+      "import": "./dist/catalog/index.js"
+    },
+    "./table": {
+      "types": "./dist/components/table/index.d.ts",
+      "import": "./dist/components/table/index.js"
+    },
+    "./lazy/table": {
+      "types": "./dist/lazy/table.d.ts",
+      "import": "./dist/lazy/table.js"
+    },
+    "./text": {
+      "types": "./dist/components/text/index.d.ts",
+      "import": "./dist/components/text/index.js"
+    },
+    "./lazy/text": {
+      "types": "./dist/lazy/text.d.ts",
+      "import": "./dist/lazy/text.js"
+    },
+    "./image": {
+      "types": "./dist/components/image/index.d.ts",
+      "import": "./dist/components/image/index.js"
+    },
+    "./lazy/image": {
+      "types": "./dist/lazy/image.d.ts",
+      "import": "./dist/lazy/image.js"
+    },
+    "./event-timeline": {
+      "types": "./dist/components/event-timeline/index.d.ts",
+      "import": "./dist/components/event-timeline/index.js"
+    },
+    "./lazy/event-timeline": {
+      "types": "./dist/lazy/event-timeline.d.ts",
+      "import": "./dist/lazy/event-timeline.js"
+    },
+    "./evidence-panel": {
+      "types": "./dist/components/evidence-panel/index.d.ts",
+      "import": "./dist/components/evidence-panel/index.js"
+    },
+    "./lazy/evidence-panel": {
+      "types": "./dist/lazy/evidence-panel.d.ts",
+      "import": "./dist/lazy/evidence-panel.js"
+    },
+    "./entity-detail": {
+      "types": "./dist/components/entity-detail/index.d.ts",
+      "import": "./dist/components/entity-detail/index.js"
+    },
+    "./lazy/entity-detail": {
+      "types": "./dist/lazy/entity-detail.d.ts",
+      "import": "./dist/lazy/entity-detail.js"
+    },
+    "./text-input": {
+      "types": "./dist/components/text-input/index.d.ts",
+      "import": "./dist/components/text-input/index.js"
+    },
+    "./lazy/text-input": {
+      "types": "./dist/lazy/text-input.d.ts",
+      "import": "./dist/lazy/text-input.js"
+    },
+    "./number-input": {
+      "types": "./dist/components/number-input/index.d.ts",
+      "import": "./dist/components/number-input/index.js"
+    },
+    "./lazy/number-input": {
+      "types": "./dist/lazy/number-input.d.ts",
+      "import": "./dist/lazy/number-input.js"
+    },
+    "./select": {
+      "types": "./dist/components/select/index.d.ts",
+      "import": "./dist/components/select/index.js"
+    },
+    "./lazy/select": {
+      "types": "./dist/lazy/select.d.ts",
+      "import": "./dist/lazy/select.js"
+    },
+    "./multi-select": {
+      "types": "./dist/components/multi-select/index.d.ts",
+      "import": "./dist/components/multi-select/index.js"
+    },
+    "./lazy/multi-select": {
+      "types": "./dist/lazy/multi-select.d.ts",
+      "import": "./dist/lazy/multi-select.js"
+    },
+    "./checkbox": {
+      "types": "./dist/components/checkbox/index.d.ts",
+      "import": "./dist/components/checkbox/index.js"
+    },
+    "./lazy/checkbox": {
+      "types": "./dist/lazy/checkbox.d.ts",
+      "import": "./dist/lazy/checkbox.js"
+    },
+    "./date-input": {
+      "types": "./dist/components/date-input/index.d.ts",
+      "import": "./dist/components/date-input/index.js"
+    },
+    "./lazy/date-input": {
+      "types": "./dist/lazy/date-input.d.ts",
+      "import": "./dist/lazy/date-input.js"
+    },
+    "./button": {
+      "types": "./dist/components/button/index.d.ts",
+      "import": "./dist/components/button/index.js"
+    },
+    "./lazy/button": {
+      "types": "./dist/lazy/button.d.ts",
+      "import": "./dist/lazy/button.js"
+    },
+    "./form": {
+      "types": "./dist/components/form/index.d.ts",
+      "import": "./dist/components/form/index.js"
+    },
+    "./lazy/form": {
+      "types": "./dist/lazy/form.d.ts",
+      "import": "./dist/lazy/form.js"
+    },
+    "./approval-bar": {
+      "types": "./dist/components/approval-bar/index.d.ts",
+      "import": "./dist/components/approval-bar/index.js"
+    },
+    "./lazy/approval-bar": {
+      "types": "./dist/lazy/approval-bar.d.ts",
+      "import": "./dist/lazy/approval-bar.js"
+    }
+  },
+  "packageManager": "yarn@4.5.0",
+  "scripts": {
+    "dev": "vite --config playground/vite.config.ts",
+    "build": "tsc --noEmit && vite build && yarn assert-dist-externals && yarn bundle-size",
+    "assert-dist-externals": "node scripts/assert-dist-externals.mjs",
+    "prepublishOnly": "yarn typecheck && yarn test && yarn build && yarn license-check",
+    "build:playground": "vite build --config playground/vite.config.ts",
+    "preview": "vite preview --config playground/vite.config.ts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "build-storybook:hosted": "STORYBOOK_BASE=/storybook/ storybook build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src playground --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "bundle-size": "node scripts/measure-bundle-size.mjs",
+    "license-check": "license-checker --production --summary --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0'"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "d3-axis": "^3.0.0",
+    "d3-drag": "^3.0.0",
+    "d3-force": "^3.0.0",
+    "d3-hierarchy": "^3.1.2",
+    "d3-sankey": "^0.12.3",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
+    "d3-shape": "^3.2.0",
+    "d3-zoom": "^3.0.0",
+    "lit": "^3.2.1"
+  },
+  "peerDependencies": {
+    "mapbox-gl": "^3.9.0"
+  },
+  "peerDependenciesMeta": {
+    "mapbox-gl": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-links": "^8.6.14",
+    "@storybook/blocks": "^8.6.14",
+    "@storybook/web-components-vite": "^8.6.14",
+    "@types/d3": "^7.4.3",
+    "@types/d3-sankey": "^0.12.5",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.17.0",
+    "globals": "^14.0.0",
+    "jsdom": "^26.1.0",
+    "license-checker": "^25.0.1",
+    "mapbox-gl": "^3.24.0",
+    "storybook": "^8.6.14",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vite-plugin-dts": "^4.4.0",
+    "vitest": "^2.1.8"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fuselab-creative/ui9000-widgets.git",
+    "directory": "packages/widgets"
+  },
+  "keywords": [
+    "ui9000",
+    "fusedash",
+    "widgets",
+    "web-components",
+    "charts",
+    "d3"
+  ]
+}

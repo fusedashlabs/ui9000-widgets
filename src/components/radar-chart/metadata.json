@@ -1,0 +1,91 @@
+{
+  "id": "radar-chart",
+  "tag": "ui9000-radar-chart",
+  "title": "Radar Chart",
+  "description": "Chat-optimized radar chart rewritten in D3 (Visx → D3). Single + grouped series, polar grid, marker hover.",
+  "chartTypeKeys": ["radarChart", "radarGroupedChart"],
+  "source": "client/libs/shared/components/src/Widgets/RadarChart/",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/radar-chart",
+  "entry": "@ui9000/widgets/radar-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "resize"],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "categories": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "category": { "type": "string" },
+                    "label": { "type": "string" },
+                    "value": { "type": "number" }
+                  }
+                }
+              },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "color": { "type": "string" },
+                    "marker": { "type": "string" },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "category": { "type": "string" },
+                          "label": { "type": "string" },
+                          "value": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "scale": {
+        "type": "string",
+        "enum": ["compact", "default", "comfortable"],
+        "default": "default"
+      },
+      "showGrid": { "type": "boolean", "default": true },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"]
+  }
+}

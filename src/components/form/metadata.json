@@ -1,0 +1,91 @@
+{
+  "id": "form",
+  "tag": "ui9000-form",
+  "title": "Form",
+  "description": "Composes labelled controls. Emits ui9000-submit with values.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets Stage 2 close-out",
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/form",
+  "entry": "@ui9000/widgets/form",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": [
+    "submit"
+  ],
+  "tier": "engine",
+  "intents": [
+    "form"
+  ],
+  "dataRoles": [
+    {
+      "id": "fields",
+      "required": true,
+      "description": "Ordered labelled fields."
+    }
+  ],
+  "eligibility": [
+    {
+      "when": "profile.allControlsLabelled && profile.controlCount >= 1",
+      "reason": "Form collects labelled fields."
+    }
+  ],
+  "disqualify": [
+    {
+      "when": "!profile.allControlsLabelled",
+      "reason": "Unlabelled control is refused."
+    }
+  ],
+  "accessibility": {
+    "nameFrom": "form label",
+    "keyboard": [
+      "Tab order through fields, submit"
+    ],
+    "shadowBoundary": "Do not use aria-labelledby across the host; set aria-label on the host element."
+  },
+  "evalCases": [
+    {
+      "id": "form-picks-labelled",
+      "intent": "form",
+      "profile": {
+        "allControlsLabelled": true,
+        "controlCount": 3
+      },
+      "expect": "eligible",
+      "reasonIncludes": "labelled"
+    },
+    {
+      "id": "form-rejects-unlabelled",
+      "intent": "form",
+      "profile": {
+        "allControlsLabelled": false,
+        "controlCount": 3
+      },
+      "expect": "disqualified",
+      "reasonIncludes": "Unlabelled"
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

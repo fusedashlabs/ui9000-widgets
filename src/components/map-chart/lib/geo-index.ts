@@ -210,6 +210,11 @@ export function createFeaturesIndex(features: GeoJsonFeature[], mapType: string)
     }
 
     if (mapType === 'country') {
+      for (const code of [regionId, props.iso_a2, props.iso_a3, props.postal, props.wb_a2, props.wb_a3]) {
+        if (typeof code === 'string' && code && code !== '-99') {
+          indexAlias(byDataValue, byNormalizedValue, code, regionId, mapType);
+        }
+      }
       const aliases = [
         props.name_long,
         props.formal_en,

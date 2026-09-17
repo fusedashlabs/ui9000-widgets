@@ -16,6 +16,7 @@ const COUNTRIES: GeoJsonFeatureCollection = {
       properties: {
         name: 'France',
         iso_a3: 'FRA',
+        iso_a2: 'FR',
         name_long: 'French Republic',
       },
       geometry: {
@@ -142,11 +143,25 @@ describe('geo join', () => {
     expect(inferMapTypeFromKeyNames(['County'])).toBe('county');
   });
 
-  it('indexes iso_a3 and long-form country aliases', () => {
+  it('indexes iso_a2, iso_a3, and long-form country aliases', () => {
     const index = createFeaturesIndex(COUNTRIES.features, 'country');
     expect(getRegionId('france', 'country', index)).toBe('FRA');
+    expect(getRegionId('FR', 'country', index)).toBe('FRA');
+    expect(getRegionId('FRA', 'country', index)).toBe('FRA');
     expect(getRegionId('United States of America', 'country', index)).toBe('USA');
     expect(GEOJSON_KEYS.country.id).toBe('iso_a3');
+  });
+
+  it('joins ISO-2 chat rows onto country polygons', () => {
+    const model = normalizeMapData(
+      [
+        { label: 'FR', value: 10 },
+        { label: 'ROU', value: 4 },
+      ],
+      COUNTRIES,
+    );
+    expect(model.layers[0].features.some((f) => f.properties?.id === 'FRA')).toBe(true);
+    expect(model.layers[0].features.some((f) => f.properties?.id === 'ROU')).toBe(true);
   });
 
   it('indexes Czechia against Natural Earth Czech Rep.', () => {

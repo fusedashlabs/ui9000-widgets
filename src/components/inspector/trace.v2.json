@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ui9000.com/contracts/trace.v2.json",
+  "title": "Decision trace v2",
+  "description": "Provisional trace contract the inspector renders until S4-03 publishes the shape from packages/core. v1 (packages/core/src/trace/trace.ts) is the same document without winner, riskBand and outcome; the inspector accepts both and shows the v2-only fields as not recorded when they are absent. A trace is a decision record: it never carries dataset rows.",
+  "type": "object",
+  "required": ["objective", "profile", "candidates", "rejections", "actions"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 2,
+      "description": "Absent on a v1 trace."
+    },
+    "objective": {
+      "type": "string",
+      "enum": ["spatial", "comparison", "summary", "form", "evidence", "graph"]
+    },
+    "profile": {
+      "type": "object",
+      "description": "Closed DataProfile — the keys in src/catalog/types.ts DATA_PROFILE_KEYS. Only keys the profiler set are present.",
+      "additionalProperties": false,
+      "properties": {
+        "hasCategory": { "type": "boolean" },
+        "hasNumericMetric": { "type": "boolean" },
+        "categoryCardinality": { "type": "number" },
+        "hasGeo": { "type": "boolean" },
+        "hasTemporal": { "type": "boolean" },
+        "hasNodes": { "type": "boolean" },
+        "hasLinks": { "type": "boolean" },
+        "hasTabularRows": { "type": "boolean" },
+        "rowCount": { "type": "number" },
+        "hasEntityId": { "type": "boolean" },
+        "hasClaim": { "type": "boolean" },
+        "hasEvents": { "type": "boolean" },
+        "controlCount": { "type": "number" },
+        "allControlsLabelled": { "type": "boolean" },
+        "hasMapToken": { "type": "boolean" }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "score", "reasons"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "score": { "type": "number" },
+          "reasons": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "winner": {
+      "type": ["string", "null"],
+      "description": "Component id the engine picked, or null for a fail-closed decision. Absent on a v1 trace."
+    },
+    "rejections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["hover", "resize", "select", "submit", "approve", "reject", "pan", "zoom", "drag", "filter"]
+      }
+    },
+    "tieBreak": {
+      "type": "string",
+      "description": "How the winner was separated from the runner-up."
+    },
+    "riskBand": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "description": "Absent on a v1 trace."
+    },
+    "outcome": {
+      "type": "string",
+      "description": "What the host did with the decision. Absent on a v1 trace."
+    }
+  }
+}

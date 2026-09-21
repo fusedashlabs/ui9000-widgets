@@ -164,6 +164,10 @@
       "types": "./dist/components/custom-widget/index.d.ts",
       "import": "./dist/components/custom-widget/index.js"
     },
+    "./inspector": {
+      "types": "./dist/components/inspector/index.d.ts",
+      "import": "./dist/components/inspector/index.js"
+    },
     "./lazy": {
       "types": "./dist/lazy/index.d.ts",
       "import": "./dist/lazy/index.js"

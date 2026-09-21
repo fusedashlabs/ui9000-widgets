@@ -1,0 +1,40 @@
+{
+  "id": "inspector",
+  "tag": "ui9000-inspector",
+  "title": "Inspector",
+  "description": "Renders one frozen decision trace: objective, profile keys, candidates with scores, winner, rejections with reasons, actions, risk band and outcome. Props only, and it refuses a trace carrying dataset rows.",
+  "chartTypeKeys": [],
+  "source": "ui9000-widgets S4-08",
+  "stack": "lit",
+  "entry": "@ui9000/widgets/inspector",
+  "tier": "host",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true,
+    "rowsExcluded": true,
+    "traceContract": "trace.v2.json (this folder) until S4-03 publishes the shape"
+  },
+  "allowedActions": ["resize"],
+  "accessibility": {
+    "nameFrom": "panel-label, else \"Decision trace — <objective>\"",
+    "keyboard": ["Tab past the panel — it is display only"],
+    "shadowBoundary": "Do not use aria-labelledby across the host; the panel region carries aria-label."
+  },
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "trace": {
+        "type": "object",
+        "description": "Decision trace JSON — see trace.v2.json in this folder. v1 traces render with winner, riskBand and outcome shown as not recorded.",
+        "$ref": "./trace.v2.json"
+      },
+      "panelLabel": {
+        "type": "string",
+        "description": "Overrides the panel's accessible name."
+      }
+    },
+    "required": ["trace"]
+  }
+}

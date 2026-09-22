@@ -107,19 +107,21 @@ describe('ui9000-treemap-chart', () => {
   it('show-tooltip toggles the hover tooltip', async () => {
     const hover = (el: Shadowed) =>
       el.shadowRoot.querySelector('.treemap-tile')!.dispatchEvent(new MouseEvent('mouseenter'));
+    const portal = () => document.querySelector('[data-ui9000-chart-tooltip]');
 
     const on = await mount();
     hover(on);
     await on.updateComplete;
-    const tooltip = on.shadowRoot.querySelector('.tooltip');
-    expect(tooltip).not.toBeNull();
-    expect(tooltip?.textContent).toContain('Value:');
+    const tip = portal();
+    expect(tip?.classList.contains('is-open')).toBe(true);
+    expect(tip?.textContent).toContain('Value');
     on.remove();
+    expect(portal()?.classList.contains('is-open')).not.toBe(true);
 
     const off = await mount(SINGLE, { showTooltip: false });
     hover(off);
     await off.updateComplete;
-    expect(off.shadowRoot.querySelector('.tooltip')).toBeNull();
+    expect(portal()?.classList.contains('is-open')).not.toBe(true);
     off.remove();
   });
 
@@ -134,9 +136,11 @@ describe('ui9000-treemap-chart', () => {
     el.shadowRoot.querySelector('.treemap-tile')!.dispatchEvent(new MouseEvent('mouseenter'));
     await el.updateComplete;
 
-    expect(el.shadowRoot.querySelector('.tooltip')?.textContent).toContain(
-      'Customer segment: Fresh Market ha',
-    );
+    const tip = document.querySelector('[data-ui9000-chart-tooltip]');
+    expect(tip?.classList.contains('is-open')).toBe(true);
+    expect(tip?.textContent).toContain('Customer segment');
+    expect(tip?.textContent).toContain('Fresh Market');
+    expect(tip?.textContent).toContain('Value');
 
     el.remove();
   });

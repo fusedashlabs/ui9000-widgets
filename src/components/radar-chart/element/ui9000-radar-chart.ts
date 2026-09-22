@@ -36,16 +36,6 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    xLabel: string;
-    yLabel: string;
-    xValue: string;
-    yValue: string;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -124,18 +114,15 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
       showTooltip: this.showTooltip,
       onPointHover: this.showTooltip
         ? ({ category, value, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              xLabel,
-              yLabel,
-              xValue: category,
-              yValue: formatRadarValue(value),
-            };
+            this.openTooltip(event, {
+              rows: [
+                { label: xLabel, value: category },
+                { label: yLabel, value: formatRadarValue(value) },
+              ],
+            });
           }
         : undefined,
-      onPointLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onPointLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -150,16 +137,6 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div>${this._tooltip.xLabel}: ${this._tooltip.xValue}</div>
-                <div>${this._tooltip.yLabel}: ${this._tooltip.yValue}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

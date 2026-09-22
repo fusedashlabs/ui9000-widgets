@@ -14,7 +14,7 @@ import type { TreemapChartData, TreemapModel } from '../lib/types.js';
 import { renderTreemapChart, type TreemapHoverPayload } from '../render/draw.js';
 import { treemapChartStyles } from './styles.js';
 
-type TooltipRow = { key: string; value: string };
+type TooltipRow = { label: string; value: string };
 
 @customElement('ui9000-treemap-chart')
 export class Ui9000TreemapChart extends Ui9000ChartElement {
@@ -25,9 +25,6 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
 
   @property({ type: Boolean, attribute: 'show-tooltip' })
   showTooltip = true;
-
-  @state()
-  private _tooltip: { x: number; y: number; title?: string; rows: TooltipRow[] } | null = null;
 
   @state()
   private _empty = false;
@@ -81,14 +78,14 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
   } {
     const { tile, group } = payload;
     const rows: TooltipRow[] = [
-      { key: 'Value', value: formatTreemapValue(tile.value, model.mode) },
+      { label: 'Value', value: formatTreemapValue(tile.value, model.mode) },
     ];
 
     if (model.mode === 'grouped') {
       // The tile is a subgroup value, so the second row names the card it sits
       // in — the client labels it with `groupBy[0]` but prints the tile again.
       if (group && model.categoryField) {
-        rows.push({ key: formatCapitalizedText(model.categoryField), value: group.label });
+        rows.push({ label: formatCapitalizedText(model.categoryField), value: group.label });
       }
       return { title: formatCapitalizedWords(tile.label), rows };
     }
@@ -96,7 +93,7 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
     if (model.categoryField) {
       const detail = model.axisDetails?.[model.categoryField];
       rows.push({
-        key: detail?.label ?? model.categoryField,
+        label: detail?.label ?? model.categoryField,
         value: formatValueWithUnit(tile.label, detail),
       });
     }
@@ -128,19 +125,10 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
       showTooltip: this.showTooltip,
       onHover: this.showTooltip
         ? (payload) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: payload.event.clientX - rect.left,
-              y: payload.event.clientY - rect.top,
-              ...this.tooltipFor(model, payload),
-            };
+            this.openTooltip(payload.event, this.tooltipFor(model, payload));
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -158,18 +146,6 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
           ${this.renderLegend()}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                ${this._tooltip.title
-                  ? html`<div class="tooltip-title">${this._tooltip.title}</div>`
-                  : nothing}
-                ${this._tooltip.rows.map((row) => html`<div>${row.key}: ${row.value}</div>`)}
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

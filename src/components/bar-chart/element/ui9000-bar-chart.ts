@@ -17,7 +17,6 @@ import {
   formatCompact,
   normalizeBarData,
   type BarChartData,
-  type BarHoverEntry,
   type BarLayout,
   type BarOrientation,
   type BarSeries,
@@ -57,14 +56,6 @@ export class Ui9000BarChart extends Ui9000ChartElement {
 
   @property({ type: String, attribute: 'y-label' })
   yLabel = '';
-
-  @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    category: string;
-    entries: BarHoverEntry[];
-  } | null = null;
 
   @state()
   private _empty = false;
@@ -205,20 +196,16 @@ export class Ui9000BarChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip
         ? ({ category, entries, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              category,
-              entries,
-            };
+            this.openTooltip(event, {
+              title: category,
+              rows: entries.map((entry) => ({
+                label: entry.seriesName,
+                value: formatCompact(entry.value),
+              })),
+            });
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
 
     if (xAxisRoot && !needsFixedXAxis) {
@@ -245,22 +232,6 @@ export class Ui9000BarChart extends Ui9000ChartElement {
             ></div>
           </div>
           ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="category">${this._tooltip.category}</div>
-                ${this._tooltip.entries.map(
-                  (entry) => html`<div class="row">
-                    <span class="swatch" style="background:${entry.color}"></span>
-                    <span>${entry.seriesName}</span>
-                    <span class="value">${formatCompact(entry.value)}</span>
-                  </div>`,
-                )}
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

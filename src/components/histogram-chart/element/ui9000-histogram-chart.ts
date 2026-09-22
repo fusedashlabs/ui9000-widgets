@@ -40,15 +40,6 @@ export class Ui9000HistogramChart extends Ui9000ChartElement {
   yLabel = '';
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    group: string;
-    range: string;
-    count: number;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -112,17 +103,16 @@ export class Ui9000HistogramChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onStackHover: this.showTooltip
         ? ({ x0, x1, stack, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              group: stack.group,
-              range: formatBinRange(x0, x1),
-              count: stack.count,
-            };
+            this.openTooltip(event, {
+              title: stack.group,
+              rows: [
+                { label: 'Count', value: String(stack.count) },
+                { label: 'Range', value: formatBinRange(x0, x1) },
+              ],
+            });
           }
         : undefined,
-      onStackLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onStackLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -139,17 +129,6 @@ export class Ui9000HistogramChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.group}</div>
-                <div>Count: ${this._tooltip.count}</div>
-                <div>Range: ${this._tooltip.range}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

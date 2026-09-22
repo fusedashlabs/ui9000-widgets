@@ -1,6 +1,10 @@
 import { css } from 'lit';
 
-/** FuseDash WidgetWrapper chrome — padding, header, menu (MCP chat / Storybook). */
+/**
+ * Chat draws its own card (padding + border). Dashboard charts sit in the
+ * client WidgetWrapper, which is already that zone — dash sends only the
+ * header and the plot.
+ */
 export const chartShellStyles = css`
   .widget-shell {
     display: flex;
@@ -20,6 +24,46 @@ export const chartShellStyles = css`
     border: none;
     border-radius: 0;
     background: transparent;
+  }
+
+  :host([header-variant='dash']) .widget-shell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  /*
+   * Dashboard cells already have a height. The chart fills that cell.
+   * A 220px host min-height plus an inner scrollport made the column and
+   * the plot scroll at the same time.
+   */
+  :host([embedded]),
+  :host([header-variant='dash']) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  :host([embedded]) .widget-shell,
+  :host([header-variant='dash']) .widget-shell {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  :host([embedded]) .widget-body,
+  :host([header-variant='dash']) .widget-body,
+  :host([embedded]) .widget-body > .chart-body,
+  :host([header-variant='dash']) .widget-body > .chart-body,
+  :host([embedded]) .widget-body > .chart-root,
+  :host([header-variant='dash']) .widget-body > .chart-root,
+  :host([embedded]) .chart-body,
+  :host([header-variant='dash']) .chart-body,
+  :host([embedded]) .chart-scroll,
+  :host([header-variant='dash']) .chart-scroll,
+  :host([embedded]) .chart-root,
+  :host([header-variant='dash']) .chart-root {
+    min-height: 0;
   }
 
   .widget-header {
@@ -46,23 +90,81 @@ export const chartShellStyles = css`
 
   .widget-actions {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     flex-shrink: 0;
   }
 
-  .menu-btn {
+  .hover-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Dashboard: chat + overflow stay hidden until the widget is hovered or the menu is open. */
+  .widget-header[data-variant='dash'] .hover-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .widget-shell:hover .widget-header[data-variant='dash'] .hover-actions,
+  .widget-header[data-variant='dash'] .hover-actions[data-open='true'] {
+    opacity: 1;
+  }
+
+  .menu-anchor {
+    position: relative;
+  }
+
+  .menu-btn,
+  .icon-btn,
+  .settings-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
     padding: 0;
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
-    border-radius: 8px;
     background: rgba(255, 255, 255, 0.92);
     color: var(--ui9000-color-text-muted, #6b7280);
+    cursor: pointer;
+  }
+
+  .menu-btn svg,
+  .icon-btn svg,
+  .settings-btn svg,
+  .menu-item svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    display: block;
+  }
+
+  .menu-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     font-size: 18px;
     line-height: 1;
-    cursor: pointer;
+  }
+
+  .widget-header[data-variant='dash'] .menu-btn,
+  .widget-header[data-variant='dash'] .icon-btn {
+    width: auto;
+    height: 24px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  .settings-btn {
+    height: 24px;
+    padding: 4px;
+    border-radius: 24px;
+    background: var(--ui9000-color-surface, #fff);
+    box-shadow:
+      0 2px 2px rgb(0 0 0 / 6%),
+      0 2px 4px 1px rgb(0 0 0 / 4%);
   }
 
   .menu-btn:hover {
@@ -72,7 +174,7 @@ export const chartShellStyles = css`
 
   .menu-dropdown {
     position: absolute;
-    top: 36px;
+    top: calc(100% + 4px);
     right: 0;
     z-index: 5;
     min-width: 170px;
@@ -85,8 +187,16 @@ export const chartShellStyles = css`
     overflow: hidden;
   }
 
+  .widget-header[data-variant='dash'] .menu-dropdown {
+    min-width: 192px;
+    border-radius: 8px;
+    padding: 8px 0;
+  }
+
   .menu-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     width: 100%;
     padding: 10px 14px;
     border: none;
@@ -95,6 +205,19 @@ export const chartShellStyles = css`
     font-size: 13px;
     color: var(--ui9000-color-text, #111827);
     cursor: pointer;
+  }
+
+  .widget-header[data-variant='dash'] .menu-item {
+    padding: 4px 12px;
+    min-height: 32px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .menu-divider {
+    height: 1px;
+    margin: 4px 0;
+    background: var(--ui9000-color-border, #e5e7eb);
   }
 
   .menu-item:hover {

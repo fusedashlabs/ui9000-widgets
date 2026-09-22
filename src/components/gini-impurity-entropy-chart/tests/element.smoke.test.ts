@@ -120,8 +120,8 @@ describe(TAG, () => {
     );
     await settle(el);
 
-    const tooltip = el.shadowRoot?.querySelector('.tooltip');
-    expect(tooltip).not.toBeNull();
+    const tooltip = document.querySelector('[data-ui9000-chart-tooltip]');
+    expect(tooltip?.classList.contains('is-open')).toBe(true);
     expect(tooltip?.querySelectorAll('.row')).toHaveLength(3);
     expect(el.shadowRoot?.querySelector('svg')).toBe(svgBefore);
   });

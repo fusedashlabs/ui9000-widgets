@@ -89,10 +89,11 @@ describe('ui9000-network-graph', () => {
     const el = await mount();
     const svg = el.shadowRoot.querySelector('svg');
     const value = el.shadowRoot.querySelector('.legend-value')!;
+    const labelTip = () => document.querySelector('[data-ui9000-label-tooltip]');
 
     value.dispatchEvent(new MouseEvent('mouseenter'));
     await el.updateComplete;
-    expect(el.shadowRoot.querySelector('.label-tooltip')).not.toBeNull();
+    expect(labelTip()?.classList.contains('is-open')).toBe(true);
 
     el.showTooltip = false;
     await el.updateComplete;
@@ -102,7 +103,7 @@ describe('ui9000-network-graph', () => {
     value.dispatchEvent(new MouseEvent('mouseenter'));
     await el.updateComplete;
 
-    expect(el.shadowRoot.querySelector('.label-tooltip')).toBeNull();
+    expect(labelTip()?.classList.contains('is-open')).not.toBe(true);
     expect(el.shadowRoot.querySelector('svg')).toBe(svg);
 
     el.remove();

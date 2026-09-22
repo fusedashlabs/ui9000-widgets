@@ -43,19 +43,6 @@ export class Ui9000BoxPlotChart extends Ui9000ChartElement {
   yLabel = '';
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    label: string;
-    group?: string;
-    q1: number;
-    median: number;
-    q3: number;
-    min: number;
-    max: number;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   @state()
@@ -164,21 +151,19 @@ export class Ui9000BoxPlotChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onBoxHover: this.showTooltip
         ? ({ box, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              label: box.label,
-              group: box.group,
-              q1: box.q1,
-              median: box.median,
-              q3: box.q3,
-              min: box.smallestNonOutlier,
-              max: box.biggestNonOutlier,
-            };
+            this.openTooltip(event, {
+              title: box.group ? `${box.group} · ${box.label}` : box.label,
+              rows: [
+                { label: 'min', value: String(box.smallestNonOutlier) },
+                { label: '25%', value: String(box.q1) },
+                { label: 'median', value: String(box.median) },
+                { label: '75%', value: String(box.q3) },
+                { label: 'max', value: String(box.biggestNonOutlier) },
+              ],
+            });
           }
         : undefined,
-      onBoxLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onBoxLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
 
     if (xAxisRoot && !needsFixedXAxis) {
@@ -217,24 +202,6 @@ export class Ui9000BoxPlotChart extends Ui9000ChartElement {
           </div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">
-                  ${this._tooltip.group
-                    ? `${this._tooltip.group} · ${this._tooltip.label}`
-                    : this._tooltip.label}
-                </div>
-                <div>min: ${this._tooltip.min}</div>
-                <div>25%: ${this._tooltip.q1}</div>
-                <div>median: ${this._tooltip.median}</div>
-                <div>75%: ${this._tooltip.q3}</div>
-                <div>max: ${this._tooltip.max}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

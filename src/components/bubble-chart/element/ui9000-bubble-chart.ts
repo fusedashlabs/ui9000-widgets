@@ -34,9 +34,6 @@ export class Ui9000BubbleChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: { x: number; y: number; lines: string[] } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -104,26 +101,21 @@ export class Ui9000BubbleChart extends Ui9000ChartElement {
       showTooltip: this.showTooltip,
       onHover: this.showTooltip
         ? ({ point, event }) => {
-            const rect = this.getBoundingClientRect();
             const xLabel = model.axisDetails?.[model.xField]?.label ?? model.xField;
             const yLabel = model.axisDetails?.[model.yField]?.label ?? model.yField;
-            const lines = [
-              `${xLabel}: ${formatCompactNumber(point.x)}`,
-              `${yLabel}: ${formatCompactNumber(point.y)}`,
+            const rows = [
+              { label: xLabel, value: formatCompactNumber(point.x) },
+              { label: yLabel, value: formatCompactNumber(point.y) },
             ];
             if (model.groupField) {
               const groupLabel =
                 model.axisDetails?.[model.groupField]?.label ?? model.groupField;
-              lines.push(`${groupLabel}: ${point.groupKey}`);
+              rows.push({ label: groupLabel, value: String(point.groupKey) });
             }
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              lines,
-            };
+            this.openTooltip(event, { rows });
           }
         : undefined,
-      onLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -139,15 +131,6 @@ export class Ui9000BubbleChart extends Ui9000ChartElement {
           ${this._empty
             ? html`<div class="empty" part="empty">
                 Bubble chart requires two numeric fields. Pick numeric X and Y axes.
-              </div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                ${this._tooltip.lines.map((line) => html`<div>${line}</div>`)}
               </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}

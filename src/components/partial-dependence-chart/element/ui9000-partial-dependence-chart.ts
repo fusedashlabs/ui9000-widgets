@@ -38,9 +38,6 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: { x: number; y: number; lines: string[] } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -112,22 +109,15 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
       showTooltip: this.showTooltip,
       onHover: this.showTooltip
         ? ({ x, y, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              lines: [
-                `${xLabel}: ${x.toFixed(TOOLTIP_DECIMALS)}`,
-                `${yLabel}: ${y == null ? '-' : y.toFixed(TOOLTIP_DECIMALS)}`,
+            this.openTooltip(event, {
+              rows: [
+                { label: xLabel, value: x.toFixed(TOOLTIP_DECIMALS) },
+                { label: yLabel, value: y == null ? '-' : y.toFixed(TOOLTIP_DECIMALS) },
               ],
-            };
+            });
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -143,15 +133,6 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
           ${this._empty
             ? html`<div class="empty" part="empty">
                 Partial dependence needs numeric X and Y fields with at least one ICE series.
-              </div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                ${this._tooltip.lines.map((line) => html`<div>${line}</div>`)}
               </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}

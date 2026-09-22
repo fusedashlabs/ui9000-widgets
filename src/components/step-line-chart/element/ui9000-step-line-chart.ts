@@ -19,7 +19,6 @@ import {
   normalizeStepLineData,
   type StepLineChartData,
   type StepLineGrafType,
-  type StepLineHoverEntry,
   type StepLineSeries,
 } from '../lib/index.js';
 import { renderStepLineChart } from '../render/draw.js';
@@ -49,14 +48,6 @@ export class Ui9000StepLineChart extends Ui9000ChartElement {
 
   @property({ type: String, attribute: 'y-label' })
   yLabel = '';
-
-  @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    xLabel: string;
-    entries: StepLineHoverEntry[];
-  } | null = null;
 
   @state()
   private _empty = false;
@@ -151,16 +142,16 @@ export class Ui9000StepLineChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip
         ? ({ xLabel, entries, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              xLabel,
-              entries,
-            };
+            this.openTooltip(event, {
+              title: xLabel,
+              rows: entries.map((entry) => ({
+                label: entry.seriesName,
+                value: formatCompact(entry.value),
+              })),
+            });
           }
         : undefined,
-      onLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -175,22 +166,6 @@ export class Ui9000StepLineChart extends Ui9000ChartElement {
           ${this.renderLegend(series)}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="x">${this._tooltip.xLabel}</div>
-                ${this._tooltip.entries.map(
-                  (entry) => html`<div class="row">
-                    <span class="swatch" style="background:${entry.color}"></span>
-                    <span>${entry.seriesName}</span>
-                    <span class="value">${formatCompact(entry.value)}</span>
-                  </div>`,
-                )}
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

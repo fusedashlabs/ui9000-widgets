@@ -775,6 +775,8 @@ export {
   type ChartMarkerShape,
 } from './utils/chart-formatting/index.js';
 
+export type { WidgetHeaderHandlers, WidgetHeaderVariant } from './element/widget-header.js';
+
 export {
   loadEngineCatalog,
   evaluateCatalog,

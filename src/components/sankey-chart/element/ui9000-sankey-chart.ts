@@ -18,11 +18,6 @@ import {
 import { renderSankeyChart } from '../render/draw.js';
 import { sankeyStyles } from './styles.js';
 
-interface TooltipRow {
-  key: string;
-  value: string;
-}
-
 interface SankeyView {
   empty: boolean;
   circular: boolean;
@@ -56,9 +51,6 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
   /** Overrides the header above the right column. */
   @property({ type: String, attribute: 'target-label' })
   targetLabel = '';
-
-  @state()
-  private _tooltip: { x: number; y: number; rows: TooltipRow[] } | null = null;
 
   @state()
   private _view: SankeyView = EMPTY_VIEW;
@@ -132,32 +124,28 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
       theme,
       onLinkHover: this.showTooltip
         ? ({ sourceLabel, targetLabel, value, event }) => {
-            this.setTooltip(event, [
-              { key: this._view.sourceLabel, value: formatCapitalizedWords(sourceLabel) },
-              { key: model.valueLabel, value: formatSankeyValue(value) },
-              { key: this._view.targetLabel, value: formatCapitalizedWords(targetLabel) },
-            ]);
+            this.openTooltip(event, {
+              rows: [
+                {
+                  label: this._view.sourceLabel,
+                  value: formatCapitalizedWords(sourceLabel),
+                },
+                { label: model.valueLabel, value: formatSankeyValue(value) },
+                {
+                  label: this._view.targetLabel,
+                  value: formatCapitalizedWords(targetLabel),
+                },
+              ],
+            });
           }
         : undefined,
-      onLinkLeave: this.showTooltip ? () => this.clearTooltip() : undefined,
+      onLinkLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
       onLabelHover: this.showTooltip
-        ? ({ label, event }) => this.setTooltip(event, [{ key: '', value: label }])
+        ? ({ label, event }) =>
+            this.openTooltip(event, { rows: [{ label: '', value: label }] })
         : undefined,
-      onLabelLeave: this.showTooltip ? () => this.clearTooltip() : undefined,
+      onLabelLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
-  }
-
-  private setTooltip(event: MouseEvent, rows: TooltipRow[]): void {
-    const rect = this.getBoundingClientRect();
-    this._tooltip = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-      rows,
-    };
-  }
-
-  private clearTooltip(): void {
-    this._tooltip = null;
   }
 
   override render() {
@@ -186,20 +174,6 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
               </div>`
             : nothing}
 
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                ${this._tooltip.rows.map(
-                  (row) =>
-                    html`<div>
-                      ${row.key ? html`<span class="key">${row.key}:</span> ` : nothing}${row.value}
-                    </div>`,
-                )}
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

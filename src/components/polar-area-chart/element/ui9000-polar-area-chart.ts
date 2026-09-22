@@ -40,9 +40,6 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: { x: number; y: number; xLabel: string; yLabel: string } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -110,7 +107,6 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip
         ? ({ sector, event }) => {
-            const rect = this.getBoundingClientRect();
             const xField = model.xField ?? 'Category';
             const yField = model.yField ?? 'Value';
             const symbol = model.axisDetails?.[yField]?.measure_unit_symbol ?? '';
@@ -118,21 +114,21 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
             const categoryText = sector.group
               ? `${sector.label} · ${sector.group}`
               : sector.label;
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              xLabel: `${model.axisDetails?.[xField]?.label ?? xField}: ${categoryText}`,
-              yLabel: `${model.axisDetails?.[yField]?.label ?? yField}: ${
-                symbol ? `${value} ${symbol}` : value
-              }`,
-            };
+            this.openTooltip(event, {
+              rows: [
+                {
+                  label: model.axisDetails?.[xField]?.label ?? xField,
+                  value: categoryText,
+                },
+                {
+                  label: model.axisDetails?.[yField]?.label ?? yField,
+                  value: symbol ? `${value} ${symbol}` : value,
+                },
+              ],
+            });
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -145,16 +141,6 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
           ${this.renderLegend(model)}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div>${this._tooltip.xLabel}</div>
-                <div>${this._tooltip.yLabel}</div>
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

@@ -44,15 +44,6 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    seriesName: string;
-    category: string;
-    value: number;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -129,29 +120,26 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onPointHover: this.showTooltip
         ? ({ seriesName, category, value, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              seriesName,
-              category,
-              value,
-            };
+            const yField = model.yField;
+            const symbol = yField
+              ? model.axisDetails?.[yField]?.measure_unit_symbol
+              : undefined;
+            const valueLabel = symbol
+              ? `${value.toLocaleString()} ${symbol}`
+              : value.toLocaleString();
+            this.openTooltip(event, {
+              title: seriesName,
+              rows: [{ label: category, value: valueLabel }],
+            });
           }
         : undefined,
-      onPointLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onPointLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
   override render() {
     const title = this.headerTitle();
     const model = this._empty ? { layout: 'grouped' as const, series: [] } : this.parseData();
-    const yField = model.yField;
-    const valueLabel = this._tooltip
-      ? yField && model.axisDetails?.[yField]?.measure_unit_symbol
-        ? `${this._tooltip.value.toLocaleString()} ${model.axisDetails[yField]?.measure_unit_symbol}`
-        : this._tooltip.value.toLocaleString()
-      : '';
 
     return html`
       <div class="widget-shell" part="shell">
@@ -161,16 +149,6 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.seriesName}</div>
-                <div>${this._tooltip.category}: ${valueLabel}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

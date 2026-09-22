@@ -114,9 +114,6 @@ export class Ui9000MapChart extends Ui9000ChartElement {
   private _emptyReason = 'No data';
 
   @state()
-  private _tooltip: { x: number; y: number; title: string; value: string } | null = null;
-
-  @state()
   private _layers: MapLayerModel[] = [];
 
   @state()
@@ -167,7 +164,7 @@ export class Ui9000MapChart extends Ui9000ChartElement {
 
   override updated(changed: PropertyValues): void {
     if (changed.has('dataJson') || changed.has('geojsonBaseUrl')) this._model = null;
-    if (changed.has('showTooltip') && !this.showTooltip) this._tooltip = null;
+    if (changed.has('showTooltip') && !this.showTooltip) this.closeTooltip();
     if (this.shouldRedraw(changed)) this.scheduleDraw();
   }
 
@@ -405,18 +402,21 @@ export class Ui9000MapChart extends Ui9000ChartElement {
 
   private setTooltip(entry: MapHoverEntry | null): void {
     if (!entry) {
-      this._tooltip = null;
+      this.closeTooltip();
       return;
     }
     const root = this.chartRoot();
-    const x = entry.point?.x ?? (root?.clientWidth ?? 0) / 2;
-    const y = entry.point?.y ?? 48;
-    this._tooltip = {
-      x,
-      y,
+    const localX = entry.point?.x ?? (root?.clientWidth ?? 0) / 2;
+    const localY = entry.point?.y ?? 48;
+    const rect = (root ?? this).getBoundingClientRect();
+    const clientX = rect.left + localX;
+    const clientY = rect.top + localY;
+    const pageX = clientX + (typeof window !== 'undefined' ? window.scrollX : 0);
+    const pageY = clientY + (typeof window !== 'undefined' ? window.scrollY : 0);
+    this.openTooltip({ clientX, clientY, pageX, pageY } as MouseEvent, {
       title: entry.regionName,
-      value: `${entry.valueKey}: ${formatMapValue(entry.value)}`,
-    };
+      rows: [{ label: entry.valueKey, value: formatMapValue(entry.value) }],
+    });
   }
 
   private matchNotice(): string | null {
@@ -591,16 +591,6 @@ export class Ui9000MapChart extends Ui9000ChartElement {
           ${this._empty ? html`<div class="empty" part="empty">${this._emptyReason}</div>` : nothing}
           ${this.renderLegend()}
           ${notice && !this._empty ? html`<div class="match-notice">${notice}</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div>${this._tooltip.title}</div>
-                <div>${this._tooltip.value}</div>
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

@@ -32,15 +32,6 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    /** Client rows: "<row field>: <row value>" then "Value: <measure>" */
-    category: string;
-    value: string;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   @state()
@@ -149,19 +140,10 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onCellHover: this.showTooltip
         ? ({ cell, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              ...this.tooltipRows(model, cell),
-            };
+            this.openTooltip(event, this.tooltipContent(model, cell));
           }
         : undefined,
-      onCellLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -169,10 +151,10 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
    * Client tooltip: the row field and its value, then the measure — each
    * carrying the unit declared for that field in `axisDetails`.
    */
-  private tooltipRows(
+  private tooltipContent(
     model: MatrixModel,
     cell: MatrixCell,
-  ): { category: string; value: string } {
+  ): { title?: string; rows: { label: string; value: string }[] } {
     const rowValue = formatValueWithUnit(
       formatCategoryLabel(cell.y),
       model.axisDetails?.[model.categoryKey],
@@ -181,11 +163,18 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
       formatMatrixValue(cell.value),
       model.axisDetails?.[model.valueKey],
     );
+    if (model.categoryKey) {
+      return {
+        title: axisFieldLabel(model.categoryKey, model.axisDetails),
+        rows: [
+          { label: '', value: rowValue },
+          { label: 'Value', value },
+        ],
+      };
+    }
     return {
-      category: model.categoryKey
-        ? `${axisFieldLabel(model.categoryKey, model.axisDetails)}: ${rowValue}`
-        : rowValue,
-      value,
+      title: rowValue,
+      rows: [{ label: 'Value', value }],
     };
   }
 
@@ -235,16 +224,6 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
             </div>
           </div>
           ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.category}</div>
-                <div>Value: ${this._tooltip.value}</div>
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

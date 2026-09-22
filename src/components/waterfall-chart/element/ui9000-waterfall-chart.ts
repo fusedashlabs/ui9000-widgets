@@ -41,17 +41,6 @@ export class Ui9000WaterfallChart extends Ui9000ChartElement {
   yLabel = '';
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    label: string;
-    start: number;
-    end: number;
-    difference: number;
-    vector: string;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -132,23 +121,18 @@ export class Ui9000WaterfallChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onStepHover: this.showTooltip
         ? ({ step, event }: { step: WaterfallStep; event: MouseEvent }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              label: step.label,
-              start: step.start,
-              end: step.end,
-              difference: step.difference,
-              vector: step.vector,
-            };
+            this.openTooltip(event, {
+              title: step.label,
+              rows: [
+                { label: 'Start', value: String(step.start) },
+                { label: 'End', value: String(step.end) },
+                { label: 'Difference', value: String(step.difference) },
+                { label: 'Vector', value: step.vector },
+              ],
+            });
           }
         : undefined,
-      onStepLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onStepLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -163,19 +147,6 @@ export class Ui9000WaterfallChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.label}</div>
-                <div>Start: ${this._tooltip.start}</div>
-                <div>End: ${this._tooltip.end}</div>
-                <div>Difference: ${this._tooltip.difference}</div>
-                <div>Vector: ${this._tooltip.vector}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

@@ -18,13 +18,6 @@ import {
 import { renderParallelCoordinatesChart } from '../render/draw.js';
 import { parallelCoordinatesStyles } from './styles.js';
 
-type TooltipState = {
-  x: number;
-  y: number;
-  id: string;
-  rows: Array<{ key: string; value: string }>;
-} | null;
-
 @customElement('ui9000-parallel-coordinates-chart')
 export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
   static override styles = [parallelCoordinatesStyles, chartShellStyles];
@@ -43,9 +36,6 @@ export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
   /** Axis whose value colours the lines; clicking an axis changes it. */
   @property({ type: String, attribute: 'color-key' })
   colorKey = '';
-
-  @state()
-  private _tooltip: TooltipState = null;
 
   @state()
   private _activeColorKey = '';
@@ -124,23 +114,16 @@ export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
       },
       onRowHover: this.showTooltip
         ? ({ row, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              id: model.idKey ? `${model.idKey}: ${row.id}` : row.id,
+            this.openTooltip(event, {
+              title: row.id,
               rows: model.axes.map((key) => ({
-                key,
+                label: key,
                 value: formatTooltipValue(row.values[key]),
               })),
-            };
+            });
           }
         : undefined,
-      onRowLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onRowLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -158,24 +141,6 @@ export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
           </div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.id}</div>
-                ${this._tooltip.rows.map(
-                  (row) => html`<div
-                    class="row ${row.key === (this.colorKey || this._activeColorKey)
-                      ? 'is-active'
-                      : ''}"
-                  >
-                    <span>${row.key}</span><span>${row.value}</span>
-                  </div>`,
-                )}
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

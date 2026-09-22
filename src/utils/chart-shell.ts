@@ -1,3 +1,4 @@
+import { dismissLabelTooltip, presentLabelTooltip } from '../element/chart-tooltip-portal.js';
 import type { AxisLabelTooltipHandlers } from './axis-labels.js';
 import { parseJsonAttr } from './chart-helpers.js';
 import { truncateString } from './truncate.js';
@@ -33,21 +34,18 @@ export function resolveHeaderTitle(
   return extractWidgetTitle(dataJson, chartTitle);
 }
 
-/** Build axis-label hover callbacks that position a Lit label tooltip. */
+/** Axis-label chip, same placement as the client LabelTooltip (page coords, 25px above). */
 export function createAxisLabelHandlers(
   host: HTMLElement,
   setTooltip: (value: LabelTooltipState) => void,
 ): AxisLabelTooltipHandlers {
   return {
     onAxisLabelHover: (text: string, event: MouseEvent) => {
-      const rect = host.getBoundingClientRect();
-      setTooltip({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
-        text,
-      });
+      presentLabelTooltip(host, event, text);
+      setTooltip(null);
     },
     onAxisLabelLeave: () => {
+      dismissLabelTooltip(host);
       setTooltip(null);
     },
   };

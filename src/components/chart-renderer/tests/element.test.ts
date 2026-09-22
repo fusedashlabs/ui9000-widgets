@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { beforeAll, describe, expect, it } from 'vitest';
 
-import '../element/ui9000-chart-renderer.js';
+import { Ui9000ChartRenderer } from '../element/ui9000-chart-renderer.js';
 import lineFixture from '../../../stories/fixtures/line.fusedash.json';
 import barGroupedFixture from '../../../stories/fixtures/bar-grouped.fusedash.json';
 import mapFixture from '../../../stories/fixtures/map.fusedash.json';
@@ -113,6 +113,24 @@ describe('Ui9000ChartRenderer', () => {
     expect(map?.getAttribute('mapbox-token')).toBe('pk.test');
     expect(map?.getAttribute('geojson-base-url')).toBe('/geojson');
     expect(map?.getAttribute('pmtiles-base-url')).toBe('/pmtiles');
+    host.remove();
+  });
+
+  it('forwards header-variant and headerHandlers onto the mounted chart', async () => {
+    const host = document.createElement('ui9000-chart-renderer') as Ui9000ChartRenderer;
+    const onOpenChat = () => {};
+    host.setAttribute('data', JSON.stringify(lineFixture));
+    host.setAttribute('header-variant', 'dash');
+    host.headerHandlers = { onOpenChat };
+    document.body.appendChild(host);
+
+    await waitFor(() => !!host.shadowRoot?.querySelector('ui9000-line-chart'));
+
+    const chart = host.shadowRoot?.querySelector('ui9000-line-chart') as HTMLElement & {
+      headerHandlers?: { onOpenChat?: () => void };
+    };
+    expect(chart?.getAttribute('header-variant')).toBe('dash');
+    expect(chart?.headerHandlers?.onOpenChat).toBe(onOpenChat);
     host.remove();
   });
 });

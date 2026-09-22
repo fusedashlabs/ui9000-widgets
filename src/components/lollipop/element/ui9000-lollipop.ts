@@ -59,15 +59,6 @@ export class Ui9000Lollipop extends Ui9000ChartElement {
   yLabel = '';
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    seriesName: string;
-    pointLabel: string;
-    pointValue: number;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   @state()
@@ -198,17 +189,13 @@ export class Ui9000Lollipop extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onPointHover: this.showTooltip
         ? ({ seriesName, point, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              seriesName,
-              pointLabel: point.label,
-              pointValue: point.value,
-            };
+            this.openTooltip(event, {
+              title: seriesName,
+              rows: [{ label: point.label, value: String(point.value) }],
+            });
           }
         : undefined,
-      onPointLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onPointLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
 
     if (xAxisRoot && !needsFixedXAxis) {
@@ -236,16 +223,6 @@ export class Ui9000Lollipop extends Ui9000ChartElement {
           </div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.seriesName}</div>
-                <div>${this._tooltip.pointLabel}: ${this._tooltip.pointValue}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

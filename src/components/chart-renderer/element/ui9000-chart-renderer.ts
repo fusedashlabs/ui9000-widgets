@@ -1,3 +1,4 @@
+import type { WidgetHeaderHandlers } from '../../../element/widget-header.js';
 import { loadChart } from '../../../lazy/index.js';
 import type { WidgetScale } from '../../../types/index.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
@@ -30,6 +31,7 @@ export class Ui9000ChartRenderer extends HTMLElement {
       'show-legend',
       'show-tooltip',
       'show-header',
+      'header-variant',
       'embedded',
       'chart-title',
       'mapbox-token',
@@ -41,6 +43,17 @@ export class Ui9000ChartRenderer extends HTMLElement {
   private _host: HTMLDivElement | null = null;
   private _empty: HTMLDivElement | null = null;
   private _mountToken = 0;
+  private _headerHandlers: WidgetHeaderHandlers = {};
+
+  get headerHandlers(): WidgetHeaderHandlers {
+    return this._headerHandlers;
+  }
+
+  set headerHandlers(value: WidgetHeaderHandlers) {
+    this._headerHandlers = value ?? {};
+    const chart = this._host?.firstElementChild;
+    if (chart instanceof HTMLElement) this.applyHeaderHandlers(chart);
+  }
 
   connectedCallback(): void {
     if (this._host) return;
@@ -83,6 +96,18 @@ export class Ui9000ChartRenderer extends HTMLElement {
     if (!this.hasAttribute(attr)) return;
     const on = this.getAttribute(attr) !== 'false';
     (el as unknown as Record<string, unknown>)[prop] = on;
+  }
+
+  private applyHeaderVariant(el: HTMLElement): void {
+    const variant = this.getAttribute('header-variant');
+    if (variant === 'dash' || variant === 'chat') el.setAttribute('header-variant', variant);
+    else el.removeAttribute('header-variant');
+  }
+
+  private applyHeaderHandlers(el: HTMLElement): void {
+    if (!('headerHandlers' in el)) return;
+    (el as HTMLElement & { headerHandlers: WidgetHeaderHandlers }).headerHandlers =
+      this._headerHandlers;
   }
 
   private copyHostAttr(el: HTMLElement, name: string): void {
@@ -163,6 +188,8 @@ export class Ui9000ChartRenderer extends HTMLElement {
     if (this.getAttribute('show-header') === 'false')
       el.setAttribute('show-header', 'false');
     else el.removeAttribute('show-header');
+    this.applyHeaderVariant(el);
+    this.applyHeaderHandlers(el);
 
     const showGrid = this.boolAttr('show-grid');
     const showLegend = this.boolAttr('show-legend');

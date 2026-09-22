@@ -35,14 +35,6 @@ export class Ui9000RadialBarChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    title: string;
-    lines: string[];
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   /**
@@ -122,25 +114,24 @@ export class Ui9000RadialBarChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip
         ? ({ bar, event }) => {
-            const rect = this.getBoundingClientRect();
             const xDetail = xField ? model.axisDetails?.[xField] : undefined;
             const yDetail = yField ? model.axisDetails?.[yField] : undefined;
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
+            this.openTooltip(event, {
               title: formatRadialBarCategory(bar.label),
-              lines: [
-                `${xDetail?.label ?? xField ?? 'Category'}: ${formatRadialBarCategory(bar.label, xDetail)}`,
-                `${yDetail?.label ?? yField ?? 'Value'}: ${formatRadialBarValue(bar.value, yDetail)}`,
+              rows: [
+                {
+                  label: xDetail?.label ?? xField ?? 'Category',
+                  value: formatRadialBarCategory(bar.label, xDetail),
+                },
+                {
+                  label: yDetail?.label ?? yField ?? 'Value',
+                  value: formatRadialBarValue(bar.value, yDetail),
+                },
               ],
-            };
+            });
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -154,16 +145,6 @@ export class Ui9000RadialBarChart extends Ui9000ChartElement {
           ${model ? this.renderLegend(model) : nothing}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="tooltip-title">${this._tooltip.title}</div>
-                ${this._tooltip.lines.map((line) => html`<div>${line}</div>`)}
-              </div>`
-            : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

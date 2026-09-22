@@ -122,19 +122,21 @@ describe('ui9000-matrix-chart', () => {
       el.shadowRoot
         .querySelector('rect.matrix-cell')!
         .dispatchEvent(new MouseEvent('mouseenter'));
+    const portal = () => document.querySelector('[data-ui9000-chart-tooltip]');
 
     const on = await mount();
     expect(on.shadowRoot.querySelector('.chart-root')?.hasAttribute('data-hoverable')).toBe(true);
     hover(on);
     await on.updateComplete;
-    expect(on.shadowRoot.querySelector('.tooltip')).not.toBeNull();
+    expect(portal()?.classList.contains('is-open')).toBe(true);
     on.remove();
+    expect(portal()?.classList.contains('is-open')).not.toBe(true);
 
     const off = await mount(GRID, { showTooltip: false });
     expect(off.shadowRoot.querySelector('.chart-root')?.hasAttribute('data-hoverable')).toBe(false);
     hover(off);
     await off.updateComplete;
-    expect(off.shadowRoot.querySelector('.tooltip')).toBeNull();
+    expect(portal()?.classList.contains('is-open')).not.toBe(true);
     off.remove();
   });
 
@@ -159,8 +161,9 @@ describe('ui9000-matrix-chart', () => {
       .dispatchEvent(new MouseEvent('mouseenter'));
     await el.updateComplete;
 
-    const tooltip = el.shadowRoot.querySelector('.tooltip')!;
-    expect(tooltip.querySelector('.name')?.textContent).toContain('Customer segment:');
+    const tooltip = document.querySelector('[data-ui9000-chart-tooltip]')!;
+    expect(tooltip.classList.contains('is-open')).toBe(true);
+    expect(tooltip.querySelector('.name')?.textContent).toContain('Customer segment');
     expect(tooltip.textContent).toContain('€1,5');
 
     el.remove();

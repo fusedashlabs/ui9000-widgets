@@ -21,10 +21,7 @@ import {
   type GiniImpurityEntropyFusePayload,
   type GiniImpurityEntropyModel,
 } from '../lib/index.js';
-import {
-  renderGiniImpurityEntropyChart,
-  type GiniHoverEntry,
-} from '../render/draw.js';
+import { renderGiniImpurityEntropyChart } from '../render/draw.js';
 import { giniImpurityEntropyChartStyles } from './styles.js';
 
 type GiniPayload =
@@ -56,15 +53,6 @@ export class Ui9000GiniImpurityEntropyChart extends Ui9000ChartElement {
   /** Client `showSplit` — child markers plus their ΔGini. */
   @property({ type: Boolean, attribute: 'show-split' })
   showSplit = false;
-
-  @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    p: number;
-    entries: GiniHoverEntry[];
-    activeSeriesId: string | null;
-  } | null = null;
 
   @state()
   private _empty = false;
@@ -146,40 +134,18 @@ export class Ui9000GiniImpurityEntropyChart extends Ui9000ChartElement {
       showGrid: this.showGrid,
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip
-        ? ({ p, entries, activeSeriesId, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              p,
-              entries,
-              activeSeriesId,
-            };
+        ? ({ p, entries, event }) => {
+            this.openTooltip(event, {
+              title: `p = ${formatProbability(p)}`,
+              rows: entries.map((entry) => ({
+                label: entry.seriesName,
+                value: formatImpurityValue(entry.value),
+              })),
+            });
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
-  }
-
-  private renderTooltip() {
-    if (!this._tooltip) return nothing;
-    const { x, y, p, entries, activeSeriesId } = this._tooltip;
-    return html`<div class="tooltip" part="tooltip" style="left:${x}px;top:${y}px">
-      <div class="name">p = ${formatProbability(p)}</div>
-      ${entries.map(
-        (entry) => html`<div
-          class="row ${entry.seriesId === activeSeriesId ? 'active' : 'dimmed'}"
-        >
-          <span class="dot" style="background:${entry.color}"></span>
-          <span>${entry.seriesName}</span>
-          <span class="value">${formatImpurityValue(entry.value)}</span>
-        </div>`,
-      )}
-    </div>`;
   }
 
   override render() {
@@ -194,7 +160,7 @@ export class Ui9000GiniImpurityEntropyChart extends Ui9000ChartElement {
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
             : nothing}
-          ${this.renderTooltip()} ${this.renderShellLabelTooltip()}
+          ${this.renderShellLabelTooltip()}
         </div>
       </div>
     `;

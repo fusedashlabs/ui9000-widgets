@@ -92,6 +92,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     }
     if (changed.has('showTooltip') && !this.showTooltip) {
       this._labelTooltip = null;
+      this.closeAllTooltips();
     }
     if (this.shouldRedraw(changed)) this.scheduleDraw();
   }

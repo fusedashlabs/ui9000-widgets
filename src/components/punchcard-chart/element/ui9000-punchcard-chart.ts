@@ -34,15 +34,6 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
   yLabel = '';
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    cellX: string;
-    cellY: string;
-    cellValue: number;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -100,17 +91,13 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onCellHover: this.showTooltip
         ? ({ cell, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              cellX: cell.x,
-              cellY: cell.y,
-              cellValue: cell.value,
-            };
+            this.openTooltip(event, {
+              title: cell.y,
+              rows: [{ label: cell.x, value: String(cell.value) }],
+            });
           }
         : undefined,
-      onCellLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -123,16 +110,6 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div class="name">${this._tooltip.cellY}</div>
-                <div>${this._tooltip.cellX}: ${this._tooltip.cellValue}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

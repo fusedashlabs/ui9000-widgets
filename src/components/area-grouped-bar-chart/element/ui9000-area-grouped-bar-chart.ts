@@ -36,9 +36,6 @@ export class Ui9000AreaGroupedBarChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: { x: number; y: number; lines: string[] } | null = null;
-
-  @state()
   private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
@@ -94,9 +91,14 @@ export class Ui9000AreaGroupedBarChart extends Ui9000ChartElement {
     return renderChartLegend(entries);
   }
 
-  private tooltipLines(model: AreaGroupedBarModel, category: string): string[] {
+  private tooltipContent(
+    model: AreaGroupedBarModel,
+    category: string,
+  ): { rows: { label: string; value: string }[] } {
     const xLabel = model.axisDetails?.[model.xField]?.label ?? model.xField;
-    const lines: string[] = [`${xLabel}: ${category}`];
+    const rows: { label: string; value: string }[] = [
+      { label: xLabel, value: category },
+    ];
 
     const gMap = model.barsByCategory[category] ?? {};
     let barsSum = 0;
@@ -104,16 +106,16 @@ export class Ui9000AreaGroupedBarChart extends Ui9000ChartElement {
       const v = gMap[g.key];
       if (!Number.isFinite(v)) continue;
       barsSum += v;
-      lines.push(`${g.label}: ${formatAgbValue(v)}`);
+      rows.push({ label: g.label, value: formatAgbValue(v) });
     }
 
     const linePt = model.linePoints.find((p) => p.x === category);
     const lineValue = linePt?.y ?? barsSum;
     if (Number.isFinite(lineValue)) {
       const aLabel = model.lineLabel || model.lineField;
-      lines.push(`${aLabel}: ${formatAgbValue(lineValue)}`);
+      rows.push({ label: aLabel, value: formatAgbValue(lineValue) });
     }
-    return lines;
+    return { rows };
   }
 
   private draw(): void {
@@ -144,19 +146,10 @@ export class Ui9000AreaGroupedBarChart extends Ui9000ChartElement {
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip
         ? ({ category, event }) => {
-            const rect = this.getBoundingClientRect();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              lines: this.tooltipLines(model, category),
-            };
+            this.openTooltip(event, this.tooltipContent(model, category));
           }
         : undefined,
-      onLeave: this.showTooltip
-        ? () => {
-            this._tooltip = null;
-          }
-        : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -171,15 +164,6 @@ export class Ui9000AreaGroupedBarChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                ${this._tooltip.lines.map((line) => html`<div>${line}</div>`)}
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

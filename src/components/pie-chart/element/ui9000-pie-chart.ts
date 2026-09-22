@@ -33,14 +33,6 @@ export class Ui9000PieChart extends Ui9000ChartElement {
   showTooltip = true;
 
   @state()
-  private _tooltip: {
-    x: number;
-    y: number;
-    xLabel: string;
-    yLabel: string;
-  } | null = null;
-
-  @state()
   private _empty = false;
 
   @state()
@@ -114,7 +106,6 @@ export class Ui9000PieChart extends Ui9000ChartElement {
       },
       onHover: this.showTooltip
         ? ({ slice, event }) => {
-            const rect = this.getBoundingClientRect();
             const xField = model.xField ?? 'Category';
             const yField = model.yField ?? 'Value';
             const xAxeLabel = model.axisDetails?.[xField]?.label ?? xField;
@@ -123,15 +114,18 @@ export class Ui9000PieChart extends Ui9000ChartElement {
             const valueText = symbol
               ? `${slice.value.toLocaleString()} ${symbol}`.trim()
               : slice.value.toLocaleString();
-            this._tooltip = {
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-              xLabel: `${xAxeLabel}: ${slice.label}`,
-              yLabel: `${yAxeLabel}: ${valueText} (${formatPiePercent(slice.percentage)}%)`,
-            };
+            this.openTooltip(event, {
+              rows: [
+                { label: xAxeLabel, value: slice.label },
+                {
+                  label: yAxeLabel,
+                  value: `${valueText} (${formatPiePercent(slice.percentage)}%)`,
+                },
+              ],
+            });
           }
         : undefined,
-      onLeave: this.showTooltip ? () => { this._tooltip = null; } : undefined,
+      onLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     });
   }
 
@@ -145,16 +139,6 @@ export class Ui9000PieChart extends Ui9000ChartElement {
           ${this.renderLegend()}
           ${this._empty
             ? html`<div class="empty" part="empty">No data</div>`
-            : nothing}
-          ${this._tooltip
-            ? html`<div
-                class="tooltip"
-                part="tooltip"
-                style="left:${this._tooltip.x}px;top:${this._tooltip.y}px"
-              >
-                <div>${this._tooltip.xLabel}</div>
-                <div>${this._tooltip.yLabel}</div>
-              </div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

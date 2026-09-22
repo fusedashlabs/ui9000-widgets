@@ -65,7 +65,9 @@ export class Ui9000Inspector extends LitElement {
             <dd>
               ${model.riskBand
                 ? html`<span class="badge" data-band=${model.riskBand}>${model.riskBand}</span>`
-                : html`<span class="muted">${NOT_RECORDED}</span>`}
+                : model.unrecognizedRiskBand
+                  ? html`<span class="muted">${model.unrecognizedRiskBand} (unrecognized)</span>`
+                  : html`<span class="muted">${NOT_RECORDED}</span>`}
             </dd>
             <dt>Outcome</dt>
             <dd>${model.outcome ?? html`<span class="muted">${NOT_RECORDED}</span>`}</dd>

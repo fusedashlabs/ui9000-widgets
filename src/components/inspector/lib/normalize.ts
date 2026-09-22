@@ -40,7 +40,7 @@ export function normalizeTrace(raw: unknown): NormalizedTrace {
     winner: text(trace.winner) || null,
     rejections: rejections(trace.rejections),
     actions: stringList(trace.actions),
-    riskBand: riskBand(trace.riskBand),
+    ...readRiskBand(trace.riskBand),
     outcome: text(trace.outcome) || null,
     tieBreak: text(trace.tieBreak) || null,
   };
@@ -90,11 +90,14 @@ function rejections(raw: unknown): TraceRejection[] {
   return out;
 }
 
-function riskBand(raw: unknown): TraceRiskBand | null {
-  const band = text(raw).toLowerCase();
-  return (TRACE_RISK_BANDS as readonly string[]).includes(band)
-    ? (band as TraceRiskBand)
-    : null;
+function readRiskBand(raw: unknown): Pick<InspectorModel, 'riskBand' | 'unrecognizedRiskBand'> {
+  const recorded = text(raw);
+  if (!recorded) return { riskBand: null, unrecognizedRiskBand: null };
+  const band = recorded.toLowerCase();
+  if ((TRACE_RISK_BANDS as readonly string[]).includes(band)) {
+    return { riskBand: band as TraceRiskBand, unrecognizedRiskBand: null };
+  }
+  return { riskBand: null, unrecognizedRiskBand: recorded };
 }
 
 function stringList(raw: unknown): string[] {

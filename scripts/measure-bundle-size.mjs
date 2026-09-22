@@ -44,6 +44,7 @@ const CHART_ENTRIES = [
   'components/status-gauge-widget/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
+  'components/inspector/index.js',
   'components/table/index.js',
   'components/text/index.js',
   'components/image/index.js',

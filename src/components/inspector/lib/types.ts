@@ -34,6 +34,8 @@ export type InspectorModel = {
   rejections: TraceRejection[];
   actions: string[];
   riskBand: TraceRiskBand | null;
+  /** Present when the trace sent a riskBand outside low | medium | high. */
+  unrecognizedRiskBand: string | null;
   outcome: string | null;
   tieBreak: string | null;
 };

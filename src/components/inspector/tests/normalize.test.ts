@@ -29,6 +29,7 @@ describe('normalizeTrace', () => {
 
     expect(trace.winner).toBeNull();
     expect(trace.riskBand).toBeNull();
+    expect(trace.unrecognizedRiskBand).toBeNull();
     expect(trace.outcome).toBeNull();
   });
 
@@ -42,7 +43,9 @@ describe('normalizeTrace', () => {
 
   it('keeps riskBand closed to the contract enum', () => {
     expect(model({ ...spatialTraceV2, riskBand: 'HIGH' }).riskBand).toBe('high');
-    expect(model({ ...spatialTraceV2, riskBand: 'catastrophic' }).riskBand).toBeNull();
+    const rejected = model({ ...spatialTraceV2, riskBand: 'catastrophic' });
+    expect(rejected.riskBand).toBeNull();
+    expect(rejected.unrecognizedRiskBand).toBe('catastrophic');
   });
 
   it('refuses a trace carrying dataset rows, however deep', () => {

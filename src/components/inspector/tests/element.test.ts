@@ -100,6 +100,13 @@ describe('Ui9000Inspector', () => {
     expect(pairs(host, '.head dl').Outcome).toBe('rendered');
   });
 
+  it('shows an out-of-enum risk band instead of not recorded', async () => {
+    const host = await mount({ ...spatialTraceV2, riskBand: 'catastrophic' });
+
+    expect(pairs(host, '.head dl')['Risk band']).toBe('catastrophic (unrecognized)');
+    expect(panel(host).querySelector('.badge[data-band]')).toBeNull();
+  });
+
   it('refuses a trace carrying rows and renders no panel', async () => {
     const host = await mount({ ...spatialTrace, rows: [{ region: 'North', incidents: 12 }] });
 

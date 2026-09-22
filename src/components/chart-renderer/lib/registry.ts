@@ -9,6 +9,7 @@ import donutMeta from '../../donut-chart/metadata.json';
 import giniImpurityEntropyMeta from '../../gini-impurity-entropy-chart/metadata.json';
 import histogramMeta from '../../histogram-chart/metadata.json';
 import kpiMeta from '../../kpi-widget/metadata.json';
+import statusGaugeMeta from '../../status-gauge-widget/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
 import mapChartMeta from '../../map-chart/metadata.json';
@@ -62,6 +63,7 @@ const METADATA: ChartMetadataLike[] = [
   giniImpurityEntropyMeta,
   histogramMeta,
   kpiMeta,
+  statusGaugeMeta,
   lineMeta,
   lollipopMeta,
   mapChartMeta,

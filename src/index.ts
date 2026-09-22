@@ -165,6 +165,10 @@ import {
   Ui9000KpiWidget,
 } from './components/kpi-widget/index.js';
 import {
+  registerStatusGaugeWidget,
+  Ui9000StatusGaugeWidget,
+} from './components/status-gauge-widget/index.js';
+import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
 } from './components/gini-impurity-entropy-chart/index.js';
@@ -295,6 +299,8 @@ export {
   registerPartialDependenceChart,
   Ui9000KpiWidget,
   registerKpiWidget,
+  Ui9000StatusGaugeWidget,
+  registerStatusGaugeWidget,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -365,6 +371,7 @@ export function registerAllCharts(): void {
   registerTreemapChart();
   registerPartialDependenceChart();
   registerKpiWidget();
+  registerStatusGaugeWidget();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -714,6 +721,16 @@ export {
   type RawKpiItem,
   kpiWidgetMetadata,
 } from './components/kpi-widget/index.js';
+
+export {
+  normalizeStatusGauge,
+  formatStatusNumber,
+  type StatusGaugeItem,
+  type StatusGaugeModel,
+  type StatusGaugePayload,
+  type StatusLevel,
+  statusGaugeWidgetMetadata,
+} from './components/status-gauge-widget/index.js';
 
 export {
   normalizeCustomWidget,

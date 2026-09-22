@@ -148,6 +148,10 @@
       "types": "./dist/components/kpi-widget/index.d.ts",
       "import": "./dist/components/kpi-widget/index.js"
     },
+    "./status-gauge-widget": {
+      "types": "./dist/components/status-gauge-widget/index.d.ts",
+      "import": "./dist/components/status-gauge-widget/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -283,6 +287,10 @@
     "./lazy/kpi-widget": {
       "types": "./dist/lazy/kpi-widget.d.ts",
       "import": "./dist/lazy/kpi-widget.js"
+    },
+    "./lazy/status-gauge-widget": {
+      "types": "./dist/lazy/status-gauge-widget.d.ts",
+      "import": "./dist/lazy/status-gauge-widget.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

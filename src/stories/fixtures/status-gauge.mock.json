@@ -1,0 +1,82 @@
+{
+  "name": "Active Antenna Unit",
+  "description": "Internal Component View",
+  "chartType": "statusGaugeWidget",
+  "xAxe": ["key"],
+  "yAxe": ["value"],
+  "data": [
+    {
+      "key": "unitHealth",
+      "role": "gauge",
+      "value": 72.8,
+      "status": "Degraded",
+      "level": "warning",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "txPower",
+      "value": 28,
+      "level": "warning",
+      "min": 0,
+      "max": 40,
+      "ratio": 0.62
+    },
+    {
+      "key": "temp",
+      "value": 68,
+      "level": "critical",
+      "min": 0,
+      "max": 100,
+      "ratio": 0.8
+    },
+    {
+      "key": "vswr",
+      "value": 1.8,
+      "level": "ok",
+      "min": 1,
+      "max": 3,
+      "ratio": 0.32
+    },
+    {
+      "key": "avgLatency",
+      "value": 34,
+      "level": "critical",
+      "min": 0,
+      "max": 80,
+      "ratio": 0.55
+    }
+  ],
+  "axisDetails": {
+    "unitHealth": {
+      "label": "Unit Health",
+      "measure_unit": "%",
+      "type": "number",
+      "subtype": "percent"
+    },
+    "txPower": {
+      "label": "Tx Power",
+      "measure_unit": "dBm",
+      "type": "number",
+      "subtype": "power"
+    },
+    "temp": {
+      "label": "Temp",
+      "measure_unit": "°C",
+      "type": "number",
+      "subtype": "temperature"
+    },
+    "vswr": {
+      "label": "VSWR",
+      "measure_unit": "",
+      "type": "number",
+      "subtype": "ratio"
+    },
+    "avgLatency": {
+      "label": "Avg latency",
+      "measure_unit": "ms",
+      "type": "number",
+      "subtype": "duration"
+    }
+  }
+}

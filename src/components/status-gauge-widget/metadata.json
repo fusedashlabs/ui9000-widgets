@@ -1,0 +1,17 @@
+{
+  "id": "status-gauge-widget",
+  "tag": "ui9000-status-gauge-widget",
+  "title": "Status Gauge Widget",
+  "description": "Semicircular health gauge plus a wrapping grid of status metric cards. Reads a WidgetItem: name, description, data rows, and axisDetails. One row with role gauge is the dial; every other row is a card.",
+  "chartTypeKeys": ["statusGaugeWidget"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/status-gauge-widget",
+  "entry": "@ui9000/widgets/status-gauge-widget",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "host"
+}

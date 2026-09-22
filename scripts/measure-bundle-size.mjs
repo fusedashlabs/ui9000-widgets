@@ -41,6 +41,7 @@ const CHART_ENTRIES = [
   'components/treemap-chart/index.js',
   'components/partial-dependence-chart/index.js',
   'components/kpi-widget/index.js',
+  'components/status-gauge-widget/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
   'components/table/index.js',

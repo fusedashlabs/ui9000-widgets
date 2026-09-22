@@ -29,6 +29,7 @@ export type ChartKind =
   | 'treemap-chart'
   | 'partial-dependence-chart'
   | 'kpi-widget'
+  | 'status-gauge-widget'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
   | 'custom-widget'
@@ -176,6 +177,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'kpi-widget': async () => {
     const mod = await import('../components/kpi-widget/index.js');
     return { register: mod.registerKpiWidget };
+  },
+  'status-gauge-widget': async () => {
+    const mod = await import('../components/status-gauge-widget/index.js');
+    return { register: mod.registerStatusGaugeWidget };
   },
   'gini-impurity-entropy-chart': async () => {
     const mod = await import('../components/gini-impurity-entropy-chart/index.js');
@@ -378,6 +383,10 @@ export async function loadPartialDependenceChart(): Promise<LazyChartModule> {
 
 export async function loadKpiWidget(): Promise<LazyChartModule> {
   return loadChart('kpi-widget');
+}
+
+export async function loadStatusGaugeWidget(): Promise<LazyChartModule> {
+  return loadChart('status-gauge-widget');
 }
 
 export async function loadGiniImpurityEntropyChart(): Promise<LazyChartModule> {

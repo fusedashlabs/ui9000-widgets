@@ -1,0 +1,33 @@
+{
+  "name": "Site power shelf",
+  "description": "Six cards wrap; the list scrolls when the cell is short",
+  "chartType": "statusGaugeWidget",
+  "xAxe": ["key"],
+  "yAxe": ["value"],
+  "data": [
+    {
+      "key": "health",
+      "role": "gauge",
+      "value": 91,
+      "status": "Healthy",
+      "level": "ok",
+      "min": 0,
+      "max": 100
+    },
+    { "key": "load", "value": 64, "level": "warning", "min": 0, "max": 100 },
+    { "key": "temp", "value": 41, "level": "ok", "min": 0, "max": 90 },
+    { "key": "voltage", "value": 48.2, "level": "ok", "min": 40, "max": 56 },
+    { "key": "current", "value": 18.4, "level": "warning", "min": 0, "max": 30 },
+    { "key": "alarms", "value": 2, "level": "critical", "min": 0, "max": 8 },
+    { "key": "uptime", "value": 99.1, "level": "ok", "min": 0, "max": 100 }
+  ],
+  "axisDetails": {
+    "health": { "label": "Shelf health", "measure_unit": "%" },
+    "load": { "label": "Load", "measure_unit": "%" },
+    "temp": { "label": "Temp", "measure_unit": "°C" },
+    "voltage": { "label": "Voltage", "measure_unit": "V" },
+    "current": { "label": "Current", "measure_unit": "A" },
+    "alarms": { "label": "Alarms", "measure_unit": "" },
+    "uptime": { "label": "Uptime", "measure_unit": "%" }
+  }
+}

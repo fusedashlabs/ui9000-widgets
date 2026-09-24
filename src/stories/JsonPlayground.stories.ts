@@ -1,10 +1,10 @@
-import { LitElement, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
-import type { Meta, StoryObj } from '@storybook/web-components';
+import { LitElement, html } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { registerChartRenderer } from '../components/chart-renderer/index.js';
-import { widgetFromPastedJson } from './json-playground.js';
-import { storybookAssetUrl } from './storybook-public-base.js';
+import { registerChartRenderer } from "../components/chart-renderer/index.js";
+import { widgetFromPastedJson } from "./json-playground.js";
+import { storybookAssetUrl } from "./storybook-public-base.js";
 
 registerChartRenderer();
 
@@ -18,7 +18,7 @@ const SAMPLE = `{
   "orientation": "vertical",
   "xAxe": ["pharmacy"],
   "yAxe": ["compensated_sum"],
-  "groupBy": ["pharmacy"],
+  "groupBy": [],
   "data": [
     { "pharmacy": "Stefan cel Mare 26", "compensated_sum": 1300986.08 },
     { "pharmacy": "Stefan cel Mare 105", "compensated_sum": 1050308.07 },
@@ -31,20 +31,20 @@ const SAMPLE = `{
   "dataUrl": ""
 }`;
 
-@customElement('ui9000-json-playground')
+@customElement("ui9000-json-playground")
 class Ui9000JsonPlayground extends LitElement {
   @state()
-  private status = '';
+  private status = "";
 
   @state()
   private statusError = false;
 
   /** Widget JSON string passed to the chart as a property, not an HTML attribute. */
   @state()
-  private widgetJson = '{}';
+  private widgetJson = "{}";
 
   override firstUpdated(): void {
-    const input = this.renderRoot.querySelector('textarea');
+    const input = this.renderRoot.querySelector("textarea");
     if (input) input.value = SAMPLE;
     this.apply(SAMPLE);
   }
@@ -52,7 +52,8 @@ class Ui9000JsonPlayground extends LitElement {
   private apply(text: string): void {
     try {
       const widget = widgetFromPastedJson(text);
-      const chartType = typeof widget.chartType === 'string' ? widget.chartType : '(none)';
+      const chartType =
+        typeof widget.chartType === "string" ? widget.chartType : "(none)";
       const rows = Array.isArray(widget.data) ? widget.data.length : 0;
       this.widgetJson = JSON.stringify(widget);
       this.status = `Rendered ${chartType}. data rows: ${rows}.`;
@@ -64,8 +65,8 @@ class Ui9000JsonPlayground extends LitElement {
   }
 
   override render() {
-    const geojson = storybookAssetUrl('geojson');
-    const pmtiles = storybookAssetUrl('pmtiles');
+    const geojson = storybookAssetUrl("geojson");
+    const pmtiles = storybookAssetUrl("pmtiles");
     return html`
       <style>
         :host {
@@ -78,20 +79,26 @@ class Ui9000JsonPlayground extends LitElement {
           box-sizing: border-box;
         }
         label {
-          font: 600 13px/1.2 system-ui, sans-serif;
+          font:
+            600 13px/1.2 system-ui,
+            sans-serif;
         }
         textarea {
           width: 100%;
           height: 120px;
           box-sizing: border-box;
           resize: vertical;
-          font: 12px/1.45 ui-monospace, monospace;
+          font:
+            12px/1.45 ui-monospace,
+            monospace;
           padding: 8px;
         }
         .status {
-          font: 12px/1.4 system-ui, sans-serif;
+          font:
+            12px/1.4 system-ui,
+            sans-serif;
           min-height: 1.4em;
-          color: ${this.statusError ? '#b91c1c' : 'inherit'};
+          color: ${this.statusError ? "#b91c1c" : "inherit"};
         }
         .frame {
           flex: 1 1 auto;
@@ -136,14 +143,17 @@ class Ui9000JsonPlayground extends LitElement {
 }
 
 const meta: Meta = {
-  title: 'Guides/JSON playground',
+  title: "Guides/JSON playground",
   parameters: {
     controls: { disable: true },
     docs: {
-      source: { type: 'code', code: '<ui9000-json-playground></ui9000-json-playground>' },
+      source: {
+        type: "code",
+        code: "<ui9000-json-playground></ui9000-json-playground>",
+      },
       description: {
         component:
-          'Paste a FuseDash widget JSON (or a data-link body whose data is the widget). The chart renderer mounts whatever chartType is in the object. An empty dataUrl is ignored — rows in data are what get drawn.',
+          "Paste a FuseDash widget JSON (or a data-link body whose data is the widget). The chart renderer mounts whatever chartType is in the object. An empty dataUrl is ignored — rows in data are what get drawn.",
       },
     },
   },
@@ -153,6 +163,6 @@ export default meta;
 type Story = StoryObj;
 
 export const PasteJson: Story = {
-  name: 'Paste JSON',
+  name: "Paste JSON",
   render: () => html`<ui9000-json-playground></ui9000-json-playground>`,
 };

@@ -6,7 +6,7 @@ export const barChartStyles = css`
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 220px;
+    min-height: var(--ui9000-host-min-height, 220px);
     color: var(--ui9000-color-text, #111827);
     font-family: var(--ui9000-font-family, system-ui, sans-serif);
     box-sizing: border-box;

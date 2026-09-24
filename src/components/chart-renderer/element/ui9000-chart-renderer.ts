@@ -80,8 +80,22 @@ export class Ui9000ChartRenderer extends HTMLElement {
     if (this._host) void this.mountChart();
   }
 
+  /** In-memory payload. Not mirrored to the `data` attribute — Storybook's HTML source pass splits quotes there and JSON.parse then fails at column 2. */
+  private _widgetJson: string | null = null;
+
   private get dataJson(): string {
-    return this.getAttribute('data') ?? '{}';
+    return this._widgetJson ?? this.getAttribute('data') ?? '{}';
+  }
+
+  get widgetJson(): string {
+    return this.dataJson;
+  }
+
+  set widgetJson(value: string) {
+    const next = value && value.trim() ? value : '{}';
+    if (next === this._widgetJson) return;
+    this._widgetJson = next;
+    if (this._host) void this.mountChart();
   }
 
   private get chartTypeAttr(): string {
@@ -181,7 +195,10 @@ export class Ui9000ChartRenderer extends HTMLElement {
     }
     if (!el) return;
 
-    el.setAttribute('data', this.dataJson);
+    const payload = this.dataJson;
+    const dataProp = el as HTMLElement & { dataJson?: string };
+    if ('dataJson' in el) dataProp.dataJson = payload;
+    else el.setAttribute('data', payload);
     el.setAttribute('scale', this.scale);
     if (title) el.setAttribute('chart-title', title);
     else el.removeAttribute('chart-title');
@@ -232,6 +249,7 @@ export class Ui9000ChartRenderer extends HTMLElement {
       this._host.appendChild(el);
     }
 
+    this._empty.replaceChildren();
     this._empty.hidden = true;
     this._host.hidden = false;
   }

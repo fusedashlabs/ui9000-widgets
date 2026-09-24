@@ -321,8 +321,10 @@ export function renderLineChart(
     }
   }
 
+  // padding(-1) makes bandwidth ~2× the gap between ticks, so labels
+  // truncate to the max and collide. Fit each label to the tick step.
   decorateAxisLabels(xAxis, {
-    slotWidth: xScale.bandwidth(),
+    slotWidth: xScale.step(),
     ...axisLabels,
   });
 

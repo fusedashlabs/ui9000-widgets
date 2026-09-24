@@ -18,6 +18,10 @@ export const chartRendererStyles = css`
     height: 100%;
     min-height: inherit;
   }
+  .host[hidden],
+  .empty[hidden] {
+    display: none !important;
+  }
   .empty {
     display: grid;
     place-items: center;

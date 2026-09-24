@@ -46,6 +46,12 @@
       "required": true,
       "type": "number",
       "description": "Count or score aggregated on the category."
+    },
+    {
+      "id": "series",
+      "required": false,
+      "cardinality": "low",
+      "description": "Second category that splits each bar. A different column from category."
     }
   ],
   "eligibility": [

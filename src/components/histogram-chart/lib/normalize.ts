@@ -236,14 +236,12 @@ function fromNestedWidget(input: Record<string, unknown>): HistogramModel | null
   if (!Array.isArray(results)) return null;
 
   const uniqueValues = (input.uniqueValues ?? {}) as Record<string, string[]>;
-  const uniqueKeys = Object.keys(uniqueValues);
-  const groupByRaw = Array.isArray(input.groupBy)
+  const groupBy = Array.isArray(input.groupBy)
     ? String(input.groupBy[0] ?? '')
     : typeof input.groupBy === 'string'
       ? input.groupBy
       : '';
-  // Client: groupBy?.[0] || uniqueValueKeys[0]
-  const groupBy = groupByRaw || uniqueKeys[0] || '';
+  // Empty groupBy is one series. uniqueValues then lists bucket labels, not stacks.
   const groups =
     groupBy && Array.isArray(uniqueValues[groupBy])
       ? uniqueValues[groupBy]

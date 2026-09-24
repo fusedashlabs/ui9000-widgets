@@ -118,6 +118,7 @@ const entries = {
     __dirname,
     'src/components/custom-widget/index.ts',
   ),
+  'components/inspector/index': resolve(__dirname, 'src/components/inspector/index.ts'),
   'components/gini-impurity-entropy-chart/index': resolve(
     __dirname,
     'src/components/gini-impurity-entropy-chart/index.ts',

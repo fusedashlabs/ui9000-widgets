@@ -42,7 +42,7 @@ describe('Ui9000ChartRenderer', () => {
     );
 
     const empty = host.shadowRoot?.querySelector('.empty');
-    expect(empty?.hidden).toBe(true);
+    expect(empty instanceof HTMLElement && empty.hidden).toBe(true);
     expect(empty?.textContent ?? '').toBe('');
 
     host.remove();

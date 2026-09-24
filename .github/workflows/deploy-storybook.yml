@@ -1,0 +1,59 @@
+name: Deploy Storybook
+
+# https://mcp.ui9000.com/storybook/
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-storybook
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: corepack enable
+      - run: corepack prepare yarn@4.5.0 --activate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - run: yarn install --immutable
+      - name: Build Storybook
+        env:
+          STORYBOOK_BASE: /storybook/
+          STORYBOOK_MAPBOX_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_TOKEN }}
+          VITE_MAPBOX_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_TOKEN }}
+        run: yarn build-storybook
+      - run: test -f storybook-static/index.html
+      - name: Upload Storybook
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST_STAGING }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.HOST_PORT }}
+          source: storybook-static
+          target: /tmp
+          overwrite: true
+          rm: true
+      - name: Publish Storybook
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.HOST_STAGING }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.HOST_PORT }}
+          script: |
+            set -euo pipefail
+            test -f /tmp/storybook-static/index.html
+            mkdir -p /var/www/storybook-host/storybook
+            rsync -a --delete /tmp/storybook-static/ /var/www/storybook-host/storybook/
+            test -f /var/www/storybook-host/storybook/index.html
+            rm -rf /tmp/storybook-static

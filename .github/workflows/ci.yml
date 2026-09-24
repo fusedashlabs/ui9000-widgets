@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, 'feat/**', 'feature/**']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  widgets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: corepack enable
+      - run: corepack prepare yarn@4.5.0 --activate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn typecheck
+      - run: yarn test
+      - run: yarn build
+      - run: yarn license-check
+      - run: node scripts/no-raw-rows.mjs
+
+  playground:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: corepack enable
+      - run: corepack prepare yarn@4.5.0 --activate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn build
+      - run: yarn build:playground
+
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: corepack enable
+      - run: corepack prepare yarn@4.5.0 --activate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - run: yarn install --immutable
+      - name: Build Storybook
+        env:
+          STORYBOOK_BASE: /storybook/
+        run: yarn build-storybook
+      - run: test -f storybook-static/index.html

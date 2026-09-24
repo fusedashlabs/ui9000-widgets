@@ -502,8 +502,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fuselab-creative/ui9000-widgets.git",
-    "directory": "packages/widgets"
+    "url": "https://github.com/fusedashlabs/ui9000-widgets.git"
   },
   "keywords": [
     "ui9000",

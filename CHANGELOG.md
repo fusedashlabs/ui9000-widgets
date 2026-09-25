@@ -1,10 +1,26 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 — 2026-09-25
+
+### Added
+
+- `<ui9000-inspector>` (`@fusedashlabs/widgets/inspector`) renders one frozen decision trace: objective, profile keys, candidates, winner, rejections, actions, risk band, and outcome. Dataset rows in the trace are refused. v1 traces still render; an out-of-enum risk band is shown as itself.
+- `<ui9000-status-gauge-widget>` (`@fusedashlabs/widgets/status-gauge-widget`) renders one gauge plus metric cards in light and dark themes, on the shared chart palette.
+- Chart headers and tooltips match the FuseDash client: the same header actions, and a hover tip that stays visible inside the page cell.
+
+### Changed
+
+- Bar objects keep distinct axes and grouping. A series column becomes `groupBy` only when it is not the category, and long category lists flip horizontal.
+- Histogram, map, KPI, and network follow the mcp-ui field rules: axes stay unique, histogram bins use an object id, and network links drop self-edges.
+- Fixtures, stories, and traces fail closed when they carry raw dataset rows.
 
 ### Fixed
 
 - Hosted Storybook (`/storybook/`) no longer tree-shakes custom-element registrations, so charts and engine playground widgets render. Map stories load GeoJSON/PMTiles from the Storybook base path, not origin `/pmtiles` (404 on mcp.ui9000.com).
+
+### Bundle
+
+- Engine catalog lazy entries (19 ids, map excluded): **4.32 KB gz**. `map-chart` is **0.38 KB gz**. Combined entry set: 13.46 KB gz / all dist JS 386.53 KB gz — **GO** (500 KB budget).
 
 ## 0.5.0 — 2026-09-09
 

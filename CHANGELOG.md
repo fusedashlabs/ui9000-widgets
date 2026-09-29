@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1 — 2026-09-29
+
+### Changed
+
+- Status gauge dial: slightly rounded caps, green-to-red fill and rail, hairlines every 2%, ticks every 20%, beads at 25/50/75, and a value cut that extends 2px past the band.
+
 ## 0.6.0 — 2026-09-25
 
 ### Added

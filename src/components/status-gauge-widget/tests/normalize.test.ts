@@ -68,6 +68,19 @@ describe('normalizeStatusGauge', () => {
     expect(model.metrics[1]?.ratio).toBeCloseTo(0.25);
   });
 
+  it('draws cards only when every row is a metric', () => {
+    const model = normalizeStatusGauge({
+      name: 'Shelf',
+      data: [
+        { key: 'load', role: 'metric', value: 64, min: 0, max: 100 },
+        { key: 'temp', role: 'metric', value: 41, min: 0, max: 90 },
+      ],
+    });
+    expect(model.gauge).toBeNull();
+    expect(model.empty).toBe(false);
+    expect(model.metrics.map((row) => row.key)).toEqual(['load', 'temp']);
+  });
+
   it('is empty when data has no numeric rows', () => {
     expect(normalizeStatusGauge({ name: 'Empty', data: [] }).empty).toBe(true);
     expect(normalizeStatusGauge(null).empty).toBe(true);

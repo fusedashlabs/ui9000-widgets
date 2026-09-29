@@ -1,9 +1,9 @@
 import { css } from 'lit';
 
 /**
- * Surfaces follow the chart tokens (`--ui9000-color-*`) and, when the host
- * provides them, the client `--colors-*` theme. Series colors are the same
- * qualitative palette as the other charts (`fuse-palette` / `FD.series`).
+ * Surfaces follow the chart tokens and, when the host provides them, the
+ * client `--colors-*` theme. The dial is a fixed health spectrum; card bars
+ * use the status color on a ticked range track.
  */
 export const statusGaugeStyles = css`
   :host {
@@ -19,18 +19,18 @@ export const statusGaugeStyles = css`
     --sg-card: var(--colors-neutral-background-default, #f3f4f6);
     --sg-badge: var(--colors-neutral-background-hover, #e8eaed);
     --sg-line: var(--colors-neutral-border-weakest, #e5e7eb);
-    --sg-track: var(--colors-neutral-border-weaker, #d5d8de);
-    --sg-thumb: #ffffff;
-    --sg-thumb-ink: #21262e;
-    --sg-primary: var(--ui9000-color-primary, #473dd9);
-    --sg-ok: #36c4a5;
-    --sg-warning: #ff8c47;
+    --sg-gauge-rest: #f4f5f7;
+    --sg-bar-track: #d5d8de;
+    --sg-needle: #ffffff;
+    --sg-needle-ink: #c5cad3;
+    --sg-hair: rgba(255, 255, 255, 0.42);
+    --sg-scale: #b7bdc6;
+    --sg-cut: #b7bdc6;
+    --sg-bead-ring: #ffffff;
+    --sg-ok: #3ad07c;
+    --sg-warning: #ff9a3c;
     --sg-critical: #ff4781;
-    --sg-neutral: #56546d;
-    --sg-gauge-0: #36c4a5;
-    --sg-gauge-1: #473dd9;
-    --sg-gauge-2: #ff8c47;
-    --sg-gauge-3: #ff4781;
+    --sg-neutral: #8b93a0;
     color: var(--sg-text);
   }
 
@@ -43,9 +43,14 @@ export const statusGaugeStyles = css`
     --sg-card: #22262e;
     --sg-badge: #2a2e36;
     --sg-line: #343a44;
-    --sg-track: #4a5160;
-    --sg-thumb: #ffffff;
-    --sg-thumb-ink: #16181d;
+    --sg-gauge-rest: #ffffff;
+    --sg-bar-track: #d0d4da;
+    --sg-needle: #ffffff;
+    --sg-needle-ink: rgba(22, 24, 29, 0.35);
+    --sg-hair: rgba(255, 255, 255, 0.38);
+    --sg-scale: rgba(255, 255, 255, 0.72);
+    --sg-cut: #ffffff;
+    --sg-bead-ring: #3a342c;
     color: var(--sg-text);
   }
 
@@ -71,9 +76,14 @@ export const statusGaugeStyles = css`
     --sg-card: #22262e;
     --sg-badge: #2a2e36;
     --sg-line: #343a44;
-    --sg-track: #4a5160;
-    --sg-thumb: #ffffff;
-    --sg-thumb-ink: #16181d;
+    --sg-gauge-rest: #ffffff;
+    --sg-bar-track: #d0d4da;
+    --sg-needle: #ffffff;
+    --sg-needle-ink: rgba(22, 24, 29, 0.35);
+    --sg-hair: rgba(255, 255, 255, 0.38);
+    --sg-scale: rgba(255, 255, 255, 0.72);
+    --sg-cut: #ffffff;
+    --sg-bead-ring: #3a342c;
     background: #16181d;
     border-color: #343a44;
     color: #eff0f1;
@@ -225,10 +235,10 @@ export const statusGaugeStyles = css`
   .card.critical .dot { color: var(--sg-critical); background: var(--sg-critical); }
   .card.neutral .dot { color: var(--sg-neutral); background: var(--sg-neutral); }
 
-  .card.ok .bar > span { background: linear-gradient(90deg, #36c4a5, #adf4e5); }
-  .card.warning .bar > span { background: linear-gradient(90deg, #ff8c47, #ffceb0); }
-  .card.critical .bar > span { background: linear-gradient(90deg, #ff4781, #ffb0c9); }
-  .card.neutral .bar > span { background: var(--sg-neutral); }
+  .range.ok .range-fill { background: var(--sg-ok); }
+  .range.warning .range-fill { background: var(--sg-warning); }
+  .range.critical .range-fill { background: var(--sg-critical); }
+  .range.neutral .range-fill { background: var(--sg-neutral); }
 
   .value {
     margin-top: 6px;
@@ -246,18 +256,34 @@ export const statusGaugeStyles = css`
     color: var(--sg-muted);
   }
 
-  .bar {
+  .range {
+    position: relative;
     height: 4px;
     margin-top: 10px;
     overflow: hidden;
     border-radius: 99px;
-    background: var(--sg-track);
   }
 
-  .bar > span {
-    display: block;
-    height: 100%;
-    border-radius: inherit;
+  .range-track,
+  .range-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .range-track {
+    right: 0;
+    background-color: var(--sg-bar-track);
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0 5px,
+      rgba(22, 24, 29, 0.55) 5px 6px
+    );
+  }
+
+  .range-fill {
+    border-radius: 99px 0 0 99px;
   }
 
   .empty {

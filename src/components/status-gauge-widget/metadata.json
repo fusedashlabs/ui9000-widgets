@@ -2,7 +2,7 @@
   "id": "status-gauge-widget",
   "tag": "ui9000-status-gauge-widget",
   "title": "Status Gauge Widget",
-  "description": "Semicircular health gauge plus a wrapping grid of status metric cards. Reads a WidgetItem: name, description, data rows, and axisDetails. One row with role gauge is the dial; every other row is a card.",
+  "description": "Semicircular health gauge plus a wrapping grid of status metric cards. Reads a WidgetItem: name, description, data rows, and axisDetails. One row with role gauge is the dial; role metric rows are cards only; every other row is a card. Each card draws a ticked range bar up to its value.",
   "chartTypeKeys": ["statusGaugeWidget"],
   "stack": "lit",
   "lazyImport": "@ui9000/widgets/lazy/status-gauge-widget",

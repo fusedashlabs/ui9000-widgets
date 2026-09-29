@@ -114,15 +114,18 @@ export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
                     <article class="card ${metric.level}">
                       <div class="card-top">
                         <span class="card-label">${metric.label}</span>
-                        <span class="dot"></span>
+                        ${metric.level !== 'neutral' || metric.status
+                          ? html`<span class="dot"></span>`
+                          : nothing}
                       </div>
                       <div class="value">
                         ${formatStatusNumber(metric.value)}${metric.unit
                           ? html`<span class="unit">${metric.unit}</span>`
                           : nothing}
                       </div>
-                      <div class="bar">
-                        <span style="width:${Math.round(metric.ratio * 100)}%"></span>
+                      <div class="range ${metric.level}">
+                        <span class="range-track"></span>
+                        <span class="range-fill" style="width:${metric.ratio * 100}%"></span>
                       </div>
                     </article>
                   `,

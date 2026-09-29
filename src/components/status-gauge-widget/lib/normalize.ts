@@ -102,7 +102,8 @@ function toItem(
 
 /**
  * WidgetItem-shaped payload → one gauge and N metric cards.
- * The gauge is the row with `role: "gauge"`. When none is marked, the first valid row is the gauge.
+ * The gauge is the row with `role: "gauge"`. When every row is `role: "metric"`, there is no dial.
+ * When no role is set, the first valid row is the gauge.
  */
 export function normalizeStatusGauge(input: unknown): StatusGaugeModel {
   const payload = isRecord(input) ? (input as StatusGaugePayload) : {};
@@ -110,7 +111,9 @@ export function normalizeStatusGauge(input: unknown): StatusGaugeModel {
   const yField = firstField(payload.yAxe, 'value');
   const rows = rowsOf(input);
   const gaugeIndex = rows.findIndex((row) => String(row.role ?? '').toLowerCase() === 'gauge');
-  const gaugeSource = gaugeIndex >= 0 ? rows[gaugeIndex] : rows[0];
+  const metricsOnly =
+    gaugeIndex < 0 && rows.some((row) => String(row.role ?? '').toLowerCase() === 'metric');
+  const gaugeSource = gaugeIndex >= 0 ? rows[gaugeIndex] : metricsOnly ? undefined : rows[0];
 
   const gauge = gaugeSource
     ? toItem(gaugeSource, 'gauge', xField, yField, payload.axisDetails)
@@ -119,7 +122,7 @@ export function normalizeStatusGauge(input: unknown): StatusGaugeModel {
   const metrics: StatusGaugeItem[] = [];
   rows.forEach((row, index) => {
     if (gaugeSource && row === gaugeSource) return;
-    if (gaugeIndex < 0 && index === 0) return;
+    if (!metricsOnly && gaugeIndex < 0 && index === 0) return;
     const item = toItem(row, 'metric', xField, yField, payload.axisDetails);
     if (item) metrics.push(item);
   });

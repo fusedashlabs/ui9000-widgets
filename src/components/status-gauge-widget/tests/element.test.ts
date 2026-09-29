@@ -21,7 +21,13 @@ describe('ui9000-status-gauge-widget', () => {
 
     expect(el.shadowRoot?.querySelector('.title')?.textContent).toBe('Active Antenna Unit');
     expect(el.shadowRoot?.querySelector('.gauge svg')).toBeTruthy();
+    expect(el.shadowRoot?.querySelector('.gauge-rail')).toBeTruthy();
+    expect(el.shadowRoot?.querySelector('.gauge-needle')).toBeTruthy();
+    expect(el.shadowRoot?.querySelector('.gauge-value')).toBeTruthy();
     expect(el.shadowRoot?.querySelectorAll('.card')).toHaveLength(4);
+    expect(el.shadowRoot?.querySelectorAll('.range-track')).toHaveLength(4);
+    const fill = el.shadowRoot?.querySelector('.range-fill') as HTMLElement | null;
+    expect(Number.parseFloat(fill?.style.width ?? '')).toBeCloseTo(62, 0);
     expect(el.shadowRoot?.querySelector('.badge')?.textContent).toContain('Degraded');
     expect(el.getAttribute('data-mode')).toBe('light');
     el.remove();

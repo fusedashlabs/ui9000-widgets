@@ -24,18 +24,8 @@ function textOf(host: HTMLElement, selector: string): string {
   return (host.shadowRoot?.querySelector(selector)?.textContent ?? '').replace(/\s+/g, ' ').trim();
 }
 
-/** `<dt>`/`<dd>` pairs of one definition list, keyed by term. */
-function pairs(host: HTMLElement, selector: string): Record<string, string> {
-  const list = host.shadowRoot?.querySelector(selector);
-  if (!list) throw new Error(`${selector} not rendered`);
-  const terms = [...list.querySelectorAll('dt')];
-  const definitions = [...list.querySelectorAll('dd')];
-  return Object.fromEntries(
-    terms.map((term, index) => [
-      (term.textContent ?? '').trim(),
-      (definitions[index]?.textContent ?? '').replace(/\s+/g, ' ').trim(),
-    ]),
-  );
+function text(host: HTMLElement): string {
+  return (host.shadowRoot?.textContent ?? '').replace(/\s+/g, ' ').trim();
 }
 
 describe('Ui9000Inspector', () => {
@@ -51,60 +41,46 @@ describe('Ui9000Inspector', () => {
     expect(panel(host).getAttribute('aria-label')).toBe('Why map-chart');
   });
 
-  it('renders every section of the S3-21 spatial trace', async () => {
+  it('leads with the chart, who chose it, and why', async () => {
     const host = await mount(spatialTrace);
     const root = panel(host);
 
-    expect(pairs(host, '.head dl').Objective).toBe('spatial');
-
-    const profile = pairs(host, '.profile dl');
-    expect(Object.keys(profile)).toHaveLength(Object.keys(spatialTrace.profile).length);
-    expect(profile.hasMapToken).toBe('yes');
-    expect(profile.hasTemporal).toBe('no');
-    expect(profile.categoryCardinality).toBe('5');
-
-    const candidates = root.querySelectorAll('.candidates .list > li');
-    expect(candidates).toHaveLength(1);
-    expect(candidates[0].querySelector('.id')?.textContent).toBe('map-chart');
-    expect(candidates[0].querySelector('.score')?.textContent).toContain('15');
-    expect(candidates[0].querySelectorAll('.reasons li')).toHaveLength(
-      spatialTrace.candidates[0].reasons.length,
-    );
-    expect(textOf(host, '.candidates')).toContain('highest score 15 (map-chart)');
-
-    const rejections = root.querySelectorAll('.rejections .list > li');
-    expect(rejections).toHaveLength(spatialTrace.rejections.length);
-    expect(rejections[0].textContent).toContain('Component intents do not include this objective.');
-
-    expect(
-      [...root.querySelectorAll('.actions-section .badge')].map((el) => el.textContent),
-    ).toEqual(['hover', 'resize']);
+    expect(root.querySelector('h2')?.textContent).toBe('map-chart');
+    expect(root.querySelector('.who')?.textContent).toBe('Chosen by the engine');
+    expect(root.querySelector('.why')?.textContent).toContain('highest score 15 (map-chart)');
+    expect(root.querySelector('.objective')?.textContent).toBe('spatial');
+    expect(text(host)).toContain('hasMapToken yes');
+    expect(text(host)).not.toContain('hasTemporal');
+    expect(text(host)).toContain('Ruled out');
+    expect(text(host)).toContain('Component intents do not include this objective.');
+    expect(text(host)).toContain('hover');
+    expect(text(host)).toContain('resize');
   });
 
-  it('marks winner, risk band and outcome as not recorded on a v1 trace', async () => {
-    const host = await mount(spatialTrace);
+  it('names Jev when the trace says Jev selected the chart', async () => {
+    const host = await mount({
+      ...spatialTrace,
+      tieBreak: 'Jev selected map-chart. Place a metric on geography.',
+    });
 
-    const head = pairs(host, '.head dl');
-    expect(head.Winner).toBe('not recorded');
-    expect(head['Risk band']).toBe('not recorded');
-    expect(head.Outcome).toBe('not recorded');
-    expect(panel(host).querySelector('.badge[data-kind="winner"]')).toBeNull();
+    expect(panel(host).querySelector('.who')?.getAttribute('data-by')).toBe('jev');
+    expect(panel(host).querySelector('.who')?.textContent).toBe('Chosen by Jev');
   });
 
-  it('renders winner, risk band and outcome from a v2 trace', async () => {
+  it('renders winner, risk and outcome from a v2 trace', async () => {
     const host = await mount(spatialTraceV2);
     const root = panel(host);
 
-    expect(root.querySelector('.badge[data-kind="winner"]')?.textContent).toBe('map-chart');
-    expect(root.querySelector('.badge[data-band="low"]')?.textContent).toBe('low');
-    expect(pairs(host, '.head dl').Outcome).toBe('rendered');
+    expect(root.querySelector('h2')?.textContent).toBe('map-chart');
+    expect(root.querySelector('.pill[data-band="low"]')?.textContent).toContain('low');
+    expect(root.querySelector('.outcome')?.textContent).toBe('rendered');
   });
 
-  it('shows an out-of-enum risk band instead of not recorded', async () => {
+  it('shows an unrecognized risk band as text, not as a known band', async () => {
     const host = await mount({ ...spatialTraceV2, riskBand: 'catastrophic' });
 
-    expect(pairs(host, '.head dl')['Risk band']).toBe('catastrophic (unrecognized)');
-    expect(panel(host).querySelector('.badge[data-band]')).toBeNull();
+    expect(panel(host).querySelector('.pill[data-band]')).toBeNull();
+    expect(text(host)).toContain('catastrophic unrecognized');
   });
 
   it('refuses a trace carrying rows and renders no panel', async () => {
@@ -124,11 +100,31 @@ describe('Ui9000Inspector', () => {
     expect(textOf(host, '[role="status"]')).toBe('Trace required');
   });
 
+  it('hides the decision detail and shows it again', async () => {
+    const host = await mount(spatialTrace);
+    const button = () => host.shadowRoot?.querySelector('button.toggle') as HTMLButtonElement;
+
+    button().click();
+    await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
+
+    expect(button().textContent?.trim()).toBe('Show details');
+    expect(button().getAttribute('aria-expanded')).toBe('false');
+    expect(host.shadowRoot?.querySelector('.why')).toBeNull();
+    expect(host.shadowRoot?.querySelector('.rejections')).toBeNull();
+    expect(host.shadowRoot?.querySelector('h2')?.textContent).toBe('map-chart');
+
+    button().click();
+    await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
+
+    expect(button().textContent?.trim()).toBe('Hide details');
+    expect(host.shadowRoot?.querySelector('.rejections')).not.toBeNull();
+  });
+
   it('re-renders when the trace attribute changes', async () => {
     const host = await mount(spatialTrace);
     host.setAttribute('trace', JSON.stringify(spatialTraceV2));
     await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
 
-    expect(panel(host).querySelector('.badge[data-kind="winner"]')?.textContent).toBe('map-chart');
+    expect(panel(host).querySelector('h2')?.textContent).toBe('map-chart');
   });
 });

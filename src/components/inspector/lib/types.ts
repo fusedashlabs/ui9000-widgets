@@ -25,17 +25,44 @@ export type TraceProfileEntry = {
   value: string;
 };
 
+export const TRACE_CHOOSERS = ['jev', 'engine', 'named'] as const;
+
+export type TraceChooser = (typeof TRACE_CHOOSERS)[number];
+
+/** The chart that was drawn. */
+export type TraceChoice = {
+  id: string;
+  by: TraceChooser;
+  why: string;
+};
+
+/** Rejections that share one reason, so the panel does not repeat the sentence. */
+export type RejectionGroup = {
+  reason: string;
+  ids: string[];
+};
+
+export type TraceRiskItem = {
+  action: string;
+  band: string;
+};
+
 /** Everything the panel renders. Text only — no rows, no markup. */
 export type InspectorModel = {
   objective: string;
   profile: TraceProfileEntry[];
   candidates: TraceCandidate[];
+  /** Drawn chart. Falls back to the top candidate when the trace has no winner. */
   winner: string | null;
+  chosen: TraceChoice | null;
   rejections: TraceRejection[];
+  rejectionGroups: RejectionGroup[];
   actions: string[];
   riskBand: TraceRiskBand | null;
   /** Present when the trace sent a riskBand outside low | medium | high. */
   unrecognizedRiskBand: string | null;
+  /** Per-action bands from `trace.risk`. */
+  risks: TraceRiskItem[];
   outcome: string | null;
   tieBreak: string | null;
 };

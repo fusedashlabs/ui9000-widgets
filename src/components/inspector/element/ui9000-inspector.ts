@@ -4,10 +4,16 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { surfaceStyles } from '../../../element/surface-styles.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { normalizeTrace } from '../lib/normalize.js';
-import type { InspectorModel, NormalizedTrace } from '../lib/types.js';
+import type { InspectorModel, NormalizedTrace, TraceChooser } from '../lib/types.js';
 import { inspectorStyles } from './styles.js';
 
-const NOT_RECORDED = 'not recorded';
+const WHO: Record<TraceChooser, string> = {
+  jev: 'Chosen by Jev',
+  engine: 'Chosen by the engine',
+  named: 'You asked for this',
+};
+
+const SHOWN_IDS = 8;
 
 /**
  * Renders one frozen decision trace (`trace.v2.json`). Props only: the trace
@@ -29,6 +35,9 @@ export class Ui9000Inspector extends LitElement {
   @state()
   private _result: NormalizedTrace = { ok: false, blocked: 'Trace required' };
 
+  @state()
+  private open = true;
+
   private refresh(): void {
     this._result = normalizeTrace(parseJsonAttr<unknown>(this.traceJson, null));
   }
@@ -39,7 +48,14 @@ export class Ui9000Inspector extends LitElement {
   }
 
   override willUpdate(changed: PropertyValues): void {
-    if (changed.has('traceJson')) this.refresh();
+    if (changed.has('traceJson')) {
+      this.refresh();
+      this.open = true;
+    }
+  }
+
+  private toggleOpen(): void {
+    this.open = !this.open;
   }
 
   override render() {
@@ -48,93 +64,97 @@ export class Ui9000Inspector extends LitElement {
       return html`<p class="blocked" role="status">${result.blocked}</p>`;
     }
     const model = result.model;
+    const chosen = model.chosen;
+    const others = model.candidates.filter((candidate) => candidate.id !== chosen?.id);
+    const topScore = Math.max(1, ...model.candidates.map((candidate) => candidate.score));
+    const marks = model.profile.filter((entry) => entry.value === 'yes' || (entry.value !== 'no' && entry.value !== '0'));
     return html`
       <section class="root" role="region" aria-label=${this.panelName(model)}>
-        <div class="head">
-          <h2>Decision trace</h2>
-          <dl>
-            <dt>Objective</dt>
-            <dd>${model.objective}</dd>
-            <dt>Winner</dt>
-            <dd>
-              ${model.winner
-                ? html`<span class="badge" data-kind="winner">${model.winner}</span>`
-                : html`<span class="muted">${NOT_RECORDED}</span>`}
-            </dd>
-            <dt>Risk band</dt>
-            <dd>
-              ${model.riskBand
-                ? html`<span class="badge" data-band=${model.riskBand}>${model.riskBand}</span>`
-                : model.unrecognizedRiskBand
-                  ? html`<span class="muted">${model.unrecognizedRiskBand} (unrecognized)</span>`
-                  : html`<span class="muted">${NOT_RECORDED}</span>`}
-            </dd>
-            <dt>Outcome</dt>
-            <dd>${model.outcome ?? html`<span class="muted">${NOT_RECORDED}</span>`}</dd>
-          </dl>
-        </div>
+        <header class="choice">
+          <div class="choice-top">
+            ${chosen
+              ? html`<span class="who" data-by=${chosen.by}>${WHO[chosen.by]}</span>`
+              : nothing}
+            <span class="objective">${model.objective}</span>
+            ${model.outcome ? html`<span class="outcome">${model.outcome}</span>` : nothing}
+            <button
+              type="button"
+              class="toggle"
+              aria-expanded=${this.open ? 'true' : 'false'}
+              @click=${this.toggleOpen}
+            >
+              ${this.open ? 'Hide details' : 'Show details'}
+            </button>
+          </div>
+          <h2>${chosen?.id ?? 'No chart recorded'}</h2>
+          ${this.open && chosen?.why ? html`<p class="why">${chosen.why}</p>` : nothing}
+        </header>
 
-        <section class="profile">
-          <h3>Profile</h3>
-          ${model.profile.length === 0
-            ? html`<p class="muted">No profile keys recorded</p>`
-            : html`<dl>
-                ${model.profile.map(
-                  (entry) => html`<dt>${entry.key}</dt><dd>${entry.value}</dd>`,
-                )}
-              </dl>`}
-        </section>
-
-        <section class="candidates">
-          <h3>Candidates</h3>
-          ${model.candidates.length === 0
-            ? html`<p class="muted">No candidates recorded</p>`
-            : html`<ul class="list">
-                ${model.candidates.map(
+        ${!this.open || others.length === 0
+          ? nothing
+          : html`<section class="candidates">
+              <h3>Also scored</h3>
+              <ul class="scores">
+                ${others.map(
                   (candidate) => html`
                     <li>
                       <div class="row-head">
                         <span class="id">${candidate.id}</span>
-                        <span class="score">score ${candidate.score}</span>
+                        <span class="score">${candidate.score}</span>
                       </div>
-                      ${candidate.reasons.length === 0
-                        ? nothing
-                        : html`<ul class="reasons">
-                            ${candidate.reasons.map((reason) => html`<li>${reason}</li>`)}
-                          </ul>`}
+                      <div class="bar" aria-hidden="true">
+                        <span style=${`--share:${Math.round((candidate.score / topScore) * 100)}%`}></span>
+                      </div>
+                      ${candidate.reasons[0]
+                        ? html`<p class="reason">${candidate.reasons[0]}</p>`
+                        : nothing}
                     </li>
                   `,
                 )}
-              </ul>`}
-          ${model.tieBreak ? html`<p class="muted">Tie-break: ${model.tieBreak}</p>` : nothing}
-        </section>
+              </ul>
+            </section>`}
 
-        <section class="rejections">
-          <h3>Rejections</h3>
-          ${model.rejections.length === 0
-            ? html`<p class="muted">No rejections recorded</p>`
-            : html`<ul class="list">
-                ${model.rejections.map(
-                  (rejection) => html`
+        ${!this.open || model.rejectionGroups.length === 0
+          ? nothing
+          : html`<section class="rejections">
+              <h3>Ruled out <span class="count">${model.rejections.length}</span></h3>
+              <ul class="groups">
+                ${model.rejectionGroups.map(
+                  (group) => html`
                     <li>
-                      <div class="row-head">
-                        <span class="id">${rejection.id}</span>
+                      <p class="reason">${group.reason}</p>
+                      <div class="chips">
+                        ${group.ids.slice(0, SHOWN_IDS).map((id) => html`<span class="pill">${id}</span>`)}
+                        ${group.ids.length > SHOWN_IDS
+                          ? html`<span class="pill more">+${group.ids.length - SHOWN_IDS}</span>`
+                          : nothing}
                       </div>
-                      <span class="muted">${rejection.reason}</span>
                     </li>
                   `,
                 )}
-              </ul>`}
-        </section>
+              </ul>
+            </section>`}
 
-        <section class="actions-section">
-          <h3>Actions</h3>
-          ${model.actions.length === 0
-            ? html`<p class="muted">No actions recorded</p>`
-            : html`<div class="chips">
-                ${model.actions.map((action) => html`<span class="badge">${action}</span>`)}
-              </div>`}
-        </section>
+        ${!this.open ||
+        (marks.length === 0 &&
+          model.actions.length === 0 &&
+          model.risks.length === 0 &&
+          !model.riskBand &&
+          !model.unrecognizedRiskBand)
+          ? nothing
+          : html`<footer class="facts">
+              ${marks.map((entry) => html`<span class="pill">${entry.key} ${entry.value}</span>`)}
+              ${model.risks.map(
+                (risk) => html`<span class="pill" data-band=${risk.band}>${risk.action} ${risk.band}</span>`,
+              )}
+              ${model.risks.length === 0 && model.riskBand
+                ? html`<span class="pill" data-band=${model.riskBand}>risk ${model.riskBand}</span>`
+                : nothing}
+              ${model.unrecognizedRiskBand
+                ? html`<span class="pill">${model.unrecognizedRiskBand} unrecognized</span>`
+                : nothing}
+              ${model.actions.map((action) => html`<span class="pill action">${action}</span>`)}
+            </footer>`}
       </section>
     `;
   }

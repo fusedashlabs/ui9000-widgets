@@ -26,8 +26,14 @@ describe('normalizeTrace', () => {
     expect(trace.rejections[0].reason).toBe('Component intents do not include this objective.');
     expect(trace.actions).toEqual(['hover', 'resize']);
     expect(trace.tieBreak).toBe('highest score 15 (map-chart)');
+    expect(trace.winner).toBe('map-chart');
+    expect(trace.chosen).toEqual({
+      id: 'map-chart',
+      by: 'engine',
+      why: 'highest score 15 (map-chart)',
+    });
+    expect(trace.rejectionGroups[0]?.ids.length).toBeGreaterThan(1);
 
-    expect(trace.winner).toBeNull();
     expect(trace.riskBand).toBeNull();
     expect(trace.unrecognizedRiskBand).toBeNull();
     expect(trace.outcome).toBeNull();

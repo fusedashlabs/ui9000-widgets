@@ -1,11 +1,16 @@
 import {
+  TRACE_CHOOSERS,
   TRACE_RISK_BANDS,
   type InspectorModel,
   type NormalizedTrace,
+  type RejectionGroup,
   type TraceCandidate,
+  type TraceChoice,
+  type TraceChooser,
   type TraceProfileEntry,
   type TraceRejection,
   type TraceRiskBand,
+  type TraceRiskItem,
 } from './types.js';
 
 /** Mirrors `assertTraceHasNoRows` in packages/core — a trace is a decision, never data. */
@@ -33,18 +38,79 @@ export function normalizeTrace(raw: unknown): NormalizedTrace {
   if (!objective) {
     return { ok: false, blocked: 'Trace objective required' };
   }
+  const listed = candidates(trace.candidates);
+  const tieBreak = text(trace.tieBreak) || null;
+  const winner = text(trace.winner) || listed[0]?.id || null;
   const model: InspectorModel = {
     objective,
     profile: profileEntries(trace.profile),
-    candidates: candidates(trace.candidates),
-    winner: text(trace.winner) || null,
+    candidates: listed,
+    winner,
+    chosen: readChoice(trace.chosen, winner, tieBreak, listed[0]?.reasons[0] ?? ''),
     rejections: rejections(trace.rejections),
+    rejectionGroups: groupRejections(rejections(trace.rejections)),
     actions: stringList(trace.actions),
     ...readRiskBand(trace.riskBand),
+    risks: riskItems(trace.risk),
     outcome: text(trace.outcome) || null,
-    tieBreak: text(trace.tieBreak) || null,
+    tieBreak,
   };
   return { ok: true, model };
+}
+
+function readChoice(
+  raw: unknown,
+  winner: string | null,
+  tieBreak: string | null,
+  firstReason: string,
+): TraceChoice | null {
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const choice = raw as Record<string, unknown>;
+    const id = text(choice.id) || winner;
+    const by = chooser(choice.by);
+    const why = text(choice.why) || tieBreak || firstReason;
+    if (id && by) return { id, by, why };
+  }
+  if (!winner) return null;
+  const why = tieBreak || firstReason;
+  return { id: winner, by: inferChooser(why), why };
+}
+
+function chooser(raw: unknown): TraceChooser | null {
+  const value = text(raw);
+  return (TRACE_CHOOSERS as readonly string[]).includes(value) ? (value as TraceChooser) : null;
+}
+
+function inferChooser(why: string): TraceChooser {
+  if (/^Jev selected\b/.test(why)) return 'jev';
+  if (/\bYou asked for\b|\bYou selected\b/.test(why)) return 'named';
+  return 'engine';
+}
+
+function groupRejections(items: TraceRejection[]): RejectionGroup[] {
+  const groups = new Map<string, string[]>();
+  for (const item of items) {
+    const ids = groups.get(item.reason) ?? [];
+    ids.push(item.id);
+    groups.set(item.reason, ids);
+  }
+  return [...groups.entries()]
+    .map(([reason, ids]) => ({ reason, ids }))
+    .sort((left, right) => left.ids.length - right.ids.length || left.reason.localeCompare(right.reason));
+}
+
+function riskItems(raw: unknown): TraceRiskItem[] {
+  if (!Array.isArray(raw)) return [];
+  const out: TraceRiskItem[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
+    const risk = item as Record<string, unknown>;
+    const action = text(risk.action);
+    const band = text(risk.band);
+    if (!action || !band) continue;
+    out.push({ action, band });
+  }
+  return out;
 }
 
 function profileEntries(raw: unknown): TraceProfileEntry[] {

@@ -29,7 +29,7 @@ import { normalizeTrace, traceHasRows } from '../lib/index.js';
 const ROWS_REFUSED = 'Trace must not contain dataset rows';
 
 /** Stories whose trace is a decision record and must render. */
-const CLEAN = ['Playground', 'TraceV2'];
+const CLEAN = ['JevChoice', 'NamedChoice', 'Playground', 'TraceV2', 'WithChart'];
 
 /** Stories that carry rows on purpose, to show the refusal. */
 const REFUSED = ['RowsRefused'];

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2 — 2026-10-01
+
+### Fixed
+
+- Chart rows stay in memory. A host that rewrites the `data` attribute after the plot is drawn no longer clears the chart while the header stays. Custom widget keeps the same in-memory payload.
+
 ## 0.6.1 — 2026-09-29
 
 ### Changed

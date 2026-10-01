@@ -272,6 +272,29 @@ describe('Ui9000CustomWidget', () => {
     host.remove();
   });
 
+  it('keeps rows when a later pass writes the data attribute', async () => {
+    const host = document.createElement('ui9000-custom-widget') as HTMLElement & {
+      widgetJson: string;
+      dataJson: string;
+    };
+    const payload = JSON.stringify(fixture);
+    host.widgetJson = payload;
+    expect(host.getAttribute('data')).toBeNull();
+    document.body.appendChild(host);
+
+    await waitFor(() => !!host.shadowRoot?.querySelector('ui9000-chart-renderer'));
+
+    host.setAttribute('data', '{');
+    await (host as unknown as { updateComplete: Promise<unknown> }).updateComplete;
+
+    expect(host.dataJson).toBe(payload);
+    expect(host.widgetJson).toBe(payload);
+    expect(host.shadowRoot?.querySelector('ui9000-chart-renderer')?.getAttribute('chart-type')).toBe(
+      'lineChart',
+    );
+    host.remove();
+  });
+
   it('does not throw on an invalid payload', async () => {
     const host = document.createElement('ui9000-custom-widget');
     host.setAttribute('data', '{not json');

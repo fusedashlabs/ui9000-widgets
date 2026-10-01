@@ -86,6 +86,41 @@ describe('Ui9000ChartRenderer', () => {
     host.remove();
   });
 
+  it('keeps the plot when a later pass clears the data attribute', async () => {
+    const host = document.createElement('ui9000-chart-renderer');
+    const payload = JSON.stringify(lineFixture);
+    host.widgetJson = payload;
+    host.setAttribute('chart-title', lineFixture.name);
+    document.body.appendChild(host);
+
+    await waitFor(() => !!host.shadowRoot?.querySelector('ui9000-line-chart'));
+
+    // Poison the mounted chart first. mountChart writes dataJson only after
+    // await loadChart, so a check that the payload is still there can pass
+    // on the chart that was already drawn.
+    const mounted = host.shadowRoot?.querySelector('ui9000-line-chart') as HTMLElement & {
+      dataJson?: string;
+    };
+    mounted.dataJson = '[]';
+    host.setAttribute('data', '{');
+
+    await waitFor(() => {
+      const chart = host.shadowRoot?.querySelector('ui9000-line-chart') as
+        | (HTMLElement & { dataJson?: string })
+        | null;
+      return chart?.dataJson === payload && !!chart.shadowRoot?.querySelector('.chart-root svg');
+    });
+
+    const chart = host.shadowRoot?.querySelector('ui9000-line-chart');
+    expect(host.widgetJson).toBe(payload);
+    expect(host.getAttribute('chart-title')).toBe(lineFixture.name);
+    expect(chart?.getAttribute('chart-title')).toBe(lineFixture.name);
+    expect(chart?.shadowRoot?.querySelector('.empty')).toBeNull();
+    const empty = host.shadowRoot?.querySelector('.empty');
+    expect(empty instanceof HTMLElement && empty.hidden).toBe(true);
+    host.remove();
+  });
+
   it('titles the mounted chart from the widget name by default', async () => {
     const host = document.createElement('ui9000-chart-renderer');
     host.setAttribute('data', JSON.stringify(lineFixture));

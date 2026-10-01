@@ -66,6 +66,28 @@ export class Ui9000CustomWidget extends Ui9000ChartElement {
   @state()
   private _model: CustomWidgetModel = EMPTY_MODEL;
 
+  /**
+   * In-memory payload. Not mirrored to the `data` attribute. A host that
+   * rewrites iframe attributes must not replace rows already drawn.
+   */
+  private _widgetJson: string | null = null;
+
+  get widgetJson(): string {
+    return this._widgetJson ?? this.dataJson;
+  }
+
+  set widgetJson(value: string) {
+    const next = value && value.trim() ? value : '{}';
+    if (next === this._widgetJson) return;
+    this._widgetJson = next;
+    this.dataJson = next;
+  }
+
+  override attributeChangedCallback(name: string, old: string | null, value: string | null): void {
+    if (name === 'data' && this._widgetJson != null) return;
+    super.attributeChangedCallback(name, old, value);
+  }
+
   override connectedCallback(): void {
     super.connectedCallback();
     this._model = normalizeCustomWidget(parseJsonAttr<unknown>(this.dataJson, null));

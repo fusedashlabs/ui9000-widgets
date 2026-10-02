@@ -51,6 +51,74 @@ describe('renderMatrixChart', () => {
     expect(topAxis.children).toHaveLength(0);
   });
 
+  it('paints a declared column with no rows as empty cells', () => {
+    const { plot } = hosts();
+    const model = normalizeMatrixData({
+      data: [{ day: 'Mon', channel: 'Web', orders: 12 }],
+      xAxe: ['day'],
+      yAxe: ['orders'],
+      groupBy: ['channel'],
+      uniqueValues: {
+        day: ['Mon', 'Tue'],
+        channel: ['Web', 'Retail'],
+      },
+    });
+    renderMatrixChart(plot, {
+      model,
+      width: 400,
+      height: 300,
+      theme: DEFAULT_THEME,
+    });
+
+    const fills = [...plot.querySelectorAll('rect.matrix-cell')].map((node) =>
+      node.getAttribute('fill'),
+    );
+    // Mon/Tue × Retail/Web. Only Mon × Web carries 12.
+    expect(fills).toHaveLength(4);
+    expect(fills.filter((fill) => fill === 'url(#ui9000-matrix-no-data)')).toHaveLength(3);
+    expect(fills.filter((fill) => fill !== 'url(#ui9000-matrix-no-data)')).toHaveLength(1);
+  });
+
+  it('stops painting empty slots once the grid passes the cell cap', () => {
+    const { plot } = hosts();
+    const xDomain = Array.from({ length: 101 }, (_, i) => `c${i}`);
+    const yDomain = Array.from({ length: 100 }, (_, i) => `r${i}`);
+    renderMatrixChart(plot, {
+      model: normalizeMatrixData({
+        cells: [{ x: 'c0', y: 'r0', value: 3 }],
+        xDomain,
+        yDomain,
+      }),
+      width: 400,
+      height: 300,
+      theme: DEFAULT_THEME,
+    });
+
+    expect(plot.querySelectorAll('rect.matrix-cell')).toHaveLength(1);
+  });
+
+  it('paints a missing intersection as an empty cell and colors a stored value', () => {
+    const { plot } = hosts();
+    const sparse = normalizeMatrixData([
+      { x: 'A', y: 'one', value: 4 },
+      { x: 'B', y: 'two', value: 8 },
+    ]);
+    renderMatrixChart(plot, {
+      model: sparse,
+      width: 400,
+      height: 300,
+      theme: DEFAULT_THEME,
+    });
+
+    const fills = [...plot.querySelectorAll('rect.matrix-cell')].map((r) =>
+      r.getAttribute('fill'),
+    );
+    // one × two is the full domain; the two holes were never in the data
+    expect(fills).toHaveLength(4);
+    expect(fills.filter((fill) => fill === 'url(#ui9000-matrix-no-data)')).toHaveLength(2);
+    expect(sparse.cells).toHaveLength(2);
+  });
+
   it('fills zero cells with the no-data hatch and negatives flat grey', () => {
     const { plot } = hosts();
     renderMatrixChart(plot, {

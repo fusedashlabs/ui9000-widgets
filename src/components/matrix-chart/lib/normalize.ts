@@ -12,13 +12,6 @@ import type {
   MatrixModel,
 } from './types.js';
 
-/**
- * Zero-filling a dense grid is quadratic in the two domains. Past this many
- * cells the chat host would be asked to paint more rects than it can afford,
- * so the grid stays sparse (real rows only) instead.
- */
-const MAX_FILLED_CELLS = 10_000;
-
 const EMPTY: MatrixModel = {
   cells: [],
   xDomain: [],
@@ -56,6 +49,17 @@ function uniqueInOrder(values: string[]): string[] {
   return out;
 }
 
+/** Categories that define an axis: the declared list, plus any value a row actually carries. */
+function categoryDomain(listed: unknown, seen: unknown[]): string[] {
+  const fromList = Array.isArray(listed) ? listed : [];
+  return sortAxisDomain(
+    [...new Set([...fromList, ...seen])].filter((v) => v != null && v !== '') as (
+      | string
+      | number
+    )[],
+  ).map(String);
+}
+
 function modelFromCells(
   cells: MatrixCell[],
   xDomain?: string[],
@@ -84,74 +88,6 @@ function additionalKeysOf(rows: Row[], xKey: string, valueKey: string): string[]
   return [...keys];
 }
 
-/** Mirrors client `normalizeValue` — the zero-fill join key. */
-function joinValue(value: unknown): string | number {
-  if (typeof value === 'number') return value;
-  return String(value).replace(/\s+/g, '');
-}
-
-/** Mirrors client `normalizeLocationValue` — "State, County" → "County". */
-function normalizeLocationValue(value: unknown): string | number {
-  if (value == null) return '';
-  if (typeof value === 'number') return value;
-  if (typeof value !== 'string') return String(value);
-
-  const trimmed = value.trim();
-  if (trimmed === '') return '';
-
-  const numValue = Number(trimmed);
-  if (Number.isFinite(numValue)) return numValue;
-
-  const commaIndex = trimmed.indexOf(', ');
-  if (commaIndex !== -1) return trimmed.substring(commaIndex + 2).trim();
-
-  return trimmed;
-}
-
-/**
- * Mirrors client `filledArrayWithZeroData`: every (column × row) combination
- * exists, missing ones carrying a zero so the grid paints a "no data" cell.
- */
-function fillWithZeroData(
-  widget: FuseWidgetLike,
-  rows: Row[],
-  xKey: string,
-  valueKey: string,
-  fillKey: string,
-): Row[] {
-  const uniqueValues = widget.uniqueValues ?? {};
-
-  const passthrough = (): Row[] =>
-    rows.map((row) => ({
-      ...row,
-      ...(fillKey ? { [fillKey]: normalizeLocationValue(row[fillKey]) } : {}),
-    }));
-
-  const xValues = uniqueValues[xKey] ?? [];
-  const yValues = fillKey ? (uniqueValues[fillKey] ?? []) : [];
-  const total = xValues.length * yValues.length;
-
-  if (!total || total === rows.length || total > MAX_FILLED_CELLS) {
-    return passthrough();
-  }
-
-  const byKey = new Map<string, Row>();
-  for (const row of rows) {
-    byKey.set(`${joinValue(row[xKey])}-${joinValue(row[fillKey])}`, row);
-  }
-
-  const filled: Row[] = [];
-  for (const xValue of xValues) {
-    for (const yValue of yValues) {
-      const matched = byKey.get(`${joinValue(xValue)}-${joinValue(yValue)}`);
-      filled.push(
-        matched ?? { [xKey]: xValue, [fillKey]: yValue, [valueKey]: 0 },
-      );
-    }
-  }
-  return filled;
-}
-
 /**
  * Row-category field. `groupBy[0]` wins whenever the rows actually carry it —
  * the client instead takes the first non-axis key in `Object.keys` order,
@@ -174,8 +110,8 @@ function resolveCategoryKey(
 
 /**
  * Mirrors client `MatrixChart` `processedData`:
- * - columns = `xAxe[0]`, ordered by `sortAxisDomain`
- * - rows = `uniqueValues[categoryKey]`, else the categoryKey values on the rows
+ * - columns = `uniqueValues[xAxe]` unioned with every x value on the rows
+ * - rows = `uniqueValues[categoryKey]` unioned with every category value on the rows
  * - value = `row.value ?? row[yAxe[0]]`
  */
 function fromFuseWidget(widget: FuseWidgetLike): MatrixModel {
@@ -194,26 +130,19 @@ function fromFuseWidget(widget: FuseWidgetLike): MatrixModel {
   const categoryKey = resolveCategoryKey(widget, additionalKeys);
 
   const uniqueValues = widget.uniqueValues ?? {};
-  // Domain and cells must read the same field, or every cell misses the scale.
-  const yValuesRaw = Array.isArray(uniqueValues[categoryKey])
-    ? uniqueValues[categoryKey]
-    : rows.map((row) => row[categoryKey]);
-
-  const yDomain = sortAxisDomain(
-    [...new Set(yValuesRaw)].filter(Boolean) as (string | number)[],
-  ).map(String);
-
-  const xDomain = sortAxisDomain(
-    [...new Set(rows.map((row) => row[xKey]))].filter(Boolean) as (
-      | string
-      | number
-    )[],
-  ).map(String);
-
-  const filled = fillWithZeroData(widget, rows, xKey, valueKey, categoryKey);
+  // A category with no measurement stays on the axis so the plot can paint it empty.
+  // Row values are unioned in so a measurement never falls off the scale.
+  const yDomain = categoryDomain(
+    uniqueValues[categoryKey],
+    rows.map((row) => row[categoryKey]),
+  );
+  const xDomain = categoryDomain(
+    uniqueValues[xKey],
+    rows.map((row) => row[xKey]),
+  );
 
   const cells: MatrixCell[] = [];
-  for (const row of filled) {
+  for (const row of rows) {
     const x = row[xKey];
     const y = row[categoryKey];
     if (x == null || y == null) continue;

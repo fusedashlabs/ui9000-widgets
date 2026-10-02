@@ -9,13 +9,16 @@ export interface MatrixCell {
 import type { AxisDetail } from '../../../utils/axis-units.js';
 
 export interface MatrixModel {
-  /** Zero-filled grid — mirrors client `filledArrayWithZeroData` */
+  /**
+   * Real measurements only. A missing column × row is not stored: the plot
+   * paints that slot empty and colors a cell only when one of these exists.
+   */
   cells: MatrixCell[];
   xDomain: string[];
   yDomain: string[];
   /**
-   * Values as they came in, before zero-filling. Client `MatrixChart` builds
-   * its color ranges from these, so filler cells stay "no data".
+   * Values as they came in. Client `MatrixChart` builds its color ranges from
+   * these, so a missing slot stays "no data" and never shifts the ramp.
    */
   rawValues: number[];
   /** Row-category field name — the tooltip's first label. */

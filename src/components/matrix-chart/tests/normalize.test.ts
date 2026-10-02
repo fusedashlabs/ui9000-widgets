@@ -50,7 +50,7 @@ describe('normalizeMatrixData', () => {
     ]);
   });
 
-  it('zero-fills the grid from uniqueValues like filledArrayWithZeroData', () => {
+  it('keeps missing intersections out of the model so the plot can paint them empty', () => {
     const model = normalizeMatrixData({
       data: [{ day: 'Mon', channel: 'Web', orders: 12 }],
       xAxe: ['day'],
@@ -61,9 +61,10 @@ describe('normalizeMatrixData', () => {
         channel: ['Web', 'Retail'],
       },
     });
-    expect(model.cells).toHaveLength(4);
-    expect(model.cells).toContainEqual({ x: 'Tue', y: 'Retail', value: 0 });
-    // Filler zeros must not reach the color ramp
+    expect(model.cells).toEqual([{ x: 'Mon', y: 'Web', value: 12 }]);
+    // Both axes still list every declared category, including ones with no measurement
+    expect(model.xDomain).toEqual(['Mon', 'Tue']);
+    expect(model.yDomain).toEqual(['Retail', 'Web']);
     expect(model.rawValues).toEqual([12]);
   });
 
@@ -86,8 +87,7 @@ describe('normalizeMatrixData', () => {
     // Every cell must land inside the row domain, or the grid paints empty
     expect(model.cells.every((cell) => model.yDomain.includes(cell.y))).toBe(true);
     expect(model.cells).toContainEqual({ x: 'Mon', y: 'Web', value: 12 });
-    // Zero-fill uses the same field, so the grid is complete
-    expect(model.cells).toHaveLength(4);
+    expect(model.cells).toHaveLength(2);
   });
 
   it('prefers a uniqueValues-backed key when groupBy is absent from the rows', () => {
@@ -133,12 +133,13 @@ describe('normalizeMatrixData', () => {
 describe('DEFAULT_MATRIX fixture', () => {
   const model = normalizeMatrixData(fusedashFixture);
 
-  it('normalizes the FuseDash mock into a dense grid', () => {
+  it('keeps the FuseDash mock sparse inside the full axis domains', () => {
     expect(model.categoryKey).toBe('MD_Status');
     expect(model.valueKey).toBe('quantity kS');
     expect(model.xDomain).toHaveLength(94);
     expect(model.yDomain).toHaveLength(50);
-    expect(model.cells).toHaveLength(94 * 50);
+    expect(model.cells).toHaveLength(fusedashFixture.data.length);
+    expect(model.cells.length).toBeLessThan(94 * 50);
     expect(model.rawValues).toHaveLength(fusedashFixture.data.length);
   });
 

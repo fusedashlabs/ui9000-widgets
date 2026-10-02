@@ -180,11 +180,12 @@ describe('FuseDash client fixtures (apps/charts constants)', () => {
     expect(model.yDomain.length).toBe(7);
   });
 
-  it('matrix.fusedash.json → zero-filled 94x50 grid', () => {
+  it('matrix.fusedash.json → sparse cells on a 94x50 domain', () => {
     const model = normalizeMatrixData(matrixFixture as never);
     expect(model.xDomain.length).toBe(94);
     expect(model.yDomain.length).toBe(50);
-    expect(model.cells.length).toBe(94 * 50);
+    expect(model.cells.length).toBe(matrixFixture.data.length);
+    expect(model.cells.length).toBeLessThan(94 * 50);
   });
 
   it('boxplot.fusedash.json → grouped boxes', () => {

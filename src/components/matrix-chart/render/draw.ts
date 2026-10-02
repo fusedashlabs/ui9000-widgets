@@ -17,6 +17,13 @@ import type { MatrixCell, MatrixModel } from '../lib/index.js';
 
 const NO_DATA_PATTERN_ID = 'ui9000-matrix-no-data';
 
+/**
+ * Painting every column × row is what makes a missing measurement look empty.
+ * Past this many slots the chat host cannot afford a rect per hole, so only
+ * the cells that carry a value are drawn.
+ */
+const MAX_GRID_CELLS = 10_000;
+
 /** Client `DynamicAxisLabel` background-rect compensation. */
 const LABEL_ROTATION_COMPENSATION = 4;
 
@@ -72,6 +79,33 @@ function cellFill(value: number, ranges: SequentialColorRange[]): string {
   if (value < 0) return FD.matrixNegativeFill;
   if (!value) return `url(#${NO_DATA_PATTERN_ID})`;
   return sequentialColorForValue(value, ranges) ?? `url(#${NO_DATA_PATTERN_ID})`;
+}
+
+function slotKey(x: string, y: string): string {
+  return `${x}\0${y}`;
+}
+
+/**
+ * One rect per column × row. A slot with no measurement is stored as 0 and
+ * paints the hatch, the same as a real 0. A positive value takes the ramp;
+ * a negative stays flat grey.
+ */
+function cellsToPaint(model: MatrixModel): MatrixCell[] {
+  const columns = model.xDomain.length;
+  const rows = model.yDomain.length;
+  const slots = columns * rows;
+  if (!columns || !rows || slots > MAX_GRID_CELLS) return model.cells;
+
+  const bySlot = new Map<string, MatrixCell>();
+  for (const cell of model.cells) bySlot.set(slotKey(cell.x, cell.y), cell);
+
+  const painted: MatrixCell[] = [];
+  for (const y of model.yDomain) {
+    for (const x of model.xDomain) {
+      painted.push(bySlot.get(slotKey(x, y)) ?? { x, y, value: 0 });
+    }
+  }
+  return painted;
 }
 
 /** Mirrors client `calculateHorizontalLabelAngle`. */
@@ -349,7 +383,7 @@ export function renderMatrixChart(
   const cellHeight = Math.max(yScale.bandwidth() - cellPad, 1);
 
   const layer = plot.append('g').attr('class', 'cells');
-  for (const cell of model.cells) {
+  for (const cell of cellsToPaint(model)) {
     const bx = xScale(cell.x);
     const by = yScale(cell.y);
     if (bx == null || by == null) continue;

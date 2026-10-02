@@ -16,7 +16,7 @@ type WaterfallArgs = {
 };
 
 const meta: Meta<WaterfallArgs> = {
-  title: 'Charts/WaterfallChart',
+  title: 'Contribution/Waterfall',
   component: 'ui9000-waterfall-chart',
   tags: ['autodocs'],
   parameters: {

@@ -41,7 +41,7 @@ type AreaChartArgs = {
 };
 
 const meta: Meta<AreaChartArgs> = {
-  title: 'Charts/AreaChart',
+  title: 'Comparison/Area',
   component: 'ui9000-area-chart',
   tags: ['autodocs'],
   parameters: {

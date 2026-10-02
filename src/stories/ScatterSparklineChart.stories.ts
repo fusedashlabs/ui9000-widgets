@@ -13,7 +13,7 @@ type ScatterSparkArgs = {
 };
 
 const meta: Meta<ScatterSparkArgs> = {
-  title: 'Charts/ScatterSparklineChart',
+  title: 'Ordered series/Scatter sparkline',
   component: 'ui9000-scatter-sparkline-chart',
   tags: ['autodocs'],
   parameters: {

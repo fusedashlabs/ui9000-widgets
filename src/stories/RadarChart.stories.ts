@@ -14,7 +14,7 @@ type RadarChartArgs = {
 };
 
 const meta: Meta<RadarChartArgs> = {
-  title: 'Charts/RadarChart',
+  title: 'Many metrics/Radar',
   component: 'ui9000-radar-chart',
   tags: ['autodocs'],
   parameters: {

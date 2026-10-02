@@ -16,7 +16,7 @@ type PolarAreaChartArgs = {
 };
 
 const meta: Meta<PolarAreaChartArgs> = {
-  title: 'Charts/PolarAreaChart',
+  title: 'Comparison/Polar area',
   component: 'ui9000-polar-area-chart',
   tags: ['autodocs'],
   parameters: {

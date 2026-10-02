@@ -17,7 +17,7 @@ type HistogramArgs = {
 };
 
 const meta: Meta<HistogramArgs> = {
-  title: 'Charts/HistogramChart',
+  title: 'Distribution/Histogram',
   component: 'ui9000-histogram-chart',
   tags: ['autodocs'],
   parameters: {

@@ -12,7 +12,7 @@ type DonutChartArgs = {
 };
 
 const meta: Meta<DonutChartArgs> = {
-  title: 'Charts/DonutChart',
+  title: 'Part of a whole/Donut',
   component: 'ui9000-donut-chart',
   tags: ['autodocs'],
   parameters: {

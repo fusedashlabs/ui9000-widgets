@@ -12,7 +12,7 @@ type NetworkGraphArgs = {
 };
 
 const meta: Meta<NetworkGraphArgs> = {
-  title: 'Charts/NetworkGraph',
+  title: 'Graph/Network',
   component: 'ui9000-network-graph',
   tags: ['autodocs'],
   parameters: {

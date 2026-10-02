@@ -13,7 +13,7 @@ type AreaGroupedBarChartArgs = {
 };
 
 const meta: Meta<AreaGroupedBarChartArgs> = {
-  title: 'Charts/AreaGroupedBarChart',
+  title: 'Comparison/Area and bars',
   component: 'ui9000-area-grouped-bar-chart',
   tags: ['autodocs'],
   parameters: {

@@ -14,7 +14,7 @@ type BubbleChartArgs = {
 };
 
 const meta: Meta<BubbleChartArgs> = {
-  title: 'Charts/BubbleChart',
+  title: 'Two measures/Bubble',
   component: 'ui9000-bubble-chart',
   tags: ['autodocs'],
   parameters: {

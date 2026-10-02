@@ -15,7 +15,7 @@ type PunchcardArgs = {
 };
 
 const meta: Meta<PunchcardArgs> = {
-  title: 'Charts/PunchcardChart',
+  title: 'Two-way magnitude/Punchcard',
   component: 'ui9000-punchcard-chart',
   tags: ['autodocs'],
   parameters: {

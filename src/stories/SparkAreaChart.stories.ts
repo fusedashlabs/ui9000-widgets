@@ -15,7 +15,7 @@ type SparkArgs = {
 };
 
 const meta: Meta<SparkArgs> = {
-  title: 'Charts/SparkAreaChart',
+  title: 'Ordered series/Spark area',
   component: 'ui9000-spark-area-chart',
   tags: ['autodocs'],
   parameters: {

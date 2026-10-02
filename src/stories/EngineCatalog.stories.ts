@@ -29,7 +29,7 @@ import histogramFixture from './fixtures/histogram-single.fusedash.json';
 import { storybookAssetUrl } from './storybook-public-base.js';
 
 const meta: Meta = {
-  title: 'Engine/Playground',
+  title: 'Playground/Engine',
   tags: ['autodocs'],
 };
 export default meta;

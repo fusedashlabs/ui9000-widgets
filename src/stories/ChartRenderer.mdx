@@ -1,12 +1,12 @@
 import { Meta } from '@storybook/blocks';
 
-<Meta title="Guides/ChartRenderer" />
+<Meta title="Render component" />
 
-# ChartRenderer
+# Render component
 
 `<ui9000-chart-renderer>` is **not a chart**. It is a dispatcher: it reads a FuseDash widget payload, resolves `chartType`, lazy-loads the matching chart, and mounts that tag.
 
-Use it when the host does not know the chart type in advance (MCP chat, package host). For a known type, mount the chart tag directly (`ui9000-line-chart`, `ui9000-bar-chart`, …) — those are the stories under **Charts**.
+Use it when the host does not know the chart type in advance (MCP chat, package host). For a known type, mount the chart tag directly (`ui9000-line-chart`, `ui9000-bar-chart`, …) — those are the stories in the chart families.
 
 ## How it works
 

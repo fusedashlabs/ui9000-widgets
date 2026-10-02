@@ -13,7 +13,7 @@ type PartialDependenceArgs = {
 };
 
 const meta: Meta<PartialDependenceArgs> = {
-  title: 'Charts/PartialDependenceChart',
+  title: 'Model dependence/Partial dependence',
   component: 'ui9000-partial-dependence-chart',
   tags: ['autodocs'],
   parameters: {

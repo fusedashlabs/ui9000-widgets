@@ -17,7 +17,7 @@ type BoxPlotArgs = {
 };
 
 const meta: Meta<BoxPlotArgs> = {
-  title: 'Charts/BoxPlotChart',
+  title: 'Distribution/Box plot',
   component: 'ui9000-box-plot-chart',
   tags: ['autodocs'],
   parameters: {

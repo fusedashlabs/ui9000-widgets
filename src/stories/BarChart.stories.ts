@@ -21,7 +21,7 @@ type BarArgs = {
 };
 
 const meta: Meta<BarArgs> = {
-  title: 'Charts/BarChart',
+  title: 'Comparison/Bar',
   component: 'ui9000-bar-chart',
   tags: ['autodocs'],
   parameters: {

@@ -13,7 +13,7 @@ type SankeyArgs = {
 };
 
 const meta: Meta<SankeyArgs> = {
-  title: 'Charts/SankeyChart',
+  title: 'Flow/Sankey',
   component: 'ui9000-sankey-chart',
   tags: ['autodocs'],
   parameters: {

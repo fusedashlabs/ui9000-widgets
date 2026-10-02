@@ -21,7 +21,7 @@ const frame = (args: StatusGaugeArgs) => html`
 `;
 
 const meta: Meta<StatusGaugeArgs> = {
-  title: 'Widgets/Status gauge',
+  title: 'Headline/Status gauge',
   component: 'ui9000-status-gauge-widget',
   tags: ['autodocs'],
   parameters: {

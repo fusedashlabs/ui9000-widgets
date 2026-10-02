@@ -18,7 +18,7 @@ type StepArgs = {
 };
 
 const meta: Meta<StepArgs> = {
-  title: 'Charts/StepLineChart',
+  title: 'Ordered series/Step line',
   component: 'ui9000-step-line-chart',
   tags: ['autodocs'],
   parameters: {

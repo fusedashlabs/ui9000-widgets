@@ -103,7 +103,7 @@ type MapChartArgs = {
 };
 
 const meta: Meta<MapChartArgs> = {
-  title: 'Charts/MapChart',
+  title: 'Spatial/Map',
   component: 'ui9000-map-chart',
   tags: ['autodocs'],
   parameters: {

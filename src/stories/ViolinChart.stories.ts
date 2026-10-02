@@ -15,7 +15,7 @@ type ViolinArgs = {
 };
 
 const meta: Meta<ViolinArgs> = {
-  title: 'Charts/ViolinChart',
+  title: 'Distribution/Violin',
   component: 'ui9000-violin-chart',
   tags: ['autodocs'],
   parameters: {

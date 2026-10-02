@@ -11,7 +11,7 @@ type MatrixArgs = {
 };
 
 const meta: Meta<MatrixArgs> = {
-  title: 'Charts/MatrixChart',
+  title: 'Two-way magnitude/Matrix',
   component: 'ui9000-matrix-chart',
   tags: ['autodocs'],
   parameters: {

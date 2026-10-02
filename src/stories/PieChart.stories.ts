@@ -12,7 +12,7 @@ type PieChartArgs = {
 };
 
 const meta: Meta<PieChartArgs> = {
-  title: 'Charts/PieChart',
+  title: 'Part of a whole/Pie',
   component: 'ui9000-pie-chart',
   tags: ['autodocs'],
   parameters: {

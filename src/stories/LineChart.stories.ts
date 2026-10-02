@@ -17,7 +17,7 @@ type LineArgs = {
 };
 
 const meta: Meta<LineArgs> = {
-  title: 'Charts/LineChart',
+  title: 'Comparison/Line',
   component: 'ui9000-line-chart',
   tags: ['autodocs'],
   parameters: {

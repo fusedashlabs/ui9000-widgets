@@ -25,7 +25,7 @@ const ANNOTATED = {
 };
 
 const meta: Meta<GiniArgs> = {
-  title: 'Charts/GiniImpurityEntropyChart',
+  title: 'Model impurity/Gini and entropy',
   component: 'ui9000-gini-impurity-entropy-chart',
   tags: ['autodocs'],
   parameters: {

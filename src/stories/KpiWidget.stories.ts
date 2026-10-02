@@ -31,7 +31,7 @@ const frame = (args: KpiWidgetArgs) => html`
 `;
 
 const meta: Meta<KpiWidgetArgs> = {
-  title: 'Widgets/Kpis',
+  title: 'Headline/KPIs',
   component: 'ui9000-kpi-widget',
   tags: ['autodocs'],
   parameters: {

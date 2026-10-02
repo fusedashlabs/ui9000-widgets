@@ -14,7 +14,7 @@ type ParallelCoordinatesArgs = {
 };
 
 const meta: Meta<ParallelCoordinatesArgs> = {
-  title: 'Charts/ParallelCoordinatesChart',
+  title: 'Many metrics/Parallel coordinates',
   component: 'ui9000-parallel-coordinates-chart',
   tags: ['autodocs'],
   parameters: {

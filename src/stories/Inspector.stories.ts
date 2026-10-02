@@ -23,7 +23,7 @@ const frame = (args: InspectorArgs) => html`
 `;
 
 const meta: Meta<InspectorArgs> = {
-  title: 'Host/Inspector',
+  title: 'Playground/Inspector',
   component: 'ui9000-inspector',
   tags: ['autodocs'],
   parameters: {

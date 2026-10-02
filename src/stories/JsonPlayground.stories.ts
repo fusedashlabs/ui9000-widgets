@@ -143,7 +143,7 @@ class Ui9000JsonPlayground extends LitElement {
 }
 
 const meta: Meta = {
-  title: "Guides/JSON playground",
+  title: 'Test your chart JSON',
   parameters: {
     controls: { disable: true },
     docs: {
@@ -163,6 +163,6 @@ export default meta;
 type Story = StoryObj;
 
 export const PasteJson: Story = {
-  name: "Paste JSON",
+  name: 'Test your chart JSON',
   render: () => html`<ui9000-json-playground></ui9000-json-playground>`,
 };

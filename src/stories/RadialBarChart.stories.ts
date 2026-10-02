@@ -13,7 +13,7 @@ type RadialBarChartArgs = {
 };
 
 const meta: Meta<RadialBarChartArgs> = {
-  title: 'Charts/RadialBarChart',
+  title: 'Comparison/Radial bar',
   component: 'ui9000-radial-bar-chart',
   tags: ['autodocs'],
   parameters: {

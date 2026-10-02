@@ -24,7 +24,7 @@ type LollipopArgs = {
 };
 
 const meta: Meta<LollipopArgs> = {
-  title: 'Charts/Lollipop',
+  title: 'Comparison/Lollipop',
   component: 'ui9000-lollipop',
   tags: ['autodocs'],
   parameters: {

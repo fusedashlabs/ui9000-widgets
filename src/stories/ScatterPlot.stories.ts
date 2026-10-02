@@ -14,7 +14,7 @@ type ScatterPlotArgs = {
 };
 
 const meta: Meta<ScatterPlotArgs> = {
-  title: 'Charts/ScatterPlot',
+  title: 'Two measures/Scatter',
   component: 'ui9000-scatter-plot',
   tags: ['autodocs'],
   parameters: {

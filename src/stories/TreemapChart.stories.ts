@@ -17,7 +17,7 @@ type TreemapChartArgs = {
 const singleDimensionFixture = { ...fusedashFixture, subgroup: null };
 
 const meta: Meta<TreemapChartArgs> = {
-  title: 'Charts/TreemapChart',
+  title: 'Part of a whole/Treemap',
   component: 'ui9000-treemap-chart',
   tags: ['autodocs'],
   parameters: {

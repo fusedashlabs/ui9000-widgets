@@ -13,7 +13,7 @@ type BiasVarianceArgs = {
 };
 
 const meta: Meta<BiasVarianceArgs> = {
-  title: 'Charts/BiasVarianceTradeoffChart',
+  title: 'Model error/Bias and variance',
   component: 'ui9000-bias-variance-tradeoff-chart',
   tags: ['autodocs'],
   parameters: {

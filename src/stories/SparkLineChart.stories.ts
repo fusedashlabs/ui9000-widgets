@@ -15,7 +15,7 @@ type SparkArgs = {
 };
 
 const meta: Meta<SparkArgs> = {
-  title: 'Charts/SparkLineChart',
+  title: 'Ordered series/Spark line',
   component: 'ui9000-spark-line-chart',
   tags: ['autodocs'],
   parameters: {

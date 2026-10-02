@@ -42,6 +42,7 @@ const CHART_ENTRIES = [
   'components/partial-dependence-chart/index.js',
   'components/kpi-widget/index.js',
   'components/status-gauge-widget/index.js',
+  'components/power-path-card/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
   'components/inspector/index.js',

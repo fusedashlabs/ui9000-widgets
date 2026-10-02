@@ -152,6 +152,10 @@
       "types": "./dist/components/status-gauge-widget/index.d.ts",
       "import": "./dist/components/status-gauge-widget/index.js"
     },
+    "./power-path-card": {
+      "types": "./dist/components/power-path-card/index.d.ts",
+      "import": "./dist/components/power-path-card/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -295,6 +299,10 @@
     "./lazy/status-gauge-widget": {
       "types": "./dist/lazy/status-gauge-widget.d.ts",
       "import": "./dist/lazy/status-gauge-widget.js"
+    },
+    "./lazy/power-path-card": {
+      "types": "./dist/lazy/power-path-card.d.ts",
+      "import": "./dist/lazy/power-path-card.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

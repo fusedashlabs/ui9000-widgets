@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **power-path-card** (`ui9000-power-path-card`, chartType `powerPathCard`): the Optivion power-path card from Figma 34:23675. Title and asset badge, an existing health score with a compact line, a fault banner only while a fault is active, and a variable list of metrics whose status shows only with a level, status or thresholds. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/power-path-card`.
+
 ## 0.7.1 — 2026-10-02
 
 ### Added

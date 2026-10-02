@@ -169,6 +169,10 @@ import {
   Ui9000StatusGaugeWidget,
 } from './components/status-gauge-widget/index.js';
 import {
+  registerPowerPathCard,
+  Ui9000PowerPathCard,
+} from './components/power-path-card/index.js';
+import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
 } from './components/gini-impurity-entropy-chart/index.js';
@@ -301,6 +305,8 @@ export {
   registerKpiWidget,
   Ui9000StatusGaugeWidget,
   registerStatusGaugeWidget,
+  Ui9000PowerPathCard,
+  registerPowerPathCard,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -372,6 +378,7 @@ export function registerAllCharts(): void {
   registerPartialDependenceChart();
   registerKpiWidget();
   registerStatusGaugeWidget();
+  registerPowerPathCard();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -731,6 +738,18 @@ export {
   type StatusLevel,
   statusGaugeWidgetMetadata,
 } from './components/status-gauge-widget/index.js';
+
+export {
+  normalizePowerPath,
+  formatPowerPathMeasure,
+  type PowerPathHealth,
+  type PowerPathLevel,
+  type PowerPathMetric,
+  type PowerPathModel,
+  type PowerPathPayload,
+  type PowerPathThresholds,
+  powerPathCardMetadata,
+} from './components/power-path-card/index.js';
 
 export {
   normalizeCustomWidget,

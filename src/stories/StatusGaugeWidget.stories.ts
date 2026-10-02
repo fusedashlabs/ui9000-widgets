@@ -1,46 +1,20 @@
 import { html } from 'lit';
-import { styleMap } from 'lit/directives/style-map.js';
 import type { Meta, StoryObj } from '@storybook/web-components';
 
-import {
-  contextToCssVars,
-  resolveWidgetContext,
-  type PartialWidgetContext,
-} from '../context/widget-context.js';
-import { DARK_THEME, DEFAULT_THEME } from '../types/index.js';
 import '../components/status-gauge-widget/index.js';
 import antennaFixture from './fixtures/status-gauge.mock.json';
 import manyFixture from './fixtures/status-gauge-many.mock.json';
 
-type GaugeTheme = 'light' | 'dark';
-
 type StatusGaugeArgs = {
   data: unknown;
-  appearance: GaugeTheme;
   width: number;
   height: number;
 };
 
-function frameStyle(appearance: GaugeTheme, width: number, height: number): Record<string, string> {
-  const ctx: PartialWidgetContext =
-    appearance === 'dark'
-      ? { mode: 'dark', theme: DARK_THEME }
-      : { mode: 'light', theme: DEFAULT_THEME };
-  const merged = resolveWidgetContext(ctx);
-  return {
-    ...contextToCssVars(merged),
-    width: `${width}px`,
-    height: `${height}px`,
-    boxSizing: 'border-box',
-    background: 'transparent',
-  };
-}
-
 const frame = (args: StatusGaugeArgs) => html`
-  <div style=${styleMap(frameStyle(args.appearance, args.width, args.height))}>
+  <div style="width:${args.width}px;height:${args.height}px;">
     <ui9000-status-gauge-widget
       style="display:block;width:100%;height:100%;"
-      .theme=${args.appearance}
       data=${JSON.stringify(args.data)}
     ></ui9000-status-gauge-widget>
   </div>
@@ -54,19 +28,17 @@ const meta: Meta<StatusGaugeArgs> = {
     docs: {
       description: {
         component:
-          'Same qualitative palette and type as the other charts. `theme="light"` is the white card; `theme="dark"` follows the dark surface tokens. Inside the client, `data-theme` and `--colors-*` drive it without this attribute.',
+          'One gauge plus metric cards. Card chrome follows the host theme tokens, the same switch as the other charts. The dial stays a fixed health spectrum.',
       },
     },
   },
   argTypes: {
     data: { control: false, table: { disable: true } },
-    appearance: { control: 'inline-radio', options: ['light', 'dark'] },
     width: { control: 'number' },
     height: { control: 'number' },
   },
   args: {
     data: antennaFixture,
-    appearance: 'light',
     width: 380,
     height: 640,
   },
@@ -76,22 +48,17 @@ const meta: Meta<StatusGaugeArgs> = {
 export default meta;
 type Story = StoryObj<StatusGaugeArgs>;
 
-export const Light: Story = {
-  name: 'White',
-  args: { data: antennaFixture, appearance: 'light', width: 380, height: 640 },
-};
-
-export const Dark: Story = {
-  name: 'Dark',
-  args: { data: antennaFixture, appearance: 'dark', width: 380, height: 640 },
+export const Antenna: Story = {
+  name: 'Antenna',
+  args: { data: antennaFixture, width: 380, height: 640 },
 };
 
 export const SixCards: Story = {
   name: 'Six cards',
-  args: { data: manyFixture, appearance: 'light', width: 380, height: 640 },
+  args: { data: manyFixture, width: 380, height: 640 },
 };
 
 export const Narrow: Story = {
   name: 'Narrow (one column)',
-  args: { data: antennaFixture, appearance: 'light', width: 260, height: 720 },
+  args: { data: antennaFixture, width: 260, height: 720 },
 };

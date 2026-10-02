@@ -125,7 +125,7 @@ export function drawStatusGauge(
   g.append('path')
     .attr('class', 'gauge-track')
     .attr('d', band(full) ?? '')
-    .attr('fill', 'var(--sg-gauge-rest, #ffffff)');
+    .attr('fill', 'var(--sg-gauge-rest, #e5e7eb)');
 
   if (gauge.ratio > 0.004) {
     g.append('path')

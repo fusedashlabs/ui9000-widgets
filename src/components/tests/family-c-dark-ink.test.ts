@@ -145,8 +145,9 @@ describe('family C dark ink', () => {
       title: 'Antenna',
       data: [{ name: 'Health', value: 80, status: 'ok' }],
     });
+    expect(el.hasAttribute('theme')).toBe(false);
     expect(el.getAttribute('data-mode')).toBe('dark');
-    expect(el.shadowRoot.querySelector('.panel')?.getAttribute('data-mode')).toBe('dark');
+    expect(el.shadowRoot.querySelector('.panel')?.hasAttribute('data-mode')).toBe(false);
     el.remove();
   });
 });

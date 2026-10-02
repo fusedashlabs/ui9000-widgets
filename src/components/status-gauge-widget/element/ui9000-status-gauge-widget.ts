@@ -1,7 +1,6 @@
 import { html, nothing, svg, type PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 
-import type { ResolvedMode } from '../../../context/resolve-mode.js';
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import {
@@ -20,10 +19,6 @@ let nextGradientId = 0;
 export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
   static override styles = [chartShellStyles, statusGaugeStyles];
 
-  /** `light` or `dark`. Empty follows `--ui9000-mode` and the host `data-theme`. */
-  @property({ type: String, reflect: true })
-  theme = '';
-
   @state()
   private _model: StatusGaugeModel = {
     title: '',
@@ -35,9 +30,6 @@ export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
 
   @state()
   private _columns = 2;
-
-  @state()
-  private _mode: 'light' | 'dark' = 'light';
 
   private _resizeObserver?: ResizeObserver;
   private _raf = 0;
@@ -62,21 +54,9 @@ export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
   }
 
   override willUpdate(changed: PropertyValues): void {
-    this.syncMode();
     if (changed.has('dataJson')) {
       this._model = normalizeStatusGauge(parseJsonAttr(this.dataJson, null));
     }
-  }
-
-  protected override themeMode(): ResolvedMode {
-    if (this.theme === 'dark' || this.theme === 'light') return this.theme;
-    return super.themeMode();
-  }
-
-  private syncMode(): void {
-    const next = this.themeMode();
-    if (this.getAttribute('data-mode') !== next) this.setAttribute('data-mode', next);
-    if (this._mode !== next) this._mode = next;
   }
 
   override updated(): void {
@@ -85,12 +65,12 @@ export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
 
   override render() {
     if (this._model.empty) {
-      return html`<div class="panel" data-mode=${this._mode}><p class="empty">No status data</p></div>`;
+      return html`<div class="panel"><p class="empty">No status data</p></div>`;
     }
 
     const { title, subtitle, gauge, metrics } = this._model;
     return html`
-      <div class="panel" data-mode=${this._mode}>
+      <div class="panel">
         ${title ? html`<h2 class="title">${title}</h2>` : nothing}
         ${subtitle ? html`<p class="subtitle">${subtitle}</p>` : nothing}
         ${title || subtitle ? html`<div class="rule"></div>` : nothing}

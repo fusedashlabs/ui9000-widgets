@@ -1,9 +1,8 @@
 import { css } from 'lit';
 
 /**
- * Surfaces follow the chart tokens and, when the host provides them, the
- * client `--colors-*` theme. The dial is a fixed health spectrum; card bars
- * use the status color on a ticked range track.
+ * Card chrome follows the same host tokens as the other charts. The dial
+ * stays a fixed health spectrum; card bars use the status color.
  */
 export const statusGaugeStyles = css`
   :host {
@@ -13,44 +12,24 @@ export const statusGaugeStyles = css`
     font-family: var(--ui9000-font-family, Inter, system-ui, -apple-system, sans-serif);
     font-feature-settings: 'ss01' on, 'cv11' on;
     -webkit-font-smoothing: antialiased;
-    --sg-text: var(--colors-neutral-text-default, #21262e);
-    --sg-muted: var(--colors-neutral-text-weak, #6c7584);
-    --sg-surface: var(--colors-neutral-background-base, #ffffff);
-    --sg-card: var(--colors-neutral-background-default, #f3f4f6);
-    --sg-badge: var(--colors-neutral-background-hover, #e8eaed);
-    --sg-line: var(--colors-neutral-border-weakest, #e5e7eb);
-    --sg-gauge-rest: #f4f5f7;
+    --sg-text: var(--ui9000-color-text, #111827);
+    --sg-muted: var(--ui9000-color-text-muted, #6c7584);
+    --sg-surface: var(--ui9000-color-surface, #ffffff);
+    --sg-card: var(--ui9000-color-surface-muted, #f3f4f6);
+    --sg-badge: var(--ui9000-color-surface-muted, #f3f4f6);
+    --sg-line: var(--ui9000-color-border, #e5e7eb);
+    --sg-gauge-rest: var(--ui9000-color-border, #e5e7eb);
     --sg-bar-track: #d5d8de;
     --sg-needle: #ffffff;
     --sg-needle-ink: #c5cad3;
     --sg-hair: rgba(255, 255, 255, 0.42);
-    --sg-scale: #b7bdc6;
-    --sg-cut: #b7bdc6;
-    --sg-bead-ring: #ffffff;
+    --sg-scale: var(--ui9000-color-text-muted, #b7bdc6);
+    --sg-cut: var(--ui9000-color-text-muted, #b7bdc6);
+    --sg-bead-ring: var(--ui9000-color-surface, #ffffff);
     --sg-ok: #3ad07c;
     --sg-warning: #ff9a3c;
     --sg-critical: #ff4781;
     --sg-neutral: #8b93a0;
-    color: var(--sg-text);
-  }
-
-  :host([theme='dark']),
-  :host([data-mode='dark']),
-  :host-context([data-theme='dark']) {
-    --sg-text: #eff0f1;
-    --sg-muted: #a4a9b1;
-    --sg-surface: #16181d;
-    --sg-card: #22262e;
-    --sg-badge: #2a2e36;
-    --sg-line: #343a44;
-    --sg-gauge-rest: #ffffff;
-    --sg-bar-track: #d0d4da;
-    --sg-needle: #ffffff;
-    --sg-needle-ink: rgba(22, 24, 29, 0.35);
-    --sg-hair: rgba(255, 255, 255, 0.38);
-    --sg-scale: rgba(255, 255, 255, 0.72);
-    --sg-cut: #ffffff;
-    --sg-bead-ring: #3a342c;
     color: var(--sg-text);
   }
 
@@ -67,26 +46,6 @@ export const statusGaugeStyles = css`
     border: 1px solid var(--sg-line);
     color: var(--sg-text);
     overflow: hidden;
-  }
-
-  .panel[data-mode='dark'] {
-    --sg-text: #eff0f1;
-    --sg-muted: #a4a9b1;
-    --sg-surface: #16181d;
-    --sg-card: #22262e;
-    --sg-badge: #2a2e36;
-    --sg-line: #343a44;
-    --sg-gauge-rest: #ffffff;
-    --sg-bar-track: #d0d4da;
-    --sg-needle: #ffffff;
-    --sg-needle-ink: rgba(22, 24, 29, 0.35);
-    --sg-hair: rgba(255, 255, 255, 0.38);
-    --sg-scale: rgba(255, 255, 255, 0.72);
-    --sg-cut: #ffffff;
-    --sg-bead-ring: #3a342c;
-    background: #16181d;
-    border-color: #343a44;
-    color: #eff0f1;
   }
 
   .title {
@@ -262,6 +221,46 @@ export const statusGaugeStyles = css`
     margin-top: 10px;
     overflow: hidden;
     border-radius: 99px;
+    /* First 30% is solid. After that, a gap every 5% cuts fill and track. */
+    --sg-gap: 2px;
+    --sg-ticks: linear-gradient(
+      90deg,
+      #000 0 calc(30% - var(--sg-gap)),
+      transparent calc(30% - var(--sg-gap)) 30%,
+      #000 30% calc(35% - var(--sg-gap)),
+      transparent calc(35% - var(--sg-gap)) 35%,
+      #000 35% calc(40% - var(--sg-gap)),
+      transparent calc(40% - var(--sg-gap)) 40%,
+      #000 40% calc(45% - var(--sg-gap)),
+      transparent calc(45% - var(--sg-gap)) 45%,
+      #000 45% calc(50% - var(--sg-gap)),
+      transparent calc(50% - var(--sg-gap)) 50%,
+      #000 50% calc(55% - var(--sg-gap)),
+      transparent calc(55% - var(--sg-gap)) 55%,
+      #000 55% calc(60% - var(--sg-gap)),
+      transparent calc(60% - var(--sg-gap)) 60%,
+      #000 60% calc(65% - var(--sg-gap)),
+      transparent calc(65% - var(--sg-gap)) 65%,
+      #000 65% calc(70% - var(--sg-gap)),
+      transparent calc(70% - var(--sg-gap)) 70%,
+      #000 70% calc(75% - var(--sg-gap)),
+      transparent calc(75% - var(--sg-gap)) 75%,
+      #000 75% calc(80% - var(--sg-gap)),
+      transparent calc(80% - var(--sg-gap)) 80%,
+      #000 80% calc(85% - var(--sg-gap)),
+      transparent calc(85% - var(--sg-gap)) 85%,
+      #000 85% calc(90% - var(--sg-gap)),
+      transparent calc(90% - var(--sg-gap)) 90%,
+      #000 90% calc(95% - var(--sg-gap)),
+      transparent calc(95% - var(--sg-gap)) 95%,
+      #000 95% 100%
+    );
+    mask-image: var(--sg-ticks);
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    -webkit-mask-image: var(--sg-ticks);
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
   }
 
   .range-track,
@@ -275,11 +274,6 @@ export const statusGaugeStyles = css`
   .range-track {
     right: 0;
     background-color: var(--sg-bar-track);
-    background-image: repeating-linear-gradient(
-      90deg,
-      transparent 0 5px,
-      rgba(22, 24, 29, 0.55) 5px 6px
-    );
   }
 
   .range-fill {

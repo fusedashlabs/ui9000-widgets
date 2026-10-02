@@ -26,6 +26,9 @@ export const FD_LIGHT = {
   sankeyNodeRuleActive: '#939BA7',
   networkLabelText: 'rgba(33, 38, 46, 0.9)',
   networkLabelHover: '#FFFFFF',
+  mapSelectionStroke: '#000000',
+  mapSpikeLabel: '#000000',
+  mapSpikeHalo: '#ffffff',
 } as const;
 
 export const FD_DARK = {
@@ -49,6 +52,9 @@ export const FD_DARK = {
   sankeyNodeRuleActive: '#A4A9B1',
   networkLabelText: '#EFF0F1',
   networkLabelHover: '#282E37',
+  mapSelectionStroke: '#EFF0F1',
+  mapSpikeLabel: '#EFF0F1',
+  mapSpikeHalo: '#13161D',
 } as const;
 
 export function fdColors(mode: ResolvedMode) {

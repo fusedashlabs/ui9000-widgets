@@ -26,6 +26,11 @@ describe('fdColors', () => {
     expect(fdColors('light').biasVarianceGridStroke).toBe('#d1d5db');
     expect(fdColors('light').sankeyNodeRule).toBe('#D3DBE3');
     expect(fdColors('light').networkLabelText).toBe('rgba(33, 38, 46, 0.9)');
+    expect(fdColors('dark').mapSelectionStroke).toBe('#EFF0F1');
+    expect(fdColors('dark').mapSpikeLabel).toBe('#EFF0F1');
+    expect(fdColors('dark').mapSpikeHalo).toBe('#13161D');
+    expect(fdColors('light').mapSpikeLabel).toBe('#000000');
+    expect(fdColors('light').mapSpikeHalo).toBe('#ffffff');
     expect(fdColors('light').gridStroke).toBe('#afb3bb');
     expect(fdColors('light').polarGridStroke).toBe('#939ba7');
     expect(fdColors('light').polarCategoryLabelFill).toBe('#5f6877');

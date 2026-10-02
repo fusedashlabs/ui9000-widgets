@@ -36,11 +36,21 @@ function ruleBody(css: string, selector: string): string {
   return open === -1 || close === -1 ? '' : css.slice(open + 1, close);
 }
 
+async function showDetails(host: HTMLElement): Promise<void> {
+  const button = host.shadowRoot?.querySelector('button.toggle') as HTMLButtonElement | null;
+  if (button?.getAttribute('aria-expanded') !== 'false') return;
+  button.click();
+  await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
+}
+
 describe('Ui9000Inspector', () => {
-  it('paints the panel and the score cards from the host surface', () => {
+  it('paints the panel from the host surface and sizes it to its content', () => {
     const css = inspectorStyles.cssText;
+    const hostRule = ruleBody(css, ':host {');
     const root = ruleBody(css, '.root {');
     const cards = ruleBody(css, '.scores li,');
+    expect(hostRule).toContain('height: auto');
+    expect(root).toContain('height: auto');
     expect(root).toContain('background: var(--ui9000-color-surface, #ffffff)');
     expect(cards).toContain('--ui9000-color-surface-muted');
   });
@@ -57,8 +67,20 @@ describe('Ui9000Inspector', () => {
     expect(panel(host).getAttribute('aria-label')).toBe('Why map-chart');
   });
 
+  it('starts collapsed, with the chart name and no decision detail', async () => {
+    const host = await mount(spatialTrace);
+    const button = host.shadowRoot?.querySelector('button.toggle');
+
+    expect(button?.textContent?.trim()).toBe('Show details');
+    expect(button?.getAttribute('aria-expanded')).toBe('false');
+    expect(host.shadowRoot?.querySelector('h2')?.textContent).toBe('map-chart');
+    expect(host.shadowRoot?.querySelector('.why')).toBeNull();
+    expect(host.shadowRoot?.querySelector('.rejections')).toBeNull();
+  });
+
   it('leads with the chart, who chose it, and why', async () => {
     const host = await mount(spatialTrace);
+    await showDetails(host);
     const root = panel(host);
 
     expect(root.querySelector('h2')?.textContent).toBe('map-chart');
@@ -85,6 +107,7 @@ describe('Ui9000Inspector', () => {
 
   it('renders winner, risk and outcome from a v2 trace', async () => {
     const host = await mount(spatialTraceV2);
+    await showDetails(host);
     const root = panel(host);
 
     expect(root.querySelector('h2')?.textContent).toBe('map-chart');
@@ -94,6 +117,7 @@ describe('Ui9000Inspector', () => {
 
   it('shows an unrecognized risk band as text, not as a known band', async () => {
     const host = await mount({ ...spatialTraceV2, riskBand: 'catastrophic' });
+    await showDetails(host);
 
     expect(panel(host).querySelector('.pill[data-band]')).toBeNull();
     expect(text(host)).toContain('catastrophic unrecognized');
@@ -116,9 +140,17 @@ describe('Ui9000Inspector', () => {
     expect(textOf(host, '[role="status"]')).toBe('Trace required');
   });
 
-  it('hides the decision detail and shows it again', async () => {
+  it('shows the decision detail and hides it again', async () => {
     const host = await mount(spatialTrace);
     const button = () => host.shadowRoot?.querySelector('button.toggle') as HTMLButtonElement;
+
+    expect(button().getAttribute('aria-expanded')).toBe('false');
+
+    button().click();
+    await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
+
+    expect(button().textContent?.trim()).toBe('Hide details');
+    expect(host.shadowRoot?.querySelector('.rejections')).not.toBeNull();
 
     button().click();
     await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
@@ -128,12 +160,6 @@ describe('Ui9000Inspector', () => {
     expect(host.shadowRoot?.querySelector('.why')).toBeNull();
     expect(host.shadowRoot?.querySelector('.rejections')).toBeNull();
     expect(host.shadowRoot?.querySelector('h2')?.textContent).toBe('map-chart');
-
-    button().click();
-    await (host as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
-
-    expect(button().textContent?.trim()).toBe('Hide details');
-    expect(host.shadowRoot?.querySelector('.rejections')).not.toBeNull();
   });
 
   it('re-renders when the trace attribute changes', async () => {

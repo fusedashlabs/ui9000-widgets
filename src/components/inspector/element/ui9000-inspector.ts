@@ -36,7 +36,7 @@ export class Ui9000Inspector extends LitElement {
   private _result: NormalizedTrace = { ok: false, blocked: 'Trace required' };
 
   @state()
-  private open = true;
+  private open = false;
 
   private refresh(): void {
     this._result = normalizeTrace(parseJsonAttr<unknown>(this.traceJson, null));
@@ -50,7 +50,7 @@ export class Ui9000Inspector extends LitElement {
   override willUpdate(changed: PropertyValues): void {
     if (changed.has('traceJson')) {
       this.refresh();
-      this.open = true;
+      this.open = false;
     }
   }
 

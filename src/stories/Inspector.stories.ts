@@ -10,13 +10,12 @@ import spatialTraceV2 from './fixtures/spatial.trace.v2.json';
 type InspectorArgs = {
   trace: unknown;
   panelLabel: string;
-  height: number;
 };
 
 const frame = (args: InspectorArgs) => html`
-  <div style="width:100%;height:${args.height}px;background:var(--ui9000-color-surface, #fff);border:1px solid var(--ui9000-color-border, #e5e7eb);">
+  <div style="width:100%;background:var(--ui9000-color-surface, #fff);border:1px solid var(--ui9000-color-border, #e5e7eb);">
     <ui9000-inspector
-      style="display:block;width:100%;height:100%;"
+      style="display:block;width:100%;height:auto;"
       trace=${JSON.stringify(args.trace)}
       panel-label=${args.panelLabel}
     ></ui9000-inspector>
@@ -43,12 +42,10 @@ const meta: Meta<InspectorArgs> = {
   argTypes: {
     trace: { control: false, table: { disable: true } },
     panelLabel: { control: 'text' },
-    height: { control: 'number' },
   },
   args: {
     trace: spatialTrace,
     panelLabel: '',
-    height: 720,
   },
   render: (args) => frame(args),
 };
@@ -118,13 +115,13 @@ const namedTrace = {
 /** Jev picked the drawing. The engine scores stay underneath, and the ruled-out charts share reasons. */
 export const JevChoice: Story = {
   name: 'Jev chose line-chart',
-  args: { trace: jevTrace, height: 640 },
+  args: { trace: jevTrace },
 };
 
 /** The user named the chart. It stays the drawing even when another score is higher. */
 export const NamedChoice: Story = {
   name: 'You asked for pie-chart',
-  args: { trace: namedTrace, height: 520 },
+  args: { trace: namedTrace },
 };
 
 /** Pie above the decision, the same stack the chart app uses. Hide and Show sit on the panel. */
@@ -158,6 +155,5 @@ export const RowsRefused: Story = {
   name: 'refuses dataset rows',
   args: {
     trace: { ...spatialTrace, rows: [{ region: 'North', incidents: 12 }] },
-    height: 120,
   },
 };

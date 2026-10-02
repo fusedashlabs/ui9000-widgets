@@ -1,12 +1,17 @@
 import { css } from 'lit';
 
 export const inspectorStyles = css`
+  :host {
+    height: auto;
+  }
   .root {
     display: flex;
     flex-direction: column;
     gap: 22px;
     padding: 16px 18px 20px;
     box-sizing: border-box;
+    height: auto;
+    overflow: visible;
     color: var(--ui9000-color-text, inherit);
     background: var(--ui9000-color-surface, #ffffff);
   }

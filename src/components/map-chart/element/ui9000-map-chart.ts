@@ -5,7 +5,7 @@ import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-ch
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import { fetchMapGeoJson } from '../lib/geojson.js';
-import { joinLayerFeatures } from '../lib/join.js';
+import { joinLayerFeatures, themeSpikeLayer } from '../lib/join.js';
 import {
   DEFAULT_BUBBLES_RADIUS,
   defaultLayerSlider,
@@ -287,11 +287,17 @@ export class Ui9000MapChart extends Ui9000ChartElement {
       return;
     }
     this.syncLegendState(model.layers);
+    const mode = this.themeMode();
+    model = {
+      ...model,
+      layers: model.layers.map((layer) => themeSpikeLayer(layer, mode)),
+    };
+    this._model = model;
 
     const ctl = await renderMapChart(root, {
       model,
       token,
-      mode: this.themeMode(),
+      mode,
       showTooltip: this.showTooltip,
       pmtilesBaseUrl: this.pmtilesUrl(),
       activeLayerIds: this._activeLayers,

@@ -95,6 +95,48 @@ describe(TAG, () => {
     el.remove();
   });
 
+  it('asks the map for the dark style when the host sets the surface', async () => {
+    const spy = vi.spyOn(draw, 'renderMapChart').mockResolvedValue(null);
+    const el = document.createElement(TAG) as Ui9000MapChart;
+    el.style.setProperty('--ui9000-color-surface', '#13161D');
+    el.style.setProperty('--ui9000-mode', 'dark');
+    el.setAttribute('mapbox-token', 'pk.test');
+    el.setAttribute(
+      'data',
+      JSON.stringify({
+        ...fixture,
+        geoJson: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              properties: { name: 'France', iso_a3: 'FRA' },
+              geometry: {
+                type: 'Polygon',
+                coordinates: [
+                  [
+                    [0, 0],
+                    [1, 0],
+                    [1, 1],
+                    [0, 0],
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+      }),
+    );
+    document.body.append(el);
+    await settle(el);
+    expect(spy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ mode: 'dark' }),
+    );
+    spy.mockRestore();
+    el.remove();
+  });
+
   it('defines the element exactly once', () => {
     const first = customElements.get(TAG);
     registerMapChart();

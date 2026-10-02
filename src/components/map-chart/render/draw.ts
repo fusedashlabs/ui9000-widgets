@@ -6,6 +6,7 @@ import {
   sanitizeKey,
   type MapVisualisation,
 } from '../lib/constants.js';
+import { fdColors } from '../../../utils/fusedash-visual.js';
 import { collectionBBox } from '../lib/domain.js';
 import { darkenColor, hexToRgba } from '../lib/format.js';
 import { getRegionIdFromFeatureProperties } from '../lib/geo-index.js';
@@ -230,6 +231,19 @@ function injectCss(container: HTMLElement): void {
   host.append(link);
 }
 
+/** Hover outline. Width stays 0 until a region is hovered. */
+export function choroplethSelectionPaint(mode?: MapMode): {
+  'line-color': string;
+  'line-width': number;
+  'line-opacity': number;
+} {
+  return {
+    'line-color': fdColors(mode === 'dark' ? 'dark' : 'light').mapSelectionStroke,
+    'line-width': 0,
+    'line-opacity': 0,
+  };
+}
+
 function addChoropleth(
   map: MapboxMap,
   layer: MapLayerModel,
@@ -258,11 +272,7 @@ function addChoropleth(
     id: strokeId,
     type: 'line',
     source: sourceId,
-    paint: {
-      'line-color': '#000000',
-      'line-width': 0,
-      'line-opacity': 0,
-    },
+    paint: choroplethSelectionPaint(mode),
   };
 
   if (pmtiles) {

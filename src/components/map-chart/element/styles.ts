@@ -30,7 +30,7 @@ export const mapChartStyles = css`
     font-size: 12px;
     line-height: 1.35;
     background: var(--ui9000-color-text, #111827);
-    color: #fff;
+    color: var(--ui9000-color-surface, #ffffff);
     box-shadow: 0 4px 12px rgb(0 0 0 / 18%);
     transform: translate(-50%, calc(-100% - 10px));
     white-space: nowrap;
@@ -210,7 +210,7 @@ export const mapChartStyles = css`
     top: calc(50% + 1px);
     height: 1px;
     transform: translateY(-50%);
-    border-top: 1px dashed #8f95a0;
+    border-top: 1px dashed var(--ui9000-color-text-muted, #8f95a0);
     z-index: 10;
     pointer-events: none;
   }

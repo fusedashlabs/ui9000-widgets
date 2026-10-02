@@ -2,7 +2,7 @@ import { select } from 'd3-selection';
 import { arc, pie, type PieArcDatum } from 'd3-shape';
 
 import type { WidgetTheme } from '../../../types/index.js';
-import { FD } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import type { PieSlice } from '../lib/types.js';
 
 export interface RenderPieChartOptions {
@@ -72,8 +72,7 @@ export function renderPieChart(container: HTMLElement, options: RenderPieChartOp
     .attr('height', plotSize)
     .attr('viewBox', `0 0 ${plotSize} ${plotSize}`);
 
-  const stroke =
-    themeMode === 'dark' ? FD.donutSliceStrokeDark : FD.donutSliceStroke;
+  const stroke = fdColors(themeMode).sliceStroke;
   const arcGen = arc<PieArcDatum<PieSlice>>()
     .innerRadius(safeInner)
     .outerRadius(outerRadius);

@@ -15,6 +15,7 @@ import type { ChartMarkerShape } from '../../../utils/chart-formatting/types.js'
 import {
   appendGlowFilter,
   FD,
+  fdColors,
   formatCompactNumber,
   lightenColor,
   seriesColor as fdSeriesColor,
@@ -195,7 +196,7 @@ export function renderRadarChart(
           .join(' ');
       })
       .attr('fill', 'none')
-      .attr('stroke', FD.gridStroke);
+      .attr('stroke', fdColors(themeMode).gridStroke);
   }
 
   const axisGrid = root.append('g').attr('class', 'axis-grid');
@@ -220,7 +221,7 @@ export function renderRadarChart(
       .attr('x2', x)
       .attr('y2', y)
       .attr('class', 'axis')
-      .attr('stroke', FD.axisStroke)
+      .attr('stroke', fdColors(themeMode).axisStroke)
       .attr('stroke-linejoin', 'round')
       .attr('stroke-linecap', 'round')
       .attr('stroke-dasharray', FD.radarSpokeDash);
@@ -231,7 +232,7 @@ export function renderRadarChart(
       .attr('cy', y)
       .attr('r', FD.radarCapRadius)
       .attr('class', 'axis-cap')
-      .attr('fill', FD.axisStroke);
+      .attr('fill', fdColors(themeMode).axisStroke);
 
     axisGrid
       .append('text')
@@ -268,9 +269,12 @@ export function renderRadarChart(
           .attr('font-size', '12px')
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'central')
+          .attr('fill', fdColors(themeMode).radarTickText)
           .text(formatRadarTick(scalePosition));
 
-        const textBBox = textNode.node()?.getBBox();
+        const textEl = textNode.node();
+        const textBBox =
+          textEl && typeof textEl.getBBox === 'function' ? textEl.getBBox() : null;
         if (!textBBox) return;
         const padding = { x: 7, y: 3 };
         group
@@ -282,7 +286,7 @@ export function renderRadarChart(
           .attr('height', textBBox.height + padding.y * 2)
           .attr('rx', 4)
           .attr('ry', 4)
-          .attr('fill', FD.radarTickLabelFill);
+          .attr('fill', fdColors(themeMode).radarTickFill);
       });
   }
 

@@ -7,7 +7,7 @@ import {
   decorateManualAxisLabel,
   type AxisLabelTooltipHandlers,
 } from '../../../utils/axis-labels.js';
-import { FD, formatCompactNumber } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors, formatCompactNumber } from '../../../utils/fusedash-visual.js';
 import {
   polarGroupedSectorAngles,
   polarLabelAnchor,
@@ -56,6 +56,7 @@ function drawGridRings(
   parent: Selection<SVGGElement, unknown, null, undefined>,
   ticks: number[],
   radial: (value: number) => number,
+  themeMode: 'light' | 'dark',
 ): void {
   parent
     .selectAll('circle')
@@ -64,7 +65,7 @@ function drawGridRings(
     .append('circle')
     .attr('r', (d) => radial(d))
     .attr('fill', 'none')
-    .attr('stroke', FD.polarGridStroke)
+    .attr('stroke', fdColors(themeMode).polarGridStroke)
     .attr('stroke-opacity', (_d, i) => (i + 1) * FD.polarGridStepOpacity);
 }
 
@@ -72,6 +73,7 @@ function drawSpokes(
   parent: Selection<SVGGElement, unknown, null, undefined>,
   categories: string[],
   outer: number,
+  themeMode: 'light' | 'dark',
 ): void {
   const slice = (Math.PI * 2) / categories.length;
   for (let i = 0; i < categories.length; i += 1) {
@@ -86,7 +88,7 @@ function drawSpokes(
       .attr('y1', 0)
       .attr('x2', x)
       .attr('y2', y)
-      .attr('stroke', FD.polarGridStroke)
+      .attr('stroke', fdColors(themeMode).polarGridStroke)
       .attr('stroke-linejoin', 'round')
       .attr('stroke-linecap', 'round')
       .attr('stroke-dasharray', FD.polarSpokeDash);
@@ -96,7 +98,7 @@ function drawSpokes(
       .attr('cx', x)
       .attr('cy', y)
       .attr('r', FD.polarSpokeCapRadius)
-      .attr('fill', FD.polarGridStroke);
+      .attr('fill', fdColors(themeMode).polarGridStroke);
   }
 }
 
@@ -106,6 +108,7 @@ function drawCategoryLabels(
   outer: number,
   halfWidth: number,
   handlers: AxisLabelTooltipHandlers,
+  themeMode: 'light' | 'dark',
 ): void {
   const slice = (Math.PI * 2) / categories.length;
   const radius = outer + FD.polarCategoryLabelOffset;
@@ -129,7 +132,7 @@ function drawCategoryLabels(
       .attr('text-anchor', anchor)
       .attr('font-size', FD.polarCategoryLabelSize)
       .attr('dominant-baseline', 'central')
-      .attr('fill', FD.polarCategoryLabelFill);
+      .attr('fill', fdColors(themeMode).polarCategoryLabelFill);
 
     decorateManualAxisLabel(text, category, {
       ...handlers,
@@ -149,9 +152,7 @@ function drawRadialTicks(
   const pillFill =
     theme.background && theme.background !== 'transparent'
       ? theme.background
-      : themeMode === 'dark'
-        ? FD.polarTickPillDark
-        : FD.polarTickPill;
+      : fdColors(themeMode).polarTickPill;
 
   parent
     .selectAll<SVGGElement, number>('g')
@@ -239,8 +240,8 @@ export function renderPolarAreaChart(
       .append('g')
       .attr('class', 'polar-grid')
       .attr('pointer-events', 'none');
-    drawGridRings(gridGroup, ticks, radial);
-    drawSpokes(gridGroup, model.categories, gridOuter);
+    drawGridRings(gridGroup, ticks, radial, themeMode);
+    drawSpokes(gridGroup, model.categories, gridOuter, themeMode);
   }
   if (outerRadius >= FD.polarMinLabelRadius) {
     drawCategoryLabels(
@@ -249,6 +250,7 @@ export function renderPolarAreaChart(
       gridOuter,
       width / 2,
       { onAxisLabelHover, onAxisLabelLeave },
+      themeMode,
     );
   }
 
@@ -261,7 +263,7 @@ export function renderPolarAreaChart(
     .startAngle((d) => d.startAngle)
     .endAngle((d) => d.endAngle);
 
-  const stroke = themeMode === 'dark' ? FD.donutSliceStrokeDark : FD.donutSliceStroke;
+  const stroke = fdColors(themeMode).sliceStroke;
   const sectors = root
     .append('g')
     .attr('class', 'polar-sectors')

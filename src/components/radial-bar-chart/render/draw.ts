@@ -6,7 +6,7 @@ import {
   decorateManualAxisLabel,
   type AxisLabelTooltipHandlers,
 } from '../../../utils/axis-labels.js';
-import { FD, formatCompactNumber } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors, formatCompactNumber } from '../../../utils/fusedash-visual.js';
 import {
   RADIAL_BAR_SWEEP,
   radialBarAngleScale,
@@ -25,6 +25,7 @@ export interface RenderRadialBarChartOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   showGrid?: boolean;
   showTooltip?: boolean;
   onHover?: (payload: { bar: RadialBarDatum; event: MouseEvent }) => void;
@@ -35,6 +36,7 @@ function drawRings(
   parent: Selection<SVGGElement, unknown, null, undefined>,
   radii: number[],
   endAngle: number,
+  themeMode: 'light' | 'dark',
 ): void {
   const ring = arc<{ radius: number }>()
     .innerRadius((d) => d.radius)
@@ -50,7 +52,7 @@ function drawRings(
     .attr('class', 'radial-grid-arc')
     .attr('d', ring)
     .attr('fill', 'none')
-    .attr('stroke', FD.radialBarGridStroke);
+    .attr('stroke', fdColors(themeMode).radialBarGridStroke);
 }
 
 /**
@@ -66,6 +68,7 @@ export function renderRadialBarChart(
     width,
     height,
     margin,
+    themeMode = 'light',
     showGrid = true,
     showTooltip = true,
     onHover,
@@ -112,6 +115,7 @@ export function renderRadialBarChart(
         radiusScale(innerRadius + ringInterval * i),
       ),
       endAngle,
+      themeMode,
     );
   }
 
@@ -130,7 +134,7 @@ export function renderRadialBarChart(
         .attr('y1', holeRadius * sin)
         .attr('x2', rimRadius * cos)
         .attr('y2', rimRadius * sin)
-        .attr('stroke', FD.radialBarGridStroke)
+        .attr('stroke', fdColors(themeMode).radialBarGridStroke)
         .attr('stroke-linejoin', 'round')
         .attr('stroke-linecap', 'round')
         .attr('stroke-dasharray', value === 0 ? null : FD.radialBarTickDash);
@@ -145,7 +149,7 @@ export function renderRadialBarChart(
       .attr('text-anchor', radialBarTickAnchor(angle))
       .attr('dominant-baseline', 'central')
       .attr('font-size', FD.radialBarTickLabelSize)
-      .attr('fill', FD.radialBarLabelFill)
+      .attr('fill', fdColors(themeMode).radialBarLabelFill)
       .text(formatCompactNumber(value));
   });
 
@@ -160,7 +164,7 @@ export function renderRadialBarChart(
       .attr('text-anchor', 'start')
       .attr('dominant-baseline', 'central')
       .attr('font-size', FD.radialBarRingLabelSize)
-      .attr('fill', FD.radialBarLabelFill);
+      .attr('fill', fdColors(themeMode).radialBarLabelFill);
     decorateManualAxisLabel(text, bar.label, {
       maxLength: labelLimit,
       onAxisLabelHover: options.onAxisLabelHover,

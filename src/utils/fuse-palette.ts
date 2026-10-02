@@ -3,7 +3,37 @@
  * `client/.../getQualitativePalette` + `getCurrentColor` + SequentialColors1.
  */
 
+import type { ResolvedMode } from '../context/resolve-mode.js';
+
 export type FuseFormattingEntry = { key?: string; color?: string | number };
+
+/**
+ * Qualitative marks that fall under 3:1 on the dark surface `#13161D`.
+ * Lightened just enough to clear that bar. Light palette stays as-is.
+ */
+const DARK_SERIES_INK: Record<string, string> = {
+  '#473dd9': '#584FDC',
+  '#56546d': '#636279',
+};
+
+let seriesPaintMode: ResolvedMode = 'light';
+
+/** Run palette resolution in the chart's current mode. Light stays the default. */
+export function useSeriesMode<T>(mode: ResolvedMode, run: () => T): T {
+  const previous = seriesPaintMode;
+  seriesPaintMode = mode;
+  try {
+    return run();
+  } finally {
+    seriesPaintMode = previous;
+  }
+}
+
+/** Swap the two unreadable series colors when painting dark. Other hexes pass through. */
+export function seriesInk(color: string, mode: ResolvedMode = seriesPaintMode): string {
+  if (mode !== 'dark') return color;
+  return DARK_SERIES_INK[color.trim().toLowerCase()] ?? color;
+}
 
 export const QUALITATIVE_2: string[] = ['#473DD9', '#36C4A5'];
 
@@ -89,9 +119,9 @@ export function pickQualitativePalette(
   seriesCount = 1,
 ): string[] {
   const n = formattingCount > 0 ? formattingCount : seriesCount;
-  if (n > 4) return QUALITATIVE_12;
-  if (n > 2) return QUALITATIVE_4;
-  return QUALITATIVE_2;
+  const palette = n > 4 ? QUALITATIVE_12 : n > 2 ? QUALITATIVE_4 : QUALITATIVE_2;
+  if (seriesPaintMode !== 'dark') return palette;
+  return palette.map((color) => seriesInk(color, 'dark'));
 }
 
 /**

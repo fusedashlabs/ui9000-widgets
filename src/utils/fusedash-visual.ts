@@ -1,6 +1,7 @@
 import type { Selection } from 'd3-selection';
 
 import type { ResolvedMode } from '../context/resolve-mode.js';
+import { seriesInk } from './fuse-palette.js';
 
 /** FuseDash Widgets visual tokens — keep charts looking 1:1 with client. */
 
@@ -491,9 +492,9 @@ export function formatCompactNumber(value: number, decimals = 2): string {
   return value.toFixed(decimals);
 }
 
-export function seriesColor(index: number, override?: string): string {
+export function seriesColor(index: number, override?: string, mode?: ResolvedMode): string {
   if (override) return override;
-  return FD.series[index % FD.series.length];
+  return seriesInk(FD.series[index % FD.series.length], mode);
 }
 
 /** Line markers: donut = hollow ring (FuseDash default). */

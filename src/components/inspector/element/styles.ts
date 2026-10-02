@@ -63,8 +63,8 @@ export const inspectorStyles = css`
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
   }
   .who[data-by='named'] {
-    background: var(--ui9000-color-risk-low, #d1fae5);
-    color: var(--ui9000-color-text, inherit);
+    background: var(--ui9000-color-risk-low, color-mix(in srgb, #10b981 22%, transparent));
+    color: var(--ui9000-color-text, #111827);
   }
   .objective,
   .outcome {
@@ -176,15 +176,15 @@ export const inspectorStyles = css`
   .pill[data-band='low'],
   .pill[data-band='held'] {
     border-color: transparent;
-    background: var(--ui9000-color-risk-low, #d1fae5);
+    background: var(--ui9000-color-risk-low, color-mix(in srgb, #10b981 22%, transparent));
   }
   .pill[data-band='medium'] {
     border-color: transparent;
-    background: var(--ui9000-color-risk-medium, #fef3c7);
+    background: var(--ui9000-color-risk-medium, color-mix(in srgb, #f59e0b 26%, transparent));
   }
   .pill[data-band='high'] {
     border-color: transparent;
-    background: var(--ui9000-color-risk-high, #fee2e2);
+    background: var(--ui9000-color-risk-high, color-mix(in srgb, #ef4444 26%, transparent));
   }
   .pill.more,
   .pill.action {

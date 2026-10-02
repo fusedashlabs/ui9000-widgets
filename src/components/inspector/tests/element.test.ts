@@ -53,6 +53,10 @@ describe('Ui9000Inspector', () => {
     expect(root).toContain('height: auto');
     expect(root).toContain('background: var(--ui9000-color-surface, #ffffff)');
     expect(cards).toContain('--ui9000-color-surface-muted');
+    const named = ruleBody(css, ".who[data-by='named']");
+    expect(named).toContain('color-mix(in srgb, #10b981 22%, transparent)');
+    expect(named).toContain('color: var(--ui9000-color-text, #111827)');
+    expect(named).not.toContain('#d1fae5');
   });
 
   it('names the panel from the objective', async () => {

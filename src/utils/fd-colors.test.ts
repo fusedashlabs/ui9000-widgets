@@ -7,12 +7,19 @@ describe('fdColors', () => {
   });
 
   it('uses the shell neutrals for dark axes', () => {
-    expect(fdColors('dark')).toEqual({
-      gridStroke: '#444B57',
-      axisLabelFill: '#A4A9B1',
-      axisStroke: '#444B57',
-    });
+    expect(fdColors('dark').gridStroke).toBe('#444B57');
+    expect(fdColors('dark').axisLabelFill).toBe('#A4A9B1');
+    expect(fdColors('dark').polarGridStroke).toBe('#444B57');
+    expect(fdColors('dark').polarCategoryLabelFill).toBe('#A4A9B1');
+    expect(fdColors('dark').polarTickPill).toBe('#282E37');
+    expect(fdColors('dark').radialBarGridStroke).toBe('#444B57');
+    expect(fdColors('dark').radialBarLabelFill).toBe('#A4A9B1');
+    expect(fdColors('dark').radarTickFill).toBe('#282E37');
+    expect(fdColors('dark').radarTickText).toBe('#EFF0F1');
+    expect(fdColors('dark').sliceStroke).toBe('#1a1b1f');
     expect(fdColors('light').gridStroke).toBe('#afb3bb');
-    expect(fdColors('light').axisLabelFill).toBe('#6c7584');
+    expect(fdColors('light').polarGridStroke).toBe('#939ba7');
+    expect(fdColors('light').polarCategoryLabelFill).toBe('#5f6877');
+    expect(fdColors('light').sliceStroke).toBe('#ffffff');
   });
 });

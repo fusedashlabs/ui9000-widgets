@@ -9,12 +9,28 @@ export const FD_LIGHT = {
   gridStroke: '#afb3bb',
   axisLabelFill: '#6c7584',
   axisStroke: '#afb3bb',
+  polarGridStroke: '#939ba7',
+  polarCategoryLabelFill: '#5f6877',
+  polarTickPill: '#ffffff',
+  radialBarGridStroke: '#939ba7',
+  radialBarLabelFill: '#5f6877',
+  radarTickFill: '#f1f4f7',
+  radarTickText: '#000000',
+  sliceStroke: '#ffffff',
 } as const;
 
 export const FD_DARK = {
   gridStroke: '#444B57',
   axisLabelFill: '#A4A9B1',
   axisStroke: '#444B57',
+  polarGridStroke: '#444B57',
+  polarCategoryLabelFill: '#A4A9B1',
+  polarTickPill: '#282E37',
+  radialBarGridStroke: '#444B57',
+  radialBarLabelFill: '#A4A9B1',
+  radarTickFill: '#282E37',
+  radarTickText: '#EFF0F1',
+  sliceStroke: '#1a1b1f',
 } as const;
 
 export function fdColors(mode: ResolvedMode) {
@@ -60,7 +76,7 @@ export const FD = {
   radarLabelOffset: 12,
   radarGradientEdgeOpacity: 0.3,
   radarStrokeWidth: 2,
-  radarTickLabelFill: '#f1f4f7',
+  radarTickLabelFill: FD_LIGHT.radarTickFill,
   /** Client PunchcardChart DEFAULT_MARGIN */
   punchcardMargin: { top: 0, right: 0, bottom: 21, left: 80 },
   /** Client MatrixChart DEFAULT_MARGIN */
@@ -185,13 +201,13 @@ export const FD = {
   polarAreaMargin: { top: 25, right: 5, bottom: 25, left: 5 },
   /** Concentric grid rings; opacity ramps 0.2 → 1.0 outward */
   polarRadialSteps: 5,
-  polarGridStroke: '#939ba7',
+  polarGridStroke: FD_LIGHT.polarGridStroke,
   polarGridStepOpacity: 0.2,
   /** Dashed spoke from the centre to each category boundary, with a round cap */
   polarSpokeDash: '2,2',
   polarSpokeCapRadius: 3,
   /** Category labels sit just outside the outermost ring */
-  polarCategoryLabelFill: '#5f6877',
+  polarCategoryLabelFill: FD_LIGHT.polarCategoryLabelFill,
   polarCategoryLabelSize: 12,
   polarCategoryLabelOffset: 12,
   /** Side room reserved for those labels, measured off the longest one */
@@ -209,8 +225,8 @@ export const FD = {
   polarTickPillPadX: 7,
   polarTickPillPadY: 3,
   polarTickPillRadius: 4,
-  polarTickPill: '#ffffff',
-  polarTickPillDark: '#1a1b1f',
+  polarTickPill: FD_LIGHT.polarTickPill,
+  polarTickPillDark: FD_DARK.polarTickPill,
   /** RadialBarChart — client margin; the plot is a circle inscribed in the body */
   radialBarMargin: { top: 25, right: 5, bottom: 25, left: 5 },
   /** Hole is 20% of the outer radius; rings sweep 270° clockwise from 12 o'clock */
@@ -225,9 +241,9 @@ export const FD = {
   radialBarArcOpacity: 0.8,
   radialBarArcOpacityDimmed: 0.2,
   /** Client draws the rings and the radial axes in one darker grey */
-  radialBarGridStroke: '#939ba7',
+  radialBarGridStroke: FD_LIGHT.radialBarGridStroke,
   radialBarTickDash: '4,4',
-  radialBarLabelFill: '#5f6877',
+  radialBarLabelFill: FD_LIGHT.radialBarLabelFill,
   radialBarTickLabelSize: 12,
   radialBarRingLabelSize: 11,
   /** Value labels sit 12px outside the outer ring */
@@ -280,8 +296,8 @@ export const FD = {
   pdpIceStrokeWidth: 1.25,
   pdpAverageStrokeWidth: 2.5,
   pdpAverageDash: '4,4',
-  donutSliceStroke: '#ffffff',
-  donutSliceStrokeDark: '#1a1b1f',
+  donutSliceStroke: FD_LIGHT.sliceStroke,
+  donutSliceStrokeDark: FD_DARK.sliceStroke,
   donutSliceStrokeWidth: 2,
   /** Treemap — d3 `treemapBinary` tiles, no axes so the plot fills the body */
   treemapMargin: { top: 0, right: 0, bottom: 0, left: 0 },

@@ -1,13 +1,32 @@
 import type { Selection } from 'd3-selection';
 
+import type { ResolvedMode } from '../context/resolve-mode.js';
+
 /** FuseDash Widgets visual tokens — keep charts looking 1:1 with client. */
 
-export const FD = {
+/** Cartesian axis ink. Dark hexes are the client shell neutrals. */
+export const FD_LIGHT = {
   gridStroke: '#afb3bb',
-  gridDash: '1 2',
   axisLabelFill: '#6c7584',
-  axisLabelSize: 11,
   axisStroke: '#afb3bb',
+} as const;
+
+export const FD_DARK = {
+  gridStroke: '#444B57',
+  axisLabelFill: '#A4A9B1',
+  axisStroke: '#444B57',
+} as const;
+
+export function fdColors(mode: ResolvedMode) {
+  return mode === 'dark' ? FD_DARK : FD_LIGHT;
+}
+
+export const FD = {
+  gridStroke: FD_LIGHT.gridStroke,
+  gridDash: '1 2',
+  axisLabelFill: FD_LIGHT.axisLabelFill,
+  axisLabelSize: 11,
+  axisStroke: FD_LIGHT.axisStroke,
   hoverGuideLight: '#6c7584',
   hoverGuideDark: '#ffffff',
   /**

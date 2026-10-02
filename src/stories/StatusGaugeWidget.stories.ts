@@ -7,7 +7,7 @@ import {
   resolveWidgetContext,
   type PartialWidgetContext,
 } from '../context/widget-context.js';
-import { DARK_THEME, DEFAULT_THEME, type WidgetTheme } from '../types/index.js';
+import { DARK_THEME, DEFAULT_THEME } from '../types/index.js';
 import '../components/status-gauge-widget/index.js';
 import antennaFixture from './fixtures/status-gauge.mock.json';
 import manyFixture from './fixtures/status-gauge-many.mock.json';
@@ -21,21 +21,11 @@ type StatusGaugeArgs = {
   height: number;
 };
 
-const GAUGE_DARK: WidgetTheme = {
-  ...DARK_THEME,
-  fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-};
-
-const LIGHT_THEME: WidgetTheme = {
-  ...DEFAULT_THEME,
-  fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-};
-
 function frameStyle(appearance: GaugeTheme, width: number, height: number): Record<string, string> {
   const ctx: PartialWidgetContext =
     appearance === 'dark'
-      ? { mode: 'dark', theme: GAUGE_DARK }
-      : { mode: 'light', theme: LIGHT_THEME };
+      ? { mode: 'dark', theme: DARK_THEME }
+      : { mode: 'light', theme: DEFAULT_THEME };
   const merged = resolveWidgetContext(ctx);
   return {
     ...contextToCssVars(merged),

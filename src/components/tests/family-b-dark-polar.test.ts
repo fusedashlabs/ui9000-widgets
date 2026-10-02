@@ -8,7 +8,7 @@ beforeAll(async () => {
   } as unknown as typeof ResizeObserver;
 
   // jsdom has no SVG layout, so radar skips the tick pill unless this exists.
-  SVGElement.prototype.getBBox = () =>
+  (SVGElement.prototype as unknown as { getBBox: () => DOMRect }).getBBox = () =>
     ({ x: 0, y: -6, width: 24, height: 12 }) as DOMRect;
 
   await Promise.all([

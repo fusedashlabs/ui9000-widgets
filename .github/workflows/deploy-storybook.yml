@@ -30,6 +30,8 @@ jobs:
           STORYBOOK_BASE: /storybook/
           STORYBOOK_MAPBOX_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_TOKEN }}
           VITE_MAPBOX_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_TOKEN }}
+          STORYBOOK_MAPBOX_DARK_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_DARK_TOKEN }}
+          VITE_MAPBOX_DARK_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_DARK_TOKEN }}
         run: yarn build-storybook
       - run: test -f storybook-static/index.html
       - name: Upload Storybook

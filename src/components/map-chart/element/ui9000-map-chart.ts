@@ -100,6 +100,9 @@ export class Ui9000MapChart extends Ui9000ChartElement {
   @property({ type: String, attribute: 'mapbox-token' })
   mapboxToken = '';
 
+  @property({ type: String, attribute: 'mapbox-dark-token' })
+  mapboxDarkToken = '';
+
   @property({ type: String, attribute: 'geojson-base-url' })
   geojsonBaseUrl = '';
 
@@ -188,15 +191,33 @@ export class Ui9000MapChart extends Ui9000ChartElement {
     return (this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null) ?? null;
   }
 
-  private token(): string {
+  private token(terrain: boolean): string {
+    if (this.themeMode() === 'dark' && !terrain) {
+      const dark = this.darkToken();
+      if (dark) return dark;
+    }
+    return this.lightToken();
+  }
+
+  private lightToken(): string {
     if (this.mapboxToken.trim()) return this.mapboxToken.trim();
-    const runtime =
-      typeof window !== 'undefined'
-        ? (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__
-        : undefined;
-    if (runtime?.MAPBOX_TOKEN) return runtime.MAPBOX_TOKEN;
+    const runtime = this.runtimeConfig();
+    if (runtime?.MAPBOX_TOKEN) return runtime.MAPBOX_TOKEN.trim();
     const env = (import.meta as { env?: Record<string, string | undefined> }).env;
     return (env?.STORYBOOK_MAPBOX_TOKEN || env?.VITE_MAPBOX_TOKEN || '').trim();
+  }
+
+  private darkToken(): string {
+    if (this.mapboxDarkToken.trim()) return this.mapboxDarkToken.trim();
+    const runtime = this.runtimeConfig();
+    if (runtime?.MAPBOX_DARK_TOKEN) return runtime.MAPBOX_DARK_TOKEN.trim();
+    const env = (import.meta as { env?: Record<string, string | undefined> }).env;
+    return (env?.STORYBOOK_MAPBOX_DARK_TOKEN || env?.VITE_MAPBOX_DARK_TOKEN || '').trim();
+  }
+
+  private runtimeConfig(): RuntimeConfig | undefined {
+    if (typeof window === 'undefined') return undefined;
+    return (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__;
   }
 
   private geojsonUrl(): string {
@@ -261,7 +282,7 @@ export class Ui9000MapChart extends Ui9000ChartElement {
       this._model = model;
     }
 
-    const token = this.token();
+    const token = this.token(model.terrain);
     if (!token) {
       this._empty = true;
       this._emptyReason = 'Mapbox token required';

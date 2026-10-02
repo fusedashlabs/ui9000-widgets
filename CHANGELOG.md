@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1 — 2026-10-02
+
+### Added
+
+- Dark maps use `mapbox-dark-token`, `MAPBOX_DARK_TOKEN`, or `STORYBOOK_MAPBOX_DARK_TOKEN`. The dark style is a different Mapbox account, so the light token cannot load it. Terrain keeps the light token.
+
 ## 0.7.0 — 2026-10-02
 
 ### Added

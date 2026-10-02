@@ -117,6 +117,10 @@
       "show-legend": { "type": "boolean", "default": true },
       "show-tooltip": { "type": "boolean", "default": true },
       "mapbox-token": { "type": "string" },
+      "mapbox-dark-token": {
+        "type": "string",
+        "description": "Mapbox token for the dark style. The light token cannot load that style. Terrain keeps the light token."
+      },
       "geojson-base-url": {
         "type": "string",
         "description": "Base URL that serves {country,state,county,city,province}.json centroid FeatureCollections used for the data-join / bubbles / spikes."

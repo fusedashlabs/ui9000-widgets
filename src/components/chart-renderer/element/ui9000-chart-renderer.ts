@@ -35,6 +35,7 @@ export class Ui9000ChartRenderer extends HTMLElement {
       'embedded',
       'chart-title',
       'mapbox-token',
+      'mapbox-dark-token',
       'geojson-base-url',
       'pmtiles-base-url',
     ];
@@ -230,6 +231,7 @@ export class Ui9000ChartRenderer extends HTMLElement {
 
     applyTargetAttrs(el, target.attrs);
     this.copyHostAttr(el, 'mapbox-token');
+    this.copyHostAttr(el, 'mapbox-dark-token');
     this.copyHostAttr(el, 'geojson-base-url');
     this.copyHostAttr(el, 'pmtiles-base-url');
     el.style.display = 'block';

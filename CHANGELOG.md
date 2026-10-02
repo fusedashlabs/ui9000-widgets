@@ -11,6 +11,12 @@
 ### Fixed
 
 - Charts ignored the host theme and stayed on the light card. Dark paint waits until the host writes the surface token, so `data-theme` alone cannot put light ink on a white card.
+- Status gauge, KPI card, inspector, and the chart menu follow the same host surface and text tokens. The gauge has no separate dark variant.
+- Two series colors that failed on the dark card are lifted. The inspector starts collapsed, and the chooser badge stays readable on a dark surface.
+
+### Changed
+
+- Storybook groups charts by the engine families. Playground (engine and inspector) is last. The JSON tester and the render component sit under the introduction.
 
 ### Bundle
 

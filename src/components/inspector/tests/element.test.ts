@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 
 import '../element/ui9000-inspector.js';
+import { inspectorStyles } from '../element/styles.js';
 import spatialTrace from '../../../stories/fixtures/spatial.trace.json';
 import spatialTraceV2 from '../../../stories/fixtures/spatial.trace.v2.json';
 
@@ -28,7 +29,22 @@ function text(host: HTMLElement): string {
   return (host.shadowRoot?.textContent ?? '').replace(/\s+/g, ' ').trim();
 }
 
+function ruleBody(css: string, selector: string): string {
+  const start = css.indexOf(selector);
+  const open = start === -1 ? -1 : css.indexOf('{', start);
+  const close = open === -1 ? -1 : css.indexOf('}', open);
+  return open === -1 || close === -1 ? '' : css.slice(open + 1, close);
+}
+
 describe('Ui9000Inspector', () => {
+  it('paints the panel and the score cards from the host surface', () => {
+    const css = inspectorStyles.cssText;
+    const root = ruleBody(css, '.root {');
+    const cards = ruleBody(css, '.scores li,');
+    expect(root).toContain('background: var(--ui9000-color-surface, #ffffff)');
+    expect(cards).toContain('--ui9000-color-surface-muted');
+  });
+
   it('names the panel from the objective', async () => {
     const host = await mount(spatialTrace);
 

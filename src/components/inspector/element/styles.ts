@@ -8,6 +8,7 @@ export const inspectorStyles = css`
     padding: 16px 18px 20px;
     box-sizing: border-box;
     color: var(--ui9000-color-text, inherit);
+    background: var(--ui9000-color-surface, #ffffff);
   }
   .choice {
     padding: 16px 18px 18px;
@@ -103,6 +104,10 @@ export const inspectorStyles = css`
     padding: 14px 16px;
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
     border-radius: 8px;
+    background: var(
+      --ui9000-color-surface-muted,
+      color-mix(in srgb, var(--ui9000-color-text, #111827) 12%, var(--ui9000-color-surface, #ffffff))
+    );
   }
   .row-head {
     display: flex;

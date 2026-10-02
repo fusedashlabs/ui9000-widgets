@@ -14,7 +14,7 @@ type InspectorArgs = {
 };
 
 const frame = (args: InspectorArgs) => html`
-  <div style="width:100%;height:${args.height}px;background:#fff;border:1px solid #eee;">
+  <div style="width:100%;height:${args.height}px;background:var(--ui9000-color-surface, #fff);border:1px solid var(--ui9000-color-border, #e5e7eb);">
     <ui9000-inspector
       style="display:block;width:100%;height:100%;"
       trace=${JSON.stringify(args.trace)}
@@ -132,7 +132,7 @@ export const WithChart: Story = {
   name: 'Chart with inspector',
   args: { trace: namedTrace },
   render: (args) => html`
-    <div style="width:100%;max-width:760px;background:#fff;border:1px solid #e5e7eb;">
+    <div style="width:100%;max-width:760px;background:var(--ui9000-color-surface, #fff);border:1px solid var(--ui9000-color-border, #e5e7eb);">
       <div style="height:380px;">
         <ui9000-pie-chart
           style="display:block;width:100%;height:100%;"
@@ -142,7 +142,7 @@ export const WithChart: Story = {
           show-tooltip
         ></ui9000-pie-chart>
       </div>
-      <div style="border-top:1px solid #e5e7eb;">
+      <div style="border-top:1px solid var(--ui9000-color-border, #e5e7eb);">
         <ui9000-inspector
           style="display:block;width:100%;height:auto;"
           trace=${JSON.stringify(args.trace)}

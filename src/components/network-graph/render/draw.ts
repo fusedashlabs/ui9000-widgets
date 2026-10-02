@@ -15,6 +15,7 @@ import { select, type Selection } from 'd3-selection';
 import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform } from 'd3-zoom';
 
 import type { WidgetTheme } from '../../../types/index.js';
+import { fdColors } from '../../../utils/fusedash-visual.js';
 import {
   INITIAL_NODE_RADIUS_RATIO,
   LABEL_ALWAYS_ABOVE,
@@ -78,6 +79,7 @@ export interface RenderNetworkGraphOptions {
   width: number;
   height: number;
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   /** Selection carried across a redraw (legend filtering keeps it). */
   activeNodeId?: string | null;
   /** Fired when a node is clicked; `null` when the same node is clicked again. */
@@ -228,7 +230,7 @@ export function renderNetworkGraph(
   container: HTMLElement,
   options: RenderNetworkGraphOptions,
 ): NetworkGraphController | null {
-  const { model, theme, onSelect } = options;
+  const { model, theme, onSelect, themeMode = 'light' } = options;
   // Mutated in place by the controller — a filter or a resize must not rebuild.
   let visibleIds = options.visibleIds;
   let width = options.width;
@@ -296,6 +298,7 @@ export function renderNetworkGraph(
     radiusById,
     blurId,
     shadowId,
+    themeMode,
   });
 
   // Labels hang off the right of their node and are taller than a small circle,
@@ -435,11 +438,11 @@ export function renderNetworkGraph(
           active
             ? NODE_LABEL_COLORS.backgroundActive
             : hovered
-              ? NODE_LABEL_COLORS.backgroundHover
+              ? fdColors(themeMode).networkLabelHover
               : NODE_LABEL_COLORS.background,
         );
       }
-      const textFill = active ? NODE_LABEL_COLORS.textActive : NODE_LABEL_COLORS.text;
+      const textFill = active ? NODE_LABEL_COLORS.textActive : fdColors(themeMode).networkLabelText;
       part.labelTitle?.setAttribute('fill', textFill);
       part.labelTitle?.setAttribute('font-weight', active || connected ? '600' : '400');
       part.labelValue?.setAttribute('fill', textFill);
@@ -718,8 +721,9 @@ function buildNodes(params: {
   radiusById: Map<string, number>;
   blurId: string;
   shadowId: string;
+  themeMode: 'light' | 'dark';
 }): NodeParts[] {
-  const { layer, simNodes, model, radiusById, blurId, shadowId } = params;
+  const { layer, simNodes, model, radiusById, blurId, shadowId, themeMode } = params;
 
   return simNodes.map((datum) => {
     const radius = radiusById.get(datum.id) ?? 0;
@@ -735,7 +739,7 @@ function buildNodes(params: {
       .style('pointer-events', 'all');
 
     // Client stacking order: label behind the bloom, chrome on top of it.
-    const label = appendNodeLabel(group, datum, radius);
+    const label = appendNodeLabel(group, datum, radius, themeMode);
 
     group
       .append('circle')
@@ -825,6 +829,7 @@ function appendNodeLabel(
   group: Selection<SVGGElement, SimNode, null, undefined>,
   datum: SimNode,
   radius: number,
+  themeMode: 'light' | 'dark',
 ): {
   group: SVGGElement | null;
   background: SVGRectElement | null;
@@ -856,7 +861,7 @@ function appendNodeLabel(
     .text(datum.label)
     .attr('font-size', LABEL_TITLE_SIZE)
     .attr('font-weight', '400')
-    .attr('fill', NODE_LABEL_COLORS.text)
+    .attr('fill', fdColors(themeMode).networkLabelText)
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'hanging');
 
@@ -865,7 +870,7 @@ function appendNodeLabel(
     .attr('class', 'node-label-value')
     .text(valueText)
     .attr('font-size', LABEL_VALUE_SIZE)
-    .attr('fill', NODE_LABEL_COLORS.text)
+    .attr('fill', fdColors(themeMode).networkLabelText)
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'hanging');
 

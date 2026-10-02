@@ -3,7 +3,7 @@ import { pointer, select } from 'd3-selection';
 import { curveMonotoneX, line as d3Line } from 'd3-shape';
 
 import type { WidgetTheme } from '../../../types/index.js';
-import { FD, seriesColor as fdSeriesColor } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors, seriesColor as fdSeriesColor } from '../../../utils/fusedash-visual.js';
 import {
   biasVarianceXDomain,
   biasVarianceXValues,
@@ -23,6 +23,7 @@ export interface RenderBiasVarianceChartOptions {
   /** FuseDash BiasVarianceTradeoffChart margins when omitted by the host */
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   showGrid?: boolean;
   showTooltip?: boolean;
   onHover?: (payload: {
@@ -208,6 +209,7 @@ export function renderBiasVarianceChart(
     height,
     margin = { ...FD.biasVarianceMargin },
     theme,
+    themeMode = 'light',
     showGrid = true,
     showTooltip = true,
     onHover,
@@ -258,7 +260,7 @@ export function renderBiasVarianceChart(
         .attr('x2', plotRight)
         .attr('y1', yScale(tick))
         .attr('y2', yScale(tick))
-        .attr('stroke', FD.biasVarianceGridStroke)
+        .attr('stroke', fdColors(themeMode).biasVarianceGridStroke)
         .attr('stroke-dasharray', FD.biasVarianceGridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -305,7 +307,7 @@ export function renderBiasVarianceChart(
       .attr('x', plotLeft - 8)
       .attr('y', yScale(tick) + 4)
       .attr('text-anchor', 'end')
-      .attr('fill', FD.biasVarianceLabelFill)
+      .attr('fill', fdColors(themeMode).biasVarianceLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(formatTradeoffValue(tick));
   }
@@ -316,7 +318,7 @@ export function renderBiasVarianceChart(
       .attr('x', xScale(tick))
       .attr('y', plotBottom + 18)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.biasVarianceLabelFill)
+      .attr('fill', fdColors(themeMode).biasVarianceLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(formatTradeoffValue(tick));
   }
@@ -327,14 +329,14 @@ export function renderBiasVarianceChart(
     .attr('x2', plotLeft)
     .attr('y1', plotTop)
     .attr('y2', plotBottom)
-    .attr('stroke', FD.biasVarianceAxisStroke);
+    .attr('stroke', fdColors(themeMode).biasVarianceAxisStroke);
   axes
     .append('line')
     .attr('x1', plotLeft)
     .attr('x2', plotRight)
     .attr('y1', plotBottom)
     .attr('y2', plotBottom)
-    .attr('stroke', FD.biasVarianceAxisStroke);
+    .attr('stroke', fdColors(themeMode).biasVarianceAxisStroke);
 
   if (model.domainsLimits.length) {
     renderDomainLimits(root, model.domainsLimits, xScale, yScale, {
@@ -350,7 +352,7 @@ export function renderBiasVarianceChart(
   const hoverLayer = root.append('g').attr('class', 'hover').attr('pointer-events', 'none');
   const guide = hoverLayer
     .append('line')
-    .attr('stroke', FD.biasVarianceAxisStroke)
+    .attr('stroke', fdColors(themeMode).biasVarianceAxisStroke)
     .attr('stroke-width', 1)
     .attr('stroke-dasharray', FD.domainLimitDash)
     .attr('opacity', 0);

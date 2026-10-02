@@ -7,6 +7,7 @@ import type { WidgetTheme } from '../../../types/index.js';
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
 } from '../../../utils/fusedash-visual.js';
 import { pdpLinearDomain } from '../lib/domain.js';
@@ -123,7 +124,7 @@ export function renderPartialDependenceChart(
       .attr('x2', plotRight)
       .attr('y1', (d) => yScale(d))
       .attr('y2', (d) => yScale(d))
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('stroke-dasharray', FD.gridDash)
       .attr('shape-rendering', 'crispEdges');
   }
@@ -133,11 +134,11 @@ export function renderPartialDependenceChart(
     .attr('class', 'x-axis')
     .attr('transform', `translate(0,${plotBottom})`)
     .call(axisBottom(xScale).ticks(numXTicks).tickFormat(axisTickFormat(xScale, numXTicks)));
-  xAxis.select('.domain').attr('stroke', FD.axisStroke);
-  xAxis.selectAll('line').attr('stroke', FD.axisStroke);
+  xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
+  xAxis.selectAll('line').attr('stroke', fdColors(themeMode).axisStroke);
   xAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize);
 
   const yAxis = svg
@@ -145,11 +146,11 @@ export function renderPartialDependenceChart(
     .attr('class', 'y-axis')
     .attr('transform', `translate(${plotLeft},0)`)
     .call(axisLeft(yScale).ticks(numYTicks).tickFormat(axisTickFormat(yScale, numYTicks)));
-  yAxis.select('.domain').attr('stroke', FD.axisStroke);
-  yAxis.selectAll('line').attr('stroke', FD.axisStroke);
+  yAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
+  yAxis.selectAll('line').attr('stroke', fdColors(themeMode).axisStroke);
   yAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize);
 
   const lineGenerator = d3Line<IcePoint>()

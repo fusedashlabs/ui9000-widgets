@@ -5,7 +5,7 @@ import { line } from 'd3-shape';
 
 import type { ChartDimensions, WidgetTheme } from '../../../types/index.js';
 import { decorateManualAxisLabel, type AxisLabelTooltipHandlers } from '../../../utils/axis-labels.js';
-import { FD } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
   AXIS_TITLE_MAX,
   axisExtents,
@@ -33,6 +33,7 @@ export interface RenderParallelCoordinatesOptions extends AxisLabelTooltipHandle
   height: number;
   margin: ChartDimensions['margin'];
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   orientation: ParallelCoordinatesOrientation;
   /** Draws the colour ramp for the active axis in the right gutter. */
   showLegend: boolean;
@@ -65,12 +66,13 @@ type Vertex = [string, number | null];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySelection = Selection<any, any, any, any>;
 
-function styleAxis(group: AnySelection): void {
-  group.select('.domain').attr('stroke', FD.parallelAxisStroke);
-  group.selectAll('.tick line').attr('stroke', FD.parallelAxisStroke);
+function styleAxis(group: AnySelection, themeMode: 'light' | 'dark'): void {
+  const ink = fdColors(themeMode);
+  group.select('.domain').attr('stroke', ink.parallelAxisStroke);
+  group.selectAll('.tick line').attr('stroke', ink.parallelAxisStroke);
   group
     .selectAll('text')
-    .attr('fill', FD.parallelAxisLabelFill)
+    .attr('fill', ink.parallelAxisLabelFill)
     .attr('font-size', FD.axisLabelSize);
 }
 
@@ -89,6 +91,7 @@ export function renderParallelCoordinatesChart(
     height,
     margin,
     theme,
+    themeMode = 'light',
     orientation,
     showLegend,
     onRowHover,
@@ -187,7 +190,7 @@ export function renderParallelCoordinatesChart(
         formatAxisTick(Number(d)),
       ),
     );
-    styleAxis(group);
+    styleAxis(group, themeMode);
   });
 
   const axisTitles = axisGroups
@@ -198,7 +201,7 @@ export function renderParallelCoordinatesChart(
     .attr('text-anchor', (_key, index) =>
       vertical && index === lastIndex ? 'end' : 'start',
     )
-    .attr('fill', FD.parallelAxisLabelFill);
+    .attr('fill', fdColors(themeMode).parallelAxisLabelFill);
 
   axisTitles.each(function (key) {
     decorateManualAxisLabel(select(this), key, {
@@ -310,7 +313,7 @@ export function renderParallelCoordinatesChart(
     ticks.selectAll('.tick line').remove();
     ticks
       .selectAll('text')
-      .attr('fill', FD.parallelAxisLabelFill)
+      .attr('fill', fdColors(themeMode).parallelAxisLabelFill)
       .attr('font-size', FD.axisLabelSize);
   }
 

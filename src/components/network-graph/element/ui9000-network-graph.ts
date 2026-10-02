@@ -111,6 +111,10 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     return false;
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private scheduleDraw(): void {
     cancelAnimationFrame(this._raf);
     this._raf = requestAnimationFrame(() => this.draw());
@@ -162,6 +166,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       width: root.clientWidth,
       height: root.clientHeight,
       theme: readThemeFromElement(this),
+      themeMode: this.themeMode(),
       activeNodeId: this._activeNodeId,
       onSelect: (id) => {
         this._activeNodeId = id;

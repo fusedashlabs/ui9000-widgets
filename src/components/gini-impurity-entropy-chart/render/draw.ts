@@ -10,7 +10,7 @@ import {
   resolvePlotLeftMargin,
   type AxisLabelTooltipHandlers,
 } from '../../../utils/axis-labels.js';
-import { calculateNumTicks, FD } from '../../../utils/fusedash-visual.js';
+import { calculateNumTicks, FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
   collectPExtent,
   collectValueExtent,
@@ -119,7 +119,7 @@ export function renderGiniImpurityEntropyChart(
         .attr('x2', plotRight)
         .attr('y1', yScale(tick))
         .attr('y2', yScale(tick))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -205,7 +205,7 @@ export function renderGiniImpurityEntropyChart(
           FD.giniSplitLabelOffset,
       )
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(`ΔGini = ${split.delta.toFixed(3)}`);
   }
@@ -222,10 +222,10 @@ export function renderGiniImpurityEntropyChart(
         .tickPadding(8)
         .tickFormat((d) => formatProbability(Number(d))),
     );
-  xAxis.select('.domain').attr('stroke', FD.axisStroke);
+  xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
   xAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize);
   decorateAxisLabels(xAxis, { onAxisLabelHover, onAxisLabelLeave });
 
@@ -243,9 +243,9 @@ export function renderGiniImpurityEntropyChart(
   yAxis.select('.domain').attr('stroke', 'none');
   yAxis
     .selectAll('line')
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('stroke-dasharray', FD.gridDash);
-  applyLeftGutterYAxisLabels(yAxis, plotLeft);
+  applyLeftGutterYAxisLabels(yAxis, plotLeft, { themeMode });
 
   if (model.xLabel) {
     root
@@ -254,7 +254,7 @@ export function renderGiniImpurityEntropyChart(
       .attr('x', (plotLeft + plotRight) / 2)
       .attr('y', height - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(model.xLabel);
   }
@@ -267,7 +267,7 @@ export function renderGiniImpurityEntropyChart(
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(model.yLabel);
   }

@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 import { linkHorizontal } from 'd3-shape';
 
 import type { WidgetTheme } from '../../../types/index.js';
-import { FD, hexWithAlpha } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors, hexWithAlpha } from '../../../utils/fusedash-visual.js';
 import {
   NODE_LABEL_MAX,
   pickRangeColor,
@@ -41,6 +41,7 @@ export interface RenderSankeyOptions {
   width: number;
   height: number;
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   onLinkHover?: (payload: SankeyLinkHover) => void;
   onLinkLeave?: () => void;
   onLabelHover?: (payload: SankeyLabelHover) => void;
@@ -89,6 +90,7 @@ export function renderSankeyChart(
     width,
     height,
     theme,
+    themeMode = 'light',
     onLinkHover,
     onLinkLeave,
     onLabelHover,
@@ -252,7 +254,7 @@ export function renderSankeyChart(
       );
     labels.attr('font-weight', (d) => (nodeIsActive(d, active) ? 600 : 400));
     rules?.attr('stroke', (d) =>
-      nodeIsActive(d, active) ? FD.sankeyNodeRuleActive : FD.sankeyNodeRule,
+      nodeIsActive(d, active) ? fdColors(themeMode).sankeyNodeRuleActive : fdColors(themeMode).sankeyNodeRule,
     );
   };
 

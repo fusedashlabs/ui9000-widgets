@@ -69,6 +69,10 @@ export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
     if (chartPropsChanged(changed)) this.scheduleDraw();
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private scheduleDraw(): void {
     cancelAnimationFrame(this._raf);
     this._raf = requestAnimationFrame(() => this.draw());
@@ -105,6 +109,7 @@ export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
       height: scroll.clientHeight || 300,
       margin,
       theme,
+      themeMode: this.themeMode(),
       orientation: model.orientation,
       showLegend: this.showLegend,
       colorKey,

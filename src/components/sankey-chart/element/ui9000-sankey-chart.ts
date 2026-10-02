@@ -74,6 +74,10 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
     if (chartPropsChanged(changed)) this.scheduleDraw();
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private scheduleDraw(): void {
     cancelAnimationFrame(this._raf);
     this._raf = requestAnimationFrame(() => this.draw());
@@ -122,6 +126,7 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
       width,
       height,
       theme,
+      themeMode: this.themeMode(),
       onLinkHover: this.showTooltip
         ? ({ sourceLabel, targetLabel, value, event }) => {
             this.openTooltip(event, {

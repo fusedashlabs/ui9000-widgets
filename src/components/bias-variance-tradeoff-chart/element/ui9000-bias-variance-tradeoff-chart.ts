@@ -58,6 +58,10 @@ export class Ui9000BiasVarianceTradeoffChart extends Ui9000ChartElement {
     if (chartPropsChanged(changed)) this.scheduleDraw();
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private scheduleDraw(): void {
     cancelAnimationFrame(this._raf);
     this._raf = requestAnimationFrame(() => this.draw());
@@ -100,6 +104,7 @@ export class Ui9000BiasVarianceTradeoffChart extends Ui9000ChartElement {
       height,
       margin,
       theme: readThemeFromElement(this),
+      themeMode: this.themeMode(),
       showGrid: this.showGrid,
       showTooltip: this.showTooltip,
       onHover: this.showTooltip

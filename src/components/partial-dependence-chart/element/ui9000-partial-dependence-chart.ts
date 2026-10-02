@@ -1,7 +1,7 @@
 import { html, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
-import { CSS_VARS, readCssVar, readThemeFromElement } from '../../../context/widget-context.js';
+import { readThemeFromElement } from '../../../context/widget-context.js';
 import { renderChartLegend } from '../../../element/chart-legend-render.js';
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
 import type { WidgetScale } from '../../../types/index.js';
@@ -78,6 +78,10 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
     ]);
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
     if (!root) return;
@@ -90,8 +94,7 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
     }
 
     const theme = readThemeFromElement(this);
-    const themeMode =
-      readCssVar(this, CSS_VARS.mode, 'light') === 'dark' ? 'dark' : 'light';
+    const themeMode = this.themeMode();
     const { width, height, margin } = getPartialDependenceDimensions(root, this.scale);
     const xLabel = model.axisDetails?.[model.xField]?.label ?? model.xField;
     const yLabel = model.axisDetails?.[model.yField]?.label ?? model.yField;

@@ -82,6 +82,10 @@ export class Ui9000DonutChart extends Ui9000ChartElement {
     );
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
     if (!root) return;
@@ -105,6 +109,7 @@ export class Ui9000DonutChart extends Ui9000ChartElement {
       width,
       height,
       theme,
+      themeMode: this.themeMode(),
       innerRadius,
       showTooltip: this.showTooltip,
       onLayout: (orderedKeys) => {

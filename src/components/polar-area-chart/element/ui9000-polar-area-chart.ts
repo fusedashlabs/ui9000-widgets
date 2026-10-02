@@ -82,6 +82,10 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
     );
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
     if (!root) return;
@@ -102,6 +106,7 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
       height,
       margin,
       theme,
+      themeMode: this.themeMode(),
       showGrid: this.showGrid,
       showTooltip: this.showTooltip,
       ...this.axisLabelHandlers(),

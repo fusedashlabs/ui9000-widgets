@@ -7,6 +7,8 @@
  * Axis-label chip matches `Widgets/components/LabelTooltip`.
  */
 
+import { CSS_VARS, paintMode } from '../context/widget-context.js';
+
 export type ChartTooltipRow = { label: string; value: string };
 
 export type ChartTooltipContent = {
@@ -38,10 +40,10 @@ const TOOLTIP_CSS = `
   box-sizing: border-box;
   min-width: 110px;
   padding: 8px 12px;
-  border: 1px solid var(--colors-neutral-border-weakest, #dfe1e4);
+  border: 1px solid var(--ui9000-color-border, var(--colors-neutral-border-weakest, #dfe1e4));
   border-radius: 6px;
-  background: var(--colors-neutral-background-base, #fff);
-  color: var(--colors-neutral-text-default, #444547);
+  background: var(--ui9000-color-surface, var(--colors-neutral-background-base, #fff));
+  color: var(--ui9000-color-text, var(--colors-neutral-text-default, #444547));
   box-shadow:
     0 2px 4px 0 rgba(20, 28, 44, 0.06),
     0 4px 8px 2px rgba(20, 28, 44, 0.06);
@@ -53,6 +55,17 @@ const TOOLTIP_CSS = `
 .ui9000-chart-tooltip.is-open {
   display: flex;
   animation: ui9000-tooltip-in 0.2s forwards;
+}
+.ui9000-chart-tooltip[data-mode='dark'] {
+  background: var(--ui9000-color-surface, #13161d);
+  color: var(--ui9000-color-text, #eff0f1);
+  border-color: var(--ui9000-color-border, #444b57);
+}
+.ui9000-chart-tooltip[data-mode='dark'][data-side='bottom']::after {
+  border-top-color: var(--ui9000-color-surface, #13161d);
+}
+.ui9000-chart-tooltip[data-mode='dark'][data-side='top']::after {
+  border-bottom-color: var(--ui9000-color-surface, #13161d);
 }
 @keyframes ui9000-tooltip-in {
   to { opacity: 1; scale: 1; }
@@ -75,7 +88,7 @@ const TOOLTIP_CSS = `
   justify-content: space-between;
   flex-direction: row;
   gap: 8px;
-  border-bottom: 1px dashed var(--colors-neutral-border-weakest, #dfe1e4);
+  border-bottom: 1px dashed var(--ui9000-color-border, var(--colors-neutral-border-weakest, #dfe1e4));
 }
 .ui9000-chart-tooltip__row:last-child {
   border: none;
@@ -112,12 +125,12 @@ const TOOLTIP_CSS = `
 }
 .ui9000-chart-tooltip[data-side='bottom']::after {
   border-right: 5px solid transparent;
-  border-top: 8px solid var(--colors-neutral-background-base, #fff);
+  border-top: 8px solid var(--ui9000-color-surface, var(--colors-neutral-background-base, #fff));
   border-left: 5px solid transparent;
 }
 .ui9000-chart-tooltip[data-side='top']::after {
   border-right: 5px solid transparent;
-  border-bottom: 8px solid var(--colors-neutral-background-base, #fff);
+  border-bottom: 8px solid var(--ui9000-color-surface, var(--colors-neutral-background-base, #fff));
   border-left: 5px solid transparent;
 }
 .ui9000-chart-tooltip[data-side='bottom']::before {
@@ -138,10 +151,10 @@ const TOOLTIP_CSS = `
   display: none;
   box-sizing: border-box;
   padding: 2px 5px;
-  border: 1px solid var(--colors-neutral-border-weakest, #dfe1e4);
+  border: 1px solid var(--ui9000-color-border, var(--colors-neutral-border-weakest, #dfe1e4));
   border-radius: 5px;
-  background: var(--colors-neutral-background-base, #fff);
-  color: var(--colors-neutral-text-weak, #6c7584);
+  background: var(--ui9000-color-surface, var(--colors-neutral-background-base, #fff));
+  color: var(--ui9000-color-text-muted, var(--colors-neutral-text-weak, #6c7584));
   font-family: var(--ui9000-font-family, system-ui, sans-serif);
   font-size: 11px;
   font-weight: 400;
@@ -151,6 +164,11 @@ const TOOLTIP_CSS = `
 }
 .ui9000-label-tooltip.is-open {
   display: block;
+}
+.ui9000-label-tooltip[data-mode='dark'] {
+  background: var(--ui9000-color-surface, #13161d);
+  color: var(--ui9000-color-text-muted, #a4a9b1);
+  border-color: var(--ui9000-color-border, #444b57);
 }
 `;
 
@@ -188,6 +206,43 @@ function labelRoot(): HTMLDivElement | null {
     document.body.appendChild(el);
   }
   return el;
+}
+
+const TOOLTIP_VARS = [
+  CSS_VARS.surface,
+  CSS_VARS.surfaceMuted,
+  CSS_VARS.text,
+  CSS_VARS.textMuted,
+  CSS_VARS.border,
+  CSS_VARS.fontFamily,
+  CSS_VARS.mode,
+] as const;
+
+function inheritedVar(owner: HTMLElement, name: string): string {
+  let node: Element | null = owner;
+  while (node) {
+    if (node instanceof HTMLElement || node instanceof SVGElement) {
+      const inline = node.style.getPropertyValue(name).trim();
+      if (inline) return inline;
+    }
+    node = node.parentElement;
+  }
+  return getComputedStyle(owner).getPropertyValue(name).trim();
+}
+
+/** The tip lives on document.body, so it cannot inherit vars set on the chart. */
+function copyThemeVars(el: HTMLElement, owner: HTMLElement): void {
+  for (const name of TOOLTIP_VARS) {
+    const value = inheritedVar(owner, name);
+    if (value) el.style.setProperty(name, value);
+    else el.style.removeProperty(name);
+  }
+}
+
+function syncTooltipMode(el: HTMLElement, owner: HTMLElement): void {
+  copyThemeVars(el, owner);
+  const mode = paintMode(owner);
+  if (el.getAttribute('data-mode') !== mode) el.setAttribute('data-mode', mode);
 }
 
 function fillHover(el: HTMLDivElement, content: ChartTooltipContent): void {
@@ -274,6 +329,7 @@ export function presentChartTooltip(
   if (!el) return;
   const opening = hoverOwner !== owner || !el.classList.contains('is-open');
   hoverOwner = owner;
+  syncTooltipMode(el, owner);
   fillHover(el, content);
   el.classList.add('is-open');
   placeHover(el, event);
@@ -298,6 +354,7 @@ export function presentLabelTooltip(
   const el = labelRoot();
   if (!el) return;
   labelOwner = owner;
+  syncTooltipMode(el, owner);
   el.textContent = text;
   el.style.left = `${event.pageX}px`;
   el.style.top = `${event.pageY - 25}px`;

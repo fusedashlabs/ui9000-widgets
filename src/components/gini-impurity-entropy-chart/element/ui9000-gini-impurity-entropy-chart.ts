@@ -110,6 +110,10 @@ export class Ui9000GiniImpurityEntropyChart extends Ui9000ChartElement {
     );
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector(
       '.chart-root',
@@ -131,6 +135,7 @@ export class Ui9000GiniImpurityEntropyChart extends Ui9000ChartElement {
       height,
       margin,
       theme: readThemeFromElement(this),
+      themeMode: this.themeMode(),
       showGrid: this.showGrid,
       ...this.axisLabelHandlers(),
       onHover: this.showTooltip

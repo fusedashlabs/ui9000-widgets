@@ -18,11 +18,14 @@ import {
   resolveHeaderTitle,
   type LabelTooltipState,
 } from '../utils/chart-shell.js';
+import { paintMode } from '../context/widget-context.js';
+import type { ResolvedMode } from '../context/resolve-mode.js';
 import {
   resolveHeaderVariant,
   type WidgetHeaderHandlers,
   type WidgetHeaderVariant,
 } from './widget-header.js';
+import { subscribeHostTheme } from './theme-watch.js';
 
 /** Shared widget chrome: header, axis-label tooltip, menu. */
 export abstract class Ui9000ChartElement extends LitElement {
@@ -86,15 +89,51 @@ export abstract class Ui9000ChartElement extends LitElement {
     this._menuOpen = false;
   };
 
+  private _resolvedMode: ResolvedMode = 'light';
+  private _unwatchTheme: (() => void) | null = null;
+
   override connectedCallback(): void {
     super.connectedCallback();
     document.addEventListener('click', this._onDocClick);
+    this._resolvedMode = this.themeMode();
+    if (this.getAttribute('data-mode') !== this._resolvedMode) {
+      this.setAttribute('data-mode', this._resolvedMode);
+    }
+    this._unwatchTheme?.();
+    this._unwatchTheme = subscribeHostTheme(() => this.syncHostTheme());
   }
 
   override disconnectedCallback(): void {
+    this._unwatchTheme?.();
+    this._unwatchTheme = null;
     document.removeEventListener('click', this._onDocClick);
     dismissTooltips(this);
     super.disconnectedCallback();
+  }
+
+  /**
+   * Light or dark for SVG paint. Stays light until a host writes
+   * `--ui9000-color-surface`, so `data-theme` alone cannot put light ink
+   * on the white card fallback.
+   */
+  protected themeMode(): ResolvedMode {
+    return paintMode(this);
+  }
+
+  /**
+   * Host theme changed. Default re-renders chrome; charts that paint into
+   * SVG override this and call their draw.
+   */
+  protected onThemeChange(): void {
+    this.requestUpdate();
+  }
+
+  private syncHostTheme(): void {
+    const next = this.themeMode();
+    if (next === this._resolvedMode) return;
+    this._resolvedMode = next;
+    if (this.getAttribute('data-mode') !== next) this.setAttribute('data-mode', next);
+    this.onThemeChange();
   }
 
   /** Hover card on document.body. Matches the client chart tooltip. */

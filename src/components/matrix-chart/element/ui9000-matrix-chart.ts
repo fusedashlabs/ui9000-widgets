@@ -2,7 +2,7 @@ import { html, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
-import { CSS_VARS, readCssVar, readThemeFromElement } from '../../../context/widget-context.js';
+import { readThemeFromElement } from '../../../context/widget-context.js';
 import { axisFieldLabel, formatValueWithUnit } from '../../../utils/axis-units.js';
 import { getMatrixDimensions, parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
@@ -88,6 +88,10 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
     return this._model;
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const chartBody = this.shadowRoot?.querySelector('.chart-body') as HTMLElement | null;
     const scroll = this.shadowRoot?.querySelector('.chart-scroll') as HTMLElement | null;
@@ -109,8 +113,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
     const { width, margin } = getMatrixDimensions(chartBody);
     const bodyHeight = chartBody.clientHeight || 300;
     const viewportHeight = scroll.clientHeight || 300;
-    const themeMode =
-      readCssVar(this, CSS_VARS.mode, 'light') === 'dark' ? 'dark' : 'light';
+    const themeMode = this.themeMode();
 
     // Drawing the header changes the scroll viewport, which fires the resize
     // observer again — skip redraws whose inputs are unchanged so that

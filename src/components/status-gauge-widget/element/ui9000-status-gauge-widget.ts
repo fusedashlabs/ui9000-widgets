@@ -1,7 +1,7 @@
 import { html, nothing, svg, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
-import { readCssVar } from '../../../context/widget-context.js';
+import type { ResolvedMode } from '../../../context/resolve-mode.js';
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import {
@@ -68,11 +68,13 @@ export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
     }
   }
 
+  protected override themeMode(): ResolvedMode {
+    if (this.theme === 'dark' || this.theme === 'light') return this.theme;
+    return super.themeMode();
+  }
+
   private syncMode(): void {
-    const explicit = this.theme === 'dark' || this.theme === 'light' ? this.theme : '';
-    const fromHost = this.closest('[data-theme="dark"]') ? 'dark' : '';
-    const fromVar = readCssVar(this, '--ui9000-mode', 'light') === 'dark' ? 'dark' : 'light';
-    const next = (explicit || fromHost || fromVar) === 'dark' ? 'dark' : 'light';
+    const next = this.themeMode();
     if (this.getAttribute('data-mode') !== next) this.setAttribute('data-mode', next);
     if (this._mode !== next) this._mode = next;
   }

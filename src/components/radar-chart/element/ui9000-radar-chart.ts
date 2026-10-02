@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
 import { renderChartLegend } from '../../../element/chart-legend-render.js';
-import { CSS_VARS, readCssVar, readThemeFromElement } from '../../../context/widget-context.js';
+import { readThemeFromElement } from '../../../context/widget-context.js';
 import type { WidgetScale } from '../../../types/index.js';
 import { getRadarDimensions, parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { swatchLegendEntries, resolveSeriesLegendColor } from '../../../utils/chart-legend.js';
@@ -69,11 +69,6 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
     return normalizeRadarData(raw);
   }
 
-  private themeMode(): 'light' | 'dark' {
-    const mode = readCssVar(this, CSS_VARS.mode, 'light');
-    return mode === 'dark' ? 'dark' : 'light';
-  }
-
   private renderLegend(series: RadarSeries[], groupBy?: string) {
     if (!this.showLegend || !groupBy || series.length <= 1) return nothing;
     const theme = readThemeFromElement(this);
@@ -84,6 +79,10 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
         (_group, i) => resolveSeriesLegendColor(series[i], i, theme),
       ),
     );
+  }
+
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
   }
 
   private draw(): void {

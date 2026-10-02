@@ -1,7 +1,6 @@
 import { html, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
-import { CSS_VARS, readCssVar } from '../../../context/widget-context.js';
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
@@ -220,9 +219,8 @@ export class Ui9000MapChart extends Ui9000ChartElement {
     return (env?.STORYBOOK_MAP_PMTILES_BASE_URL || env?.VITE_MAP_PMTILES_BASE_URL || '/pmtiles').trim();
   }
 
-  private mode(): 'light' | 'dark' {
-    const value = readCssVar(this, CSS_VARS.mode, 'light');
-    return value === 'dark' ? 'dark' : 'light';
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
   }
 
   private async draw(): Promise<void> {
@@ -293,7 +291,7 @@ export class Ui9000MapChart extends Ui9000ChartElement {
     const ctl = await renderMapChart(root, {
       model,
       token,
-      mode: this.mode(),
+      mode: this.themeMode(),
       showTooltip: this.showTooltip,
       pmtilesBaseUrl: this.pmtilesUrl(),
       activeLayerIds: this._activeLayers,

@@ -79,6 +79,10 @@ export class Ui9000ScatterPlot extends Ui9000ChartElement {
     );
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
     if (!root) return;
@@ -99,6 +103,7 @@ export class Ui9000ScatterPlot extends Ui9000ChartElement {
       height,
       margin,
       theme,
+      themeMode: this.themeMode(),
       xField: model.xField,
       yField: model.yField,
       showGrid: this.showGrid,

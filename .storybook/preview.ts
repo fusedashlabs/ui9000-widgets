@@ -1,8 +1,8 @@
 import type { Preview } from '@storybook/web-components';
 import { html } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
-import { contextToCssVars, type PartialWidgetContext } from '../src/context/widget-context.js';
-import { DEFAULT_CONTEXT, DEFAULT_THEME } from '../src/types/index.js';
+import { contextToCssVars, resolveWidgetContext, type PartialWidgetContext } from '../src/context/widget-context.js';
+import { DEFAULT_THEME } from '../src/types/index.js';
 
 function themeStyle(mode: 'light' | 'dark'): Record<string, string> {
   const ctx: PartialWidgetContext =
@@ -21,11 +21,7 @@ function themeStyle(mode: 'light' | 'dark'): Record<string, string> {
         }
       : { mode: 'light', theme: DEFAULT_THEME };
 
-  const merged = {
-    ...DEFAULT_CONTEXT,
-    ...ctx,
-    theme: { ...DEFAULT_THEME, ...ctx.theme },
-  };
+  const merged = resolveWidgetContext(ctx);
   return {
     ...contextToCssVars(merged),
     minHeight: '360px',

@@ -2,8 +2,12 @@ import { html } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
 import type { Meta, StoryObj } from '@storybook/web-components';
 
-import { contextToCssVars, type PartialWidgetContext } from '../context/widget-context.js';
-import { DEFAULT_CONTEXT, DEFAULT_THEME, type WidgetTheme } from '../types/index.js';
+import {
+  contextToCssVars,
+  resolveWidgetContext,
+  type PartialWidgetContext,
+} from '../context/widget-context.js';
+import { DARK_THEME, DEFAULT_THEME, type WidgetTheme } from '../types/index.js';
 import '../components/status-gauge-widget/index.js';
 import antennaFixture from './fixtures/status-gauge.mock.json';
 import manyFixture from './fixtures/status-gauge-many.mock.json';
@@ -17,13 +21,8 @@ type StatusGaugeArgs = {
   height: number;
 };
 
-const DARK_THEME: WidgetTheme = {
-  primary: '#473DD9',
-  secondary: '#36C4A5',
-  background: 'transparent',
-  grid: '#444b57',
-  text: '#eff0f1',
-  textMuted: '#a4a9b1',
+const GAUGE_DARK: WidgetTheme = {
+  ...DARK_THEME,
   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
 };
 
@@ -35,13 +34,9 @@ const LIGHT_THEME: WidgetTheme = {
 function frameStyle(appearance: GaugeTheme, width: number, height: number): Record<string, string> {
   const ctx: PartialWidgetContext =
     appearance === 'dark'
-      ? { mode: 'dark', theme: DARK_THEME }
+      ? { mode: 'dark', theme: GAUGE_DARK }
       : { mode: 'light', theme: LIGHT_THEME };
-  const merged = {
-    ...DEFAULT_CONTEXT,
-    ...ctx,
-    theme: { ...DEFAULT_THEME, ...ctx.theme },
-  };
+  const merged = resolveWidgetContext(ctx);
   return {
     ...contextToCssVars(merged),
     width: `${width}px`,

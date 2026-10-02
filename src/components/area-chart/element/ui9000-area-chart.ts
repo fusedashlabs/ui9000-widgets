@@ -93,6 +93,10 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
     return renderChartLegend(lineLegendEntries(legendSeries, theme));
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
     if (!root) return;
@@ -113,6 +117,7 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
       height,
       margin,
       theme,
+      themeMode: this.themeMode(),
       marker: this.marker,
       showPoints: this.showPoints,
       showGrid: this.showGrid,

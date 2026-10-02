@@ -117,7 +117,6 @@ export const chartShellStyles = css`
     position: relative;
   }
 
-  .menu-btn,
   .icon-btn,
   .settings-btn {
     display: inline-flex;
@@ -125,8 +124,8 @@ export const chartShellStyles = css`
     justify-content: center;
     padding: 0;
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
-    background: rgba(255, 255, 255, 0.92);
-    color: var(--ui9000-color-text-muted, #6b7280);
+    background: var(--ui9000-color-surface, #ffffff);
+    color: var(--ui9000-color-text, #111827);
     cursor: pointer;
   }
 
@@ -141,11 +140,19 @@ export const chartShellStyles = css`
   }
 
   .menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 32px;
     height: 32px;
+    padding: 0;
+    border: 1px solid var(--ui9000-color-border, #e5e7eb);
     border-radius: 8px;
+    background: var(--ui9000-color-surface, #ffffff);
+    color: var(--ui9000-color-text, #111827);
     font-size: 18px;
     line-height: 1;
+    cursor: pointer;
   }
 
   .widget-header[data-variant='dash'] .menu-btn,
@@ -168,8 +175,8 @@ export const chartShellStyles = css`
   }
 
   .menu-btn:hover {
-    background: #fff;
-    border-color: var(--ui9000-color-border-strong, #d1d5db);
+    background: var(--ui9000-color-surface-muted, #f3f4f6);
+    border-color: var(--ui9000-color-border, #e5e7eb);
   }
 
   .menu-dropdown {
@@ -180,7 +187,7 @@ export const chartShellStyles = css`
     min-width: 170px;
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
     border-radius: 10px;
-    background: #fff;
+    background: var(--ui9000-color-surface, #ffffff);
     box-shadow:
       0 10px 15px -3px rgb(0 0 0 / 10%),
       0 4px 6px -4px rgb(0 0 0 / 10%);
@@ -202,9 +209,18 @@ export const chartShellStyles = css`
     border: none;
     background: transparent;
     text-align: left;
+    font-family: var(--ui9000-font-family, inherit);
     font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
     color: var(--ui9000-color-text, #111827);
     cursor: pointer;
+    appearance: none;
+  }
+
+  .menu-item svg {
+    color: inherit;
+    fill: currentColor;
   }
 
   .widget-header[data-variant='dash'] .menu-item {
@@ -220,8 +236,44 @@ export const chartShellStyles = css`
     background: var(--ui9000-color-border, #e5e7eb);
   }
 
-  .menu-item:hover {
+  .menu-item:hover,
+  .menu-item:focus-visible {
     background: var(--ui9000-color-surface-muted, #f3f4f6);
+    color: var(--ui9000-color-text, #111827);
+  }
+
+  :host([data-mode='dark']) .menu-btn,
+  :host([data-mode='dark']) .icon-btn,
+  :host([data-mode='dark']) .settings-btn {
+    background: var(--ui9000-color-surface, #13161d);
+    border-color: var(--ui9000-color-border, #444b57);
+    color: var(--ui9000-color-text, #eff0f1);
+  }
+
+  :host([data-mode='dark']) .menu-btn:hover,
+  :host([data-mode='dark']) .icon-btn:hover,
+  :host([data-mode='dark']) .settings-btn:hover {
+    background: var(--ui9000-color-surface-muted, #282e37);
+    color: var(--ui9000-color-text, #eff0f1);
+  }
+
+  :host([data-mode='dark']) .menu-dropdown {
+    background: var(--ui9000-color-surface, #13161d);
+    border-color: var(--ui9000-color-border, #444b57);
+  }
+
+  :host([data-mode='dark']) .menu-item {
+    color: var(--ui9000-color-text, #eff0f1);
+  }
+
+  :host([data-mode='dark']) .menu-item:hover,
+  :host([data-mode='dark']) .menu-item:focus-visible {
+    background: var(--ui9000-color-surface-muted, #282e37);
+    color: var(--ui9000-color-text, #eff0f1);
+  }
+
+  :host([data-mode='dark']) .menu-divider {
+    background: var(--ui9000-color-border, #444b57);
   }
 
   .widget-body {

@@ -14,6 +14,14 @@ class HeaderProbe extends Ui9000ChartElement {
   }
 }
 
+/** Body of one CSS rule. The selector must be the rule start, not a prefix of another. */
+function ruleBody(css: string, selector: string): string {
+  const start = css.indexOf(selector);
+  const open = start === -1 ? -1 : css.indexOf('{', start);
+  const close = open === -1 ? -1 : css.indexOf('}', open);
+  return open === -1 || close === -1 ? '' : css.slice(open + 1, close);
+}
+
 function mount(): HeaderProbe {
   const el = document.createElement('ui9000-header-probe') as HeaderProbe;
   document.body.appendChild(el);
@@ -131,5 +139,28 @@ describe('widget header variants', () => {
     expect(el.shadowRoot?.querySelector('[part="settings-button"]')).toBeNull();
     expect(el.shadowRoot?.querySelector('.widget-title')?.textContent?.trim()).toBe('Revenue');
     el.remove();
+  });
+
+  it('paints the menu and the chat button from the host surface', () => {
+    const css = chartShellStyles.cssText;
+    const icon = ruleBody(css, '.icon-btn,');
+    expect(icon).toContain('var(--ui9000-color-surface, #ffffff)');
+    expect(icon).toContain('var(--ui9000-color-text, #111827)');
+    expect(icon).not.toContain('rgba(255, 255, 255');
+
+    const button = ruleBody(css, '.menu-btn {');
+    expect(button).toContain('var(--ui9000-color-surface, #ffffff)');
+    expect(button).toContain('var(--ui9000-color-text, #111827)');
+
+    const darkStart = css.indexOf(":host([data-mode='dark']) .menu-btn,");
+    const darkOpen = css.indexOf('{', darkStart);
+    const darkSelector = css.slice(darkStart, darkOpen);
+    expect(darkSelector).toContain('.icon-btn');
+    expect(darkSelector).toContain('.settings-btn');
+    expect(darkSelector).not.toContain(':hover');
+    const darkButtons = ruleBody(css, ":host([data-mode='dark']) .menu-btn,");
+    const darkItems = ruleBody(css, ":host([data-mode='dark']) .menu-item {");
+    expect(darkButtons).toContain('var(--ui9000-color-text, #eff0f1)');
+    expect(darkItems).toContain('var(--ui9000-color-text, #eff0f1)');
   });
 });

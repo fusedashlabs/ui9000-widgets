@@ -22,7 +22,7 @@ type KpiWidgetArgs = {
 };
 
 const frame = (args: KpiWidgetArgs) => html`
-  <div style="width:100%;height:${args.height}px;background:#fff;border:1px solid #eee;">
+  <div style="width:100%;height:${args.height}px;background:var(--ui9000-color-surface, #fff);border:1px solid var(--ui9000-color-border, #e5e7eb);">
     <ui9000-kpi-widget
       style="display:block;width:100%;height:100%;"
       data=${JSON.stringify(args.data)}

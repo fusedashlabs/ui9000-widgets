@@ -8,6 +8,7 @@ export const kpiWidgetStyles = css`
     height: 100%;
     min-height: 95px;
     color: var(--ui9000-color-text, #111827);
+    background: var(--ui9000-color-surface, #ffffff);
     font-family: var(--ui9000-font-family, system-ui, sans-serif);
     box-sizing: border-box;
   }

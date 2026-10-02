@@ -17,6 +17,15 @@ export const FD_LIGHT = {
   radarTickFill: '#f1f4f7',
   radarTickText: '#000000',
   sliceStroke: '#ffffff',
+  biasVarianceGridStroke: '#d1d5db',
+  biasVarianceAxisStroke: '#9ca3af',
+  biasVarianceLabelFill: '#6b7280',
+  parallelAxisStroke: '#939ba7',
+  parallelAxisLabelFill: '#5f6877',
+  sankeyNodeRule: '#D3DBE3',
+  sankeyNodeRuleActive: '#939BA7',
+  networkLabelText: 'rgba(33, 38, 46, 0.9)',
+  networkLabelHover: '#FFFFFF',
 } as const;
 
 export const FD_DARK = {
@@ -31,6 +40,15 @@ export const FD_DARK = {
   radarTickFill: '#282E37',
   radarTickText: '#EFF0F1',
   sliceStroke: '#1a1b1f',
+  biasVarianceGridStroke: '#444B57',
+  biasVarianceAxisStroke: '#444B57',
+  biasVarianceLabelFill: '#A4A9B1',
+  parallelAxisStroke: '#444B57',
+  parallelAxisLabelFill: '#A4A9B1',
+  sankeyNodeRule: '#444B57',
+  sankeyNodeRuleActive: '#A4A9B1',
+  networkLabelText: '#EFF0F1',
+  networkLabelHover: '#282E37',
 } as const;
 
 export function fdColors(mode: ResolvedMode) {
@@ -269,10 +287,10 @@ export const FD = {
   /** BiasVarianceTradeoffChart — the client widget carries its own frame/palette */
   biasVarianceMargin: { top: 24, right: 24, bottom: 36, left: 48 },
   biasVarianceSeries: ['#6366f1', '#22c55e', '#f59e0b', '#06b6d4', '#ef4444'],
-  biasVarianceGridStroke: '#d1d5db',
+  biasVarianceGridStroke: FD_LIGHT.biasVarianceGridStroke,
   biasVarianceGridDash: '2,4',
-  biasVarianceAxisStroke: '#9ca3af',
-  biasVarianceLabelFill: '#6b7280',
+  biasVarianceAxisStroke: FD_LIGHT.biasVarianceAxisStroke,
+  biasVarianceLabelFill: FD_LIGHT.biasVarianceLabelFill,
   biasVarianceLineWidth: 2,
   biasVarianceLineOpacity: 0.95,
   /** Sibling curves fade while one is hovered (FuseDash line-hover convention) */
@@ -338,8 +356,8 @@ export const FD = {
   sankeyNodePadding: 14,
   sankeyNodeWidth: 70,
   sankeyNodeWidthSmall: 65,
-  sankeyNodeRule: '#D3DBE3',
-  sankeyNodeRuleActive: '#939BA7',
+  sankeyNodeRule: FD_LIGHT.sankeyNodeRule,
+  sankeyNodeRuleActive: FD_LIGHT.sankeyNodeRuleActive,
   /** Ribbons sit at 50% alpha until hovered or focused */
   sankeyLinkAlphaPct: 50,
   sankeyLinkInset: 3,
@@ -362,8 +380,8 @@ export const FD = {
   parallelLineOpacity: 0.4,
   parallelLineOpacityDimmed: 0.05,
   /** Client draws these axes a shade darker than the shared FD axis tokens */
-  parallelAxisStroke: '#939ba7',
-  parallelAxisLabelFill: '#5f6877',
+  parallelAxisStroke: FD_LIGHT.parallelAxisStroke,
+  parallelAxisLabelFill: FD_LIGHT.parallelAxisLabelFill,
   parallelTitleSize: 11,
   parallelTitleSizeActive: 13,
   /** GiniImpurityEntropyChart — client DEFAULT_MARGIN */

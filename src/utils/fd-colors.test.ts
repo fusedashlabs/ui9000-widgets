@@ -17,6 +17,15 @@ describe('fdColors', () => {
     expect(fdColors('dark').radarTickFill).toBe('#282E37');
     expect(fdColors('dark').radarTickText).toBe('#EFF0F1');
     expect(fdColors('dark').sliceStroke).toBe('#1a1b1f');
+    expect(fdColors('dark').biasVarianceGridStroke).toBe('#444B57');
+    expect(fdColors('dark').biasVarianceLabelFill).toBe('#A4A9B1');
+    expect(fdColors('dark').parallelAxisStroke).toBe('#444B57');
+    expect(fdColors('dark').sankeyNodeRule).toBe('#444B57');
+    expect(fdColors('dark').sankeyNodeRuleActive).toBe('#A4A9B1');
+    expect(fdColors('dark').networkLabelText).toBe('#EFF0F1');
+    expect(fdColors('light').biasVarianceGridStroke).toBe('#d1d5db');
+    expect(fdColors('light').sankeyNodeRule).toBe('#D3DBE3');
+    expect(fdColors('light').networkLabelText).toBe('rgba(33, 38, 46, 0.9)');
     expect(fdColors('light').gridStroke).toBe('#afb3bb');
     expect(fdColors('light').polarGridStroke).toBe('#939ba7');
     expect(fdColors('light').polarCategoryLabelFill).toBe('#5f6877');

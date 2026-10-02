@@ -80,7 +80,7 @@ export class Ui9000ParallelCoordinatesChart extends Ui9000ChartElement {
 
   private parseData(): ParallelCoordinatesModel {
     const raw = parseJsonAttr<ParallelCoordinatesInput>(this.dataJson, []);
-    const model = normalizeParallelCoordinatesData(raw);
+    const model = this.withSeriesMode(() => normalizeParallelCoordinatesData(raw));
     if (this.orientation === 'horizontal' || this.orientation === 'vertical') {
       return { ...model, orientation: this.orientation };
     }

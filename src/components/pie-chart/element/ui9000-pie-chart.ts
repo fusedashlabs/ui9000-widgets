@@ -64,7 +64,7 @@ export class Ui9000PieChart extends Ui9000ChartElement {
 
   private parseData(): PieModel {
     const raw = parseJsonAttr<PieChartData>(this.dataJson, null);
-    return normalizePieData(raw);
+    return this.withSeriesMode(() => normalizePieData(raw));
   }
 
   private renderLegend() {

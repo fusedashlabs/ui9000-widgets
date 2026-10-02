@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
+import { treemapRangeColors } from '../lib/color.js';
 
 let observed: (() => void)[] = [];
 
@@ -143,5 +144,33 @@ describe('ui9000-treemap-chart', () => {
     expect(tip?.textContent).toContain('Value');
 
     el.remove();
+  });
+
+  it('ramps a grouped series from the dark palette when the host surface is dark', async () => {
+    const root = document.documentElement;
+    const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
+    const height = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientHeight');
+    root.style.setProperty('--ui9000-color-surface', '#13161D');
+    root.style.setProperty('--ui9000-mode', 'dark');
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, value: 300 });
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+    try {
+      const el = await mount({
+        series: [{ id: 'a', points: [{ x: 'One', y: 10 }, { x: 'Two', y: 4 }] }],
+      });
+      const stops = [...el.shadowRoot.querySelectorAll('stop')].map((stop) =>
+        stop.getAttribute('stop-color')?.toLowerCase(),
+      );
+      const dark = treemapRangeColors('#584FDC').map((color) => color.toLowerCase());
+      const light = treemapRangeColors('#473DD9').map((color) => color.toLowerCase());
+      expect(stops.some((color) => color != null && dark.includes(color))).toBe(true);
+      expect(stops.some((color) => color != null && light.includes(color))).toBe(false);
+      el.remove();
+    } finally {
+      root.style.removeProperty('--ui9000-color-surface');
+      root.style.removeProperty('--ui9000-mode');
+      if (width) Object.defineProperty(HTMLElement.prototype, 'clientWidth', width);
+      if (height) Object.defineProperty(HTMLElement.prototype, 'clientHeight', height);
+    }
   });
 });

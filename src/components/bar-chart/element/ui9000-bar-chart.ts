@@ -109,7 +109,7 @@ export class Ui9000BarChart extends Ui9000ChartElement {
       this.dataJson,
       [],
     );
-    return normalizeBarData(raw);
+    return this.withSeriesMode(() => normalizeBarData(raw));
   }
 
   private renderLegend(series: BarSeries[]): typeof nothing | ReturnType<typeof renderChartLegend> {

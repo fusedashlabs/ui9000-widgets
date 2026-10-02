@@ -20,6 +20,7 @@ import {
 } from '../utils/chart-shell.js';
 import { paintMode } from '../context/widget-context.js';
 import type { ResolvedMode } from '../context/resolve-mode.js';
+import { useSeriesMode } from '../utils/fuse-palette.js';
 import {
   resolveHeaderVariant,
   type WidgetHeaderHandlers,
@@ -118,6 +119,11 @@ export abstract class Ui9000ChartElement extends LitElement {
    */
   protected themeMode(): ResolvedMode {
     return paintMode(this);
+  }
+
+  /** Qualitative series colors follow this chart's mode while `run` normalizes. */
+  protected withSeriesMode<T>(run: () => T): T {
+    return useSeriesMode(this.themeMode(), run);
   }
 
   /**

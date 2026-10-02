@@ -7,6 +7,7 @@ import {
   type MapVisualisation,
 } from '../lib/constants.js';
 import { fdColors } from '../../../utils/fusedash-visual.js';
+import { seriesInk } from '../../../utils/fuse-palette.js';
 import { collectionBBox } from '../lib/domain.js';
 import { darkenColor, hexToRgba } from '../lib/format.js';
 import { getRegionIdFromFeatureProperties } from '../lib/geo-index.js';
@@ -164,9 +165,9 @@ export async function renderMapChart(
       if (layer.visualisationType === 'choropleth') {
         live.push(addChoropleth(map, layer, hover, options.mode, options.pmtilesBaseUrl));
       } else if (layer.visualisationType === 'bubbles') {
-        live.push(addCircles(map, layer, 'bubbles', hover));
+        live.push(addCircles(map, layer, 'bubbles', hover, options.mode));
       } else if (layer.visualisationType === 'markers') {
-        live.push(addCircles(map, layer, 'markers', hover));
+        live.push(addCircles(map, layer, 'markers', hover, options.mode));
       } else {
         live.push(addSpikes(map, layer, hover));
       }
@@ -362,6 +363,7 @@ function addCircles(
   layer: MapLayerModel,
   kind: 'bubbles' | 'markers',
   onHover: RenderMapChartOptions['onHover'],
+  mode?: MapMode,
 ): LiveMapLayer {
   const queryKey = sanitizeKey(layer.layerId);
   const sourceId = kind === 'bubbles' ? `bubbles-${queryKey}` : `scatterplot-${queryKey}`;
@@ -378,6 +380,8 @@ function addCircles(
     kind === 'markers'
       ? 4
       : bubbleRadiusExpression(layer);
+  const ink = seriesInk(layer.fillColor, mode === 'dark' ? 'dark' : 'light');
+  const stroke = kind === 'markers' ? '#fff' : ink;
 
   if (!map.getLayer(layerId)) {
     map.addLayer({
@@ -386,12 +390,15 @@ function addCircles(
       source: sourceId,
       paint: {
         'circle-radius': radius,
-        'circle-color': layer.fillColor,
+        'circle-color': ink,
         'circle-opacity': kind === 'bubbles' ? 0.6 : 0.8,
         'circle-stroke-width': 1,
-        'circle-stroke-color': kind === 'markers' ? '#fff' : layer.fillColor,
+        'circle-stroke-color': stroke,
       },
     });
+  } else {
+    map.setPaintProperty(layerId, 'circle-color', ink);
+    map.setPaintProperty(layerId, 'circle-stroke-color', stroke);
   }
 
   bindHover(map, layerId, layer, onHover);

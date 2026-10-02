@@ -65,7 +65,7 @@ export class Ui9000DonutChart extends Ui9000ChartElement {
 
   private parseData(): DonutModel {
     const raw = parseJsonAttr<DonutChartData>(this.dataJson, null);
-    return normalizeDonutData(raw);
+    return this.withSeriesMode(() => normalizeDonutData(raw));
   }
 
   private renderLegend() {

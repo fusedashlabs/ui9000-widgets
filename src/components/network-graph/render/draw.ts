@@ -425,7 +425,7 @@ export function renderNetworkGraph(
 
       part.background.setAttribute(
         'fill',
-        active && !part.hasImage ? NODE_COLORS.activeFill : nodeColor(part.datum),
+        active && !part.hasImage ? NODE_COLORS.activeFill : nodeColor(part.datum, themeMode),
       );
 
       if (!part.label) continue;
@@ -772,7 +772,7 @@ function buildNodes(params: {
       .append('circle')
       .attr('class', 'node-background')
       .attr('r', radius)
-      .attr('fill', nodeColor(datum))
+      .attr('fill', nodeColor(datum, themeMode))
       .style('opacity', hasImage ? 0 : 1)
       .style('pointer-events', 'none')
       .node() as SVGCircleElement;

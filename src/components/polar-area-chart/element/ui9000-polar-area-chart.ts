@@ -67,7 +67,7 @@ export class Ui9000PolarAreaChart extends Ui9000ChartElement {
   }
 
   private parseData(): PolarAreaModel {
-    return normalizePolarAreaData(parseJsonAttr<PolarAreaChartData>(this.dataJson, null));
+    return this.withSeriesMode(() => normalizePolarAreaData(parseJsonAttr<PolarAreaChartData>(this.dataJson, null)));
   }
 
   private renderLegend(model: PolarAreaModel) {

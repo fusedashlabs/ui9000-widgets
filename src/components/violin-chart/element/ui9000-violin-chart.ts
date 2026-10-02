@@ -72,7 +72,7 @@ export class Ui9000ViolinChart extends Ui9000ChartElement {
 
   private parseData(): ViolinModel {
     const raw = parseJsonAttr<ViolinChartData>(this.dataJson, [] as never);
-    const model = normalizeViolinData(raw);
+    const model = this.withSeriesMode(() => normalizeViolinData(raw));
     if (this.orientation === 'horizontal' || this.orientation === 'vertical') {
       return { ...model, orientation: this.orientation };
     }

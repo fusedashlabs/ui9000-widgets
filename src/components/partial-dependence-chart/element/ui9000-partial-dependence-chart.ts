@@ -65,8 +65,10 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
   }
 
   private parseData(): PartialDependenceModel {
-    return normalizePartialDependenceData(
-      parseJsonAttr<PartialDependenceChartData>(this.dataJson, null),
+    return this.withSeriesMode(() =>
+      normalizePartialDependenceData(
+        parseJsonAttr<PartialDependenceChartData>(this.dataJson, null),
+      ),
     );
   }
 

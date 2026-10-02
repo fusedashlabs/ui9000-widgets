@@ -84,16 +84,16 @@ export class Ui9000GiniImpurityEntropyChart extends Ui9000ChartElement {
   }
 
   private parseModel(): GiniImpurityEntropyModel {
-    const key = `${this.showPHat}|${this.showCI}|${this.showSplit}|${this.dataJson}`;
+    const key = `${this.themeMode()}|${this.showPHat}|${this.showCI}|${this.showSplit}|${this.dataJson}`;
     if (this._model?.key === key) return this._model.value;
 
     const raw = parseJsonAttr<GiniPayload | null>(this.dataJson, null);
-    const value = normalizeGiniImpurityEntropyData(raw, {
+    const value = this.withSeriesMode(() => normalizeGiniImpurityEntropyData(raw, {
       // Only pass a flag on when set, so the widget `meta` stays in charge.
       showPHat: this.showPHat || undefined,
       showCI: this.showCI || undefined,
       showSplit: this.showSplit || undefined,
-    });
+    }));
     this._model = { key, value };
     return value;
   }

@@ -68,7 +68,7 @@ export class Ui9000HistogramChart extends Ui9000ChartElement {
 
   private parseData(): HistogramModel {
     const raw = parseJsonAttr<HistogramChartData>(this.dataJson, []);
-    return normalizeHistogramData(raw);
+    return this.withSeriesMode(() => normalizeHistogramData(raw));
   }
 
   private renderLegend(model: HistogramModel) {

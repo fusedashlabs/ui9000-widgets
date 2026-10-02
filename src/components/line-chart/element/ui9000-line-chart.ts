@@ -91,7 +91,7 @@ export class Ui9000LineChart extends Ui9000ChartElement {
       this.dataJson,
       [],
     );
-    return normalizeLineData(raw);
+    return this.withSeriesMode(() => normalizeLineData(raw));
   }
 
   private xDomainHint(): string[] | undefined {

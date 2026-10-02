@@ -46,6 +46,7 @@ describe('node sizing', () => {
 describe('nodeColor', () => {
   it('prefers an explicit colour, then the category, then the default', () => {
     expect(nodeColor({ id: 'a', label: 'a', type: 'bank', color: '#123456' })).toBe('#123456');
+    expect(nodeColor({ id: 'a', label: 'a', type: 'bank', color: '#473DD9' }, 'dark')).toBe('#473DD9');
     expect(nodeColor({ id: 'a', label: 'a', type: 'bank' })).toBe('#2563EB');
     expect(nodeColor({ id: 'a', label: 'a', type: 'nope' })).toBe('#64748B');
   });

@@ -62,7 +62,7 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
 
   private parseData(): PunchcardModel {
     const raw = parseJsonAttr<PunchcardInput>(this.dataJson, []);
-    return normalizePunchcardData(raw);
+    return this.withSeriesMode(() => normalizePunchcardData(raw));
   }
 
   protected override onThemeChange(): void {

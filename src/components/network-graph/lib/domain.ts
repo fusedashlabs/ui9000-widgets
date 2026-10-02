@@ -1,3 +1,5 @@
+import type { ResolvedMode } from '../../../context/resolve-mode.js';
+import { seriesInk } from '../../../utils/fuse-palette.js';
 import type {
   NetworkGraphModel,
   NetworkLegendRange,
@@ -135,8 +137,9 @@ export function shadowRadius(node: NetworkNode, breakpoints: number[]): number {
 }
 
 /** Client `getNodeColor` — explicit colour, then category, then the slate default. */
-export function nodeColor(node: NetworkNode): string {
-  return node.color || NODE_TYPE_COLORS[node.type] || DEFAULT_NODE_COLOR;
+export function nodeColor(node: NetworkNode, mode: ResolvedMode = 'light'): string {
+  if (node.color) return node.color;
+  return seriesInk(NODE_TYPE_COLORS[node.type] || DEFAULT_NODE_COLOR, mode);
 }
 
 /** Client `scaleLinkWidthByMax` — resting links stay at `LINK_WIDTH`. */

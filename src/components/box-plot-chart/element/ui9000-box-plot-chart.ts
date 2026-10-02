@@ -91,7 +91,7 @@ export class Ui9000BoxPlotChart extends Ui9000ChartElement {
     const raw = parseJsonAttr<
       BoxPlotBox[] | BoxPlotBoxesPayload | FuseDashBoxPlotPayload
     >(this.dataJson, []);
-    const model = normalizeBoxPlotData(raw);
+    const model = this.withSeriesMode(() => normalizeBoxPlotData(raw));
     if (this.orientation === 'horizontal' || this.orientation === 'vertical') {
       return { ...model, orientation: this.orientation };
     }

@@ -108,7 +108,7 @@ export class Ui9000Lollipop extends Ui9000ChartElement {
       this.dataJson,
       [],
     );
-    return normalizeLollipopData(raw);
+    return this.withSeriesMode(() => normalizeLollipopData(raw));
   }
 
   private resolveLayout(): LollipopLayout {

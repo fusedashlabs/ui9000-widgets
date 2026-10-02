@@ -76,7 +76,7 @@ export class Ui9000SparkLineChart extends Ui9000ChartElement {
       this.dataJson,
       [],
     );
-    return normalizeSparkLineData(raw);
+    return this.withSeriesMode(() => normalizeSparkLineData(raw));
   }
 
   private xDomainHint(): string[] | undefined {

@@ -75,7 +75,7 @@ export class Ui9000RadialBarChart extends Ui9000ChartElement {
 
   private parseData(): RadialBarModel {
     const raw = parseJsonAttr<RadialBarChartData>(this.dataJson, null);
-    return normalizeRadialBarData(raw);
+    return this.withSeriesMode(() => normalizeRadialBarData(raw));
   }
 
   private renderLegend(model: RadialBarModel) {

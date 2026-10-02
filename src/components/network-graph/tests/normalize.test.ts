@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { useSeriesMode } from '../../../utils/fuse-palette.js';
 
 import {
   MAX_NETWORK_NODES,
@@ -37,6 +38,24 @@ describe('normalizeNetworkGraphData', () => {
 
     expect(model.nodes.map((n) => n.label)).toEqual(['A', 'b']);
     expect(model.links[0].type).toBe('primary');
+  });
+
+  it('lifts an unknown category in dark and keeps an explicit brand purple', () => {
+    const lifted = useSeriesMode('dark', () =>
+      normalizeNetworkGraphData({
+        nodes: [{ id: 'a', type: 'investment_bank' }],
+        links: [],
+      }),
+    );
+    expect(lifted.nodes[0].color).toBe('#584FDC');
+
+    const explicit = useSeriesMode('dark', () =>
+      normalizeNetworkGraphData({
+        nodes: [{ id: 'a', type: 'investment_bank', color: '#473DD9' }],
+        links: [],
+      }),
+    );
+    expect(explicit.nodes[0].color).toBe('#473DD9');
   });
 
   it('derives nodes from a links-only payload', () => {

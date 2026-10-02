@@ -72,7 +72,7 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
 
   private parseData(): AreaModel {
     const raw = parseJsonAttr<AreaChartInput>(this.dataJson, null);
-    return normalizeAreaData(raw);
+    return this.withSeriesMode(() => normalizeAreaData(raw));
   }
 
   private xDomainHint(): string[] | undefined {

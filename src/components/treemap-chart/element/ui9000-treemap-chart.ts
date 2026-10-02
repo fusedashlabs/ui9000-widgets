@@ -68,7 +68,7 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
 
   private parseData(): TreemapModel {
     const raw = parseJsonAttr<TreemapChartData>(this.dataJson, null);
-    return normalizeTreemapData(raw);
+    return this.withSeriesMode(() => normalizeTreemapData(raw));
   }
 
   /** Client tooltip: `Value` plus the dimension the tile encodes. */

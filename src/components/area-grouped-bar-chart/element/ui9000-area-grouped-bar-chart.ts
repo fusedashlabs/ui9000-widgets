@@ -64,7 +64,7 @@ export class Ui9000AreaGroupedBarChart extends Ui9000ChartElement {
 
   private parseData(): AreaGroupedBarModel {
     const raw = parseJsonAttr<AreaGroupedBarChartInput>(this.dataJson, null);
-    return normalizeAreaGroupedBarData(raw);
+    return this.withSeriesMode(() => normalizeAreaGroupedBarData(raw));
   }
 
   private legendEntries(model: AreaGroupedBarModel): ChartLegendEntry[] {

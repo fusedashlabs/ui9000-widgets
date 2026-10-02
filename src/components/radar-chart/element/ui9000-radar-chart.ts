@@ -66,7 +66,7 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
     const raw = parseJsonAttr<
       RadarChartData | FuseWidgetLike | Array<{ label: string; value: number }>
     >(this.dataJson, []);
-    return normalizeRadarData(raw);
+    return this.withSeriesMode(() => normalizeRadarData(raw));
   }
 
   private renderLegend(series: RadarSeries[], groupBy?: string) {

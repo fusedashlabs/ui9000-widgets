@@ -62,7 +62,7 @@ export class Ui9000BubbleChart extends Ui9000ChartElement {
 
   private parseData(): BubbleModel {
     const raw = parseJsonAttr<BubbleChartData>(this.dataJson, null);
-    return normalizeBubbleData(raw);
+    return this.withSeriesMode(() => normalizeBubbleData(raw));
   }
 
   private renderLegend(model: BubbleModel) {

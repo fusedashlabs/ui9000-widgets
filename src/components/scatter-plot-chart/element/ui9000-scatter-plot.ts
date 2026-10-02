@@ -64,7 +64,7 @@ export class Ui9000ScatterPlot extends Ui9000ChartElement {
 
   private parseData(): ScatterModel {
     const raw = parseJsonAttr<ScatterChartData>(this.dataJson, null);
-    return normalizeScatterData(raw);
+    return this.withSeriesMode(() => normalizeScatterData(raw));
   }
 
   private renderLegend(model: ScatterModel) {

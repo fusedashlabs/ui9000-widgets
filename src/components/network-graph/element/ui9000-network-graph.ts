@@ -58,6 +58,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   private _activeNodeId: string | null = null;
 
   private _model: NetworkGraphModel | null = null;
+  private _modelMode: 'light' | 'dark' | null = null;
   private _legendDrag?: {
     thumb: HTMLElement;
     move: (e: PointerEvent) => void;
@@ -89,6 +90,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       this._range = { ...FULL_RANGE };
       this._activeNodeId = null;
       this._model = null;
+      this._modelMode = null;
     }
     if (changed.has('showTooltip') && !this.showTooltip) {
       this._labelTooltip = null;
@@ -138,10 +140,14 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   }
 
   private model(): NetworkGraphModel {
-    if (!this._model) {
-      this._model = normalizeNetworkGraphData(
-        parseJsonAttr<NetworkGraphInput | null>(this.dataJson, null),
+    const mode = this.themeMode();
+    if (!this._model || this._modelMode !== mode) {
+      this._model = this.withSeriesMode(() =>
+        normalizeNetworkGraphData(
+          parseJsonAttr<NetworkGraphInput | null>(this.dataJson, null),
+        ),
       );
+      this._modelMode = mode;
     }
     return this._model;
   }

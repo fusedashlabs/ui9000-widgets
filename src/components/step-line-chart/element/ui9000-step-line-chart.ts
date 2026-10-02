@@ -81,7 +81,7 @@ export class Ui9000StepLineChart extends Ui9000ChartElement {
       this.dataJson,
       [],
     );
-    return normalizeStepLineData(raw);
+    return this.withSeriesMode(() => normalizeStepLineData(raw));
   }
 
   private xDomainHint(): string[] | undefined {

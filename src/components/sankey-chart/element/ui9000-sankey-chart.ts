@@ -84,7 +84,7 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
   }
 
   private parseData(): SankeyModel {
-    return normalizeSankeyData(parseJsonAttr<SankeyInput>(this.dataJson, []));
+    return this.withSeriesMode(() => normalizeSankeyData(parseJsonAttr<SankeyInput>(this.dataJson, [])));
   }
 
   private renderLegend() {

@@ -69,7 +69,7 @@ export class Ui9000BiasVarianceTradeoffChart extends Ui9000ChartElement {
 
   private parseData(): BiasVarianceModel {
     const raw = parseJsonAttr<BiasVarianceChartInput>(this.dataJson, null);
-    return normalizeBiasVarianceData(raw);
+    return this.withSeriesMode(() => normalizeBiasVarianceData(raw));
   }
 
   private renderLegend(model: BiasVarianceModel) {

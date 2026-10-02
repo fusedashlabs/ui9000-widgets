@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.0 — 2026-10-02
+
+### Added
+
+- `mode: 'auto'` resolves to light or dark from `prefers-color-scheme`. `resolveElementMode` picks an inline `--ui9000-mode`, then the computed value, then `data-theme`, then the media query.
+- Dark shell tokens (`surface`, `text`, `grid`, `border`) and `fdColors`, so axis, polar, specialty, and map ink can follow the host.
+- Charts redraw when the host theme changes.
+
+### Fixed
+
+- Charts ignored the host theme and stayed on the light card. Dark paint waits until the host writes the surface token, so `data-theme` alone cannot put light ink on a white card.
+
+### Bundle
+
+- Combined entry set: 13.55 KB gz / all dist JS 392.96 KB gz — **GO** (500 KB budget).
+
 ## 0.6.2 — 2026-10-01
 
 ### Fixed

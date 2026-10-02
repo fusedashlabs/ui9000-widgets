@@ -40,7 +40,7 @@ Lit + D3 chart web components for MCP chat. **Do not maintain a per-chart table 
 - Demos: `yarn storybook`
 - History: `CHANGELOG.md`
 
-Docs: [LINE_CHART.md](./docs/LINE_CHART.md) · [LOLLIPOP_CHART.md](./docs/LOLLIPOP_CHART.md) · [STEP_LINE_CHART.md](./docs/STEP_LINE_CHART.md) · [BAR_CHART.md](./docs/BAR_CHART.md) · [DONUT_GROUP_CHART.md](./docs/DONUT_GROUP_CHART.md) · [MAP_DECISION.md](./docs/MAP_DECISION.md) · [HOST_WIRING_AFTER_PORTS.md](./docs/HOST_WIRING_AFTER_PORTS.md)
+Docs: [THEMING.md](./docs/THEMING.md) · [LINE_CHART.md](./docs/LINE_CHART.md) · [LOLLIPOP_CHART.md](./docs/LOLLIPOP_CHART.md) · [STEP_LINE_CHART.md](./docs/STEP_LINE_CHART.md) · [BAR_CHART.md](./docs/BAR_CHART.md) · [DONUT_GROUP_CHART.md](./docs/DONUT_GROUP_CHART.md) · [MAP_DECISION.md](./docs/MAP_DECISION.md) · [HOST_WIRING_AFTER_PORTS.md](./docs/HOST_WIRING_AFTER_PORTS.md)
 
 ## Folder layout (per chart)
 
@@ -76,6 +76,36 @@ el.setAttribute('data', JSON.stringify([
 el.setAttribute('orientation', 'vertical');
 document.body.appendChild(el);
 ```
+
+## Theming
+
+Charts follow the host. Pass `mode: 'light' | 'dark' | 'auto'`. `auto` uses `prefers-color-scheme`. There is no `theme` argument on the chart data.
+
+```ts
+import { applyWidgetContext } from '@fusedashlabs/widgets/context';
+
+applyWidgetContext(document.documentElement, { mode: 'auto' });
+```
+
+`applyWidgetContext` writes the resolved mode (`light` or `dark`, never `auto`) and the `--ui9000-*` variables. A chart paints dark only after `--ui9000-color-surface` is set. `data-theme` alone does not turn the ink light on the white card fallback.
+
+Precedence for the mode a chart reads: inline `--ui9000-mode` on the element or an ancestor, then computed `--ui9000-mode`, then `data-theme="light"|"dark"`, then `prefers-color-scheme`, then light.
+
+| Variable | Light | Dark |
+|---|---|---|
+| `--ui9000-mode` | `light` | `dark` |
+| `--ui9000-color-surface` | `#ffffff` | `#13161D` |
+| `--ui9000-color-surface-muted` | `#f3f4f6` | `#282E37` |
+| `--ui9000-color-text` | `#111827` | `#EFF0F1` |
+| `--ui9000-color-text-muted` | `#6c7584` | `#A4A9B1` |
+| `--ui9000-color-border` | `#e5e7eb` | `#444B57` |
+| `--ui9000-color-grid` | `#afb3bb` | `#444B57` |
+| `--ui9000-color-primary` | `#473DD9` | `#473DD9` |
+| `--ui9000-color-secondary` | `#36C4A5` | `#36C4A5` |
+| `--ui9000-color-background` | `transparent` | `transparent` |
+| `--ui9000-font-family` | system stack | system stack |
+
+Details: [docs/THEMING.md](./docs/THEMING.md).
 
 ## Development
 

@@ -22,6 +22,7 @@ import punchcardMeta from '../../punchcard-chart/metadata.json';
 import radarMeta from '../../radar-chart/metadata.json';
 import radialBarMeta from '../../radial-bar-chart/metadata.json';
 import sankeyMeta from '../../sankey-chart/metadata.json';
+import flowSankeyMeta from '../../flow-sankey-chart/metadata.json';
 import scatterPlotMeta from '../../scatter-plot-chart/metadata.json';
 import scatterSparklineMeta from '../../scatter-sparkline-chart/metadata.json';
 import sparkAreaMeta from '../../spark-area-chart/metadata.json';
@@ -76,6 +77,7 @@ const METADATA: ChartMetadataLike[] = [
   radarMeta,
   radialBarMeta,
   sankeyMeta,
+  flowSankeyMeta,
   scatterPlotMeta,
   scatterSparklineMeta,
   sparkAreaMeta,

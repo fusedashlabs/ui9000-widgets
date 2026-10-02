@@ -100,6 +100,10 @@
       "types": "./dist/components/sankey-chart/index.d.ts",
       "import": "./dist/components/sankey-chart/index.js"
     },
+    "./flow-sankey-chart": {
+      "types": "./dist/components/flow-sankey-chart/index.d.ts",
+      "import": "./dist/components/flow-sankey-chart/index.js"
+    },
     "./parallel-coordinates-chart": {
       "types": "./dist/components/parallel-coordinates-chart/index.d.ts",
       "import": "./dist/components/parallel-coordinates-chart/index.js"
@@ -243,6 +247,10 @@
     "./lazy/sankey-chart": {
       "types": "./dist/lazy/sankey-chart.d.ts",
       "import": "./dist/lazy/sankey-chart.js"
+    },
+    "./lazy/flow-sankey-chart": {
+      "types": "./dist/lazy/flow-sankey-chart.d.ts",
+      "import": "./dist/lazy/flow-sankey-chart.js"
     },
     "./lazy/parallel-coordinates-chart": {
       "types": "./dist/lazy/parallel-coordinates-chart.d.ts",

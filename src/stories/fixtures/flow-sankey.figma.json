@@ -1,0 +1,407 @@
+{
+  "stages": [
+    "Root Cause Category",
+    "Subcategory",
+    "Specific Cause",
+    "Impact/Outcome"
+  ],
+  "subtitle": "Tracing power loss from root cause to output impact",
+  "legendLabel": "Severity",
+  "valueLabel": "Events",
+  "summary": [
+    {
+      "label": "Total Events",
+      "value": "685",
+      "caption": "For 7 days",
+      "icon": "list"
+    },
+    {
+      "label": "Time range",
+      "value": "",
+      "caption": "June 23 - June 29, 2026",
+      "icon": "calendar"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "input-voltage",
+      "label": "Input Voltage",
+      "stage": 0,
+      "icon": "⚡"
+    },
+    {
+      "id": "current-draw",
+      "label": "Current Draw",
+      "stage": 0,
+      "icon": "🔋"
+    },
+    {
+      "id": "power-loss",
+      "label": "Power Loss",
+      "stage": 0,
+      "severity": "low",
+      "icon": "📉"
+    },
+    {
+      "id": "connector-temp",
+      "label": "Connector Temp",
+      "stage": 0,
+      "icon": "🌡"
+    },
+    {
+      "id": "others-unknown",
+      "label": "Others/Unknown",
+      "stage": 0,
+      "icon": "⋯"
+    },
+    {
+      "id": "ac-main-low",
+      "label": "AC Main Low",
+      "stage": 1
+    },
+    {
+      "id": "ac-main-high",
+      "label": "AC Main High",
+      "stage": 1
+    },
+    {
+      "id": "rect-output-low",
+      "label": "Rect. Output Low",
+      "stage": 1
+    },
+    {
+      "id": "cable-loss",
+      "label": "Cable Loss",
+      "stage": 1,
+      "severity": "medium"
+    },
+    {
+      "id": "connector-loss",
+      "label": "Connector Loss",
+      "stage": 1,
+      "severity": "medium"
+    },
+    {
+      "id": "filter-loss",
+      "label": "Filter Loss",
+      "stage": 1
+    },
+    {
+      "id": "other-losses",
+      "label": "Other Losses",
+      "stage": 1
+    },
+    {
+      "id": "ant-connector-high",
+      "label": "Ant. Connector High",
+      "stage": 1
+    },
+    {
+      "id": "pa-connector-high",
+      "label": "PA Connector High",
+      "stage": 1
+    },
+    {
+      "id": "other-connection-high",
+      "label": "Other Connection High",
+      "stage": 1
+    },
+    {
+      "id": "feeder-cable-loss",
+      "label": "Feeder Cable Loss",
+      "stage": 2
+    },
+    {
+      "id": "patch-loss",
+      "label": "Patch Loss",
+      "stage": 2
+    },
+    {
+      "id": "cable-damage",
+      "label": "Cable Damage",
+      "stage": 2,
+      "severity": "medium"
+    },
+    {
+      "id": "lose-connector",
+      "label": "Lose Connector",
+      "stage": 2,
+      "severity": "medium"
+    },
+    {
+      "id": "corroded-connector",
+      "label": "Corroded Connector",
+      "stage": 2,
+      "severity": "medium"
+    },
+    {
+      "id": "improper-installation",
+      "label": "Improper Installation",
+      "stage": 2
+    },
+    {
+      "id": "filter-loss-cause",
+      "label": "Filter Loss",
+      "stage": 2
+    },
+    {
+      "id": "attenuator-fault",
+      "label": "Attenuator Fault",
+      "stage": 2
+    },
+    {
+      "id": "output-voltage-low",
+      "label": "Output Voltage Low",
+      "stage": 3,
+      "severity": "high",
+      "icon": "⚡"
+    },
+    {
+      "id": "output-voltage-normal",
+      "label": "Output Voltage Normal",
+      "stage": 3,
+      "icon": "⚡"
+    },
+    {
+      "id": "output-voltage-high",
+      "label": "Output Voltage High",
+      "stage": 3,
+      "icon": "⚡"
+    },
+    {
+      "id": "output-voltage-unknown",
+      "label": "Output Voltage Unknown",
+      "stage": 3,
+      "icon": "⚡"
+    }
+  ],
+  "links": [
+    {
+      "source": "input-voltage",
+      "target": "ac-main-low",
+      "value": 62
+    },
+    {
+      "source": "input-voltage",
+      "target": "ac-main-high",
+      "value": 28
+    },
+    {
+      "source": "input-voltage",
+      "target": "rect-output-low",
+      "value": 38
+    },
+    {
+      "source": "power-loss",
+      "target": "cable-loss",
+      "value": 58,
+      "severity": "medium"
+    },
+    {
+      "source": "power-loss",
+      "target": "connector-loss",
+      "value": 42,
+      "severity": "medium"
+    },
+    {
+      "source": "power-loss",
+      "target": "filter-loss",
+      "value": 24,
+      "severity": "low"
+    },
+    {
+      "source": "power-loss",
+      "target": "other-losses",
+      "value": 10,
+      "severity": "low"
+    },
+    {
+      "source": "connector-temp",
+      "target": "ant-connector-high",
+      "value": 10
+    },
+    {
+      "source": "connector-temp",
+      "target": "pa-connector-high",
+      "value": 10
+    },
+    {
+      "source": "connector-temp",
+      "target": "other-connection-high",
+      "value": 10
+    },
+    {
+      "source": "ac-main-low",
+      "target": "feeder-cable-loss",
+      "value": 26
+    },
+    {
+      "source": "ac-main-low",
+      "target": "patch-loss",
+      "value": 18
+    },
+    {
+      "source": "cable-loss",
+      "target": "cable-damage",
+      "value": 14,
+      "severity": "medium"
+    },
+    {
+      "source": "connector-loss",
+      "target": "lose-connector",
+      "value": 20,
+      "severity": "medium"
+    },
+    {
+      "source": "connector-loss",
+      "target": "corroded-connector",
+      "value": 14,
+      "severity": "medium"
+    },
+    {
+      "source": "connector-loss",
+      "target": "improper-installation",
+      "value": 8,
+      "severity": "medium"
+    },
+    {
+      "source": "filter-loss",
+      "target": "filter-loss-cause",
+      "value": 14
+    },
+    {
+      "source": "filter-loss",
+      "target": "attenuator-fault",
+      "value": 10
+    },
+    {
+      "source": "feeder-cable-loss",
+      "target": "output-voltage-low",
+      "value": 26,
+      "severity": "high"
+    },
+    {
+      "source": "patch-loss",
+      "target": "output-voltage-low",
+      "value": 18,
+      "severity": "high"
+    },
+    {
+      "source": "cable-damage",
+      "target": "output-voltage-low",
+      "value": 14,
+      "severity": "high"
+    },
+    {
+      "source": "lose-connector",
+      "target": "output-voltage-low",
+      "value": 20,
+      "severity": "high"
+    },
+    {
+      "source": "corroded-connector",
+      "target": "output-voltage-low",
+      "value": 14,
+      "severity": "high"
+    },
+    {
+      "source": "improper-installation",
+      "target": "output-voltage-low",
+      "value": 8,
+      "severity": "medium"
+    },
+    {
+      "source": "filter-loss-cause",
+      "target": "output-voltage-low",
+      "value": 14,
+      "severity": "medium"
+    },
+    {
+      "source": "attenuator-fault",
+      "target": "output-voltage-low",
+      "value": 10,
+      "severity": "medium"
+    },
+    {
+      "source": "cable-loss",
+      "target": "output-voltage-low",
+      "value": 44,
+      "severity": "medium"
+    },
+    {
+      "source": "ac-main-low",
+      "target": "output-voltage-low",
+      "value": 18
+    },
+    {
+      "source": "rect-output-low",
+      "target": "output-voltage-low",
+      "value": 38
+    },
+    {
+      "source": "power-loss",
+      "target": "output-voltage-low",
+      "value": 48
+    },
+    {
+      "source": "input-voltage",
+      "target": "output-voltage-low",
+      "value": 28
+    },
+    {
+      "source": "other-losses",
+      "target": "output-voltage-low",
+      "value": 10
+    },
+    {
+      "source": "others-unknown",
+      "target": "output-voltage-low",
+      "value": 2
+    },
+    {
+      "source": "ac-main-high",
+      "target": "output-voltage-high",
+      "value": 28
+    },
+    {
+      "source": "ant-connector-high",
+      "target": "output-voltage-high",
+      "value": 10
+    },
+    {
+      "source": "pa-connector-high",
+      "target": "output-voltage-high",
+      "value": 10
+    },
+    {
+      "source": "connector-temp",
+      "target": "output-voltage-high",
+      "value": 8
+    },
+    {
+      "source": "other-connection-high",
+      "target": "output-voltage-unknown",
+      "value": 10
+    },
+    {
+      "source": "others-unknown",
+      "target": "output-voltage-unknown",
+      "value": 16
+    },
+    {
+      "source": "current-draw",
+      "target": "output-voltage-normal",
+      "value": 198
+    },
+    {
+      "source": "connector-temp",
+      "target": "output-voltage-normal",
+      "value": 68
+    },
+    {
+      "source": "others-unknown",
+      "target": "output-voltage-normal",
+      "value": 25
+    }
+  ]
+}

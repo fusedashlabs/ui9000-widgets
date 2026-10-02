@@ -9,7 +9,7 @@ import {
   resolvePlotLeftMargin,
 } from '../../../utils/axis-labels.js';
 import { resolveSeriesLegendColor } from '../../../utils/chart-legend.js';
-import { calculateNumTicks, FD } from '../../../utils/fusedash-visual.js';
+import { calculateNumTicks, FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
   BAR_GROUP_INNER_GAP,
   barGroupedBandPadding,
@@ -168,6 +168,7 @@ function renderHorizontalValueTicks(
   tickLabels: string[],
   tickPositions: number[],
   y: number,
+  themeMode: 'light' | 'dark',
 ): void {
   for (const i of selectTickIndices(tickLabels, tickPositions)) {
     const isFirst = i === 0;
@@ -177,7 +178,7 @@ function renderHorizontalValueTicks(
       .attr('x', tickPositions[i])
       .attr('y', y)
       .attr('text-anchor', isFirst ? 'start' : isLast ? 'end' : 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(tickLabels[i]);
   }
@@ -324,7 +325,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
         .attr('y1', y1)
         .attr('x2', x2)
         .attr('y2', y2)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', '1 2')
         .attr('shape-rendering', 'crispEdges');
     };
@@ -353,7 +354,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
       .attr('y1', vertical ? baselinePos : plotTop)
       .attr('x2', vertical ? plotRight : baselinePos)
       .attr('y2', vertical ? baselinePos : plotBottom)
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('shape-rendering', 'crispEdges');
   }
 
@@ -712,7 +713,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
         .attr('x', positions[i])
         .attr('y', plotBottom + 16)
         .attr('text-anchor', isFirst ? 'start' : isLast ? 'end' : 'middle')
-        .attr('fill', FD.axisLabelFill)
+        .attr('fill', fdColors(themeMode).axisLabelFill)
         .attr('font-size', FD.axisLabelSize)
         .text(categories[i]);
     }
@@ -728,9 +729,10 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
           .tickPadding(6)
           .tickFormat(tickFormat),
       );
-    valueAxis.select('.domain').attr('stroke', FD.axisStroke).attr('stroke-dasharray', '1 2');
-    valueAxis.selectAll('.tick line').attr('stroke', FD.axisStroke);
+    valueAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke).attr('stroke-dasharray', '1 2');
+    valueAxis.selectAll('.tick line').attr('stroke', fdColors(themeMode).axisStroke);
     applyLeftGutterYAxisLabels(valueAxis, plotLeft, {
+      themeMode,
       onAxisLabelHover,
       onAxisLabelLeave,
     });
@@ -744,6 +746,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
       .call(axisLeft(bandScale).tickSize(0).tickPadding(8));
     categoryAxis.select('.domain').attr('stroke', 'none');
     applyLeftGutterYAxisLabels(categoryAxis, plotLeft, {
+      themeMode,
       onAxisLabelHover,
       onAxisLabelLeave,
     });
@@ -764,6 +767,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
         tickLabels,
         tickPositions,
         16,
+        themeMode,
       );
       if (xLabel) {
         axisSvg
@@ -771,7 +775,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
           .attr('x', (plotLeft + plotRight) / 2)
           .attr('y', m.bottom + 10)
           .attr('text-anchor', 'middle')
-          .attr('fill', FD.axisLabelFill)
+          .attr('fill', fdColors(themeMode).axisLabelFill)
           .attr('font-size', FD.axisLabelSize)
           .text(xLabel);
       }
@@ -781,6 +785,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
         tickLabels,
         tickPositions,
         plotBottom + 16,
+        themeMode,
       );
     }
   }
@@ -791,7 +796,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
       .attr('x', (plotLeft + plotRight) / 2)
       .attr('y', svgH - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -803,7 +808,7 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

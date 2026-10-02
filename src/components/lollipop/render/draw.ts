@@ -9,6 +9,7 @@ import {
   appendLollipopMarkerVertical,
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
   hexWithAlpha,
   seriesColor as fdSeriesColor,
@@ -31,6 +32,7 @@ export interface RenderLollipopOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   orientation?: LollipopOrientation;
   /** Multi-series only — a single series always renders as the plain lollipop */
   layout?: LollipopLayout;
@@ -76,6 +78,7 @@ export function renderLollipopChart(
     height,
     margin = { ...FD.lollipopMargin },
     theme,
+    themeMode = 'light',
     orientation = 'vertical',
     layout = 'grouped',
     marker = 'rhombus',
@@ -175,7 +178,7 @@ export function renderLollipopChart(
           .attr('x2', bx)
           .attr('y1', plotTop)
           .attr('y2', plotBottom)
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', '1 2')
           .attr('shape-rendering', 'crispEdges');
       }
@@ -187,7 +190,7 @@ export function renderLollipopChart(
           .attr('x2', plotRight)
           .attr('y1', yScale(t))
           .attr('y2', yScale(t))
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', '1 2')
           .attr('shape-rendering', 'crispEdges');
       }
@@ -209,7 +212,7 @@ export function renderLollipopChart(
         .attr('x2', plotRight)
         .attr('y1', yScale(0))
         .attr('y2', yScale(0))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('shape-rendering', 'crispEdges');
     }
 
@@ -298,11 +301,11 @@ export function renderLollipopChart(
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${plotBottom})`)
       .call(axisBottom(xScale).tickSize(0).tickPadding(8));
-    xAxis.select('.domain').attr('stroke', FD.axisStroke);
+    xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
     xAxis.selectAll('line').attr('stroke', 'none');
     xAxis
       .selectAll('text')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .attr('text-anchor', 'middle');
 
@@ -337,9 +340,9 @@ export function renderLollipopChart(
     yAxis.select('.domain').attr('stroke', 'none');
     yAxis
       .selectAll('line')
-      .attr('stroke', FD.axisStroke)
+      .attr('stroke', fdColors(themeMode).axisStroke)
       .attr('stroke-dasharray', '1 2');
-    applyLeftGutterYAxisLabels(yAxis, plotLeft);
+    applyLeftGutterYAxisLabels(yAxis, plotLeft, { themeMode });
   } else {
     // Horizontal: categories on Y, values on X (FuseDash HorizontalLollipop)
     const yScale = scaleBand<string>()
@@ -363,7 +366,7 @@ export function renderLollipopChart(
           .attr('x2', xScale(t))
           .attr('y1', plotTop)
           .attr('y2', plotBottom)
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', '1 2')
           .attr('shape-rendering', 'crispEdges');
       }
@@ -373,7 +376,7 @@ export function renderLollipopChart(
         .attr('x2', xScale(0))
         .attr('y1', plotTop)
         .attr('y2', plotBottom)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('shape-rendering', 'crispEdges');
     }
 
@@ -476,9 +479,9 @@ export function renderLollipopChart(
       .append('g')
       .attr('transform', `translate(${plotLeft},0)`)
       .call(axisLeft(yScale).tickSize(0).tickPadding(8));
-    yAxis.select('.domain').attr('stroke', FD.axisStroke);
+    yAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
     yAxis.selectAll('line').attr('stroke', 'none');
-    applyLeftGutterYAxisLabels(yAxis, plotLeft, axisLabels);
+    applyLeftGutterYAxisLabels(yAxis, plotLeft, { ...axisLabels, themeMode });
 
     const renderValueAxis = (
       target: Selection<SVGGElement, unknown, null, undefined>,
@@ -499,10 +502,10 @@ export function renderLollipopChart(
               return formatCompactNumber(n, decimals);
             }),
         );
-      xAxis.select('.domain').attr('stroke', FD.axisStroke);
+      xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
       xAxis
         .selectAll('text')
-        .attr('fill', FD.axisLabelFill)
+        .attr('fill', fdColors(themeMode).axisLabelFill)
         .attr('font-size', FD.axisLabelSize)
         .attr('text-anchor', 'middle');
 
@@ -530,7 +533,7 @@ export function renderLollipopChart(
           .attr('x', (plotLeft + plotRight) / 2)
           .attr('y', m.bottom - 2)
           .attr('text-anchor', 'middle')
-          .attr('fill', FD.axisLabelFill)
+          .attr('fill', fdColors(themeMode).axisLabelFill)
           .attr('font-size', FD.axisLabelSize)
           .text(xLabel);
       }
@@ -545,7 +548,7 @@ export function renderLollipopChart(
       .attr('x', (plotLeft + plotRight) / 2)
       .attr('y', svgH - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -556,7 +559,7 @@ export function renderLollipopChart(
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

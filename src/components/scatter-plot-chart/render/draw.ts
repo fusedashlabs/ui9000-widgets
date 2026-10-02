@@ -16,6 +16,7 @@ import type { ChartMarkerShape } from '../../../utils/chart-formatting/types.js'
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
 } from '../../../utils/fusedash-visual.js';
 import { paddedLinearDomain } from '../lib/domain.js';
@@ -81,6 +82,7 @@ export function renderScatterPlot(
     margin = { ...FD.scatterMargin },
     xField,
     yField,
+    themeMode = 'light',
     showGrid = true,
     showReferenceLine = false,
     axisDetails,
@@ -106,9 +108,9 @@ export function renderScatterPlot(
 
   const yTicks = calculateNumTicks(innerHeight);
   const xTicks = calculateNumTicks(innerWidth);
-  const gridStroke = FD.gridStroke;
-  const axisStroke = FD.axisStroke;
-  const labelFill = FD.axisLabelFill;
+  const gridStroke = fdColors(themeMode).gridStroke;
+  const axisStroke = fdColors(themeMode).axisStroke;
+  const labelFill = fdColors(themeMode).axisLabelFill;
 
   const svg = select(container)
     .append('svg')

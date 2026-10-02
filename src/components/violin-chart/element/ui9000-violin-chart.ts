@@ -79,6 +79,10 @@ export class Ui9000ViolinChart extends Ui9000ChartElement {
     return model;
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as
       | HTMLElement
@@ -102,6 +106,7 @@ export class Ui9000ViolinChart extends Ui9000ChartElement {
       height,
       margin,
       theme,
+      themeMode: this.themeMode(),
       orientation,
       showGrid: this.showGrid,
       xLabel: this.xLabel || undefined,

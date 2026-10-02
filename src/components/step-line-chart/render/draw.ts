@@ -9,6 +9,7 @@ import { decorateManualAxisLabel, applyLeftGutterYAxisLabels, resolvePlotLeftMar
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
   seriesColor as fdSeriesColor,
 } from '../../../utils/fusedash-visual.js';
@@ -77,6 +78,7 @@ export function renderStepLineChart(
     height,
     margin = { ...FD.stepLineMargin },
     theme,
+    themeMode = 'light',
     grafType = 'none',
     showGrid = true,
     xDomainHint,
@@ -168,7 +170,7 @@ export function renderStepLineChart(
         .attr('x2', px)
         .attr('y1', plotTop)
         .attr('y2', plotBottom)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', '1,2')
         .attr('shape-rendering', 'crispEdges');
     }
@@ -179,7 +181,7 @@ export function renderStepLineChart(
       .attr('x2', plotRight)
       .attr('y1', plotTop)
       .attr('y2', plotBottom)
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('stroke-dasharray', '1,2')
       .attr('shape-rendering', 'crispEdges');
 
@@ -190,7 +192,7 @@ export function renderStepLineChart(
         .attr('x2', plotRight)
         .attr('y1', yScale(t))
         .attr('y2', yScale(t))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', '1,2')
         .attr('shape-rendering', 'crispEdges');
     }
@@ -203,7 +205,7 @@ export function renderStepLineChart(
       .attr('x2', plotRight)
       .attr('y1', yScale(0))
       .attr('y2', yScale(0))
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('shape-rendering', 'crispEdges');
   }
 
@@ -349,7 +351,7 @@ export function renderStepLineChart(
       .attr('x', tickPositions[i])
       .attr('y', plotBottom + 16)
       .attr('text-anchor', isFirst ? 'start' : isLast ? 'end' : 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize);
     decorateManualAxisLabel(tickSel, tickLabels[i], {
       slotWidth,
@@ -375,10 +377,10 @@ export function renderStepLineChart(
   // FuseDash keeps the Y axis line, dashed like the grid
   yAxis
     .select('.domain')
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('stroke-dasharray', '1,2');
-  yAxis.selectAll('.tick line').attr('stroke', FD.axisStroke);
-  applyLeftGutterYAxisLabels(yAxis, plotLeft);
+  yAxis.selectAll('.tick line').attr('stroke', fdColors(themeMode).axisStroke);
+  applyLeftGutterYAxisLabels(yAxis, plotLeft, { themeMode });
 
   if (xLabel) {
     root
@@ -386,7 +388,7 @@ export function renderStepLineChart(
       .attr('x', (plotLeft + plotRight) / 2)
       .attr('y', height - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -398,7 +400,7 @@ export function renderStepLineChart(
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

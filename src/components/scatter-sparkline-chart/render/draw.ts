@@ -24,6 +24,7 @@ import {
   calculateNumTicks,
   calculateScaleLinearDomain,
   FD,
+  fdColors,
   formatCompactNumber,
   seriesColor as fdSeriesColor,
 } from '../../../utils/fusedash-visual.js';
@@ -46,6 +47,7 @@ export interface RenderScatterSparklineOptions extends AxisLabelTooltipHandlers 
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   showGrid?: boolean;
   xDomainHint?: string[];
   showTooltip?: boolean;
@@ -110,6 +112,7 @@ export function renderScatterSparklineChart(
     height,
     margin = { ...FD.sparkLineMargin },
     theme,
+    themeMode = 'light',
     showGrid = true,
     xDomainHint,
     showTooltip = true,
@@ -199,7 +202,7 @@ export function renderScatterSparklineChart(
         .attr('x2', px)
         .attr('y1', plotTop)
         .attr('y2', plotBottom)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', '1,2')
         .attr('shape-rendering', 'crispEdges');
     }
@@ -211,7 +214,7 @@ export function renderScatterSparklineChart(
         .attr('x2', plotRight)
         .attr('y1', yScale(t))
         .attr('y2', yScale(t))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', '1,2')
         .attr('shape-rendering', 'crispEdges');
     }
@@ -223,7 +226,7 @@ export function renderScatterSparklineChart(
       .attr('x2', plotRight)
       .attr('y1', yScale(0))
       .attr('y2', yScale(0))
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('shape-rendering', 'crispEdges');
   }
 
@@ -315,7 +318,7 @@ export function renderScatterSparklineChart(
       .attr('x', tickPositions[i])
       .attr('y', plotBottom + 16)
       .attr('text-anchor', isFirst ? 'start' : isLast ? 'end' : 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize);
     decorateManualAxisLabel(tickSel, tickLabels[i], {
       slotWidth,
@@ -340,10 +343,10 @@ export function renderScatterSparklineChart(
     );
   yAxis
     .select('.domain')
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('stroke-dasharray', '1,2');
-  yAxis.selectAll('.tick line').attr('stroke', FD.axisStroke);
-  applyLeftGutterYAxisLabels(yAxis, plotLeft);
+  yAxis.selectAll('.tick line').attr('stroke', fdColors(themeMode).axisStroke);
+  applyLeftGutterYAxisLabels(yAxis, plotLeft, { themeMode });
 
   const markerLayer = root.append('g').attr('class', 'scatter-markers');
   for (const point of scatterPoints) {

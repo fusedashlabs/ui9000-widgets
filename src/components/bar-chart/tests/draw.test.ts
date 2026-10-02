@@ -358,4 +358,15 @@ describe('renderBarChart', () => {
       expect(box.height).toBeCloseTo(24, 0);
     }
   });
+
+  it('paints dark axes with the shell neutrals', () => {
+    const svg = render(single, { themeMode: 'dark' });
+    const domain = svg.querySelector('.domain');
+    const label = svg.querySelector('text');
+    expect(domain?.getAttribute('stroke')?.toLowerCase()).toBe('#444b57');
+    expect(label?.getAttribute('fill')?.toLowerCase()).toBe('#a4a9b1');
+    const painted = svg.innerHTML.toLowerCase();
+    expect(painted).not.toContain('#afb3bb');
+    expect(painted).not.toContain('#6c7584');
+  });
 });

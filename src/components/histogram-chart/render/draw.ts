@@ -8,6 +8,7 @@ import { applyLeftGutterYAxisLabels, resolvePlotLeftMargin } from '../../../util
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
   seriesColor as fdSeriesColor,
 } from '../../../utils/fusedash-visual.js';
@@ -24,6 +25,7 @@ export interface RenderHistogramOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   showGrid?: boolean;
   xLabel?: string;
   yLabel?: string;
@@ -63,6 +65,7 @@ export function renderHistogramChart(
     height,
     margin = { ...FD.histogramMargin },
     theme,
+    themeMode = 'light',
     showGrid = true,
     xLabel,
     yLabel,
@@ -127,7 +130,7 @@ export function renderHistogramChart(
         .attr('x2', plotW)
         .attr('y1', yScale(t))
         .attr('y2', yScale(t))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('stroke-width', 1)
         .attr('shape-rendering', 'crispEdges');
@@ -143,7 +146,7 @@ export function renderHistogramChart(
         .attr('x2', xLinear(t))
         .attr('y1', 0)
         .attr('y2', plotH)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('stroke-width', 1)
         .attr('shape-rendering', 'crispEdges');
@@ -221,9 +224,9 @@ export function renderHistogramChart(
     );
   yAxis
     .select('.domain')
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('stroke-dasharray', FD.gridDash);
-  applyLeftGutterYAxisLabels(yAxis, m.left);
+  applyLeftGutterYAxisLabels(yAxis, m.left, { themeMode });
 
   yAxis
     .selectAll('.tick')
@@ -233,7 +236,7 @@ export function renderHistogramChart(
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', 0)
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('stroke-width', 1);
 
   // x-axis (linear domain)
@@ -252,10 +255,10 @@ export function renderHistogramChart(
           return formatCompactNumber(n, decimals);
         }),
     );
-  xAxis.select('.domain').attr('stroke', FD.axisStroke);
+  xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
   xAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize)
     .attr('text-anchor', 'middle');
 
@@ -272,7 +275,7 @@ export function renderHistogramChart(
       .attr('x', plotW / 2)
       .attr('y', plotH + m.bottom - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -282,7 +285,7 @@ export function renderHistogramChart(
       .attr('x', 4)
       .attr('y', -4)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

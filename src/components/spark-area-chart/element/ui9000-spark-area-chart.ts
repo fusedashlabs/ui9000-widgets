@@ -92,6 +92,10 @@ export class Ui9000SparkAreaChart extends Ui9000ChartElement {
     return renderChartLegend(entries);
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
     if (!root) return;
@@ -112,6 +116,7 @@ export class Ui9000SparkAreaChart extends Ui9000ChartElement {
       height,
       margin,
       theme,
+      themeMode: this.themeMode(),
       showGrid: this.showGrid,
       showArea: true,
       xDomainHint: this.xDomainHint(),

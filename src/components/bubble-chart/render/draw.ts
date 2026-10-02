@@ -8,6 +8,7 @@ import { bubbleRadiusForValue, PUNCHCARD_MIN_LABEL_RADIUS } from '../../../utils
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
   lightenColor,
 } from '../../../utils/fusedash-visual.js';
@@ -20,6 +21,7 @@ export interface RenderBubbleChartOptions {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   showGrid?: boolean;
   showTooltip?: boolean;
   onHover?: (payload: { point: BubblePoint; event: MouseEvent }) => void;
@@ -67,6 +69,7 @@ export function renderBubbleChart(
         left: base.left,
       };
     })(),
+    themeMode = 'light',
     showGrid = true,
     showTooltip = true,
     onHover,
@@ -91,9 +94,9 @@ export function renderBubbleChart(
 
   const yTicks = calculateNumTicks(innerHeight);
   const xTicks = calculateNumTicks(innerWidth);
-  const gridStroke = FD.gridStroke;
-  const axisStroke = FD.axisStroke;
-  const labelFill = FD.axisLabelFill;
+  const gridStroke = fdColors(themeMode).gridStroke;
+  const axisStroke = fdColors(themeMode).axisStroke;
+  const labelFill = fdColors(themeMode).axisLabelFill;
 
   const svg = select(container)
     .append('svg')

@@ -16,6 +16,7 @@ import {
   calculateNumTicks,
   calculateScaleLinearDomain,
   FD,
+  fdColors,
   formatCompactNumber,
   type MarkerShape,
   seriesColor as fdSeriesColor,
@@ -191,7 +192,7 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
         .attr('x2', x)
         .attr('y1', plotTop)
         .attr('y2', plotBottom)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -202,7 +203,7 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
         .attr('x2', plotRight)
         .attr('y1', yScale(t))
         .attr('y2', yScale(t))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -212,7 +213,7 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
       .attr('x2', plotRight)
       .attr('y1', plotTop)
       .attr('y2', plotBottom)
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('stroke-dasharray', FD.gridDash)
       .attr('shape-rendering', 'crispEdges');
 
@@ -223,7 +224,7 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
         .attr('x2', plotRight)
         .attr('y1', zeroY)
         .attr('y2', zeroY)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('shape-rendering', 'crispEdges');
     }
   }
@@ -322,11 +323,11 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
     .attr('class', 'x-axis')
     .attr('transform', `translate(0,${plotBottom})`)
     .call(axisBottom(xScale).tickSize(0).tickPadding(8).tickFormat((d) => String(d)));
-  xAxis.select('.domain').attr('stroke', FD.axisStroke);
+  xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
   xAxis.selectAll('line').attr('stroke', 'none');
   xAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize)
     .attr('text-anchor', 'middle');
 
@@ -356,8 +357,8 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
         }),
     );
   yAxis.select('.domain').attr('stroke', 'none');
-  yAxis.selectAll('line').attr('stroke', FD.axisStroke).attr('stroke-dasharray', FD.gridDash);
-  applyLeftGutterYAxisLabels(yAxis, plotLeft);
+  yAxis.selectAll('line').attr('stroke', fdColors(themeMode).axisStroke).attr('stroke-dasharray', FD.gridDash);
+  applyLeftGutterYAxisLabels(yAxis, plotLeft, { themeMode });
 
   if (xLabel) {
     root
@@ -365,7 +366,7 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
       .attr('x', (plotLeft + plotRight) / 2)
       .attr('y', height - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -376,7 +377,7 @@ export function renderAreaChart(container: HTMLElement, options: RenderAreaChart
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

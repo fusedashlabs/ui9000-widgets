@@ -91,6 +91,10 @@ export class Ui9000WaterfallChart extends Ui9000ChartElement {
     );
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const root = this.shadowRoot?.querySelector('.chart-root') as
       | HTMLElement
@@ -114,6 +118,7 @@ export class Ui9000WaterfallChart extends Ui9000ChartElement {
       height,
       margin,
       theme,
+      themeMode: this.themeMode(),
       orientation,
       showGrid: this.showGrid,
       xLabel: this.xLabel || undefined,

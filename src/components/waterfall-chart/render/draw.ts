@@ -12,6 +12,7 @@ import {
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
 } from '../../../utils/fusedash-visual.js';
 import {
@@ -28,6 +29,7 @@ export interface RenderWaterfallOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   orientation?: WaterfallOrientation;
   showGrid?: boolean;
   xLabel?: string;
@@ -196,6 +198,7 @@ export function renderWaterfallChart(
     width,
     height,
     theme,
+    themeMode = 'light',
     orientation = model.orientation,
     showGrid = true,
     onStepHover,
@@ -378,7 +381,7 @@ export function renderWaterfallChart(
         )
         .call((sel) => sel.select('.domain').remove())
         .selectAll('line')
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('stroke-width', '1px');
 
@@ -391,7 +394,7 @@ export function renderWaterfallChart(
         )
         .call((sel) => sel.select('.domain').remove())
         .selectAll('line')
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('stroke-width', '1px')
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`);
@@ -410,13 +413,13 @@ export function renderWaterfallChart(
       .call((sel) =>
         sel
           .select('.domain')
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', FD.gridDash),
       );
 
     yAxis
       .selectAll('text')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .attr('text-anchor', 'start')
       .attr('dx', `-${m.left - 12}px`);
@@ -429,7 +432,7 @@ export function renderWaterfallChart(
       .attr('x2', 0)
       .attr('y1', 0)
       .attr('y2', 0)
-      .attr('stroke', FD.axisStroke)
+      .attr('stroke', fdColors(themeMode).axisStroke)
       .attr('stroke-width', '1px');
 
     const xAxis = g
@@ -442,7 +445,7 @@ export function renderWaterfallChart(
           .tickSize(0)
           .tickPadding(12),
       )
-      .call((sel) => sel.select('.domain').attr('stroke', FD.axisStroke));
+      .call((sel) => sel.select('.domain').attr('stroke', fdColors(themeMode).axisStroke));
 
     decorateAxisLabels(xAxis, {
       maxLength: 10,
@@ -450,7 +453,7 @@ export function renderWaterfallChart(
     });
     xAxis
       .selectAll('text')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize);
 
     const bar = g
@@ -542,7 +545,7 @@ export function renderWaterfallChart(
       })
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', '10px')
       .attr('pointer-events', 'none')
       .text((d) => formatSignedDiff(d.difference, d.vector));
@@ -559,7 +562,7 @@ export function renderWaterfallChart(
       })
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', '10px')
       .attr('pointer-events', 'none')
       .text((d) => formatCompactNumber(d.difference));
@@ -589,7 +592,7 @@ export function renderWaterfallChart(
       .call(yGrid)
       .call((sel) => sel.select('.domain').remove())
       .selectAll('line')
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('stroke-dasharray', FD.gridDash)
       .attr('stroke-width', '1px')
       .attr('transform', `translate(0, -${yScale.bandwidth() / 2})`);
@@ -604,7 +607,7 @@ export function renderWaterfallChart(
       )
       .call((sel) => sel.select('.domain').remove())
       .selectAll('line')
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', fdColors(themeMode).gridStroke)
       .attr('stroke-dasharray', FD.gridDash)
       .attr('stroke-width', '1px');
   }
@@ -622,11 +625,12 @@ export function renderWaterfallChart(
     .call((sel) =>
       sel
         .select('.domain')
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash),
     );
 
   applyLeftGutterYAxisLabels(yAxis, m.left, {
+    themeMode,
     maxLength: MAX_Y_LABEL_LEN,
     ...axisHandlers,
   });
@@ -642,10 +646,10 @@ export function renderWaterfallChart(
         .tickPadding(8)
         .tickFormat((v) => formatCompactNumber(v as number)),
     )
-    .call((sel) => sel.select('.domain').attr('stroke', FD.axisStroke));
+    .call((sel) => sel.select('.domain').attr('stroke', fdColors(themeMode).axisStroke));
 
   const xTexts = xAxis.selectAll<SVGTextElement, unknown>('text');
-  xTexts.attr('fill', FD.axisLabelFill).attr('font-size', FD.axisLabelSize);
+  xTexts.attr('fill', fdColors(themeMode).axisLabelFill).attr('font-size', FD.axisLabelSize);
   const lastTick = xTexts.nodes().at(-1);
   if (lastTick) select(lastTick).attr('dx', -5);
 
@@ -737,7 +741,7 @@ export function renderWaterfallChart(
     .attr('y', (d) => (yScale(d.label) ?? 0) + yScale.bandwidth() / 2)
     .attr('text-anchor', (d) => (d.vector === 'positive' ? 'end' : 'start'))
     .attr('dominant-baseline', 'middle')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', '10px')
     .attr('pointer-events', 'none')
     .text((d) => formatSignedDiff(d.difference, d.vector));
@@ -753,7 +757,7 @@ export function renderWaterfallChart(
     .attr('y', (d) => (yScale(d.label) ?? 0) + yScale.bandwidth() / 2)
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', '10px')
     .attr('pointer-events', 'none')
     .text((d) => formatCompactNumber(d.difference));

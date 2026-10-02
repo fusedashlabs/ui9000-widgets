@@ -1,7 +1,7 @@
 import type { Selection } from 'd3-selection';
 import { select } from 'd3-selection';
 
-import { FD } from './fusedash-visual.js';
+import { FD, fdColors } from './fusedash-visual.js';
 import { effectiveLabelLimit, truncateString } from './truncate.js';
 
 export type AxisLabelTooltipHandlers = {
@@ -10,6 +10,7 @@ export type AxisLabelTooltipHandlers = {
 };
 
 export interface DecorateAxisLabelsOptions extends AxisLabelTooltipHandlers {
+  themeMode?: 'light' | 'dark';
   /** Client default: 25 */
   maxLength?: number;
   /** Band width for categorical ticks — caps length by available space */
@@ -129,9 +130,10 @@ export function applyLeftGutterYAxisLabels(
   plotLeft: number,
   options?: DecorateAxisLabelsOptions,
 ): void {
+  const mode = options?.themeMode === 'dark' ? 'dark' : 'light';
   axisGroup
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(mode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize);
   if (options) {
     decorateAxisLabels(axisGroup, {

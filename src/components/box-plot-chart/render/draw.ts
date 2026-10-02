@@ -12,6 +12,7 @@ import {
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
   seriesColor as fdSeriesColor,
 } from '../../../utils/fusedash-visual.js';
@@ -35,6 +36,7 @@ export interface RenderBoxPlotOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   orientation?: BoxPlotOrientation;
   showGrid?: boolean;
   /** When set, horizontal x-axis renders here (fixed below scroll). */
@@ -49,9 +51,6 @@ export interface RenderBoxPlotOptions extends AxisLabelTooltipHandlers {
 }
 
 const OUTLIER_RADIUS = 3;
-const MEDIAN_STROKE = FD.axisLabelFill;
-const WHISKER_STROKE = FD.axisLabelFill;
-const MEDIAN_STROKE_WIDTH = 2;
 
 function resolveGroupColor(
   groupIndex: number,
@@ -136,6 +135,7 @@ function renderHorizontalValueAxis(
   host: Selection<SVGGElement, unknown, null, undefined>,
   xScale: ScaleLinear<number, number>,
   xTicks: number[],
+  themeMode: 'light' | 'dark',
 ): void {
   host
     .call(
@@ -149,11 +149,11 @@ function renderHorizontalValueAxis(
           return formatCompactNumber(n, decimals);
         }),
     )
-    .call((g) => g.select('.domain').attr('stroke', FD.axisStroke));
+    .call((g) => g.select('.domain').attr('stroke', fdColors(themeMode).axisStroke));
 
   host
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize)
     .attr('text-anchor', 'middle');
 
@@ -180,6 +180,7 @@ export function renderBoxPlotChart(
     height,
     margin = { ...FD.boxPlotMargin },
     theme,
+    themeMode = 'light',
     orientation = model.orientation ?? 'vertical',
     showGrid = true,
     xAxisContainer = null,
@@ -293,7 +294,7 @@ export function renderBoxPlotChart(
           .attr('x2', cx)
           .attr('y1', 0)
           .attr('y2', plotH)
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', '1 2')
           .attr('shape-rendering', 'crispEdges');
       }
@@ -304,7 +305,7 @@ export function renderBoxPlotChart(
           .attr('x2', plotW)
           .attr('y1', yScale(t))
           .attr('y2', yScale(t))
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', '1 2')
           .attr('shape-rendering', 'crispEdges');
       }
@@ -315,7 +316,7 @@ export function renderBoxPlotChart(
           .attr('x2', plotW)
           .attr('y1', yScale(0))
           .attr('y2', yScale(0))
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('shape-rendering', 'crispEdges');
       }
     }
@@ -345,7 +346,7 @@ export function renderBoxPlotChart(
           .attr('x2', cx)
           .attr('y1', yHi)
           .attr('y2', yLo)
-          .attr('stroke', WHISKER_STROKE)
+          .attr('stroke', fdColors(themeMode).axisLabelFill)
           .attr('stroke-width', 1);
 
         const capW = BIN_SIZE / 2 - 2;
@@ -357,7 +358,7 @@ export function renderBoxPlotChart(
             .attr('x2', cx + capW)
             .attr('y1', y)
             .attr('y2', y)
-            .attr('stroke', WHISKER_STROKE)
+            .attr('stroke', fdColors(themeMode).axisLabelFill)
             .attr('stroke-width', 1);
         }
 
@@ -377,8 +378,8 @@ export function renderBoxPlotChart(
           .attr('x2', cx + BIN_SIZE / 2 - 2)
           .attr('y1', yMed)
           .attr('y2', yMed)
-          .attr('stroke', MEDIAN_STROKE)
-          .attr('stroke-width', MEDIAN_STROKE_WIDTH);
+          .attr('stroke', fdColors(themeMode).axisLabelFill)
+          .attr('stroke-width', 2);
 
         for (const ov of box.outliers ?? []) {
           if (!Number.isFinite(ov)) continue;
@@ -389,7 +390,7 @@ export function renderBoxPlotChart(
             .attr('cy', yScale(ov))
             .attr('r', OUTLIER_RADIUS)
             .attr('fill', 'transparent')
-            .attr('stroke', WHISKER_STROKE)
+            .attr('stroke', fdColors(themeMode).axisLabelFill)
             .attr('stroke-width', 1);
         }
 
@@ -402,11 +403,11 @@ export function renderBoxPlotChart(
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${plotH})`)
       .call(axisBottom(xScale).tickSize(0).tickPadding(8));
-    xAxis.select('.domain').attr('stroke', FD.axisStroke);
+    xAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
     xAxis.selectAll('line').attr('stroke', 'none');
     xAxis
       .selectAll('text')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .attr('text-anchor', 'middle');
     decorateAxisLabels(xAxis, {
@@ -431,9 +432,9 @@ export function renderBoxPlotChart(
     yAxis.select('.domain').attr('stroke', 'none');
     yAxis
       .selectAll('line')
-      .attr('stroke', FD.axisStroke)
+      .attr('stroke', fdColors(themeMode).axisStroke)
       .attr('stroke-dasharray', '1 2');
-    applyLeftGutterYAxisLabels(yAxis, m.left);
+    applyLeftGutterYAxisLabels(yAxis, m.left, { themeMode });
   } else {
     const yScale = scaleBand<string>()
       .domain(labels)
@@ -457,7 +458,7 @@ export function renderBoxPlotChart(
           .attr('x2', xScale(t))
           .attr('y1', 0)
           .attr('y2', plotH)
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('stroke-dasharray', '1 2')
           .attr('shape-rendering', 'crispEdges');
       }
@@ -468,7 +469,7 @@ export function renderBoxPlotChart(
           .attr('x2', xScale(0))
           .attr('y1', 0)
           .attr('y2', plotH)
-          .attr('stroke', FD.gridStroke)
+          .attr('stroke', fdColors(themeMode).gridStroke)
           .attr('shape-rendering', 'crispEdges');
       }
 
@@ -482,7 +483,7 @@ export function renderBoxPlotChart(
         )
         .call((g) => g.select('.domain').remove())
         .selectAll('line')
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', '1 2')
         .attr('shape-rendering', 'crispEdges')
         .attr('transform', `translate(0, ${-yScale.bandwidth() / 2})`);
@@ -513,7 +514,7 @@ export function renderBoxPlotChart(
           .attr('x2', xHi)
           .attr('y1', cy)
           .attr('y2', cy)
-          .attr('stroke', WHISKER_STROKE)
+          .attr('stroke', fdColors(themeMode).axisLabelFill)
           .attr('stroke-width', 1);
 
         const capH = BIN_SIZE / 2 - 2;
@@ -525,7 +526,7 @@ export function renderBoxPlotChart(
             .attr('x2', x)
             .attr('y1', cy - capH)
             .attr('y2', cy + capH)
-            .attr('stroke', WHISKER_STROKE)
+            .attr('stroke', fdColors(themeMode).axisLabelFill)
             .attr('stroke-width', 1);
         }
 
@@ -545,8 +546,8 @@ export function renderBoxPlotChart(
           .attr('x2', xMed)
           .attr('y1', cy - BIN_SIZE / 2 + 2)
           .attr('y2', cy + BIN_SIZE / 2 - 2)
-          .attr('stroke', MEDIAN_STROKE)
-          .attr('stroke-width', MEDIAN_STROKE_WIDTH);
+          .attr('stroke', fdColors(themeMode).axisLabelFill)
+          .attr('stroke-width', 2);
 
         for (const ov of box.outliers ?? []) {
           if (!Number.isFinite(ov)) continue;
@@ -557,7 +558,7 @@ export function renderBoxPlotChart(
             .attr('cy', cy)
             .attr('r', OUTLIER_RADIUS)
             .attr('fill', 'transparent')
-            .attr('stroke', WHISKER_STROKE)
+            .attr('stroke', fdColors(themeMode).axisLabelFill)
             .attr('stroke-width', 1);
         }
 
@@ -569,8 +570,8 @@ export function renderBoxPlotChart(
       .append('g')
       .attr('class', 'y-axis')
       .call(axisLeft(yScale).tickSize(0).tickPadding(8));
-    yAxis.select('.domain').attr('stroke', FD.axisStroke);
-    applyLeftGutterYAxisLabels(yAxis, m.left, axisLabels);
+    yAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke);
+    applyLeftGutterYAxisLabels(yAxis, m.left, { ...axisLabels, themeMode });
 
     if (fixedBottomAxis && xAxisContainer) {
       const axisSvg = select(xAxisContainer)
@@ -588,6 +589,7 @@ export function renderBoxPlotChart(
           .attr('transform', `translate(${m.left},0)`),
         xScale,
         xTicks,
+        themeMode,
       );
 
       if (xLabel) {
@@ -596,7 +598,7 @@ export function renderBoxPlotChart(
           .attr('x', m.left + plotW / 2)
           .attr('y', m.bottom - 2)
           .attr('text-anchor', 'middle')
-          .attr('fill', FD.axisLabelFill)
+          .attr('fill', fdColors(themeMode).axisLabelFill)
           .attr('font-size', FD.axisLabelSize)
           .text(xLabel);
       }
@@ -608,6 +610,7 @@ export function renderBoxPlotChart(
           .attr('transform', `translate(0,${plotH})`),
         xScale,
         xTicks,
+        themeMode,
       );
     }
   }
@@ -618,7 +621,7 @@ export function renderBoxPlotChart(
       .attr('x', m.left + plotW / 2)
       .attr('y', svgH - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -629,7 +632,7 @@ export function renderBoxPlotChart(
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

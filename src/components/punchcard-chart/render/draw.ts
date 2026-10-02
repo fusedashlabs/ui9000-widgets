@@ -19,7 +19,7 @@ import {
   punchcardScaledRadius,
   SEQUENTIAL_1,
 } from '../../../utils/fuse-palette.js';
-import { FD } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
   formatCompact,
   type PunchcardCell,
@@ -34,6 +34,7 @@ export interface RenderPunchcardOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   showGrid?: boolean;
   xLabel?: string;
   yLabel?: string;
@@ -57,6 +58,7 @@ export function renderPunchcardChart(
     height,
     margin = { ...FD.punchcardMargin },
     theme,
+    themeMode = 'light',
     showGrid = true,
     xLabel,
     yLabel,
@@ -169,7 +171,7 @@ export function renderPunchcardChart(
         .attr('x2', cx)
         .attr('y1', 0)
         .attr('y2', innerH)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -184,7 +186,7 @@ export function renderPunchcardChart(
         .attr('x2', innerW)
         .attr('y1', cy)
         .attr('y2', cy)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -198,7 +200,7 @@ export function renderPunchcardChart(
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', innerH)
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('shape-rendering', 'crispEdges');
   frame
     .append('line')
@@ -206,7 +208,7 @@ export function renderPunchcardChart(
     .attr('x2', innerW)
     .attr('y1', innerH)
     .attr('y2', innerH)
-    .attr('stroke', FD.axisStroke)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('shape-rendering', 'crispEdges');
 
   const layer = plot.append('g').attr('class', 'bubbles');
@@ -273,7 +275,7 @@ export function renderPunchcardChart(
   yAxis.selectAll('line').attr('stroke', 'none');
   yAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize);
 
   decorateAxisLabels(yAxis, {
@@ -291,7 +293,7 @@ export function renderPunchcardChart(
   xAxis.selectAll('line').attr('stroke', 'none');
   xAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize)
     .attr('text-anchor', 'middle');
 
@@ -314,7 +316,7 @@ export function renderPunchcardChart(
       .attr('x', m.left + innerW / 2)
       .attr('y', height - 2)
       .attr('text-anchor', 'middle')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(xLabel);
   }
@@ -325,7 +327,7 @@ export function renderPunchcardChart(
       .attr('x', 4)
       .attr('y', 11)
       .attr('text-anchor', 'start')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize)
       .text(yLabel);
   }

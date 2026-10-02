@@ -15,6 +15,7 @@ import {
 import {
   calculateNumTicks,
   FD,
+  fdColors,
   formatCompactNumber,
   seriesColor as fdSeriesColor,
 } from '../../../utils/fusedash-visual.js';
@@ -36,6 +37,7 @@ export interface RenderViolinOptions extends AxisLabelTooltipHandlers {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   theme: WidgetTheme;
+  themeMode?: 'light' | 'dark';
   orientation?: ViolinOrientation;
   showGrid?: boolean;
   xLabel?: string;
@@ -45,7 +47,6 @@ export interface RenderViolinOptions extends AxisLabelTooltipHandlers {
 const BAND_PADDING = 0.2;
 const FILL_OPACITY = 0.18;
 const BOX_OPACITY = 0.25;
-const AXIS_TICK_STROKE = '#939ba7';
 const BOTTOM_TICK_PAD = 8;
 const MAX_CATEGORY_LABEL = 25;
 const MAX_HORIZONTAL_Y_LABEL = 5;
@@ -183,7 +184,7 @@ function drawBoxOverlayHorizontal(
     .attr('stroke-width', 1);
 }
 
-function appendYTickLines(plot: PlotG): void {
+function appendYTickLines(plot: PlotG, themeMode: 'light' | 'dark'): void {
   plot
     .selectAll('.y-axis .tick')
     .append('line')
@@ -192,7 +193,7 @@ function appendYTickLines(plot: PlotG): void {
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', 0)
-    .attr('stroke', AXIS_TICK_STROKE)
+    .attr('stroke', fdColors(themeMode).axisStroke)
     .attr('stroke-width', '1px');
 }
 
@@ -209,6 +210,7 @@ export function renderViolinChart(
     width,
     height,
     theme,
+    themeMode = 'light',
     orientation = model.orientation ?? 'vertical',
     showGrid = true,
     onAxisLabelHover,
@@ -281,7 +283,7 @@ export function renderViolinChart(
         .attr('x2', plotW)
         .attr('y1', (d) => yScale(d))
         .attr('y2', (d) => yScale(d))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
 
@@ -295,7 +297,7 @@ export function renderViolinChart(
         )
         .call((g) => g.select('.domain').remove())
         .selectAll('line')
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('stroke-width', 1)
         .attr('shape-rendering', 'crispEdges');
@@ -311,11 +313,11 @@ export function renderViolinChart(
           .tickSize(0)
           .tickPadding(BOTTOM_TICK_PAD),
       )
-      .call((g) => g.selectAll('.domain').attr('stroke', FD.axisStroke));
+      .call((g) => g.selectAll('.domain').attr('stroke', fdColors(themeMode).axisStroke));
 
     xAxis
       .selectAll('text')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize);
     decorateAxisLabels(xAxis, {
       maxLength: MAX_CATEGORY_LABEL,
@@ -336,10 +338,11 @@ export function renderViolinChart(
       .call((g) => g.select('.domain').remove());
 
     applyLeftGutterYAxisLabels(yAxis, m.left, {
+      themeMode,
       maxLength: MAX_CATEGORY_LABEL,
       ...axisHandlers,
     });
-    appendYTickLines(plot);
+    appendYTickLines(plot, themeMode);
 
     model.groups.forEach((group, gi) => {
       const color = resolveColor(group, gi, theme);
@@ -402,7 +405,7 @@ export function renderViolinChart(
         .attr('x2', (d) => xScale(d))
         .attr('y1', 0)
         .attr('y2', plotH)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
 
@@ -416,7 +419,7 @@ export function renderViolinChart(
         )
         .call((g) => g.select('.domain').remove())
         .selectAll('line')
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('stroke-width', 1)
         .attr('shape-rendering', 'crispEdges');
@@ -434,11 +437,11 @@ export function renderViolinChart(
           .tickPadding(BOTTOM_TICK_PAD)
           .tickFormat((d) => formatCompactNumber(Number(d))),
       )
-      .call((g) => g.selectAll('.domain').attr('stroke', FD.axisStroke));
+      .call((g) => g.selectAll('.domain').attr('stroke', fdColors(themeMode).axisStroke));
 
     xAxis
       .selectAll('text')
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('font-size', FD.axisLabelSize);
     decorateAxisLabels(xAxis, {
       maxLength: MAX_HORIZONTAL_Y_LABEL,
@@ -452,11 +455,12 @@ export function renderViolinChart(
       .call((g) => g.select('.domain').remove());
 
     applyLeftGutterYAxisLabels(yAxis, m.left, {
+      themeMode,
       maxLength: MAX_HORIZONTAL_Y_LABEL,
       slotWidth: undefined,
       ...axisHandlers,
     });
-    appendYTickLines(plot);
+    appendYTickLines(plot, themeMode);
 
     model.groups.forEach((group, gi) => {
       const color = resolveColor(group, gi, theme);

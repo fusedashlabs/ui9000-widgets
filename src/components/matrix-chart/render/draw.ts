@@ -12,7 +12,7 @@ import {
   SEQUENTIAL_1,
   type SequentialColorRange,
 } from '../../../utils/fuse-palette.js';
-import { FD } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import type { MatrixCell, MatrixModel } from '../lib/index.js';
 
 const NO_DATA_PATTERN_ID = 'ui9000-matrix-no-data';
@@ -169,6 +169,7 @@ function renderTopAxis(
   axisWidth: number,
   maxExtent: number,
   axisLabels: AxisLabelTooltipHandlers,
+  themeMode: 'light' | 'dark',
 ): number {
   const available = axisWidth / Math.max(xDomain.length, 1);
   const baselineY = -FD.matrixTopTickLength;
@@ -179,7 +180,7 @@ function renderTopAxis(
       .append('text')
       .attr('y', baselineY)
       .attr('font-size', FD.axisLabelSize)
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('text-anchor', 'middle');
     decorateManualAxisLabel(text, category, {
       maxLength: FD.matrixTopLabelMaxChars,
@@ -256,6 +257,7 @@ function renderYAxis(
   yScale: ReturnType<typeof scaleBand<string>>,
   gutter: number,
   axisLabels: AxisLabelTooltipHandlers,
+  themeMode: 'light' | 'dark',
 ): void {
   for (const category of yDomain) {
     const band = yScale(category);
@@ -265,7 +267,7 @@ function renderYAxis(
       .attr('x', -gutter)
       .attr('y', band + yScale.bandwidth() / 2 + 3)
       .attr('font-size', FD.axisLabelSize)
-      .attr('fill', FD.axisLabelFill)
+      .attr('fill', fdColors(themeMode).axisLabelFill)
       .attr('text-anchor', 'start')
       .style('dominant-baseline', 'middle');
     decorateManualAxisLabel(text, category, {
@@ -376,6 +378,7 @@ export function renderMatrixChart(
     yScale,
     margin.left,
     axisLabels,
+    themeMode,
   );
 
   if (!layout.separateTopAxis) {
@@ -386,6 +389,7 @@ export function renderMatrixChart(
       xMax,
       layout.topAxisHeight,
       axisLabels,
+      themeMode,
     );
     return;
   }
@@ -419,6 +423,7 @@ export function renderMatrixChart(
     width,
     maxExtent,
     axisLabels,
+    themeMode,
   );
   const axisHeight = Math.min(
     Math.max(layout.topAxisHeight, Math.ceil(needed)),

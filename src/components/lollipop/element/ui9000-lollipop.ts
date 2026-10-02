@@ -136,6 +136,10 @@ export class Ui9000Lollipop extends Ui9000ChartElement {
     );
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const chartBody = this.shadowRoot?.querySelector('.chart-body') as
       | HTMLElement
@@ -178,6 +182,7 @@ export class Ui9000Lollipop extends Ui9000ChartElement {
       height: scrollViewportH,
       margin,
       theme,
+      themeMode: this.themeMode(),
       orientation: this.orientation,
       layout,
       marker: this.marker,

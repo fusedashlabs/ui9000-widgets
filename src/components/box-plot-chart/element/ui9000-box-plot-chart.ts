@@ -98,6 +98,10 @@ export class Ui9000BoxPlotChart extends Ui9000ChartElement {
     return model;
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private draw(): void {
     const chartBody = this.shadowRoot?.querySelector('.chart-body') as
       | HTMLElement
@@ -143,6 +147,7 @@ export class Ui9000BoxPlotChart extends Ui9000ChartElement {
       height: scrollViewportH,
       margin,
       theme,
+      themeMode: this.themeMode(),
       orientation: this.orientation,
       showGrid: this.showGrid,
       xAxisContainer: needsFixedXAxis ? xAxisRoot : null,

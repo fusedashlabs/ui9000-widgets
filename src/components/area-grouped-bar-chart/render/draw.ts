@@ -14,6 +14,7 @@ import {
   appendLineMarker,
   calculateNumTicks,
   FD,
+  fdColors,
 } from '../../../utils/fusedash-visual.js';
 import {
   areaGroupedBarYDomain,
@@ -161,7 +162,7 @@ export function renderAreaGroupedBarChart(
         .attr('x2', x)
         .attr('y1', plotTop)
         .attr('y2', plotBottom)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -172,7 +173,7 @@ export function renderAreaGroupedBarChart(
         .attr('x2', plotRight)
         .attr('y1', yScale(t))
         .attr('y2', yScale(t))
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('stroke-dasharray', FD.gridDash)
         .attr('shape-rendering', 'crispEdges');
     }
@@ -184,7 +185,7 @@ export function renderAreaGroupedBarChart(
         .attr('x2', plotRight)
         .attr('y1', baselineY)
         .attr('y2', baselineY)
-        .attr('stroke', FD.gridStroke)
+        .attr('stroke', fdColors(themeMode).gridStroke)
         .attr('shape-rendering', 'crispEdges');
     }
   }
@@ -422,7 +423,7 @@ export function renderAreaGroupedBarChart(
   xAxis.selectAll('line').attr('stroke', 'none');
   xAxis
     .selectAll('text')
-    .attr('fill', FD.axisLabelFill)
+    .attr('fill', fdColors(themeMode).axisLabelFill)
     .attr('font-size', FD.axisLabelSize)
     .attr('text-anchor', 'middle');
 
@@ -439,7 +440,7 @@ export function renderAreaGroupedBarChart(
         .tickPadding(6)
         .tickFormat((d) => formatAgbAxisTick(Number(d))),
     );
-  yAxis.select('.domain').attr('stroke', FD.axisStroke).attr('stroke-dasharray', FD.gridDash);
-  yAxis.selectAll('line').attr('stroke', FD.axisStroke).attr('stroke-dasharray', FD.gridDash);
-  applyLeftGutterYAxisLabels(yAxis, plotLeft);
+  yAxis.select('.domain').attr('stroke', fdColors(themeMode).axisStroke).attr('stroke-dasharray', FD.gridDash);
+  yAxis.selectAll('line').attr('stroke', fdColors(themeMode).axisStroke).attr('stroke-dasharray', FD.gridDash);
+  applyLeftGutterYAxisLabels(yAxis, plotLeft, { themeMode });
 }

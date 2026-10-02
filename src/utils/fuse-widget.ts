@@ -80,7 +80,10 @@ export function resolveUniqueValuesOrder(
   uniqueValues: Record<string, string[]> | null | undefined,
   fieldKey: string | undefined,
 ): string[] {
-  const dataSet = new Set(dataKeys);
+  // Snapshot once. Callers pass Map iterators (`byGroup.keys()`), and a
+  // second walk of the same iterator is empty.
+  const keys = [...dataKeys];
+  const dataSet = new Set(keys);
   const fromUv =
     fieldKey && uniqueValues?.[fieldKey]?.length
       ? filterTruthyValues(uniqueValues[fieldKey].map(String))
@@ -94,7 +97,7 @@ export function resolveUniqueValuesOrder(
   }
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const k of dataKeys) {
+  for (const k of keys) {
     if (!seen.has(k)) {
       seen.add(k);
       out.push(k);

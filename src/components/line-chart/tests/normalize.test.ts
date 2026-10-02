@@ -56,6 +56,30 @@ describe('normalizeLineData', () => {
     expect(collectYExtent(series)).toEqual([80, 120]);
   });
 
+  it('keeps every group when the widget has no uniqueValues map', () => {
+    const series = normalizeLineData({
+      chartType: 'lineGroupedChart',
+      data: [
+        { month: 'Jul', measure: 'active_listings', value: 2035 },
+        { month: 'Jul', measure: 'pending_sales', value: 1049 },
+        { month: 'Aug', measure: 'active_listings', value: 1985 },
+        { month: 'Aug', measure: 'pending_sales', value: 1002 },
+      ],
+      xAxe: ['month'],
+      yAxe: ['value'],
+      groupBy: ['measure'],
+    });
+    expect(series.map((item) => item.id)).toEqual(['active_listings', 'pending_sales']);
+    expect(series[0]?.points).toEqual([
+      { x: 'Jul', y: 2035 },
+      { x: 'Aug', y: 1985 },
+    ]);
+    expect(series[1]?.points).toEqual([
+      { x: 'Jul', y: 1049 },
+      { x: 'Aug', y: 1002 },
+    ]);
+  });
+
   it('returns empty for nullish', () => {
     expect(normalizeLineData(null)).toEqual([]);
     expect(normalizeLineData(undefined)).toEqual([]);

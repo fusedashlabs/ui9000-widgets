@@ -1,0 +1,16 @@
+{
+  "chartType": "componentAssetCard",
+  "name": "Sector A1 Antenna",
+  "assetId": "RTX-3090",
+  "image": { "src": "images/sector-antenna.png", "alt": "Sector panel antenna" },
+  "metric": {
+    "label": "Packet loss",
+    "value": 1.02,
+    "unit": "%",
+    "thresholds": { "warning": 1.5, "critical": 2 }
+  },
+  "delta": { "value": 0.8, "label": "vs 30m ago" },
+  "trend": {
+    "points": [2.6, 7.4, 2.9, 2.4, 2.2, 1.3, 1.1, 1.05, 1.02]
+  }
+}

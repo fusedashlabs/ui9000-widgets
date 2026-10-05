@@ -187,6 +187,10 @@ import {
   Ui9000PowerPathCard,
 } from './components/power-path-card/index.js';
 import {
+  registerComponentAssetCard,
+  Ui9000ComponentAssetCard,
+} from './components/component-asset-card/index.js';
+import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
 } from './components/gini-impurity-entropy-chart/index.js';
@@ -327,6 +331,8 @@ export {
   registerStatusGaugeWidget,
   Ui9000PowerPathCard,
   registerPowerPathCard,
+  Ui9000ComponentAssetCard,
+  registerComponentAssetCard,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -402,6 +408,7 @@ export function registerAllCharts(): void {
   registerLossIndicator();
   registerStatusGaugeWidget();
   registerPowerPathCard();
+  registerComponentAssetCard();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -810,6 +817,19 @@ export {
   type PowerPathThresholds,
   powerPathCardMetadata,
 } from './components/power-path-card/index.js';
+
+export {
+  normalizeComponentAsset,
+  formatAssetMeasure,
+  type ComponentAssetDelta,
+  type ComponentAssetLevel,
+  type ComponentAssetMetric,
+  type ComponentAssetModel,
+  type ComponentAssetPayload,
+  type ComponentAssetThresholds,
+  type ComponentAssetTrendPoint,
+  componentAssetCardMetadata,
+} from './components/component-asset-card/index.js';
 
 export {
   normalizeCustomWidget,

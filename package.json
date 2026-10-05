@@ -168,6 +168,10 @@
       "types": "./dist/components/power-path-card/index.d.ts",
       "import": "./dist/components/power-path-card/index.js"
     },
+    "./component-asset-card": {
+      "types": "./dist/components/component-asset-card/index.d.ts",
+      "import": "./dist/components/component-asset-card/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -327,6 +331,10 @@
     "./lazy/power-path-card": {
       "types": "./dist/lazy/power-path-card.d.ts",
       "import": "./dist/lazy/power-path-card.js"
+    },
+    "./lazy/component-asset-card": {
+      "types": "./dist/lazy/component-asset-card.d.ts",
+      "import": "./dist/lazy/component-asset-card.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

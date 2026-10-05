@@ -6,6 +6,7 @@ import type { WidgetTheme } from '../../../types/index.js';
 import type { AxisLabelTooltipHandlers } from '../../../utils/axis-labels.js';
 import {
   applyLeftGutterYAxisLabels,
+  decorateManualAxisLabel,
   resolvePlotLeftMargin,
 } from '../../../utils/axis-labels.js';
 import { resolveSeriesLegendColor } from '../../../utils/chart-legend.js';
@@ -13,12 +14,14 @@ import { calculateNumTicks, FD, fdColors } from '../../../utils/fusedash-visual.
 import {
   BAR_GROUP_INNER_GAP,
   barGroupedBandPadding,
+  CATEGORY_LABEL_SLOT_GAP,
   barHorizontalMinSpan,
   collectBarCategories,
   collectBarValueDomain,
   cumulativeValues,
   formatCompact,
   groupedBarOffset,
+  labelsFitEverySlot,
   resolveBaseline,
   selectTickIndices,
   valueAt,
@@ -705,17 +708,40 @@ export function renderBarChart(container: HTMLElement, options: RenderBarChartOp
     // for the rotating FuseDash `useVisxDynamicAxisLabel` component.
     const categoryAxis = root.append('g').attr('class', 'category-axis');
     const positions = categories.map(centreOf);
-    for (const i of selectTickIndices(categories, positions)) {
+    // Every bar keeps its label, cut to its own slot with the full text on
+    // hover (FUS-4143). Thinning (labels dropped without notice) is only the
+    // fallback when a slot cannot hold three characters.
+    // The character estimate behind the cut is a little narrow for the UI
+    // font, so cut against 90% of the slot to keep neighbours apart.
+    const slotWidth = ((bandScale.step() || 0) - CATEGORY_LABEL_SLOT_GAP) * 0.9;
+    const labelEvery = labelsFitEverySlot(slotWidth, FD.axisLabelSize);
+    const indices = labelEvery
+      ? categories.map((_, i) => i)
+      : selectTickIndices(categories, positions);
+    for (const i of indices) {
       const isFirst = i === 0;
       const isLast = i === categories.length - 1;
-      categoryAxis
+      const label = categoryAxis
         .append('text')
         .attr('x', positions[i])
         .attr('y', plotBottom + 16)
-        .attr('text-anchor', isFirst ? 'start' : isLast ? 'end' : 'middle')
+        .attr(
+          'text-anchor',
+          labelEvery ? 'middle' : isFirst ? 'start' : isLast ? 'end' : 'middle',
+        )
         .attr('fill', fdColors(themeMode).axisLabelFill)
-        .attr('font-size', FD.axisLabelSize)
-        .text(categories[i]);
+        .attr('font-size', FD.axisLabelSize);
+      if (labelEvery) {
+        decorateManualAxisLabel(label, categories[i], {
+          slotWidth,
+          fontSize: FD.axisLabelSize,
+          themeMode,
+          onAxisLabelHover,
+          onAxisLabelLeave,
+        });
+      } else {
+        label.text(categories[i]);
+      }
     }
 
     const valueAxis = root

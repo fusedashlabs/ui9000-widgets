@@ -28,4 +28,9 @@ export {
   barMinCategorySpan,
   barRowPitch,
 } from './layout.js';
-export { formatCompact, selectTickIndices } from './format.js';
+export {
+  CATEGORY_LABEL_SLOT_GAP,
+  formatCompact,
+  labelsFitEverySlot,
+  selectTickIndices,
+} from './format.js';

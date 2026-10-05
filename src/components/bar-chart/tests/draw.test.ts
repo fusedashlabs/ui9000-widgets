@@ -370,3 +370,53 @@ describe('renderBarChart', () => {
     expect(painted).not.toContain('#6c7584');
   });
 });
+
+describe('vertical category labels (FUS-4143)', () => {
+  // The nine issues of the ticket, as a vertical chart in a narrow chat card.
+  const issues = [
+    'Illegal Immigration',
+    '2nd Amendment',
+    'Traditional Marriage',
+    'Walmart',
+    'Taxes',
+    'School Choice',
+    'Tort Reform',
+    'Conservative Judges',
+    'Healthcare',
+  ];
+  const issueSeries = normalizeBarData(issues.map((label, i) => ({ label, value: 0.99 - i * 0.03 })));
+
+  it('gives every bar a label instead of dropping the ones that would touch', () => {
+    const svg = render(issueSeries, { width: 640 });
+    const labels = Array.from(svg.querySelectorAll('.category-axis text'));
+    expect(labels).toHaveLength(issues.length);
+    expect(labels[1].textContent).toMatch(/^2nd/);
+  });
+
+  it('shortens a label to its bar slot and shows the full text on hover', () => {
+    const hovered: string[] = [];
+    const svg = render(issueSeries, {
+      width: 640,
+      onAxisLabelHover: (text: string) => hovered.push(text),
+      onAxisLabelLeave: () => {},
+    });
+    const labels = Array.from(svg.querySelectorAll<SVGTextElement>('.category-axis text'));
+    const cut = labels.find((t) => t.textContent?.endsWith('...'));
+    expect(cut).toBeDefined();
+    cut?.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(issues).toContain(hovered[0]);
+    // short labels stay whole and centred on their bar
+    const taxes = labels.find((t) => t.textContent === 'Taxes');
+    expect(taxes?.getAttribute('text-anchor')).toBe('middle');
+  });
+
+  it('still thins the labels when a slot cannot hold three characters', () => {
+    const many = normalizeBarData(
+      Array.from({ length: 80 }, (_, i) => ({ label: `Category ${i + 1}`, value: i + 1 })),
+    );
+    const svg = render(many, { width: 400 });
+    const count = svg.querySelectorAll('.category-axis text').length;
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThan(80);
+  });
+});

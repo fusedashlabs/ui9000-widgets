@@ -6,6 +6,18 @@ export function formatCompact(value: number): string {
   return formatCompactNumber(value, decimals);
 }
 
+/** Space kept between the labels of neighbouring bars. */
+export const CATEGORY_LABEL_SLOT_GAP = 10;
+
+/**
+ * True when each category slot can show at least three characters, so every
+ * bar can keep a (possibly shortened) label instead of thinning (FUS-4143).
+ */
+export function labelsFitEverySlot(slotWidth: number, fontSize: number): boolean {
+  if (!Number.isFinite(slotWidth) || slotWidth <= 0) return false;
+  return Math.floor(slotWidth / (fontSize * 0.55)) >= 3;
+}
+
 /**
  * Pick which category ticks to label so none collide — shared with step-line.
  * The chat host has no room for FuseDash `useVisxDynamicAxisLabel`.

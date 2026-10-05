@@ -17,9 +17,9 @@ import {
   calculateNumTicks,
   FD,
   fdColors,
-  formatCompactNumber,
 } from '../../../utils/fusedash-visual.js';
 import { paddedLinearDomain } from '../lib/domain.js';
+import { areAllIntegers, formatScatterTick, getTickDecimals } from '../lib/ticks.js';
 import type { ScatterPoint } from '../lib/types.js';
 
 export interface RenderScatterPlotOptions {
@@ -56,18 +56,6 @@ function markerSymbol(shape: ChartMarkerShape): SymbolType {
 function markerRotation(shape: ChartMarkerShape): number {
   if (shape === 'rhombus' || shape === 'cross') return 45;
   return 0;
-}
-
-function formatAxisTick(
-  value: number,
-  field: string,
-  axisDetails?: RenderScatterPlotOptions['axisDetails'],
-): string {
-  const details = axisDetails?.[field];
-  if (details?.measure_unit_type === 'percentage' && Math.abs(value) <= 1) {
-    return (value * 100).toFixed(0);
-  }
-  return formatCompactNumber(value);
 }
 
 /** FuseDash ScatterPlot — D3 rewrite with grouped markers and optional y=x reference. */
@@ -154,6 +142,21 @@ export function renderScatterPlot(
       .attr('stroke-width', 1);
   }
 
+  // Whole-number labels only when the axis data are whole numbers; otherwise
+  // every tick with the decimals its step needs (FUS-4162).
+  const isPercentage = (field: string) =>
+    axisDetails?.[field]?.measure_unit_type === 'percentage';
+  const yTickOptions = {
+    integerOnly: areAllIntegers(yValues),
+    decimals: getTickDecimals(yScale.ticks(yTicks)),
+    isPercentage: isPercentage(yField),
+  };
+  const xTickOptions = {
+    integerOnly: areAllIntegers(xValues),
+    decimals: getTickDecimals(xScale.ticks(xTicks)),
+    isPercentage: isPercentage(xField),
+  };
+
   plot
     .append('g')
     .attr('class', 'y-axis')
@@ -162,10 +165,9 @@ export function renderScatterPlot(
         .ticks(yTicks)
         .tickSize(0)
         .tickPadding(8)
-        .tickFormat((d: NumberValue) => {
-          const numeric = typeof d === 'number' ? d : d.valueOf();
-          return Number.isInteger(numeric) ? formatAxisTick(numeric, yField, axisDetails) : '';
-        }),
+        .tickFormat((d: NumberValue) =>
+          formatScatterTick(typeof d === 'number' ? d : d.valueOf(), yTickOptions),
+        ),
     )
     .call((g) => g.select('.domain').remove())
     .selectAll('text')
@@ -194,10 +196,9 @@ export function renderScatterPlot(
         .tickSizeOuter(0)
         .tickSize(0)
         .tickPadding(8)
-        .tickFormat((d: NumberValue) => {
-          const numeric = typeof d === 'number' ? d : d.valueOf();
-          return Number.isInteger(numeric) ? formatAxisTick(numeric, xField, axisDetails) : '';
-        }),
+        .tickFormat((d: NumberValue) =>
+          formatScatterTick(typeof d === 'number' ? d : d.valueOf(), xTickOptions),
+        ),
     )
     .call((g) => g.select('.domain').attr('stroke', axisStroke));
 

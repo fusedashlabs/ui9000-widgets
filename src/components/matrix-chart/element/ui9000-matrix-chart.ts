@@ -5,10 +5,12 @@ import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-ch
 import { readThemeFromElement } from '../../../context/widget-context.js';
 import { axisFieldLabel, formatValueWithUnit } from '../../../utils/axis-units.js';
 import { getMatrixDimensions, parseJsonAttr } from '../../../utils/chart-helpers.js';
+import { FD } from '../../../utils/fusedash-visual.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import {
   formatCategoryLabel,
   formatMatrixValue,
+  matrixYLabelGutter,
   normalizeMatrixData,
   type MatrixCell,
   type MatrixInput,
@@ -110,7 +112,11 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
       return;
     }
 
-    const { width, margin } = getMatrixDimensions(chartBody);
+    const { width, margin: baseMargin } = getMatrixDimensions(chartBody);
+    const margin = {
+      ...baseMargin,
+      left: matrixYLabelGutter(model.yDomain, width, FD.axisLabelSize),
+    };
     const bodyHeight = chartBody.clientHeight || 300;
     const viewportHeight = scroll.clientHeight || 300;
     const themeMode = this.themeMode();

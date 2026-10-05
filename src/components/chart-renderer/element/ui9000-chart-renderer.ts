@@ -4,6 +4,7 @@ import type { WidgetScale } from '../../../types/index.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import {
   resolveChartTarget,
+  resolvePayloadOrientation,
   resolveWidgetChartType,
   type ChartTargetAttrs,
 } from '../lib/index.js';
@@ -230,6 +231,8 @@ export class Ui9000ChartRenderer extends HTMLElement {
     this.applyBoolProp(el, 'show-tooltip', 'showTooltip');
 
     applyTargetAttrs(el, target.attrs);
+    const orientation = resolvePayloadOrientation(chartType, target, widget);
+    if (orientation) el.setAttribute('orientation', orientation);
     this.copyHostAttr(el, 'mapbox-token');
     this.copyHostAttr(el, 'mapbox-dark-token');
     this.copyHostAttr(el, 'geojson-base-url');

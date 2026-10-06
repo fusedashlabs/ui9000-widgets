@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.3 — 2026-10-06
+
 ### Added
 
 - `<ui9000-band-utilization-chart>` (`@fusedashlabs/widgets/band-utilization-chart`) draws one horizontal band per entity. Segments are shares of a 100% whole (`yAxe` is the row, `xAxe` is the share, `groupBy` is the segment). A row that does not sum to 100 is not rescaled.

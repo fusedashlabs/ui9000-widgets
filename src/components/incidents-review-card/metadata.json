@@ -1,0 +1,79 @@
+{
+  "id": "incidents-review-card",
+  "tag": "ui9000-incidents-review-card",
+  "title": "Incidents Review Card",
+  "description": "Optivion incidents summary (Figma 34:24312): a title, an optional filter, aggregated incident counts by state, an optional total, and one lifecycle track under the numbers, a segment per state sized by its count, drawn only when incidents have a lifecycle. The counts are headlines and need not sum to the total. HTML/Lit, no Redux.",
+  "chartTypeKeys": ["incidentsReviewCard"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/incidents-review-card",
+  "entry": "@ui9000/widgets/incidents-review-card",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "incidentsReviewCard" },
+          "title": { "type": "string" },
+          "filter": {
+            "description": "Scope of the counts. A distance (\"5 km\", or kind radius/distance) draws the scale mark; a site, region, unit, time or category prints as text. Omit it and the title stands alone.",
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": ["number", "string"] },
+                  "unit": { "type": "string" },
+                  "kind": { "type": "string" }
+                }
+              }
+            ]
+          },
+          "counts": {
+            "type": "array",
+            "description": "Aggregated incident counts by state, in lifecycle order. Each state's track segment is sized by its count. Two to four states share one layout.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": ["number", "string"] },
+                "tone": {
+                  "enum": ["green", "red", "amber", "blue", "violet", "grey", "ok", "warning", "critical", "info", "neutral"],
+                  "description": "Dot and track colour. Defaults by position: green, red, amber, blue, violet."
+                }
+              },
+              "required": ["label", "value"]
+            }
+          },
+          "total": {
+            "description": "Headline total. Not checked against the counts.",
+            "oneOf": [
+              { "type": "null" },
+              { "type": ["number", "string"] },
+              {
+                "type": "object",
+                "properties": { "label": { "type": "string" }, "value": { "type": ["number", "string"] } },
+                "required": ["value"]
+              }
+            ]
+          },
+          "track": {
+            "type": "boolean",
+            "description": "Draw the lifecycle track. Omitted, it shows with two or more states. Off, the numbers remain."
+          }
+        }
+      },
+      "theme": { "type": "string", "enum": ["light", "dark"] }
+    }
+  }
+}

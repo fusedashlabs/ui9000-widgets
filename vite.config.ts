@@ -110,6 +110,10 @@ const entries = {
     'src/components/partial-dependence-chart/index.ts',
   ),
   'components/kpi-widget/index': resolve(__dirname, 'src/components/kpi-widget/index.ts'),
+  'components/incidents-review-card/index': resolve(
+    __dirname,
+    'src/components/incidents-review-card/index.ts',
+  ),
   'components/status-gauge-widget/index': resolve(
     __dirname,
     'src/components/status-gauge-widget/index.ts',
@@ -170,6 +174,7 @@ const entries = {
     'src/lazy/partial-dependence-chart.ts',
   ),
   'lazy/kpi-widget': resolve(__dirname, 'src/lazy/kpi-widget.ts'),
+  'lazy/incidents-review-card': resolve(__dirname, 'src/lazy/incidents-review-card.ts'),
   'lazy/status-gauge-widget': resolve(__dirname, 'src/lazy/status-gauge-widget.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(
     __dirname,

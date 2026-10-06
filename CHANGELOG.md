@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **incidents-review-card** (`ui9000-incidents-review-card`, chartType `incidentsReviewCard`): the Optivion incidents summary from Figma 34:24312. A title, an optional filter (a distance draws the scale mark), aggregated counts by state and an optional total. The counts are headlines and are never summed. One lifecycle track sits under the numbers, a segment per state sized by its count and grey ticks under the total, drawn only when incidents have a lifecycle. Two to four states share one layout. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/incidents-review-card`.
+
 ## 0.7.1 — 2026-10-02
 
 ### Added

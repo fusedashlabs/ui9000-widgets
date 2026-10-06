@@ -14,6 +14,7 @@ import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-ch
 import { getFlowSankeyDimensions, parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import {
+  MAX_FLOW_LINKS,
   buildSeverityLegend,
   formatFlowValue,
   formatShare,
@@ -46,6 +47,7 @@ interface FlowSankeyView {
   legendLabel: string;
   legend: FlowLegendEntry[];
   summary: FlowSummaryCard[];
+  droppedLinks: number;
 }
 
 const EMPTY_VIEW: FlowSankeyView = {
@@ -55,6 +57,7 @@ const EMPTY_VIEW: FlowSankeyView = {
   legendLabel: '',
   legend: [],
   summary: [],
+  droppedLinks: 0,
 };
 
 @customElement('ui9000-flow-sankey-chart')
@@ -111,7 +114,10 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
 
   private _resizeObserver?: ResizeObserver;
   private _raf = 0;
-  /** Selection is draw-layer state; it must never trigger a Lit redraw. */
+  /**
+   * Selection is draw-layer state; it must never trigger a Lit redraw. Clicks
+   * and `selected-node` both write it, whichever changed last wins.
+   */
   private _selectedId: string | null = null;
 
   override connectedCallback(): void {
@@ -161,7 +167,8 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
     }
   }
 
-  override willUpdate(): void {
+  override willUpdate(changed: PropertyValues): void {
+    if (changed.has('selectedNode')) this._selectedId = this.selectedNode || null;
     this.resolveAppearance();
   }
 
@@ -242,16 +249,12 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
       legendLabel: this.legendLabel || model.legendLabel,
       legend: buildSeverityLegend(model, neutralColor(this._mode)),
       summary: model.summary,
+      droppedLinks: model.droppedLinks,
     };
 
     if (!model.links.length) {
       root.replaceChildren();
       return;
-    }
-
-    // The attribute seeds the selection; clicks own it from then on.
-    if (this._selectedId === null && this.selectedNode) {
-      this._selectedId = this.selectedNode;
     }
 
     const { width, height } = getFlowSankeyDimensions(root);
@@ -306,6 +309,16 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
     });
   }
 
+  /** Says so when the cap left the smallest flows off the plot. */
+  private renderCapNote(): TemplateResult | typeof nothing {
+    const { empty, droppedLinks } = this._view;
+    if (empty || !droppedLinks) return nothing;
+    const total = formatFlowValue(MAX_FLOW_LINKS + droppedLinks);
+    return html`<div class="cap-note" part="note">
+      Showing the ${formatFlowValue(MAX_FLOW_LINKS)} largest of ${total} flows.
+    </div>`;
+  }
+
   override render() {
     const { empty, circular } = this._view;
     // `headerTitle()` already returns '' when the host suppressed the header;
@@ -340,6 +353,8 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
                   : 'No data'}
               </div>`
             : nothing}
+
+          ${this.renderCapNote()}
 
           ${this.renderShellLabelTooltip()}
         </div>

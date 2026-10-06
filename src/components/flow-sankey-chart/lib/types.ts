@@ -49,6 +49,8 @@ export interface FlowSankeyModel {
   severities: SeverityKey[];
   /** Set when the payload described a cycle — flow charts cannot draw one. */
   circular: boolean;
+  /** Smallest links left out to stay under `MAX_FLOW_LINKS`; 0 when none were. */
+  droppedLinks: number;
 }
 
 /** Chat payload that already describes the graph. */

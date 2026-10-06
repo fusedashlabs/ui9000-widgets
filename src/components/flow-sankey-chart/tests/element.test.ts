@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import figmaFixture from '../../../stories/fixtures/flow-sankey.figma.json';
 import { DARK_THEME, DEFAULT_THEME } from '../../../types/index.js';
+import { MAX_FLOW_LINKS } from '../lib/index.js';
 
 let observed: (() => void)[] = [];
 let registerFlowSankeyChart: () => void;
@@ -38,6 +39,18 @@ function sizeShadow(el: HTMLElement, width: number, height: number): void {
 
 const frame = (): Promise<void> =>
   new Promise((resolve) => requestAnimationFrame(() => resolve()));
+
+const nodeBars = (host: Shadowed): SVGPathElement[] => [
+  ...host.shadowRoot.querySelectorAll<SVGPathElement>('.flow-nodes path'),
+];
+
+/** Node bars drawn with the selection ring. */
+const ringed = (host: Shadowed): SVGPathElement[] =>
+  nodeBars(host).filter((bar) => bar.getAttribute('stroke-dasharray'));
+
+/** Draw order of the ringed bar — stable across redraws of one payload. */
+const ringedIndex = (host: Shadowed): number =>
+  nodeBars(host).indexOf(ringed(host)[0]);
 
 async function mount(
   data: unknown,
@@ -300,11 +313,66 @@ describe('ui9000-flow-sankey-chart', () => {
 
   it('seeds the highlight from the selected-node attribute', async () => {
     const host = await mount(figmaFixture, { 'selected-node': 'power-loss' });
-    const ringed = [
-      ...host.shadowRoot.querySelectorAll('.flow-nodes path'),
-    ].filter((bar) => bar.getAttribute('stroke-dasharray'));
 
-    expect(ringed).toHaveLength(1);
+    expect(ringed(host)).toHaveLength(1);
+    host.remove();
+  });
+
+  it('keeps a deselect through the next redraw', async () => {
+    const host = await mount(figmaFixture, { 'selected-node': 'power-loss' });
+    const onSelect = vi.fn();
+    host.addEventListener('flow-select', onSelect);
+
+    ringed(host)[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(ringed(host)).toHaveLength(0);
+    expect(
+      (onSelect.mock.calls[0][0] as CustomEvent<{ nodeId: string | null }>).detail
+        .nodeId,
+    ).toBeNull();
+
+    sizeShadow(host, 700, 500);
+    for (const cb of observed) cb();
+    await frame();
+
+    expect(ringed(host)).toHaveLength(0);
+    host.remove();
+  });
+
+  it('follows later changes to selected-node', async () => {
+    const host = await mount(figmaFixture, { 'selected-node': 'power-loss' });
+    const first = ringedIndex(host);
+
+    host.setAttribute('selected-node', 'input-voltage');
+    await host.updateComplete;
+    await frame();
+    expect(ringed(host)).toHaveLength(1);
+    expect(ringedIndex(host)).not.toBe(first);
+
+    host.setAttribute('selected-node', '');
+    await host.updateComplete;
+    await frame();
+    expect(ringed(host)).toHaveLength(0);
+    host.remove();
+  });
+
+  it('says how many flows the cap left off the plot', async () => {
+    const links = Array.from({ length: MAX_FLOW_LINKS + 40 }, (_, i) => ({
+      source: `s${i}`,
+      target: `t${i}`,
+      value: i + 1,
+    }));
+    const host = await mount({ links });
+
+    expect(host.shadowRoot.querySelector('.cap-note')?.textContent?.trim()).toBe(
+      'Showing the 1,500 largest of 1,540 flows.',
+    );
+    host.remove();
+  });
+
+  it('shows no cap note when every flow fits', async () => {
+    const host = await mount(figmaFixture);
+
+    expect(host.shadowRoot.querySelector('.cap-note')).toBeNull();
     host.remove();
   });
 

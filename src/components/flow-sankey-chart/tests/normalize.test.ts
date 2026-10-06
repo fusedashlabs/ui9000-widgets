@@ -244,6 +244,98 @@ describe('normalizeFlowSankeyData', () => {
 
     expect(model.links).toHaveLength(MAX_FLOW_LINKS);
     expect(Math.min(...model.links.map((l) => l.value))).toBe(41);
+    expect(model.droppedLinks).toBe(40);
+  });
+
+  it('reports no dropped links under the cap', () => {
+    const model = normalizeFlowSankeyData([
+      { source: 'a', target: 'b', value: 1, severity: null },
+    ]);
+
+    expect(model.droppedLinks).toBe(0);
+  });
+
+  it('colours a folded FuseDash ribbon by the severity carrying most of it', () => {
+    const model = normalizeFlowSankeyData({
+      data: [
+        { a: 'Power', b: 'Cable', n: 2, sev: 'low' },
+        { a: 'Power', b: 'Cable', n: 30, sev: 'high' },
+        { a: 'Power', b: 'Fuse', n: 4, sev: 'medium' },
+        { a: 'Power', b: 'Fuse', n: 4, sev: 'low' },
+      ],
+      arrangeBy: ['a', 'b'],
+      display: ['n'],
+      severityBy: 'sev',
+    });
+    const into = (label: string) =>
+      model.links.find((l) => l.target.endsWith(label));
+
+    expect(into('Cable')?.value).toBe(32);
+    expect(into('Cable')?.severity).toBe('high');
+    // An even split goes to the more severe key.
+    expect(into('Fuse')?.severity).toBe('medium');
+  });
+
+  it('classifies FuseDash nodes, and leaves Info out when every row is classified', () => {
+    const model = normalizeFlowSankeyData({
+      data: [
+        { a: 'Power', b: 'Cable', n: 10, sev: 'high' },
+        { a: 'Power', b: 'Fuse', n: 3, sev: 'low' },
+      ],
+      arrangeBy: ['a', 'b'],
+      display: ['n'],
+      severityBy: 'sev',
+    });
+    const severityOf = (label: string) =>
+      model.nodes.find((n) => n.label === label)?.severity;
+
+    expect(severityOf('Power')).toBe('high');
+    expect(severityOf('Cable')).toBe('high');
+    expect(severityOf('Fuse')).toBe('low');
+    expect(model.severities).toEqual(['high', 'low']);
+  });
+
+  it('still adds Info for a FuseDash payload without a severity field', () => {
+    const model = normalizeFlowSankeyData({
+      data: [{ a: 'Power', b: 'Cable', n: 10 }],
+      arrangeBy: ['a', 'b'],
+      display: ['n'],
+    });
+
+    expect(model.nodes.every((n) => n.severity === null)).toBe(true);
+    expect(model.severities).toEqual(['info']);
+  });
+
+  it('bridges a blank middle stage instead of dropping the row', () => {
+    const model = normalizeFlowSankeyData({
+      data: [
+        { a: 'Power', b: 'Cable', c: 'Outage', n: 5 },
+        { a: 'Power', b: '', c: 'Outage', n: 7 },
+      ],
+      arrangeBy: ['a', 'b', 'c'],
+      display: ['n'],
+    });
+    const outage = model.nodes.find((n) => n.label === 'Outage');
+    const bridge = model.links.find(
+      (l) => l.source.endsWith('Power') && l.target.endsWith('Outage'),
+    );
+
+    expect(bridge?.value).toBe(7);
+    expect(outage?.stage).toBe(2);
+    expect(outage?.value).toBe(12);
+  });
+
+  it('clamps a runaway declared stage to the node count', () => {
+    const model = normalizeFlowSankeyData({
+      nodes: [
+        { id: 'a', stage: 0 },
+        { id: 'b', stage: 100000 },
+      ],
+      links: [{ source: 'a', target: 'b', value: 1 }],
+    });
+
+    expect(model.nodes.find((n) => n.id === 'b')?.stage).toBe(1);
+    expect(model.stages).toHaveLength(2);
   });
 });
 

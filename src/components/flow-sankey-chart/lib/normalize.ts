@@ -35,6 +35,7 @@ const EMPTY: FlowSankeyModel = {
   legendLabel: DEFAULT_LEGEND_LABEL,
   severities: [],
   circular: false,
+  droppedLinks: 0,
 };
 
 function emptyModel(overrides: Partial<FlowSankeyModel> = {}): FlowSankeyModel {
@@ -53,6 +54,34 @@ export function resolveSeverity(raw: unknown): SeverityKey | null {
   return (SEVERITY_KEYS as readonly string[]).includes(key)
     ? (key as SeverityKey)
     : null;
+}
+
+/** Value each severity carried into a mark; `null` is the unclassified share. */
+type SeverityWeights = Map<SeverityKey | null, number>;
+
+function addWeight(
+  weights: SeverityWeights,
+  severity: SeverityKey | null,
+  value: number,
+): void {
+  weights.set(severity, (weights.get(severity) ?? 0) + value);
+}
+
+/**
+ * The severity carrying the most value. A tie goes to the more severe key, and
+ * unclassified flow only wins when it outweighs every classified share.
+ */
+function dominantSeverity(weights: SeverityWeights): SeverityKey | null {
+  let best: SeverityKey | null = null;
+  let bestValue = -Infinity;
+  for (const key of [...SEVERITY_KEYS, null]) {
+    const value = weights.get(key) ?? 0;
+    if (value > bestValue) {
+      best = key;
+      bestValue = value;
+    }
+  }
+  return bestValue > 0 ? best : null;
 }
 
 /** True when following source -> target ever revisits a node on the same path. */
@@ -155,7 +184,8 @@ function buildModel(
       l.value > 0,
   );
 
-  if (clean.length > MAX_FLOW_LINKS) {
+  const droppedLinks = Math.max(0, clean.length - MAX_FLOW_LINKS);
+  if (droppedLinks) {
     clean = clean
       .slice()
       .sort((a, b) => b.value - a.value)
@@ -172,11 +202,14 @@ function buildModel(
   }
 
   const ids = [...rawNodes.keys()].filter((id) => used.has(id));
+  // A column index past the node count can only leave empty columns, and an
+  // unbounded one would allocate that many of them below.
+  const lastColumn = ids.length - 1;
   const declared = new Map<string, number>();
   for (const id of ids) {
     const stage = rawNodes.get(id)?.stage;
     if (typeof stage === 'number' && Number.isFinite(stage) && stage >= 0) {
-      declared.set(id, Math.trunc(stage));
+      declared.set(id, Math.min(Math.trunc(stage), lastColumn));
     }
   }
   const stageOf = deriveStages(ids, clean, declared);
@@ -261,6 +294,7 @@ function buildModel(
     legendLabel: meta.legendLabel,
     severities: SEVERITY_KEYS.filter((key) => present.has(key)),
     circular: false,
+    droppedLinks,
   };
 }
 
@@ -341,8 +375,13 @@ function normalizeFuse(payload: FlowSankeyFusePayload): FlowSankeyModel {
 
 
   const nodes = new Map<string, RawNode>();
-  // The same pair repeats across rows — fold them into one ribbon.
-  const totals = new Map<string, FlowLinkDatum>();
+  const nodeWeights = new Map<string, SeverityWeights>();
+  // The same pair repeats across rows — fold them into one ribbon, keeping
+  // what each severity contributed so the sum is coloured by its bulk.
+  const totals = new Map<
+    string,
+    { source: string; target: string; value: number; weights: SeverityWeights }
+  >();
 
   for (const row of rows) {
     const value = Number(row[valueKey]);
@@ -350,35 +389,55 @@ function normalizeFuse(payload: FlowSankeyFusePayload): FlowSankeyModel {
     const severity = resolveSeverity(row[severityKey]);
 
     // Namespace the id by stage so a label repeated across columns stays two
-    // distinct nodes (and can never become a self link).
-    const cells = stageKeys.map((key, stage) => {
+    // distinct nodes (and can never become a self link). A blank stage is
+    // skipped, so the row's flow bridges the gap instead of stopping there.
+    const cells = stageKeys.flatMap((key, stage) => {
       const label = String(row[key] ?? '').trim();
-      return label ? { id: `${stage}${ID_SEP}${label}`, label, stage } : null;
+      return label ? [{ id: `${stage}${ID_SEP}${label}`, label, stage }] : [];
     });
 
     for (const cell of cells) {
-      if (cell && !nodes.has(cell.id)) {
+      if (!nodes.has(cell.id)) {
         nodes.set(cell.id, {
           label: cell.label,
           severity: null,
           icon: '',
           stage: cell.stage,
         });
+        nodeWeights.set(cell.id, new Map());
       }
+      addWeight(nodeWeights.get(cell.id) as SeverityWeights, severity, value);
     }
 
     for (let i = 0; i < cells.length - 1; i += 1) {
       const from = cells[i];
       const to = cells[i + 1];
-      if (!from || !to) continue;
       const key = `${from.id}${LINK_SEP}${to.id}`;
-      const existing = totals.get(key);
-      if (existing) existing.value += value;
-      else totals.set(key, { source: from.id, target: to.id, value, severity });
+      let total = totals.get(key);
+      if (!total) {
+        total = { source: from.id, target: to.id, value: 0, weights: new Map() };
+        totals.set(key, total);
+      }
+      total.value += value;
+      addWeight(total.weights, severity, value);
     }
   }
 
-  return buildModel(nodes, [...totals.values()], {
+  // A node takes the severity most of the flow through it carries, so a fully
+  // classified payload paints its bars and leaves Info out of the legend.
+  for (const [id, weights] of nodeWeights) {
+    const node = nodes.get(id);
+    if (node) node.severity = dominantSeverity(weights);
+  }
+
+  const links: FlowLinkDatum[] = [...totals.values()].map((total) => ({
+    source: total.source,
+    target: total.target,
+    value: total.value,
+    severity: dominantSeverity(total.weights),
+  }));
+
+  return buildModel(nodes, links, {
     stages: stageLabels,
     summary: [],
     valueLabel,

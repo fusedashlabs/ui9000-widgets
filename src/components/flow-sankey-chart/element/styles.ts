@@ -114,4 +114,11 @@ export const flowSankeyStyles = css`
     color: var(--ui9000-color-text-muted, #6b7280);
     font-size: 0.875rem;
   }
+
+  .cap-note {
+    flex: 0 0 auto;
+    padding: 4px 0 0;
+    color: var(--ui9000-color-text-muted, #6b7280);
+    font-size: 0.75rem;
+  }
 `;

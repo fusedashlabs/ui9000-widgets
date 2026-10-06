@@ -1,0 +1,93 @@
+{
+  "id": "component-asset-card",
+  "tag": "ui9000-component-asset-card",
+  "title": "Component Asset Card",
+  "description": "Optivion component-asset card (Figma 34:23967): asset image, name and id, one primary metric, an optional delta against a reference point, and an optional short trend drawn only when history exists. The status mark shows only when the metric has a level or thresholds. HTML/Lit, no Redux.",
+  "chartTypeKeys": ["componentAssetCard"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/component-asset-card",
+  "entry": "@ui9000/widgets/component-asset-card",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "componentAssetCard" },
+          "name": { "type": "string", "description": "Asset or component name." },
+          "assetId": {
+            "type": "string",
+            "description": "Asset id, device name or equipment reference shown in the badge."
+          },
+          "image": {
+            "description": "Asset illustration. Swap it to reuse the card for another component type.",
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": { "src": { "type": "string" }, "alt": { "type": "string" } },
+                "required": ["src"]
+              }
+            ]
+          },
+          "metric": {
+            "type": "object",
+            "description": "The one primary health metric.",
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": ["number", "string"] },
+              "unit": { "type": "string" },
+              "level": { "enum": ["ok", "warning", "critical", "neutral"] },
+              "thresholds": {
+                "type": "object",
+                "description": "Status and trend colours appear only with a level or thresholds.",
+                "properties": {
+                  "warning": { "type": "number" },
+                  "critical": { "type": "number" },
+                  "direction": { "enum": ["above", "below"] }
+                }
+              }
+            },
+            "required": ["value"]
+          },
+          "delta": {
+            "description": "Change against a reference point. Omit it when there is none.",
+            "oneOf": [
+              { "type": "null" },
+              { "type": "number" },
+              {
+                "type": "object",
+                "properties": {
+                  "value": { "type": ["number", "string"] },
+                  "unit": { "type": "string" },
+                  "label": { "type": "string", "description": "Reference, e.g. \"vs 30m ago\"." },
+                  "direction": { "enum": ["up", "down", "flat"] },
+                  "better": { "enum": ["up", "down"], "description": "Which way is good. Defaults to up." }
+                },
+                "required": ["value"]
+              }
+            ]
+          },
+          "trend": {
+            "description": "Recent readings, oldest first. Fewer than two draws no trend.",
+            "oneOf": [
+              { "type": "null" },
+              { "type": "array" },
+              { "type": "object", "properties": { "points": { "type": "array" } } }
+            ]
+          }
+        }
+      },
+      "theme": { "type": "string", "enum": ["light", "dark"] }
+    }
+  }
+}

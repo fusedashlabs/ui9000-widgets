@@ -45,6 +45,7 @@ const CHART_ENTRIES = [
   'components/kpi-widget/index.js',
   'components/status-gauge-widget/index.js',
   'components/power-path-card/index.js',
+  'components/component-asset-card/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
   'components/inspector/index.js',

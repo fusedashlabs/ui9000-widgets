@@ -165,6 +165,10 @@ import {
   Ui9000KpiWidget,
 } from './components/kpi-widget/index.js';
 import {
+  registerLossIndicator,
+  Ui9000LossIndicator,
+} from './components/loss-indicator/index.js';
+import {
   registerStatusGaugeWidget,
   Ui9000StatusGaugeWidget,
 } from './components/status-gauge-widget/index.js';
@@ -299,6 +303,8 @@ export {
   registerPartialDependenceChart,
   Ui9000KpiWidget,
   registerKpiWidget,
+  Ui9000LossIndicator,
+  registerLossIndicator,
   Ui9000StatusGaugeWidget,
   registerStatusGaugeWidget,
   Ui9000GiniImpurityEntropyChart,
@@ -371,6 +377,7 @@ export function registerAllCharts(): void {
   registerTreemapChart();
   registerPartialDependenceChart();
   registerKpiWidget();
+  registerLossIndicator();
   registerStatusGaugeWidget();
   registerGiniImpurityEntropyChart();
   registerMapChart();
@@ -721,6 +728,17 @@ export {
   type RawKpiItem,
   kpiWidgetMetadata,
 } from './components/kpi-widget/index.js';
+
+export {
+  normalizeLossIndicator,
+  formatLossNumber,
+  type LossBand,
+  type LossIndicatorInput,
+  type LossIndicatorModel,
+  type LossLevel,
+  type LossTrend,
+  lossIndicatorMetadata,
+} from './components/loss-indicator/index.js';
 
 export {
   normalizeStatusGauge,

@@ -61,6 +61,10 @@ const entries = {
     __dirname,
     'src/components/sankey-chart/index.ts',
   ),
+  'components/flow-sankey-chart/index': resolve(
+    __dirname,
+    'src/components/flow-sankey-chart/index.ts',
+  ),
   'components/parallel-coordinates-chart/index': resolve(
     __dirname,
     'src/components/parallel-coordinates-chart/index.ts',
@@ -68,6 +72,10 @@ const entries = {
   'components/pie-chart/index': resolve(
     __dirname,
     'src/components/pie-chart/index.ts',
+  ),
+  'components/band-utilization-chart/index': resolve(
+    __dirname,
+    'src/components/band-utilization-chart/index.ts',
   ),
   'components/donut-chart/index': resolve(
     __dirname,
@@ -110,6 +118,10 @@ const entries = {
     'src/components/partial-dependence-chart/index.ts',
   ),
   'components/kpi-widget/index': resolve(__dirname, 'src/components/kpi-widget/index.ts'),
+  'components/loss-indicator/index': resolve(
+    __dirname,
+    'src/components/loss-indicator/index.ts',
+  ),
   'components/status-gauge-widget/index': resolve(
     __dirname,
     'src/components/status-gauge-widget/index.ts',
@@ -152,11 +164,19 @@ const entries = {
   'lazy/violin-chart': resolve(__dirname, 'src/lazy/violin-chart.ts'),
   'lazy/waterfall-chart': resolve(__dirname, 'src/lazy/waterfall-chart.ts'),
   'lazy/sankey-chart': resolve(__dirname, 'src/lazy/sankey-chart.ts'),
+  'lazy/flow-sankey-chart': resolve(
+    __dirname,
+    'src/lazy/flow-sankey-chart.ts',
+  ),
   'lazy/parallel-coordinates-chart': resolve(
     __dirname,
     'src/lazy/parallel-coordinates-chart.ts',
   ),
   'lazy/pie-chart': resolve(__dirname, 'src/lazy/pie-chart.ts'),
+  'lazy/band-utilization-chart': resolve(
+    __dirname,
+    'src/lazy/band-utilization-chart.ts',
+  ),
   'lazy/donut-chart': resolve(__dirname, 'src/lazy/donut-chart.ts'),
   'lazy/polar-area-chart': resolve(__dirname, 'src/lazy/polar-area-chart.ts'),
   'lazy/scatter-plot-chart': resolve(__dirname, 'src/lazy/scatter-plot-chart.ts'),
@@ -174,6 +194,7 @@ const entries = {
     'src/lazy/partial-dependence-chart.ts',
   ),
   'lazy/kpi-widget': resolve(__dirname, 'src/lazy/kpi-widget.ts'),
+  'lazy/loss-indicator': resolve(__dirname, 'src/lazy/loss-indicator.ts'),
   'lazy/status-gauge-widget': resolve(__dirname, 'src/lazy/status-gauge-widget.ts'),
   'lazy/power-path-card': resolve(__dirname, 'src/lazy/power-path-card.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(

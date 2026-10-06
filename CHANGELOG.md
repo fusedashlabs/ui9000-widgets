@@ -6,6 +6,24 @@
 
 - **power-path-card** (`ui9000-power-path-card`, chartType `powerPathCard`): the Optivion power-path card from Figma 34:23675. Title and asset badge, an existing health score with a compact line, a fault banner only while a fault is active, and a variable list of metrics whose status shows only with a level, status or thresholds. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/power-path-card`.
 
+- `ui9000-flow-sankey-chart`: stage columns joined by severity-colored ribbons, with a percentage gutter and click-to-highlight of a node's full cause-to-impact path. It takes a graph payload (`nodes`, `links`, `stages`) or a FuseDash widget whose `arrangeBy` lists the stage fields. `registerAllCharts` registers it. It ships from the package root, `./flow-sankey-chart`, and `./lazy/flow-sankey-chart`.
+- FuseDash rows that share a stage pair fold into one ribbon colored by the severity carrying most of its value. Nodes take their severity the same way, so Info appears in the legend only when some flow is unclassified. A blank stage is bridged instead of dropping the row.
+- Past 1,500 links the chart keeps the largest and notes how many it left out.
+- The shell header takes an optional `subtitle` and `aside`, and can drop its actions. The HTML legend takes an optional title. Charts that pass neither keep their current DOM.
+- `readThemeFromElement` takes an optional base palette. It defaults to the painted mode, as before.
+
+## 0.7.3 — 2026-10-06
+
+### Added
+
+- `<ui9000-band-utilization-chart>` (`@fusedashlabs/widgets/band-utilization-chart`) draws one horizontal band per entity. Segments are shares of a 100% whole (`yAxe` is the row, `xAxe` is the share, `groupBy` is the segment). A row that does not sum to 100 is not rescaled.
+
+## 0.7.2 — 2026-10-06
+
+### Added
+
+- `<ui9000-loss-indicator>` (`@fusedashlabs/widgets/loss-indicator`) reads one metric from a `WidgetItem`: `name`, `yAxe`, `data`, `axisDetails`, `limitsDomains`, and `domainsLimits`. Ticks past the marker stay grey. The trend arrow comes from the row, or from the previous row of the same metric.
+
 ## 0.7.1 — 2026-10-02
 
 ### Added

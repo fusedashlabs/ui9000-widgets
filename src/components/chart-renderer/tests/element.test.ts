@@ -3,6 +3,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import { Ui9000ChartRenderer } from '../element/ui9000-chart-renderer.js';
 import lineFixture from '../../../stories/fixtures/line.fusedash.json';
+import lossFixture from '../../../stories/fixtures/loss-indicator.mock.json';
 import barGroupedFixture from '../../../stories/fixtures/bar-grouped.fusedash.json';
 import mapFixture from '../../../stories/fixtures/map.fusedash.json';
 import { resolveChartTarget } from '../lib/registry.js';
@@ -45,6 +46,26 @@ describe('Ui9000ChartRenderer', () => {
     expect(empty instanceof HTMLElement && empty.hidden).toBe(true);
     expect(empty?.textContent ?? '').toBe('');
 
+    host.remove();
+  });
+
+  it('mounts ui9000-loss-indicator for a lossIndicator payload', async () => {
+    const host = document.createElement('ui9000-chart-renderer');
+    host.setAttribute(
+      'data',
+      JSON.stringify(lossFixture),
+    );
+    host.style.width = '446px';
+    host.style.height = '240px';
+    document.body.appendChild(host);
+
+    await waitFor(() => !!host.shadowRoot?.querySelector('.host ui9000-loss-indicator'));
+
+    const card = host.shadowRoot?.querySelector('ui9000-loss-indicator');
+    expect(card).toBeTruthy();
+    await (card as HTMLElement & { updateComplete?: Promise<unknown> }).updateComplete;
+    expect(card?.shadowRoot?.querySelector('.value')?.textContent).toBe('24.30%');
+    expect(card?.shadowRoot?.querySelector('.trend')?.getAttribute('data-trend')).toBe('down');
     host.remove();
   });
 

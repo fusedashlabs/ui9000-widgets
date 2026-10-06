@@ -76,6 +76,61 @@ export const chartShellStyles = css`
     min-width: 0;
   }
 
+  /* Title + subtitle stacked, so an aside can share the header row. */
+  .widget-heading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .widget-heading > .widget-title {
+    flex: 0 0 auto;
+  }
+
+  .widget-subtitle {
+    min-width: 0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: var(--ui9000-color-text-muted, #6c7584);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Heading + aside share this row so the aside can wrap under the title. */
+  .widget-header-main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 12px;
+    min-width: 0;
+  }
+
+  /*
+   * A floor under the heading is what makes the aside wrap: without it the
+   * title would ellipsise away to nothing and the cards would never drop.
+   */
+  .widget-header-main > .widget-heading {
+    flex: 1 1 var(--ui9000-heading-min-width, 180px);
+    min-width: var(--ui9000-heading-min-width, 180px);
+  }
+
+  /* Centred against the heading block, whether it is one line or two. */
+  .widget-aside {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    gap: 8px;
+    /* Never shrink, so the block wraps whole instead of compressing. */
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+
   .widget-title {
     flex: 1;
     min-width: 0;
@@ -307,6 +362,12 @@ export const chartShellStyles = css`
     font-size: 11px;
     line-height: 1.2;
     color: var(--ui9000-color-text-muted, #6c7584);
+  }
+
+  .legend-title {
+    font-weight: 600;
+    color: var(--ui9000-color-text, #111827);
+    white-space: nowrap;
   }
 
   .legend-item {

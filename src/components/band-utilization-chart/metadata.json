@@ -1,0 +1,67 @@
+{
+  "id": "band-utilization-chart",
+  "tag": "ui9000-band-utilization-chart",
+  "title": "Band Utilization",
+  "description": "One row per entity. Exclusive segments are shares of a 100% whole, with the value written inside the segment. A row that does not sum to 100 is not rescaled. Reads a WidgetItem: yAxe is the row, xAxe is the share, groupBy is the segment.",
+  "chartTypeKeys": ["bandUtilizationChart"],
+  "source": "optivion/figma/61:24153",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/band-utilization-chart",
+  "entry": "@ui9000/widgets/band-utilization-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true,
+    "context": "Same share breakdown repeated once per entity. Each row is its own whole."
+  },
+  "allowedActions": ["hover", "resize"],
+  "tier": "host",
+  "intents": ["part-to-whole"],
+  "dataRoles": [
+    {
+      "id": "entity",
+      "required": true,
+      "cardinality": "low-medium",
+      "description": "yAxe column. One row per entity."
+    },
+    {
+      "id": "share",
+      "required": true,
+      "type": "number",
+      "description": "xAxe column. Exclusive part of that row, already on a 0–100 scale."
+    },
+    {
+      "id": "segment",
+      "required": true,
+      "cardinality": "low",
+      "description": "groupBy column. The parts of the row. A different column from yAxe."
+    }
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "description": "WidgetItem. Long rows use yAxe + xAxe + groupBy. Wide rows use xAxe plus several yAxe columns and no groupBy.",
+        "properties": {
+          "name": { "type": "string" },
+          "chartType": { "type": "string" },
+          "legend": { "type": "boolean" },
+          "tooltip": { "type": "boolean" },
+          "xAxe": { "type": "array", "items": { "type": "string" } },
+          "yAxe": { "type": "array", "items": { "type": "string" } },
+          "groupBy": { "type": "array", "items": { "type": "string" } },
+          "uniqueValues": { "type": "object" },
+          "formatting": { "type": "array" },
+          "axisDetails": { "type": "object" },
+          "data": { "type": "array" }
+        },
+        "required": ["data"]
+      },
+      "showLegend": { "type": "boolean", "default": true },
+      "showTooltip": { "type": "boolean", "default": true }
+    },
+    "required": ["data"]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "chartType": "lossIndicator",
+  "name": "Electrical Loss",
+  "description": "",
+  "yAxe": ["electricalLoss"],
+  "data": [{ "electricalLoss": "24.30", "trend": "down", "ticks": [0, 10, 20, 30] }],
+  "axisDetails": {
+    "electricalLoss": {
+      "label": "Electrical Loss",
+      "type": "number",
+      "subtype": "percent",
+      "measure_unit": "%"
+    }
+  },
+  "limitsDomains": [[0, 30]],
+  "domainsLimits": [
+    { "values": [0, 7.5], "color": "#3ad07c", "orientation": "horizontal" },
+    { "values": [7.5, 15], "color": "#f5c451", "orientation": "horizontal" },
+    { "values": [15, 22.5], "color": "#ff9a3c", "orientation": "horizontal" },
+    { "values": [22.5, 30], "color": "#ef3b4a", "orientation": "horizontal" }
+  ],
+  "uniqueValues": {
+    "electricalLoss": ["22.10", "24.30"]
+  }
+}

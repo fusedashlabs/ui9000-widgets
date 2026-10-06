@@ -1,0 +1,300 @@
+{
+  "id": "flow-sankey-chart",
+  "tag": "ui9000-flow-sankey-chart",
+  "title": "Flow Sankey Chart",
+  "description": "Multi-stage flow Sankey in D3 — N stage columns (category → subcategory → cause → outcome) joined by severity-coloured ribbons, with a percentage gutter, per-node share badges and a cause-to-impact highlight. Figma 34:21521.",
+  "chartTypeKeys": [
+    "flowSankeyChart",
+    "multiStageSankeyChart"
+  ],
+  "source": "figma:34-21521",
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/flow-sankey-chart",
+  "entry": "@ui9000/widgets/flow-sankey-chart",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true,
+    "minStages": 3,
+    "notFor_simpleComparison": "Use bar-chart or kpi-widget for independent values."
+  },
+  "allowedActions": [
+    "hover",
+    "select",
+    "resize"
+  ],
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "source",
+                "target",
+                "value"
+              ],
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "number"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low",
+                    "info"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "links"
+            ],
+            "properties": {
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "stage": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "0-based stage column; derived from the graph when omitted."
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "medium",
+                        "low",
+                        "info"
+                      ]
+                    },
+                    "icon": {
+                      "type": "string",
+                      "description": "Single glyph drawn in the chip above the label."
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "source",
+                    "target",
+                    "value"
+                  ],
+                  "properties": {
+                    "source": {
+                      "type": "string"
+                    },
+                    "target": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "medium",
+                        "low",
+                        "info"
+                      ]
+                    }
+                  }
+                }
+              },
+              "stages": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "One header per stage column, left to right."
+              },
+              "summary": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    },
+                    "caption": {
+                      "type": "string"
+                    },
+                    "icon": {
+                      "type": "string",
+                      "description": "Named icon ('list', 'calendar'); any other value is drawn as text, so an emoji works too."
+                    }
+                  }
+                }
+              },
+              "valueLabel": {
+                "type": "string"
+              },
+              "subtitle": {
+                "type": "string",
+                "description": "Line under the chart title, e.g. 'Tracing power loss from root cause to output impact'."
+              },
+              "legendLabel": {
+                "type": "string",
+                "default": "Severity",
+                "description": "Names what the legend swatches encode."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "arrangeBy": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "description": "Ordered stage fields — one column per entry."
+              },
+              "display": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Measure field (first entry)."
+              },
+              "xAxe": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "yAxe": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "groupBy": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "severityBy": {
+                "type": "string",
+                "description": "Row field carrying the severity key."
+              },
+              "axisDetails": {
+                "type": "object"
+              }
+            }
+          }
+        ]
+      },
+      "showLegend": {
+        "type": "boolean",
+        "default": true
+      },
+      "showTooltip": {
+        "type": "boolean",
+        "default": true
+      },
+      "showGrid": {
+        "type": "boolean",
+        "default": true
+      },
+      "showSummary": {
+        "type": "boolean",
+        "default": true
+      },
+      "selectedNode": {
+        "type": "string",
+        "description": "Node id whose cause-to-impact path starts highlighted."
+      },
+      "chartSubtitle": {
+        "type": "string",
+        "description": "Overrides the payload's subtitle. Omit to use the payload; pass an empty string to render no subtitle."
+      },
+      "legendLabel": {
+        "type": "string",
+        "description": "Overrides the legend key label."
+      },
+      "theme": {
+        "type": "string",
+        "enum": [
+          "",
+          "light",
+          "dark"
+        ],
+        "default": "",
+        "description": "Appearance. Empty follows a data-theme='dark' ancestor, then --ui9000-mode."
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}

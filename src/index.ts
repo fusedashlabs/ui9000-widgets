@@ -19,8 +19,10 @@ export {
   loadViolinChart,
   loadWaterfallChart,
   loadSankeyChart,
+  loadFlowSankeyChart,
   loadParallelCoordinatesChart,
   loadPieChart,
+  loadBandUtilizationChart,
   loadDonutChart,
   loadPolarAreaChart,
   loadScatterPlotChart,
@@ -113,6 +115,10 @@ import {
   Ui9000SankeyChart,
 } from './components/sankey-chart/index.js';
 import {
+  registerFlowSankeyChart,
+  Ui9000FlowSankeyChart,
+} from './components/flow-sankey-chart/index.js';
+import {
   registerParallelCoordinatesChart,
   Ui9000ParallelCoordinatesChart,
 } from './components/parallel-coordinates-chart/index.js';
@@ -120,6 +126,10 @@ import {
   registerPieChart,
   Ui9000PieChart,
 } from './components/pie-chart/index.js';
+import {
+  registerBandUtilizationChart,
+  Ui9000BandUtilizationChart,
+} from './components/band-utilization-chart/index.js';
 import {
   registerDonutChart,
   Ui9000DonutChart,
@@ -164,6 +174,10 @@ import {
   registerKpiWidget,
   Ui9000KpiWidget,
 } from './components/kpi-widget/index.js';
+import {
+  registerLossIndicator,
+  Ui9000LossIndicator,
+} from './components/loss-indicator/index.js';
 import {
   registerStatusGaugeWidget,
   Ui9000StatusGaugeWidget,
@@ -277,10 +291,14 @@ export {
   registerWaterfallChart,
   Ui9000SankeyChart,
   registerSankeyChart,
+  Ui9000FlowSankeyChart,
+  registerFlowSankeyChart,
   Ui9000ParallelCoordinatesChart,
   registerParallelCoordinatesChart,
   Ui9000PieChart,
   registerPieChart,
+  Ui9000BandUtilizationChart,
+  registerBandUtilizationChart,
   Ui9000DonutChart,
   registerDonutChart,
   Ui9000PolarAreaChart,
@@ -303,6 +321,8 @@ export {
   registerPartialDependenceChart,
   Ui9000KpiWidget,
   registerKpiWidget,
+  Ui9000LossIndicator,
+  registerLossIndicator,
   Ui9000StatusGaugeWidget,
   registerStatusGaugeWidget,
   Ui9000PowerPathCard,
@@ -364,8 +384,10 @@ export function registerAllCharts(): void {
   registerViolinChart();
   registerWaterfallChart();
   registerSankeyChart();
+  registerFlowSankeyChart();
   registerParallelCoordinatesChart();
   registerPieChart();
+  registerBandUtilizationChart();
   registerDonutChart();
   registerPolarAreaChart();
   registerScatterPlot();
@@ -377,6 +399,7 @@ export function registerAllCharts(): void {
   registerTreemapChart();
   registerPartialDependenceChart();
   registerKpiWidget();
+  registerLossIndicator();
   registerStatusGaugeWidget();
   registerPowerPathCard();
   registerGiniImpurityEntropyChart();
@@ -567,6 +590,19 @@ export {
 } from './components/sankey-chart/index.js';
 
 export {
+  normalizeFlowSankeyData,
+  renderFlowSankeyChart,
+  MAX_FLOW_LINKS,
+  type FlowGraphPayload,
+  type FlowLinkDatum,
+  type FlowNodeDatum,
+  type FlowSankeyFusePayload,
+  type FlowSankeyInput,
+  type FlowSankeyModel,
+  flowSankeyChartMetadata,
+} from './components/flow-sankey-chart/index.js';
+
+export {
   normalizeParallelCoordinatesData,
   renderParallelCoordinatesChart,
   type ParallelCoordinatesModel,
@@ -584,6 +620,19 @@ export {
   type PieModel,
   pieChartMetadata,
 } from './components/pie-chart/index.js';
+
+export {
+  normalizeBandUtilization,
+  renderBandUtilization,
+  formatShare,
+  unitCaption,
+  BAND_WHOLE,
+  type BandModel,
+  type BandRow,
+  type BandSegment,
+  type BandSeries,
+  bandUtilizationChartMetadata,
+} from './components/band-utilization-chart/index.js';
 
 export {
   normalizeDonutData,
@@ -728,6 +777,17 @@ export {
   type RawKpiItem,
   kpiWidgetMetadata,
 } from './components/kpi-widget/index.js';
+
+export {
+  normalizeLossIndicator,
+  formatLossNumber,
+  type LossBand,
+  type LossIndicatorInput,
+  type LossIndicatorModel,
+  type LossLevel,
+  type LossTrend,
+  lossIndicatorMetadata,
+} from './components/loss-indicator/index.js';
 
 export {
   normalizeStatusGauge,

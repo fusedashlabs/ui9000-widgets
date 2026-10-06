@@ -139,8 +139,17 @@ export function paintMode(el: Element): ResolvedMode {
   return resolveElementMode(el);
 }
 
-export function readThemeFromElement(el: Element): WidgetTheme {
-  const base = paintMode(el) === 'dark' ? DARK_THEME : DEFAULT_THEME;
+/**
+ * Host CSS variables, falling back to `base` for each one the host leaves unset.
+ *
+ * `base` defaults to the painted mode, so callers behave exactly as before.
+ * A chart that owns its appearance passes the palette outright, which stops
+ * ambient `--ui9000-color-*` defaults from keeping light ink on a dark panel.
+ */
+export function readThemeFromElement(
+  el: Element,
+  base: WidgetTheme = paintMode(el) === 'dark' ? DARK_THEME : DEFAULT_THEME,
+): WidgetTheme {
   return {
     primary: readCssVar(el, CSS_VARS.primary, base.primary),
     secondary: readCssVar(el, CSS_VARS.secondary, base.secondary),

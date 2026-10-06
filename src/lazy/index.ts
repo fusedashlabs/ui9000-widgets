@@ -18,6 +18,7 @@ export type ChartKind =
   | 'sankey-chart'
   | 'parallel-coordinates-chart'
   | 'pie-chart'
+  | 'band-utilization-chart'
   | 'donut-chart'
   | 'polar-area-chart'
   | 'scatter-plot-chart'
@@ -130,6 +131,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'pie-chart': async () => {
     const mod = await import('../components/pie-chart/index.js');
     return { register: mod.registerPieChart };
+  },
+  'band-utilization-chart': async () => {
+    const mod = await import('../components/band-utilization-chart/index.js');
+    return { register: mod.registerBandUtilizationChart };
   },
   'donut-chart': async () => {
     const mod = await import('../components/donut-chart/index.js');
@@ -344,6 +349,10 @@ export async function loadParallelCoordinatesChart(): Promise<LazyChartModule> {
 
 export async function loadPieChart(): Promise<LazyChartModule> {
   return loadChart('pie-chart');
+}
+
+export async function loadBandUtilizationChart(): Promise<LazyChartModule> {
+  return loadChart('band-utilization-chart');
 }
 
 export async function loadDonutChart(): Promise<LazyChartModule> {

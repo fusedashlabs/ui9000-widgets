@@ -108,6 +108,10 @@
       "types": "./dist/components/pie-chart/index.d.ts",
       "import": "./dist/components/pie-chart/index.js"
     },
+    "./band-utilization-chart": {
+      "types": "./dist/components/band-utilization-chart/index.d.ts",
+      "import": "./dist/components/band-utilization-chart/index.js"
+    },
     "./donut-chart": {
       "types": "./dist/components/donut-chart/index.d.ts",
       "import": "./dist/components/donut-chart/index.js"
@@ -255,6 +259,10 @@
     "./lazy/pie-chart": {
       "types": "./dist/lazy/pie-chart.d.ts",
       "import": "./dist/lazy/pie-chart.js"
+    },
+    "./lazy/band-utilization-chart": {
+      "types": "./dist/lazy/band-utilization-chart.d.ts",
+      "import": "./dist/lazy/band-utilization-chart.js"
     },
     "./lazy/donut-chart": {
       "types": "./dist/lazy/donut-chart.d.ts",

@@ -1,6 +1,7 @@
 import type { ChartKind } from '../../../lazy/index.js';
 import areaChartMeta from '../../area-chart/metadata.json';
 import areaGroupedBarMeta from '../../area-grouped-bar-chart/metadata.json';
+import bandUtilizationMeta from '../../band-utilization-chart/metadata.json';
 import barChartMeta from '../../bar-chart/metadata.json';
 import biasVarianceTradeoffMeta from '../../bias-variance-tradeoff-chart/metadata.json';
 import boxPlotMeta from '../../box-plot-chart/metadata.json';
@@ -56,6 +57,7 @@ export const CHART_TYPE_ALIASES: Readonly<Record<string, string>> = {
 const METADATA: ChartMetadataLike[] = [
   areaChartMeta,
   areaGroupedBarMeta,
+  bandUtilizationMeta,
   barChartMeta,
   biasVarianceTradeoffMeta,
   boxPlotMeta,

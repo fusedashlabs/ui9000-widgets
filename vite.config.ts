@@ -69,6 +69,10 @@ const entries = {
     __dirname,
     'src/components/pie-chart/index.ts',
   ),
+  'components/band-utilization-chart/index': resolve(
+    __dirname,
+    'src/components/band-utilization-chart/index.ts',
+  ),
   'components/donut-chart/index': resolve(
     __dirname,
     'src/components/donut-chart/index.ts',
@@ -157,6 +161,10 @@ const entries = {
     'src/lazy/parallel-coordinates-chart.ts',
   ),
   'lazy/pie-chart': resolve(__dirname, 'src/lazy/pie-chart.ts'),
+  'lazy/band-utilization-chart': resolve(
+    __dirname,
+    'src/lazy/band-utilization-chart.ts',
+  ),
   'lazy/donut-chart': resolve(__dirname, 'src/lazy/donut-chart.ts'),
   'lazy/polar-area-chart': resolve(__dirname, 'src/lazy/polar-area-chart.ts'),
   'lazy/scatter-plot-chart': resolve(__dirname, 'src/lazy/scatter-plot-chart.ts'),

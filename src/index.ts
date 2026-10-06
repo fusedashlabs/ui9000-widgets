@@ -21,6 +21,7 @@ export {
   loadSankeyChart,
   loadParallelCoordinatesChart,
   loadPieChart,
+  loadBandUtilizationChart,
   loadDonutChart,
   loadPolarAreaChart,
   loadScatterPlotChart,
@@ -120,6 +121,10 @@ import {
   registerPieChart,
   Ui9000PieChart,
 } from './components/pie-chart/index.js';
+import {
+  registerBandUtilizationChart,
+  Ui9000BandUtilizationChart,
+} from './components/band-utilization-chart/index.js';
 import {
   registerDonutChart,
   Ui9000DonutChart,
@@ -281,6 +286,8 @@ export {
   registerParallelCoordinatesChart,
   Ui9000PieChart,
   registerPieChart,
+  Ui9000BandUtilizationChart,
+  registerBandUtilizationChart,
   Ui9000DonutChart,
   registerDonutChart,
   Ui9000PolarAreaChart,
@@ -366,6 +373,7 @@ export function registerAllCharts(): void {
   registerSankeyChart();
   registerParallelCoordinatesChart();
   registerPieChart();
+  registerBandUtilizationChart();
   registerDonutChart();
   registerPolarAreaChart();
   registerScatterPlot();
@@ -584,6 +592,19 @@ export {
   type PieModel,
   pieChartMetadata,
 } from './components/pie-chart/index.js';
+
+export {
+  normalizeBandUtilization,
+  renderBandUtilization,
+  formatShare,
+  unitCaption,
+  BAND_WHOLE,
+  type BandModel,
+  type BandRow,
+  type BandSegment,
+  type BandSeries,
+  bandUtilizationChartMetadata,
+} from './components/band-utilization-chart/index.js';
 
 export {
   normalizeDonutData,

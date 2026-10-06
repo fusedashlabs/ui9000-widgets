@@ -1,6 +1,7 @@
 import type { ChartKind } from '../../../lazy/index.js';
 import areaChartMeta from '../../area-chart/metadata.json';
 import areaGroupedBarMeta from '../../area-grouped-bar-chart/metadata.json';
+import bandUtilizationMeta from '../../band-utilization-chart/metadata.json';
 import barChartMeta from '../../bar-chart/metadata.json';
 import biasVarianceTradeoffMeta from '../../bias-variance-tradeoff-chart/metadata.json';
 import boxPlotMeta from '../../box-plot-chart/metadata.json';
@@ -9,6 +10,7 @@ import donutMeta from '../../donut-chart/metadata.json';
 import giniImpurityEntropyMeta from '../../gini-impurity-entropy-chart/metadata.json';
 import histogramMeta from '../../histogram-chart/metadata.json';
 import kpiMeta from '../../kpi-widget/metadata.json';
+import lossIndicatorMeta from '../../loss-indicator/metadata.json';
 import statusGaugeMeta from '../../status-gauge-widget/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
@@ -56,6 +58,7 @@ export const CHART_TYPE_ALIASES: Readonly<Record<string, string>> = {
 const METADATA: ChartMetadataLike[] = [
   areaChartMeta,
   areaGroupedBarMeta,
+  bandUtilizationMeta,
   barChartMeta,
   biasVarianceTradeoffMeta,
   boxPlotMeta,
@@ -64,6 +67,7 @@ const METADATA: ChartMetadataLike[] = [
   giniImpurityEntropyMeta,
   histogramMeta,
   kpiMeta,
+  lossIndicatorMeta,
   statusGaugeMeta,
   lineMeta,
   lollipopMeta,

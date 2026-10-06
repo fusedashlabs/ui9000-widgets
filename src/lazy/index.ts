@@ -19,6 +19,7 @@ export type ChartKind =
   | 'flow-sankey-chart'
   | 'parallel-coordinates-chart'
   | 'pie-chart'
+  | 'band-utilization-chart'
   | 'donut-chart'
   | 'polar-area-chart'
   | 'scatter-plot-chart'
@@ -30,6 +31,7 @@ export type ChartKind =
   | 'treemap-chart'
   | 'partial-dependence-chart'
   | 'kpi-widget'
+  | 'loss-indicator'
   | 'status-gauge-widget'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
@@ -135,6 +137,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
     const mod = await import('../components/pie-chart/index.js');
     return { register: mod.registerPieChart };
   },
+  'band-utilization-chart': async () => {
+    const mod = await import('../components/band-utilization-chart/index.js');
+    return { register: mod.registerBandUtilizationChart };
+  },
   'donut-chart': async () => {
     const mod = await import('../components/donut-chart/index.js');
     return { register: mod.registerDonutChart };
@@ -182,6 +188,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'kpi-widget': async () => {
     const mod = await import('../components/kpi-widget/index.js');
     return { register: mod.registerKpiWidget };
+  },
+  'loss-indicator': async () => {
+    const mod = await import('../components/loss-indicator/index.js');
+    return { register: mod.registerLossIndicator };
   },
   'status-gauge-widget': async () => {
     const mod = await import('../components/status-gauge-widget/index.js');
@@ -350,6 +360,10 @@ export async function loadPieChart(): Promise<LazyChartModule> {
   return loadChart('pie-chart');
 }
 
+export async function loadBandUtilizationChart(): Promise<LazyChartModule> {
+  return loadChart('band-utilization-chart');
+}
+
 export async function loadDonutChart(): Promise<LazyChartModule> {
   return loadChart('donut-chart');
 }
@@ -392,6 +406,10 @@ export async function loadPartialDependenceChart(): Promise<LazyChartModule> {
 
 export async function loadKpiWidget(): Promise<LazyChartModule> {
   return loadChart('kpi-widget');
+}
+
+export async function loadLossIndicator(): Promise<LazyChartModule> {
+  return loadChart('loss-indicator');
 }
 
 export async function loadStatusGaugeWidget(): Promise<LazyChartModule> {

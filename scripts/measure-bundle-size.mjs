@@ -31,6 +31,7 @@ const CHART_ENTRIES = [
   'components/flow-sankey-chart/index.js',
   'components/parallel-coordinates-chart/index.js',
   'components/pie-chart/index.js',
+  'components/band-utilization-chart/index.js',
   'components/donut-chart/index.js',
   'components/polar-area-chart/index.js',
   'components/scatter-plot-chart/index.js',

@@ -28,6 +28,7 @@ const CHART_ENTRIES = [
   'components/violin-chart/index.js',
   'components/waterfall-chart/index.js',
   'components/sankey-chart/index.js',
+  'components/flow-sankey-chart/index.js',
   'components/parallel-coordinates-chart/index.js',
   'components/pie-chart/index.js',
   'components/band-utilization-chart/index.js',

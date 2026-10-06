@@ -1,6 +1,15 @@
 # Changelog
 
+
 ## Unreleased
+
+### Added
+
+- `ui9000-flow-sankey-chart`: stage columns joined by severity-colored ribbons, with a percentage gutter and click-to-highlight of a node's full cause-to-impact path. It takes a graph payload (`nodes`, `links`, `stages`) or a FuseDash widget whose `arrangeBy` lists the stage fields. `registerAllCharts` registers it. It ships from the package root, `./flow-sankey-chart`, and `./lazy/flow-sankey-chart`.
+- FuseDash rows that share a stage pair fold into one ribbon colored by the severity carrying most of its value. Nodes take their severity the same way, so Info appears in the legend only when some flow is unclassified. A blank stage is bridged instead of dropping the row.
+- Past 1,500 links the chart keeps the largest and notes how many it left out.
+- The shell header takes an optional `subtitle` and `aside`, and can drop its actions. The HTML legend takes an optional title. Charts that pass neither keep their current DOM.
+- `readThemeFromElement` takes an optional base palette. It defaults to the painted mode, as before.
 
 ## 0.7.3 — 2026-10-06
 

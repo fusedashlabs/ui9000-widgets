@@ -61,6 +61,10 @@ const entries = {
     __dirname,
     'src/components/sankey-chart/index.ts',
   ),
+  'components/flow-sankey-chart/index': resolve(
+    __dirname,
+    'src/components/flow-sankey-chart/index.ts',
+  ),
   'components/parallel-coordinates-chart/index': resolve(
     __dirname,
     'src/components/parallel-coordinates-chart/index.ts',
@@ -156,6 +160,10 @@ const entries = {
   'lazy/violin-chart': resolve(__dirname, 'src/lazy/violin-chart.ts'),
   'lazy/waterfall-chart': resolve(__dirname, 'src/lazy/waterfall-chart.ts'),
   'lazy/sankey-chart': resolve(__dirname, 'src/lazy/sankey-chart.ts'),
+  'lazy/flow-sankey-chart': resolve(
+    __dirname,
+    'src/lazy/flow-sankey-chart.ts',
+  ),
   'lazy/parallel-coordinates-chart': resolve(
     __dirname,
     'src/lazy/parallel-coordinates-chart.ts',

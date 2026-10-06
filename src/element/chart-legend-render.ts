@@ -30,13 +30,20 @@ function renderSwatch(swatch: ChartLegendSwatch): TemplateResult {
   ><span class="legend-dot" style="background:${swatch.color}"></span></span>`;
 }
 
-/** HTML legend row above the plot (MCP shell — not SVG). */
+/**
+ * HTML legend row above the plot (MCP shell — not SVG).
+ *
+ * `title` names what the swatches encode ("Severity", "Region"); charts whose
+ * legend is self-evident leave it out and the row renders exactly as before.
+ */
 export function renderChartLegend(
   entries: ChartLegendEntry[],
+  title = '',
 ): TemplateResult | typeof nothing {
   if (!entries.length) return nothing;
   return html`
     <div class="chart-legend" part="legend">
+      ${title ? html`<span class="legend-title">${title}</span>` : nothing}
       ${entries.map(
         (entry) => html`
           <span class="legend-item">

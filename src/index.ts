@@ -19,6 +19,7 @@ export {
   loadViolinChart,
   loadWaterfallChart,
   loadSankeyChart,
+  loadFlowSankeyChart,
   loadParallelCoordinatesChart,
   loadPieChart,
   loadBandUtilizationChart,
@@ -113,6 +114,10 @@ import {
   registerSankeyChart,
   Ui9000SankeyChart,
 } from './components/sankey-chart/index.js';
+import {
+  registerFlowSankeyChart,
+  Ui9000FlowSankeyChart,
+} from './components/flow-sankey-chart/index.js';
 import {
   registerParallelCoordinatesChart,
   Ui9000ParallelCoordinatesChart,
@@ -282,6 +287,8 @@ export {
   registerWaterfallChart,
   Ui9000SankeyChart,
   registerSankeyChart,
+  Ui9000FlowSankeyChart,
+  registerFlowSankeyChart,
   Ui9000ParallelCoordinatesChart,
   registerParallelCoordinatesChart,
   Ui9000PieChart,
@@ -371,6 +378,7 @@ export function registerAllCharts(): void {
   registerViolinChart();
   registerWaterfallChart();
   registerSankeyChart();
+  registerFlowSankeyChart();
   registerParallelCoordinatesChart();
   registerPieChart();
   registerBandUtilizationChart();
@@ -573,6 +581,19 @@ export {
   type SankeyNodeDatum,
   sankeyChartMetadata,
 } from './components/sankey-chart/index.js';
+
+export {
+  normalizeFlowSankeyData,
+  renderFlowSankeyChart,
+  MAX_FLOW_LINKS,
+  type FlowGraphPayload,
+  type FlowLinkDatum,
+  type FlowNodeDatum,
+  type FlowSankeyFusePayload,
+  type FlowSankeyInput,
+  type FlowSankeyModel,
+  flowSankeyChartMetadata,
+} from './components/flow-sankey-chart/index.js';
 
 export {
   normalizeParallelCoordinatesData,

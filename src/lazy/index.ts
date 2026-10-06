@@ -16,6 +16,7 @@ export type ChartKind =
   | 'violin-chart'
   | 'waterfall-chart'
   | 'sankey-chart'
+  | 'flow-sankey-chart'
   | 'parallel-coordinates-chart'
   | 'pie-chart'
   | 'band-utilization-chart'
@@ -123,6 +124,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'sankey-chart': async () => {
     const mod = await import('../components/sankey-chart/index.js');
     return { register: mod.registerSankeyChart };
+  },
+  'flow-sankey-chart': async () => {
+    const mod = await import('../components/flow-sankey-chart/index.js');
+    return { register: mod.registerFlowSankeyChart };
   },
   'parallel-coordinates-chart': async () => {
     const mod = await import('../components/parallel-coordinates-chart/index.js');
@@ -341,6 +346,10 @@ export async function loadWaterfallChart(): Promise<LazyChartModule> {
 
 export async function loadSankeyChart(): Promise<LazyChartModule> {
   return loadChart('sankey-chart');
+}
+
+export async function loadFlowSankeyChart(): Promise<LazyChartModule> {
+  return loadChart('flow-sankey-chart');
 }
 
 export async function loadParallelCoordinatesChart(): Promise<LazyChartModule> {

@@ -154,6 +154,7 @@ describe('Ui9000ChartRenderer', () => {
     const host = document.createElement('ui9000-chart-renderer');
     host.setAttribute('data', JSON.stringify(mapFixture));
     host.setAttribute('mapbox-token', 'pk.test');
+    host.setAttribute('mapbox-dark-token', 'pk.dark');
     host.setAttribute('geojson-base-url', '/geojson');
     host.setAttribute('pmtiles-base-url', '/pmtiles');
     document.body.appendChild(host);
@@ -162,6 +163,7 @@ describe('Ui9000ChartRenderer', () => {
 
     const map = host.shadowRoot?.querySelector('ui9000-map-chart');
     expect(map?.getAttribute('mapbox-token')).toBe('pk.test');
+    expect(map?.getAttribute('mapbox-dark-token')).toBe('pk.dark');
     expect(map?.getAttribute('geojson-base-url')).toBe('/geojson');
     expect(map?.getAttribute('pmtiles-base-url')).toBe('/pmtiles');
     host.remove();

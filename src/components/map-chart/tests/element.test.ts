@@ -100,7 +100,8 @@ describe(TAG, () => {
     const el = document.createElement(TAG) as Ui9000MapChart;
     el.style.setProperty('--ui9000-color-surface', '#13161D');
     el.style.setProperty('--ui9000-mode', 'dark');
-    el.setAttribute('mapbox-token', 'pk.test');
+    el.setAttribute('mapbox-token', 'pk.light');
+    el.setAttribute('mapbox-dark-token', 'pk.dark');
     el.setAttribute(
       'data',
       JSON.stringify({
@@ -131,7 +132,7 @@ describe(TAG, () => {
     await settle(el);
     expect(spy).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({ mode: 'dark' }),
+      expect.objectContaining({ mode: 'dark', token: 'pk.dark' }),
     );
     spy.mockRestore();
     el.remove();

@@ -1,5 +1,6 @@
 # Changelog
 
+
 ## Unreleased
 
 ### Added
@@ -9,6 +10,12 @@
 - Past 1,500 links the chart keeps the largest and notes how many it left out.
 - The shell header takes an optional `subtitle` and `aside`, and can drop its actions. The HTML legend takes an optional title. Charts that pass neither keep their current DOM.
 - `readThemeFromElement` takes an optional base palette. It defaults to the painted mode, as before.
+
+## 0.7.1 — 2026-10-02
+
+### Added
+
+- Dark maps use `mapbox-dark-token`, `MAPBOX_DARK_TOKEN`, or `STORYBOOK_MAPBOX_DARK_TOKEN`. The dark style is a different Mapbox account, so the light token cannot load it. Terrain keeps the light token.
 
 ## 0.7.0 — 2026-10-02
 

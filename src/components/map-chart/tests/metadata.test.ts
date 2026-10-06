@@ -29,6 +29,7 @@ describe('map-chart metadata', () => {
       'show-legend',
       'show-tooltip',
       'mapbox-token',
+      'mapbox-dark-token',
       'geojson-base-url',
       'pmtiles-base-url',
     ]);

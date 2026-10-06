@@ -1,0 +1,95 @@
+{
+  "id": "power-path-card",
+  "tag": "ui9000-power-path-card",
+  "title": "Power Path Card",
+  "description": "Optivion power-path card (Figma 34:23675): title and asset badge, an existing health score with a compact line, a fault banner only while a fault is active, and a variable list of metrics with optional threshold status. HTML/Lit, no Redux.",
+  "chartTypeKeys": ["powerPathCard"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/power-path-card",
+  "entry": "@ui9000/widgets/power-path-card",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "powerPathCard" },
+          "name": { "type": "string", "description": "Card title, e.g. the power path or sector." },
+          "badge": {
+            "description": "Related asset, location or equipment reference.",
+            "oneOf": [
+              { "type": "string" },
+              { "type": "object", "properties": { "label": { "type": "string" } } }
+            ]
+          },
+          "health": {
+            "type": ["object", "null"],
+            "description": "Existing health score. Omit it when none exists; the card never computes one.",
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": ["number", "string"] },
+              "unit": { "type": "string", "description": "Defaults to %." },
+              "status": { "type": "string" },
+              "level": { "enum": ["ok", "warning", "critical", "neutral"] },
+              "points": {
+                "type": "array",
+                "description": "Recent readings, oldest first. Fewer than two draws no line."
+              }
+            },
+            "required": ["value"]
+          },
+          "fault": {
+            "description": "Active fault only. Omit, null or active:false hides the banner.",
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": {
+                  "active": { "type": "boolean" },
+                  "level": { "enum": ["warning", "critical"] },
+                  "message": { "type": "string" },
+                  "details": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            ]
+          },
+          "data": {
+            "type": "array",
+            "description": "One row per monitored parameter; the count varies.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": { "type": "string" },
+                "label": { "type": "string" },
+                "value": { "type": ["number", "string"] },
+                "unit": { "type": "string" },
+                "status": { "type": "string" },
+                "level": { "enum": ["ok", "warning", "critical", "neutral"] },
+                "thresholds": {
+                  "type": "object",
+                  "description": "Status is shown only when a level, status or threshold exists.",
+                  "properties": {
+                    "warning": { "type": "number" },
+                    "critical": { "type": "number" },
+                    "direction": { "enum": ["above", "below"] }
+                  }
+                }
+              },
+              "required": ["label", "value"]
+            }
+          }
+        }
+      },
+      "theme": { "type": "string", "enum": ["light", "dark"] }
+    }
+  }
+}

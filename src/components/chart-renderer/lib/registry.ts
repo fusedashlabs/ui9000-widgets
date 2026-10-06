@@ -12,6 +12,7 @@ import histogramMeta from '../../histogram-chart/metadata.json';
 import kpiMeta from '../../kpi-widget/metadata.json';
 import lossIndicatorMeta from '../../loss-indicator/metadata.json';
 import statusGaugeMeta from '../../status-gauge-widget/metadata.json';
+import powerPathMeta from '../../power-path-card/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
 import mapChartMeta from '../../map-chart/metadata.json';
@@ -69,6 +70,7 @@ const METADATA: ChartMetadataLike[] = [
   kpiMeta,
   lossIndicatorMeta,
   statusGaugeMeta,
+  powerPathMeta,
   lineMeta,
   lollipopMeta,
   mapChartMeta,

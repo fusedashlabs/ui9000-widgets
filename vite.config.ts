@@ -126,6 +126,10 @@ const entries = {
     __dirname,
     'src/components/status-gauge-widget/index.ts',
   ),
+  'components/power-path-card/index': resolve(
+    __dirname,
+    'src/components/power-path-card/index.ts',
+  ),
   'components/custom-widget/index': resolve(
     __dirname,
     'src/components/custom-widget/index.ts',
@@ -192,6 +196,7 @@ const entries = {
   'lazy/kpi-widget': resolve(__dirname, 'src/lazy/kpi-widget.ts'),
   'lazy/loss-indicator': resolve(__dirname, 'src/lazy/loss-indicator.ts'),
   'lazy/status-gauge-widget': resolve(__dirname, 'src/lazy/status-gauge-widget.ts'),
+  'lazy/power-path-card': resolve(__dirname, 'src/lazy/power-path-card.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(
     __dirname,
     'src/lazy/gini-impurity-entropy-chart.ts',

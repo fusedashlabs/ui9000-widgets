@@ -1,9 +1,10 @@
 # Changelog
 
-
 ## Unreleased
 
 ### Added
+
+- **power-path-card** (`ui9000-power-path-card`, chartType `powerPathCard`): the Optivion power-path card from Figma 34:23675. Title and asset badge, an existing health score with a compact line, a fault banner only while a fault is active, and a variable list of metrics whose status shows only with a level, status or thresholds. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/power-path-card`.
 
 - `ui9000-flow-sankey-chart`: stage columns joined by severity-colored ribbons, with a percentage gutter and click-to-highlight of a node's full cause-to-impact path. It takes a graph payload (`nodes`, `links`, `stages`) or a FuseDash widget whose `arrangeBy` lists the stage fields. `registerAllCharts` registers it. It ships from the package root, `./flow-sankey-chart`, and `./lazy/flow-sankey-chart`.
 - FuseDash rows that share a stage pair fold into one ribbon colored by the severity carrying most of its value. Nodes take their severity the same way, so Info appears in the legend only when some flow is unclassified. A blank stage is bridged instead of dropping the row.

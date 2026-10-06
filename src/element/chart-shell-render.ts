@@ -29,6 +29,19 @@ const DASH_ITEM_ICONS: Record<string, TemplateResult> = {
 
 export function renderWidgetHeader(options: {
   title: string;
+  /** Second line under the title, stacked inside the same header row. */
+  subtitle?: string;
+  /**
+   * Chart-supplied block sitting between the heading and the actions. Typed as
+   * a Lit child value, so a chart can hand over `nothing` without the union
+   * widening at the call site.
+   */
+  aside?: unknown;
+  /**
+   * Set false to drop the actions block entirely — for a chart whose host owns
+   * the chrome, or that has no action worth offering.
+   */
+  showActions?: boolean;
   variant?: WidgetHeaderVariant;
   menuOpen: boolean;
   handlers?: WidgetHeaderHandlers;
@@ -135,10 +148,39 @@ export function renderWidgetHeader(options: {
         </div>`
       : html`<div class="widget-actions" data-screenshot-ignore>${menu}</div>`;
 
+  // `nothing` is a truthy symbol, so an absent aside has to be tested for it
+  // explicitly or every chart without one renders an empty wrapper.
+  const hasAside = options.aside !== undefined && options.aside !== nothing;
+
+  const titleLine = html`<div class="widget-title" part="title" title=${options.title}>
+    ${displayTitle}
+  </div>`;
+
+  // Only charts that pass a subtitle get the extra wrapper, so every other
+  // chart's header keeps the exact DOM (and flex behaviour) it had before.
+  const heading = options.subtitle
+    ? html`<div class="widget-heading">
+        ${titleLine}
+        <div class="widget-subtitle" part="subtitle" title=${options.subtitle}>
+          ${options.subtitle}
+        </div>
+      </div>`
+    : titleLine;
+
+  // The aside shares a wrapping row with the heading, so it drops below the
+  // title as one block when space runs out. The actions stay outside that row
+  // and keep their place at the top right.
+  const main = hasAside
+    ? html`<div class="widget-header-main">
+        ${heading}
+        <div class="widget-aside">${options.aside}</div>
+      </div>`
+    : heading;
+
   return html`
     <div class="widget-header" part="header" data-variant=${chrome.variant}>
-      <div class="widget-title" part="title" title=${options.title}>${displayTitle}</div>
-      ${actions}
+      ${main}
+      ${options.showActions === false ? nothing : actions}
     </div>
   `;
 }

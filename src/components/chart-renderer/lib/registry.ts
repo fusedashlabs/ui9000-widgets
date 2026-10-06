@@ -1,6 +1,7 @@
 import type { ChartKind } from '../../../lazy/index.js';
 import areaChartMeta from '../../area-chart/metadata.json';
 import areaGroupedBarMeta from '../../area-grouped-bar-chart/metadata.json';
+import bandUtilizationMeta from '../../band-utilization-chart/metadata.json';
 import barChartMeta from '../../bar-chart/metadata.json';
 import biasVarianceTradeoffMeta from '../../bias-variance-tradeoff-chart/metadata.json';
 import boxPlotMeta from '../../box-plot-chart/metadata.json';
@@ -10,7 +11,9 @@ import giniImpurityEntropyMeta from '../../gini-impurity-entropy-chart/metadata.
 import histogramMeta from '../../histogram-chart/metadata.json';
 import kpiMeta from '../../kpi-widget/metadata.json';
 import incidentsReviewMeta from '../../incidents-review-card/metadata.json';
+import lossIndicatorMeta from '../../loss-indicator/metadata.json';
 import statusGaugeMeta from '../../status-gauge-widget/metadata.json';
+import powerPathMeta from '../../power-path-card/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
 import mapChartMeta from '../../map-chart/metadata.json';
@@ -23,6 +26,7 @@ import punchcardMeta from '../../punchcard-chart/metadata.json';
 import radarMeta from '../../radar-chart/metadata.json';
 import radialBarMeta from '../../radial-bar-chart/metadata.json';
 import sankeyMeta from '../../sankey-chart/metadata.json';
+import flowSankeyMeta from '../../flow-sankey-chart/metadata.json';
 import scatterPlotMeta from '../../scatter-plot-chart/metadata.json';
 import scatterSparklineMeta from '../../scatter-sparkline-chart/metadata.json';
 import sparkAreaMeta from '../../spark-area-chart/metadata.json';
@@ -56,6 +60,7 @@ export const CHART_TYPE_ALIASES: Readonly<Record<string, string>> = {
 const METADATA: ChartMetadataLike[] = [
   areaChartMeta,
   areaGroupedBarMeta,
+  bandUtilizationMeta,
   barChartMeta,
   biasVarianceTradeoffMeta,
   boxPlotMeta,
@@ -65,7 +70,9 @@ const METADATA: ChartMetadataLike[] = [
   histogramMeta,
   kpiMeta,
   incidentsReviewMeta,
+  lossIndicatorMeta,
   statusGaugeMeta,
+  powerPathMeta,
   lineMeta,
   lollipopMeta,
   mapChartMeta,
@@ -78,6 +85,7 @@ const METADATA: ChartMetadataLike[] = [
   radarMeta,
   radialBarMeta,
   sankeyMeta,
+  flowSankeyMeta,
   scatterPlotMeta,
   scatterSparklineMeta,
   sparkAreaMeta,

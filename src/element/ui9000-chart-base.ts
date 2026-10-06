@@ -165,10 +165,20 @@ export abstract class Ui9000ChartElement extends LitElement {
     });
   }
 
-  protected renderShellHeader(title: string) {
-    if (!title) return nothing;
+  protected renderShellHeader(
+    title: string,
+    extras: {
+      subtitle?: string;
+      aside?: unknown;
+      showActions?: boolean;
+    } = {},
+  ) {
+    if (!title && !extras.subtitle && !extras.aside) return nothing;
     return renderWidgetHeader({
       title,
+      subtitle: extras.subtitle,
+      aside: extras.aside,
+      showActions: extras.showActions,
       variant: this.headerVariant,
       handlers: this._headerHandlers,
       menuOpen: this._menuOpen,

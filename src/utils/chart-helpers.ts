@@ -332,5 +332,16 @@ export function getSankeyDimensions(container: HTMLElement): {
   };
 }
 
+/** Multi-stage flow Sankey — taller default so four stage columns stay legible. */
+export function getFlowSankeyDimensions(container: HTMLElement): {
+  width: number;
+  height: number;
+} {
+  return {
+    width: container.clientWidth || 640,
+    height: container.clientHeight || 420,
+  };
+}
+
 /** FuseDash Qualitative2Colors1 (+ extras) */
 export const CHART_COLORS = [...FD.series];

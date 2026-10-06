@@ -369,6 +369,50 @@ export const FD = {
   sankeyLinkAlphaPct: 50,
   sankeyLinkInset: 3,
   sankeyDimOpacity: 0.5,
+  /**
+   * Multi-stage flow Sankey (Figma 34:21521) — N stage columns joined by
+   * severity-coloured ribbons. Separate from the two-column `sankey*` tokens.
+   */
+  flowSankeyMargin: { top: 34, right: 12, bottom: 12, left: 46 },
+  /** Thickness of a stage rail / node bar */
+  flowSankeyNodeWidth: 11,
+  flowSankeyNodePadding: 16,
+  flowSankeyNodeRadius: 3,
+  /** Rails and unclassified nodes: warm neutral, not the cool sankey grey */
+  flowSankeyRail: '#B4AC9E',
+  flowSankeyRailDark: '#6F6960',
+  /**
+   * Stage columns bow left at mid-height — `-bow * sin(pi * t)` px, applied to
+   * rails, nodes and ribbon endpoints alike so they stay joined.
+   */
+  flowSankeyBow: 20,
+  /** Ribbons rest at 38% alpha; the focused path goes opaque */
+  flowSankeyLinkAlphaPct: 38,
+  flowSankeyDimOpacity: 0.3,
+  /** Stage header row above the plot */
+  flowSankeyStageLabelSize: 9,
+  flowSankeyStageLabelFill: '#8C8579',
+  flowSankeyStageLabelTracking: 0.8,
+  /** Percentage gutter on the left */
+  flowSankeyAxisTicks: 11,
+  flowSankeyAxisLabelSize: 9,
+  /** Node label block: icon chip, name, value + share badge */
+  flowSankeyLabelGap: 10,
+  flowSankeyLabelSize: 11,
+  flowSankeyValueSize: 11,
+  flowSankeyShareSize: 9,
+  flowSankeyIconSize: 18,
+  flowSankeyIconRadius: 5,
+  /** Selected node ring (Figma: dashed white outline) */
+  flowSankeySelectedDash: '3 3',
+  flowSankeySelectedWidth: 1.5,
+  /** Severity scale — legend order High → Info */
+  flowSankeySeverity: {
+    high: '#F09AA4',
+    medium: '#DDBE6E',
+    low: '#4CB88A',
+    info: '#9C958A',
+  },
   /** ParallelCoordinates — client Horizontal/Vertical frames */
   parallelMargin: { top: 10, right: 1, bottom: 8, left: 1 },
   parallelVerticalMargin: { top: 10, right: 1, bottom: 1, left: 1 },

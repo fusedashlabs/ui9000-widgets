@@ -1,0 +1,17 @@
+{
+  "id": "loss-indicator",
+  "tag": "ui9000-loss-indicator",
+  "title": "Loss Indicator",
+  "description": "One metric on a threshold scale: title, optional trend arrow, value, coloured ticks, and a marker on the current value. Ticks past the marker stay grey. Not a dial and not a stacked bar.",
+  "chartTypeKeys": ["lossIndicator"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/loss-indicator",
+  "entry": "@ui9000/widgets/loss-indicator",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "host"
+}

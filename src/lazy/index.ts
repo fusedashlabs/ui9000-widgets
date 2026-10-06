@@ -16,8 +16,10 @@ export type ChartKind =
   | 'violin-chart'
   | 'waterfall-chart'
   | 'sankey-chart'
+  | 'flow-sankey-chart'
   | 'parallel-coordinates-chart'
   | 'pie-chart'
+  | 'band-utilization-chart'
   | 'donut-chart'
   | 'polar-area-chart'
   | 'scatter-plot-chart'
@@ -30,7 +32,9 @@ export type ChartKind =
   | 'partial-dependence-chart'
   | 'kpi-widget'
   | 'incidents-review-card'
+  | 'loss-indicator'
   | 'status-gauge-widget'
+  | 'power-path-card'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
   | 'custom-widget'
@@ -123,6 +127,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
     const mod = await import('../components/sankey-chart/index.js');
     return { register: mod.registerSankeyChart };
   },
+  'flow-sankey-chart': async () => {
+    const mod = await import('../components/flow-sankey-chart/index.js');
+    return { register: mod.registerFlowSankeyChart };
+  },
   'parallel-coordinates-chart': async () => {
     const mod = await import('../components/parallel-coordinates-chart/index.js');
     return { register: mod.registerParallelCoordinatesChart };
@@ -130,6 +138,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'pie-chart': async () => {
     const mod = await import('../components/pie-chart/index.js');
     return { register: mod.registerPieChart };
+  },
+  'band-utilization-chart': async () => {
+    const mod = await import('../components/band-utilization-chart/index.js');
+    return { register: mod.registerBandUtilizationChart };
   },
   'donut-chart': async () => {
     const mod = await import('../components/donut-chart/index.js');
@@ -183,9 +195,17 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
     const mod = await import('../components/incidents-review-card/index.js');
     return { register: mod.registerIncidentsReviewCard };
   },
+  'loss-indicator': async () => {
+    const mod = await import('../components/loss-indicator/index.js');
+    return { register: mod.registerLossIndicator };
+  },
   'status-gauge-widget': async () => {
     const mod = await import('../components/status-gauge-widget/index.js');
     return { register: mod.registerStatusGaugeWidget };
+  },
+  'power-path-card': async () => {
+    const mod = await import('../components/power-path-card/index.js');
+    return { register: mod.registerPowerPathCard };
   },
   'gini-impurity-entropy-chart': async () => {
     const mod = await import('../components/gini-impurity-entropy-chart/index.js');
@@ -338,12 +358,20 @@ export async function loadSankeyChart(): Promise<LazyChartModule> {
   return loadChart('sankey-chart');
 }
 
+export async function loadFlowSankeyChart(): Promise<LazyChartModule> {
+  return loadChart('flow-sankey-chart');
+}
+
 export async function loadParallelCoordinatesChart(): Promise<LazyChartModule> {
   return loadChart('parallel-coordinates-chart');
 }
 
 export async function loadPieChart(): Promise<LazyChartModule> {
   return loadChart('pie-chart');
+}
+
+export async function loadBandUtilizationChart(): Promise<LazyChartModule> {
+  return loadChart('band-utilization-chart');
 }
 
 export async function loadDonutChart(): Promise<LazyChartModule> {
@@ -394,8 +422,16 @@ export async function loadIncidentsReviewCard(): Promise<LazyChartModule> {
   return loadChart('incidents-review-card');
 }
 
+export async function loadLossIndicator(): Promise<LazyChartModule> {
+  return loadChart('loss-indicator');
+}
+
 export async function loadStatusGaugeWidget(): Promise<LazyChartModule> {
   return loadChart('status-gauge-widget');
+}
+
+export async function loadPowerPathCard(): Promise<LazyChartModule> {
+  return loadChart('power-path-card');
 }
 
 export async function loadGiniImpurityEntropyChart(): Promise<LazyChartModule> {

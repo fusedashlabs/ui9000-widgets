@@ -1,0 +1,25 @@
+{
+  "chartType": "powerPathCard",
+  "name": "Sector 1 Power Path",
+  "badge": "5G-TX-303",
+  "health": {
+    "label": "Electricity Health",
+    "value": 69.9,
+    "unit": "%",
+    "level": "critical",
+    "points": [72.8, 73.6, 75.1, 74.3, 75.6, 74.9, 76.6, 72.4, 69.6, 74.9, 75.3, 70.8, 69.9]
+  },
+  "fault": {
+    "active": true,
+    "level": "critical",
+    "message": "Critical fault detected",
+    "details": ["Circuit L2", "RF Line 3", "Downtime 24 sec"]
+  },
+  "data": [
+    { "key": "inputVoltage", "label": "Input Voltage", "value": 48.1, "unit": "V", "status": "Stable", "level": "ok" },
+    { "key": "outputVoltage", "label": "Output Voltage", "value": 36.4, "unit": "V", "status": "Critical", "level": "critical" },
+    { "key": "currentDraw", "label": "Current Draw", "value": 18.7, "unit": "A", "status": "Critical", "level": "critical" },
+    { "key": "powerLoss", "label": "Power Loss", "value": 24.3, "unit": "%", "status": "High", "level": "warning" },
+    { "key": "connectorTemp", "label": "Connector Temperature", "value": 63, "unit": "°C", "status": "Critical", "level": "critical" }
+  ]
+}

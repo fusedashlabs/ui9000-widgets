@@ -1,6 +1,6 @@
 {
   "name": "@fusedashlabs/widgets",
-  "version": "0.7.1",
+  "version": "0.7.3",
   "description": "Props-only chart web components for UI9000 / FuseDash MCP resources",
   "license": "Apache-2.0",
   "type": "module",
@@ -100,6 +100,10 @@
       "types": "./dist/components/sankey-chart/index.d.ts",
       "import": "./dist/components/sankey-chart/index.js"
     },
+    "./flow-sankey-chart": {
+      "types": "./dist/components/flow-sankey-chart/index.d.ts",
+      "import": "./dist/components/flow-sankey-chart/index.js"
+    },
     "./parallel-coordinates-chart": {
       "types": "./dist/components/parallel-coordinates-chart/index.d.ts",
       "import": "./dist/components/parallel-coordinates-chart/index.js"
@@ -107,6 +111,10 @@
     "./pie-chart": {
       "types": "./dist/components/pie-chart/index.d.ts",
       "import": "./dist/components/pie-chart/index.js"
+    },
+    "./band-utilization-chart": {
+      "types": "./dist/components/band-utilization-chart/index.d.ts",
+      "import": "./dist/components/band-utilization-chart/index.js"
     },
     "./donut-chart": {
       "types": "./dist/components/donut-chart/index.d.ts",
@@ -152,9 +160,17 @@
       "types": "./dist/components/incidents-review-card/index.d.ts",
       "import": "./dist/components/incidents-review-card/index.js"
     },
+    "./loss-indicator": {
+      "types": "./dist/components/loss-indicator/index.d.ts",
+      "import": "./dist/components/loss-indicator/index.js"
+    },
     "./status-gauge-widget": {
       "types": "./dist/components/status-gauge-widget/index.d.ts",
       "import": "./dist/components/status-gauge-widget/index.js"
+    },
+    "./power-path-card": {
+      "types": "./dist/components/power-path-card/index.d.ts",
+      "import": "./dist/components/power-path-card/index.js"
     },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
@@ -248,6 +264,10 @@
       "types": "./dist/lazy/sankey-chart.d.ts",
       "import": "./dist/lazy/sankey-chart.js"
     },
+    "./lazy/flow-sankey-chart": {
+      "types": "./dist/lazy/flow-sankey-chart.d.ts",
+      "import": "./dist/lazy/flow-sankey-chart.js"
+    },
     "./lazy/parallel-coordinates-chart": {
       "types": "./dist/lazy/parallel-coordinates-chart.d.ts",
       "import": "./dist/lazy/parallel-coordinates-chart.js"
@@ -255,6 +275,10 @@
     "./lazy/pie-chart": {
       "types": "./dist/lazy/pie-chart.d.ts",
       "import": "./dist/lazy/pie-chart.js"
+    },
+    "./lazy/band-utilization-chart": {
+      "types": "./dist/lazy/band-utilization-chart.d.ts",
+      "import": "./dist/lazy/band-utilization-chart.js"
     },
     "./lazy/donut-chart": {
       "types": "./dist/lazy/donut-chart.d.ts",
@@ -300,9 +324,17 @@
       "types": "./dist/lazy/incidents-review-card.d.ts",
       "import": "./dist/lazy/incidents-review-card.js"
     },
+    "./lazy/loss-indicator": {
+      "types": "./dist/lazy/loss-indicator.d.ts",
+      "import": "./dist/lazy/loss-indicator.js"
+    },
     "./lazy/status-gauge-widget": {
       "types": "./dist/lazy/status-gauge-widget.d.ts",
       "import": "./dist/lazy/status-gauge-widget.js"
+    },
+    "./lazy/power-path-card": {
+      "types": "./dist/lazy/power-path-card.d.ts",
+      "import": "./dist/lazy/power-path-card.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

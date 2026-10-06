@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.2 — 2026-10-06
+
 ### Added
 
 - `<ui9000-loss-indicator>` (`@fusedashlabs/widgets/loss-indicator`) reads one metric from a `WidgetItem`: `name`, `yAxe`, `data`, `axisDetails`, `limitsDomains`, and `domainsLimits`. Ticks past the marker stay grey. The trend arrow comes from the row, or from the previous row of the same metric.

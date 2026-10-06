@@ -4,6 +4,7 @@
 
 ### Added
 
+- **incidents-review-card** (`ui9000-incidents-review-card`, chartType `incidentsReviewCard`): the Optivion incidents summary from Figma 34:24312. A title, an optional filter (a distance draws the scale mark), aggregated counts by state and an optional total. The counts are headlines and are never summed. One lifecycle track sits under the numbers, a segment per state sized by its count and grey ticks under the total, drawn only when incidents have a lifecycle. Two to six states share one layout. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/incidents-review-card`.
 - **power-path-card** (`ui9000-power-path-card`, chartType `powerPathCard`): the Optivion power-path card from Figma 34:23675. Title and asset badge, an existing health score with a compact line, a fault banner only while a fault is active, and a variable list of metrics whose status shows only with a level, status or thresholds. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/power-path-card`.
 
 - **component-asset-card** (`ui9000-component-asset-card`, chartType `componentAssetCard`): the Optivion component-asset card from Figma 34:23967. Asset image, name and id, one primary metric, an optional delta and an optional short trend (level-coloured line and track, breach pins, a cap for the latest reading) drawn only when history exists. The status mark shows only with a level or thresholds. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/component-asset-card`.

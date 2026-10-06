@@ -175,6 +175,10 @@ import {
   Ui9000KpiWidget,
 } from './components/kpi-widget/index.js';
 import {
+  registerIncidentsReviewCard,
+  Ui9000IncidentsReviewCard,
+} from './components/incidents-review-card/index.js';
+import {
   registerLossIndicator,
   Ui9000LossIndicator,
 } from './components/loss-indicator/index.js';
@@ -325,6 +329,8 @@ export {
   registerPartialDependenceChart,
   Ui9000KpiWidget,
   registerKpiWidget,
+  Ui9000IncidentsReviewCard,
+  registerIncidentsReviewCard,
   Ui9000LossIndicator,
   registerLossIndicator,
   Ui9000StatusGaugeWidget,
@@ -405,6 +411,7 @@ export function registerAllCharts(): void {
   registerTreemapChart();
   registerPartialDependenceChart();
   registerKpiWidget();
+  registerIncidentsReviewCard();
   registerLossIndicator();
   registerStatusGaugeWidget();
   registerPowerPathCard();
@@ -784,6 +791,18 @@ export {
   type RawKpiItem,
   kpiWidgetMetadata,
 } from './components/kpi-widget/index.js';
+
+export {
+  normalizeIncidentsReview,
+  formatIncidentCount,
+  type IncidentsReviewCount,
+  type IncidentsReviewFilter,
+  type IncidentsReviewModel,
+  type IncidentsReviewPayload,
+  type IncidentsReviewTone,
+  type IncidentsReviewTotal,
+  incidentsReviewCardMetadata,
+} from './components/incidents-review-card/index.js';
 
 export {
   normalizeLossIndicator,

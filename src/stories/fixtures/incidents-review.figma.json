@@ -1,0 +1,11 @@
+{
+  "chartType": "incidentsReviewCard",
+  "title": "Incidents review",
+  "filter": { "value": 5, "unit": "km", "kind": "radius" },
+  "counts": [
+    { "label": "Active", "value": 89 },
+    { "label": "In progress", "value": 46 }
+  ],
+  "total": 102,
+  "track": true
+}

@@ -156,6 +156,10 @@
       "types": "./dist/components/kpi-widget/index.d.ts",
       "import": "./dist/components/kpi-widget/index.js"
     },
+    "./incidents-review-card": {
+      "types": "./dist/components/incidents-review-card/index.d.ts",
+      "import": "./dist/components/incidents-review-card/index.js"
+    },
     "./loss-indicator": {
       "types": "./dist/components/loss-indicator/index.d.ts",
       "import": "./dist/components/loss-indicator/index.js"
@@ -319,6 +323,10 @@
     "./lazy/kpi-widget": {
       "types": "./dist/lazy/kpi-widget.d.ts",
       "import": "./dist/lazy/kpi-widget.js"
+    },
+    "./lazy/incidents-review-card": {
+      "types": "./dist/lazy/incidents-review-card.d.ts",
+      "import": "./dist/lazy/incidents-review-card.js"
     },
     "./lazy/loss-indicator": {
       "types": "./dist/lazy/loss-indicator.d.ts",

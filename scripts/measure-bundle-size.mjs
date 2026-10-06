@@ -43,6 +43,7 @@ const CHART_ENTRIES = [
   'components/treemap-chart/index.js',
   'components/partial-dependence-chart/index.js',
   'components/kpi-widget/index.js',
+  'components/incidents-review-card/index.js',
   'components/status-gauge-widget/index.js',
   'components/power-path-card/index.js',
   'components/component-asset-card/index.js',

@@ -118,6 +118,10 @@ const entries = {
     'src/components/partial-dependence-chart/index.ts',
   ),
   'components/kpi-widget/index': resolve(__dirname, 'src/components/kpi-widget/index.ts'),
+  'components/incidents-review-card/index': resolve(
+    __dirname,
+    'src/components/incidents-review-card/index.ts',
+  ),
   'components/loss-indicator/index': resolve(
     __dirname,
     'src/components/loss-indicator/index.ts',
@@ -198,6 +202,7 @@ const entries = {
     'src/lazy/partial-dependence-chart.ts',
   ),
   'lazy/kpi-widget': resolve(__dirname, 'src/lazy/kpi-widget.ts'),
+  'lazy/incidents-review-card': resolve(__dirname, 'src/lazy/incidents-review-card.ts'),
   'lazy/loss-indicator': resolve(__dirname, 'src/lazy/loss-indicator.ts'),
   'lazy/status-gauge-widget': resolve(__dirname, 'src/lazy/status-gauge-widget.ts'),
   'lazy/power-path-card': resolve(__dirname, 'src/lazy/power-path-card.ts'),

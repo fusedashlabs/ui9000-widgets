@@ -56,7 +56,7 @@ const meta: Meta<IncidentsReviewArgs> = {
     docs: {
       description: {
         component:
-          'Optivion incidents summary. A title, an optional filter, aggregated counts by state and a total. The counts are headlines: they need not sum to the total. The lifecycle track sits under the numbers: one segment per state, sized by its count, and grey ticks under the total. It shows only when incidents have a lifecycle. Two and four states use the same layout.',
+          'Optivion incidents summary. A title, an optional filter, aggregated counts by state and a total. The counts are headlines: they need not sum to the total. The lifecycle track sits under the numbers: one segment per state, sized by its count, and grey ticks under the total. It shows only when incidents have a lifecycle. Two to six states use the same layout.',
       },
     },
   },

@@ -19,7 +19,7 @@ export interface IncidentsReviewCountInput {
   state?: string;
   value?: number | string;
   count?: number | string;
-  /** A tone name, or `ok`, `warning`, `critical`, `info`, `neutral`. */
+  /** A tone name, `gray`, or `ok`, `success`, `warning`, `critical`, `error`, `danger`, `info`, `neutral`. */
   tone?: string;
 }
 

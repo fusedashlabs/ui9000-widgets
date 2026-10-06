@@ -229,9 +229,7 @@ export const incidentsReviewStyles = css`
   }
 
   .columns[data-states='5'],
-  .columns[data-states='6'],
-  .columns[data-states='7'],
-  .columns[data-states='8'] {
+  .columns[data-states='6'] {
     --irc-value-size: 32px;
   }
 
@@ -259,9 +257,7 @@ export const incidentsReviewStyles = css`
 
     .columns[data-states='4'],
     .columns[data-states='5'],
-    .columns[data-states='6'],
-    .columns[data-states='7'],
-    .columns[data-states='8'] {
+    .columns[data-states='6'] {
       --irc-value-size: 28px;
     }
   }

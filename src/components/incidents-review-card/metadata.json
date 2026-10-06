@@ -41,18 +41,23 @@
           },
           "counts": {
             "type": "array",
-            "description": "Aggregated incident counts by state, in lifecycle order. Each state's track segment is sized by its count. Two to four states share one layout.",
+            "description": "Aggregated incident counts by state, in lifecycle order. Each state's track segment is sized by its count. Two to six states share one layout.",
             "items": {
               "type": "object",
               "properties": {
                 "label": { "type": "string" },
+                "state": { "type": "string", "description": "Alias of label." },
                 "value": { "type": ["number", "string"] },
+                "count": { "type": ["number", "string"], "description": "Alias of value." },
                 "tone": {
-                  "enum": ["green", "red", "amber", "blue", "violet", "grey", "ok", "warning", "critical", "info", "neutral"],
+                  "enum": ["green", "red", "amber", "blue", "violet", "grey", "gray", "ok", "success", "warning", "critical", "error", "danger", "info", "neutral"],
                   "description": "Dot and track colour. Defaults by position: green, red, amber, blue, violet."
                 }
               },
-              "required": ["label", "value"]
+              "allOf": [
+                { "anyOf": [{ "required": ["label"] }, { "required": ["state"] }] },
+                { "anyOf": [{ "required": ["value"] }, { "required": ["count"] }] }
+              ]
             }
           },
           "total": {

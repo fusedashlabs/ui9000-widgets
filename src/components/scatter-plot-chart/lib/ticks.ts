@@ -31,8 +31,10 @@ export function formatScatterTick(
   { integerOnly, decimals, isPercentage = false }: ScatterTickOptions,
 ): string {
   if (integerOnly && !Number.isInteger(value)) return '';
+  // A whole-number axis keeps "1", not "1.0", when its step is fractional.
+  const places = integerOnly ? 0 : decimals;
   if (isPercentage && Math.abs(value) <= 1) {
-    return (value * 100).toFixed(Math.max(0, decimals - 2));
+    return (value * 100).toFixed(Math.max(0, places - 2));
   }
-  return formatCompactNumber(value, decimals);
+  return formatCompactNumber(value, places);
 }

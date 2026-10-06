@@ -54,6 +54,9 @@ describe('scatter plot tick labels in the chat preview (FUS-4162)', () => {
     expect(formatScatterTick(0.45, { integerOnly: false, decimals: 2 })).toBe('0.45');
     expect(formatScatterTick(0.45, { integerOnly: false, decimals: 2, isPercentage: true })).toBe('45');
     expect(formatScatterTick(2.5, { integerOnly: true, decimals: 1 })).toBe('');
+    expect(
+      [0, 0.5, 1].map((t) => formatScatterTick(t, { integerOnly: true, decimals: 1 })),
+    ).toEqual(['0', '', '1']);
     expect(areAllIntegers([1, 2])).toBe(true);
     expect(areAllIntegers([0.5])).toBe(false);
   });

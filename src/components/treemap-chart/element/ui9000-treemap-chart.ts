@@ -61,6 +61,10 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
     if (chartPropsChanged(changed)) this.scheduleDraw();
   }
 
+  protected override onThemeChange(): void {
+    this.scheduleDraw();
+  }
+
   private scheduleDraw(): void {
     cancelAnimationFrame(this._raf);
     this._raf = requestAnimationFrame(() => this.draw());

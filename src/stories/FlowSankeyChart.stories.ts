@@ -73,8 +73,8 @@ const meta: Meta<FlowSankeyArgs> = {
           'shows its share of that parent instead. Click a node to highlight ' +
           'its full cause-to-impact path. `theme` switches the appearance (here, ' +
           'the toolbar\'s Light/Dark switch); ' +
-          'left empty it follows a `data-theme="dark"` ancestor and then the ' +
-          '`--ui9000-mode` variable.',
+          'left empty it follows a local `data-theme` wrapper (not `<html>`) ' +
+          'and then `paintMode` / `--ui9000-mode`.',
       },
     },
   },

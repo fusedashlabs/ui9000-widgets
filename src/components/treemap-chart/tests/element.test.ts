@@ -1,4 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
+
+import { applyWidgetContext } from '../../../context/widget-context.js';
+import { DARK_THEME } from '../../../types/index.js';
 import { treemapRangeColors } from '../lib/color.js';
 
 let observed: (() => void)[] = [];
@@ -143,6 +146,26 @@ describe('ui9000-treemap-chart', () => {
     expect(tip?.textContent).toContain('Fresh Market');
     expect(tip?.textContent).toContain('Value');
 
+    el.remove();
+  });
+
+  it('redraws card ink when the host theme flips after mount', async () => {
+    const el = await mount(GROUPED);
+    const titleColor = () =>
+      (el.shadowRoot.querySelector('.treemap-card-title') as HTMLElement | null)?.style.color;
+    const before = titleColor();
+
+    applyWidgetContext(el, { mode: 'dark' });
+    await flush();
+    await el.updateComplete;
+
+    const after = titleColor();
+    expect(before).toBeTruthy();
+    expect(after).toBeTruthy();
+    expect(after).not.toBe(before);
+    // jsdom may normalize hex to rgb(); accept either form of the dark token.
+    expect([DARK_THEME.text, 'rgb(239, 240, 241)']).toContain(after);
+    expect(el.getAttribute('data-mode')).toBe('dark');
     el.remove();
   });
 

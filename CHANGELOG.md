@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Fixed
+
+- Treemap and flow-sankey redraw when the host theme changes (live light/dark toggle without remount).
+- Flow-sankey percentage gutter and stage headers use `fdColors(mode)` instead of the light-only `FD` ink.
+- Flow-sankey inherited mode follows `paintMode` (same gate as other charts), not a light-default CSS var read.
+- Flow-sankey ignores `data-theme` on `<html>` (FuseDash app chrome) so host `--ui9000-*` tokens still apply; only a local wrapper or the `theme` prop owns the stock palette.
+
+### Changed
+
+- `notifyHostTheme` / `HOST_THEME_EVENT` / `subscribeHostTheme` are exported from `@fusedashlabs/widgets/context` so hosts can signal a theme change after writing CSS variables on a chart element.
+
 ## 0.7.4 — 2026-10-06
 
 ### Added

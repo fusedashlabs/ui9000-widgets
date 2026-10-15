@@ -58,4 +58,16 @@ describe('host theme watch', () => {
     applyWidgetContext(document.documentElement, { mode: 'light' });
     expect(el.changes).toBe(1);
   });
+
+  it('redraws when the host dispatches ui9000-theme after setting tokens on the chart', async () => {
+    const el = mount();
+    await el.updateComplete;
+
+    el.style.setProperty('--ui9000-mode', 'dark');
+    el.style.setProperty('--ui9000-color-surface', '#13161D');
+    document.dispatchEvent(new CustomEvent('ui9000-theme'));
+
+    expect(el.getAttribute('data-mode')).toBe('dark');
+    expect(el.changes).toBe(1);
+  });
 });

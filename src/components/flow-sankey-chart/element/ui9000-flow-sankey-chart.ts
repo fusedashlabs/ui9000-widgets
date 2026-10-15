@@ -60,6 +60,17 @@ const EMPTY_VIEW: FlowSankeyView = {
   droppedLinks: 0,
 };
 
+/**
+ * Local Storybook-style wrappers may set `data-theme`. App shells that put
+ * `data-theme` on `<html>` (FuseDash) are ignored so host `--ui9000-*` wins.
+ */
+function themeFromLocalAncestor(el: Element): 'light' | 'dark' | '' {
+  const themed = el.closest('[data-theme]');
+  if (!themed || themed === el.ownerDocument?.documentElement) return '';
+  const value = themed.getAttribute('data-theme')?.trim();
+  return value === 'dark' || value === 'light' ? value : '';
+}
+
 @customElement('ui9000-flow-sankey-chart')
 export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
   static override styles = [flowSankeyStyles, chartShellStyles];
@@ -93,8 +104,8 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
   legendLabel = '';
 
   /**
-   * `light` or `dark`. Empty follows the host: a `data-theme="dark"` ancestor,
-   * then the `--ui9000-mode` variable.
+   * `light` or `dark` — the chart owns the stock palette. Empty follows a local
+   * `data-theme` wrapper (not `<html>`), then `paintMode` / host `--ui9000-*`.
    */
   @property({ type: String, reflect: true })
   theme = '';
@@ -133,26 +144,18 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
   }
 
   /**
-   * An explicit `theme` beats a `data-theme` ancestor, which beats
-   * `--ui9000-mode`.
-   *
-   * Who then owns the colours depends on how the mode was chosen. Asked for
-   * outright, the chart paints its own palette: ambient `--ui9000-color-*`
-   * defaults are everywhere (Storybook sets a light set on every story), and
-   * letting those win leaves dark ink on the dark panel. Inherited from
-   * `--ui9000-mode`, the host is doing the theming, so its variables win.
-   * Either way the font family follows the host — it is not an appearance.
+   * An explicit `theme` prop, or a local `data-theme` wrapper (not `<html>`),
+   * means the chart owns the stock palette (Storybook). FuseDash sets
+   * `data-theme` on `documentElement` for app chrome — that must not steal
+   * the host CSS variables. Otherwise the mode follows `paintMode`.
    */
   private resolveAppearance(): void {
     const explicit =
       this.theme === 'dark' || this.theme === 'light' ? this.theme : '';
-    const fromHost = this.closest('[data-theme="dark"]') ? 'dark' : '';
-    const asked = explicit || fromHost;
-    const fromVar =
-      readCssVar(this, CSS_VARS.mode, 'light') === 'dark' ? 'dark' : 'light';
+    const asked = explicit || themeFromLocalAncestor(this);
 
-    this._mode = (asked || fromVar) === 'dark' ? 'dark' : 'light';
     this._ownsPalette = Boolean(asked);
+    this._mode = asked ? asked : this.themeMode();
 
     const base = this._mode === 'dark' ? DARK_THEME : DEFAULT_THEME;
     this._theme = this._ownsPalette
@@ -183,6 +186,12 @@ export class Ui9000FlowSankeyChart extends Ui9000ChartElement {
 
   override updated(changed: PropertyValues): void {
     if (chartPropsChanged(changed)) this.scheduleDraw();
+  }
+
+  protected override onThemeChange(): void {
+    this.resolveAppearance();
+    this.requestUpdate();
+    this.scheduleDraw();
   }
 
   private scheduleDraw(): void {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.5 — 2026-10-15
+
 ### Fixed
 
 - Treemap and flow-sankey redraw when the host theme changes (live light/dark toggle without remount).

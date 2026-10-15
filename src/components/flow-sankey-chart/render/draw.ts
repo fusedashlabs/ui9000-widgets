@@ -2,7 +2,7 @@ import { sankey, type SankeyLink, type SankeyNode } from 'd3-sankey';
 import { select } from 'd3-selection';
 
 import type { WidgetTheme } from '../../../types/index.js';
-import { FD } from '../../../utils/fusedash-visual.js';
+import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
   connectedLinkKeys,
   formatAxisTick,
@@ -327,6 +327,7 @@ export function renderFlowSankeyChart(
   if (plotHeight <= 0 || plotRight - plotLeft <= 0) return;
 
   const neutral = neutralColor(themeMode);
+  const ink = fdColors(themeMode);
   const bowAt = makeBow(plotTop, plotHeight, FD.flowSankeyBow);
 
   // The busiest column sets the gap budget: at chat heights the full padding
@@ -467,7 +468,7 @@ export function renderFlowSankeyChart(
       .attr('x2', plotLeft - AXIS_GAP - 2)
       .attr('y1', (t) => plotBottom - t * plotHeight)
       .attr('y2', (t) => plotBottom - t * plotHeight)
-      .attr('stroke', FD.gridStroke)
+      .attr('stroke', ink.gridStroke)
       .attr('stroke-dasharray', FD.gridDash)
       .attr('opacity', 0.5);
 
@@ -501,7 +502,7 @@ export function renderFlowSankeyChart(
       .attr('text-anchor', (d) => (d.stage === stageCount - 1 ? 'end' : 'start'))
       .attr('font-size', FD.flowSankeyStageLabelSize)
       .attr('letter-spacing', FD.flowSankeyStageLabelTracking)
-      .attr('fill', FD.flowSankeyStageLabelFill)
+      .attr('fill', ink.flowSankeyStageLabelFill)
       .text((d) => d.label.toUpperCase());
   }
 

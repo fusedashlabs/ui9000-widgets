@@ -22,9 +22,11 @@ describe('fdColors', () => {
     expect(fdColors('dark').parallelAxisStroke).toBe('#444B57');
     expect(fdColors('dark').sankeyNodeRule).toBe('#444B57');
     expect(fdColors('dark').sankeyNodeRuleActive).toBe('#A4A9B1');
+    expect(fdColors('dark').flowSankeyStageLabelFill).toBe('#A4A9B1');
     expect(fdColors('dark').networkLabelText).toBe('#EFF0F1');
     expect(fdColors('light').biasVarianceGridStroke).toBe('#d1d5db');
     expect(fdColors('light').sankeyNodeRule).toBe('#D3DBE3');
+    expect(fdColors('light').flowSankeyStageLabelFill).toBe('#8C8579');
     expect(fdColors('light').networkLabelText).toBe('rgba(33, 38, 46, 0.9)');
     expect(fdColors('dark').mapSelectionStroke).toBe('#EFF0F1');
     expect(fdColors('dark').mapSpikeLabel).toBe('#EFF0F1');

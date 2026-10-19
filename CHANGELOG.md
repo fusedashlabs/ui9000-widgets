@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- **reasoning-orchestration-graph** (`ui9000-reasoning-orchestration-graph`, chartType `reasoningOrchestrationGraph`, `ReasoningOrchestrationGraph`): the Agents Management reasoning orchestration graph (AM-1). Reasoning stages, candidate paths, models and refinement steps, with the active path highlighted. The root sits at the bottom centre and depth grows outward: the widest stage (the exploration frontier) spans the plot as an arc and deeper stages climb toward the top, with the stage names down the right edge. Links are hairlines in their model's colour, red and dashed into a pruned node; candidate paths sit above them, subordinate; the active path glows from the root and warms to its model's colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. The top chart compares a stage metric across depth over the breadth at each depth; step entropy, the refinement pipeline and compute scaling sit in panels under the plot. It takes stages, nodes, links, paths, an active path (by id or node ids), annotations and optional supporting metrics. Hover explains a node, a path or a stage; a click highlights a path, or the path to a node (`path-select`), and Escape returns to the active path. D3, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/reasoning-orchestration-graph`.
+
 ## 0.7.5 — 2026-10-15
 
 ### Fixed

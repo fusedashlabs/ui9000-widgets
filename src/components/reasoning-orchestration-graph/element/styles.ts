@@ -31,7 +31,7 @@ export const reasoningOrchestrationStyles = css`
 
   .mono,
   .ro-readouts,
-  .ro-meta,
+  .widget-subtitle,
   .ro-chip,
   .ro-legend,
   .ro-panels,
@@ -43,18 +43,14 @@ export const reasoningOrchestrationStyles = css`
     text-transform: uppercase;
   }
 
-  /* The same floor the shell gives a heading with a subtitle: the metadata wraps under the title instead of crushing it. */
-  .widget-header-main > .widget-title {
-    flex: 1 1 var(--ui9000-heading-min-width, 180px);
-    min-width: var(--ui9000-heading-min-width, 180px);
+  /* The title has its own line and wraps instead of being cut; the experiment metadata is the line under it. */
+  .widget-heading > .widget-title,
+  .widget-heading > .widget-subtitle {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
-
-  .ro-meta {
+  .widget-heading > .widget-subtitle {
     color: var(--ro-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
   }
 
   /* Top chart: readouts over the breadth-by-depth strip. */

@@ -92,7 +92,6 @@ const meta: Meta<ReasoningArgs> = {
   component: 'ui9000-reasoning-orchestration-graph',
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreen',
     docs: {
       description: {
         component:

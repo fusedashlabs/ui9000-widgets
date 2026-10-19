@@ -46,12 +46,14 @@ describe('ui9000-reasoning-orchestration-graph', () => {
   it('renders the sample: header, readouts, graph, model labels, legend and panels', async () => {
     const el = await mount(fixture);
     const root = el.shadowRoot!;
-    expect(root.querySelector('.widget-title')?.getAttribute('title')).toBe(
+    // The whole title on its own line, not cut at the header's length limit; the metadata under it.
+    expect(root.querySelector('.widget-title')?.textContent?.trim()).toBe(
       'Test-time compute orchestrator / Opus 5.5 × GPT-6 Astra',
     );
-    expect(root.querySelector('.ro-meta')?.textContent).toBe(
+    expect(root.querySelector('.widget-heading > .widget-subtitle')?.textContent?.trim()).toBe(
       'Stanford refining over resampling · arXiv:2608.05643 · Run 0214',
     );
+    expect(root.querySelector('.widget-aside')).toBeNull();
     expect(root.querySelector('.ro-summary')?.textContent?.replace(/\s+/g, ' ')).toContain(
       'Search topology · Candidates 387 · Refinements 71 · Accuracy 58.8% (+28.4) · PRM Verified',
     );

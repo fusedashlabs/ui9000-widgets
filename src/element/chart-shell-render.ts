@@ -42,6 +42,11 @@ export function renderWidgetHeader(options: {
    * the chrome, or that has no action worth offering.
    */
   showActions?: boolean;
+  /**
+   * Set false to print the whole title, for a chart whose title takes its own
+   * line and wraps instead of being cut at the header's length limit.
+   */
+  truncateTitle?: boolean;
   variant?: WidgetHeaderVariant;
   menuOpen: boolean;
   handlers?: WidgetHeaderHandlers;
@@ -49,7 +54,7 @@ export function renderWidgetHeader(options: {
   onMenuClose: () => void;
   onDownload?: () => void;
 }): TemplateResult | typeof nothing {
-  const displayTitle = headerTitleDisplay(options.title);
+  const displayTitle = options.truncateTitle === false ? options.title : headerTitleDisplay(options.title);
   const handlers = options.handlers ?? {};
   const chrome = resolveHeaderChrome(options.variant ?? 'chat', handlers);
   const runItem = (item: HeaderMenuItem) => {

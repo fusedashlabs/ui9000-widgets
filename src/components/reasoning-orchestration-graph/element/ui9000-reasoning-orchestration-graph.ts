@@ -389,12 +389,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     return { title: stage.label, rows };
   }
 
-  private renderMeta() {
-    const { subtitle, empty } = this._model;
-    if (empty || !subtitle) return undefined;
-    return html`<span class="ro-meta" part="meta" title=${subtitle}>${subtitle}</span>`;
-  }
-
   private renderMetricList(metrics: Metric[]): TemplateResult[] {
     return metrics.map(
       (metric, i) => html`${i ? ' · ' : ''}${metric.label} <strong>${metric.value}</strong>${metric.delta
@@ -575,7 +569,11 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     const empty = this._model.empty;
     return html`
       <div class="widget-shell" part="shell">
-        ${this.renderShellHeader(title, { aside: this.renderMeta() })}
+        ${this.renderShellHeader(title, {
+          // The title has its own line and wraps rather than being cut; the experiment metadata is the line under it.
+          subtitle: empty ? '' : this._model.subtitle,
+          truncateTitle: false,
+        })}
         <div class="widget-body">
           ${this.renderTop()}
           <div class="chart-root" part="chart" ?hidden=${empty}>

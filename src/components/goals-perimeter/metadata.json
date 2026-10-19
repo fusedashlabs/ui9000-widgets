@@ -1,0 +1,191 @@
+{
+  "id": "goals-perimeter",
+  "tag": "ui9000-goals-perimeter",
+  "title": "Goals Perimeter Chart",
+  "description": "Agents Management goals perimeter (AM-1): many agents arranged around a shared goal. Each goal is a cloud of its agents inside a perimeter whose arc is the goal's health and whose colour turns amber, then rose, as health drops. Healthy, degraded, blocked and failed agents are told apart by colour and by marker (△, ⊘, ✕); resource-group diamonds sit at the centre; ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. The state legend and the exception count sit in the shell; every mark explains itself on hover. A click on a cluster opens it: the goal fills the plot, its agents regroup into one sector per health state with the reasons beside each, its resource groups are named, and the goals and dependencies it is joined to sit around it (a click opens one of them). “All goals” or Escape zooms back out. Opening dispatches goal-open with { goalId, goalName, resourceGroupId? }, closing goal-close with { goalId }. Not a free-form node–link graph (that is network-graph) and not a KPI row. D3, no Redux.",
+  "chartTypeKeys": ["goalsPerimeter"],
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/goals-perimeter",
+  "entry": "@ui9000/widgets/goals-perimeter",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "select", "zoom", "resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "goalsPerimeter" },
+          "name": { "type": "string", "description": "Shell title." },
+          "goal": {
+            "description": "One shared goal: an object, or only its name.",
+            "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/goal" }]
+          },
+          "goals": {
+            "type": "array",
+            "description": "Several goals on one board. Takes precedence over goal.",
+            "items": { "$ref": "#/$defs/goal" }
+          },
+          "agents": {
+            "type": "array",
+            "description": "Agent nodes. Alias: nodes. Each names its goal; one that names none joins the first goal, and a goal only agents name is added. Counts per state come from the nodes unless the goal gives them.",
+            "items": { "$ref": "#/$defs/agent" }
+          },
+          "nodes": { "type": "array", "description": "Alias of agents.", "items": { "$ref": "#/$defs/agent" } },
+          "links": {
+            "type": "array",
+            "description": "Relationships. Each end is a goal, a resource group or an agent, by id or name; an end that is none of those is an external dependency. Alias: connections.",
+            "items": { "$ref": "#/$defs/link" }
+          },
+          "connections": { "type": "array", "description": "Alias of links.", "items": { "$ref": "#/$defs/link" } },
+          "exceptionCount": {
+            "type": ["number", "string"],
+            "description": "Agents needing attention across the board, shown in the shell. Defaults to the sum of the goals' exception counts."
+          },
+          "thresholds": {
+            "type": "object",
+            "description": "Health below degraded turns the perimeter amber, below critical rose.",
+            "properties": {
+              "degraded": { "type": ["number", "string"], "default": 0.8 },
+              "critical": { "type": ["number", "string"], "default": 0.25 }
+            }
+          }
+        },
+        "anyOf": [{ "required": ["goal"] }, { "required": ["goals"] }, { "required": ["agents"] }, { "required": ["nodes"] }]
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "show-legend": { "type": "boolean", "default": true },
+      "show-tooltip": { "type": "boolean", "default": true }
+    },
+    "$defs": {
+      "agent": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": ["string", "number"] },
+          "label": { "type": "string" },
+          "state": {
+            "enum": ["healthy", "degraded", "blocked", "failed", "idle", "ok", "warning", "error", "down", "waiting"],
+            "description": "Missing reads as healthy; an unknown word as idle."
+          },
+          "goal": { "type": "string", "description": "Goal id or name." },
+          "reason": { "type": "string", "description": "Why it failed or what blocks it, in plain operational language." },
+          "blocker": { "enum": ["rule", "dependency", "human"], "description": "Blocked agents only." }
+        }
+      },
+      "goal": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "title": { "type": "string", "description": "Alias of name." },
+          "agents": {
+            "description": "Agent total, or the count per state. Without it the agent nodes are counted.",
+            "oneOf": [
+              { "type": ["number", "string"] },
+              {
+                "type": "object",
+                "properties": {
+                  "total": { "type": ["number", "string"] },
+                  "healthy": { "type": ["number", "string"] },
+                  "degraded": { "type": ["number", "string"] },
+                  "blocked": { "type": ["number", "string"] },
+                  "failed": { "type": ["number", "string"] },
+                  "idle": { "type": ["number", "string"] }
+                }
+              }
+            ]
+          },
+          "health": {
+            "type": ["number", "string"],
+            "description": "0.88, 88 or \"88%\". The perimeter arc runs clockwise from 12 o'clock for this share. Omitted, the healthy share of agents."
+          },
+          "multiplier": {
+            "type": ["number", "string"],
+            "description": "Ratio against the goal's baseline, printed as 1.1×. 2× or more lights a bright core in the cloud."
+          },
+          "multiplierLabel": { "type": "string", "default": "Rate vs baseline" },
+          "exceptionCount": {
+            "type": ["number", "string"],
+            "description": "Agents needing attention, printed as IMPURE. Defaults to degraded + blocked + failed. Ticks outside the ring follow its square root, at most 12. Alias: impure."
+          },
+          "status": {
+            "enum": ["healthy", "degraded", "critical", "ok", "warning", "error", "failed"],
+            "description": "Perimeter colour override. Otherwise from health and thresholds."
+          },
+          "exceptions": {
+            "type": "array",
+            "description": "Agents per exceptional state with the reason. Each group gets one to four markers. Without it the agent nodes are grouped by state and reason.",
+            "items": {
+              "type": "object",
+              "required": ["state", "count"],
+              "properties": {
+                "state": { "enum": ["failed", "blocked", "degraded"] },
+                "count": { "type": ["number", "string"] },
+                "reason": { "type": "string" },
+                "blocker": { "enum": ["rule", "dependency", "human"], "description": "Blocked only." }
+              }
+            }
+          },
+          "resourceGroups": {
+            "description": "The groups (up to four drawn as diamonds) or only how many there are.",
+            "oneOf": [
+              { "type": ["number", "string"] },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "kind": {
+                      "type": "string",
+                      "description": "model, toolset, infrastructure, pipeline, data, sensor, policy, alert…; picks the glyph."
+                    },
+                    "icon": {
+                      "enum": ["sensor", "model", "network", "pipeline", "storage", "alert", "policy", "tool", "generic"]
+                    },
+                    "state": { "enum": ["healthy", "degraded", "failed"] },
+                    "agents": { "type": ["number", "string"] },
+                    "detail": { "type": "string" }
+                  }
+                }
+              }
+            ]
+          },
+          "position": {
+            "type": "object",
+            "description": "Board position, each axis 0–1. Applies only when every goal has one; otherwise goals are laid out automatically.",
+            "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
+          }
+        },
+        "anyOf": [{ "required": ["name"] }, { "required": ["title"] }]
+      },
+      "link": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "source": { "type": ["string", "number"] },
+          "target": { "type": ["string", "number"] },
+          "strands": {
+            "type": ["number", "string"],
+            "description": "Lines in a goal-to-goal bundle, 1–16. Default 6 between two goals, one per agent link."
+          },
+          "status": { "enum": ["active", "degraded", "unavailable"] },
+          "exception": { "type": "boolean", "description": "Tint an otherwise active link." },
+          "label": { "type": "string" },
+          "reason": { "type": "string", "description": "What is disconnected." },
+          "impact": { "type": "string", "description": "What the outage stops." }
+        },
+        "required": ["source", "target"]
+      }
+    }
+  }
+}

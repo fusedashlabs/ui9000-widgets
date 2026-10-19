@@ -1,0 +1,40 @@
+export {
+  Ui9000GoalsPerimeterChart,
+  registerGoalsPerimeterChart,
+  type GoalOpenDetail,
+} from './element/ui9000-goals-perimeter.js';
+export {
+  fitBoard,
+  formatHealth,
+  formatMultiplier,
+  goalSummary,
+  layoutBoard,
+  normalizeGoalsPerimeter,
+  type AgentLink,
+  type AgentNode,
+  type AgentNodeInput,
+  type AgentsBreakdown,
+  type AgentState,
+  type BoardLayout,
+  type ConnectionStatus,
+  type ExceptionState,
+  type ExternalDependency,
+  type GoalConnection,
+  type GoalException,
+  type GoalHealth,
+  type GoalInput,
+  type GoalPlacement,
+  type GoalsPerimeterModel,
+  type GoalsPerimeterPayload,
+  type LinkInput,
+  type PerimeterGoal,
+  type ResourceGroup,
+  type ResourceIcon,
+} from './lib/index.js';
+export {
+  COMPACT_SCALE,
+  renderGoalsPerimeter,
+  type GoalsPerimeterController,
+  type GoalsPerimeterHandlers,
+} from './render/index.js';
+export { default as goalsPerimeterChartMetadata } from './metadata.json';

@@ -36,6 +36,7 @@ export type ChartKind =
   | 'status-gauge-widget'
   | 'power-path-card'
   | 'component-asset-card'
+  | 'goals-perimeter'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
   | 'custom-widget'
@@ -211,6 +212,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'component-asset-card': async () => {
     const mod = await import('../components/component-asset-card/index.js');
     return { register: mod.registerComponentAssetCard };
+  },
+  'goals-perimeter': async () => {
+    const mod = await import('../components/goals-perimeter/index.js');
+    return { register: mod.registerGoalsPerimeterChart };
   },
   'gini-impurity-entropy-chart': async () => {
     const mod = await import('../components/gini-impurity-entropy-chart/index.js');
@@ -441,6 +446,10 @@ export async function loadPowerPathCard(): Promise<LazyChartModule> {
 
 export async function loadComponentAssetCard(): Promise<LazyChartModule> {
   return loadChart('component-asset-card');
+}
+
+export async function loadGoalsPerimeterChart(): Promise<LazyChartModule> {
+  return loadChart('goals-perimeter');
 }
 
 export async function loadGiniImpurityEntropyChart(): Promise<LazyChartModule> {

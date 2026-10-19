@@ -176,6 +176,10 @@
       "types": "./dist/components/component-asset-card/index.d.ts",
       "import": "./dist/components/component-asset-card/index.js"
     },
+    "./goals-perimeter": {
+      "types": "./dist/components/goals-perimeter/index.d.ts",
+      "import": "./dist/components/goals-perimeter/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -343,6 +347,10 @@
     "./lazy/component-asset-card": {
       "types": "./dist/lazy/component-asset-card.d.ts",
       "import": "./dist/lazy/component-asset-card.js"
+    },
+    "./lazy/goals-perimeter": {
+      "types": "./dist/lazy/goals-perimeter.d.ts",
+      "import": "./dist/lazy/goals-perimeter.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

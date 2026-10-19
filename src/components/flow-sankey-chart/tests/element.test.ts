@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
+import { applyWidgetContext } from '../../../context/widget-context.js';
 import figmaFixture from '../../../stories/fixtures/flow-sankey.figma.json';
 import { DARK_THEME, DEFAULT_THEME } from '../../../types/index.js';
 import { MAX_FLOW_LINKS } from '../lib/index.js';
@@ -468,8 +469,9 @@ describe('ui9000-flow-sankey-chart', () => {
 
   it('defers to the host palette when the mode is inherited, not asked for', async () => {
     const host = document.createElement('ui9000-flow-sankey-chart') as Shadowed;
-    // The host drives theming itself: mode plus its own branded ink.
+    // The host drives theming itself: mode + surface (paintMode gate) plus branded ink.
     host.style.setProperty('--ui9000-mode', 'dark');
+    host.style.setProperty('--ui9000-color-surface', '#13161D');
     host.style.setProperty('--ui9000-color-text', 'rgb(1, 2, 3)');
     document.body.appendChild(host);
 
@@ -486,6 +488,78 @@ describe('ui9000-flow-sankey-chart', () => {
         .trim(),
     ).toBe('rgb(1, 2, 3)');
 
+    host.remove();
+  });
+
+  it('ignores documentElement data-theme so FuseDash host tokens still win', async () => {
+    // FuseDash sets data-theme on <html> for app chrome; that must not force
+    // the stock palette over applyChartHostCssVars / applyWidgetContext.
+    document.documentElement.setAttribute('data-theme', 'light');
+    const host = document.createElement('ui9000-flow-sankey-chart') as Shadowed;
+    host.style.setProperty('--ui9000-mode', 'dark');
+    host.style.setProperty('--ui9000-color-surface', '#13161D');
+    host.style.setProperty('--ui9000-color-text', 'rgb(1, 2, 3)');
+    document.body.appendChild(host);
+
+    host.setAttribute('data', JSON.stringify(figmaFixture));
+    await host.updateComplete;
+    sizeShadow(host, 900, 620);
+    for (const cb of observed) cb();
+    await frame();
+
+    expect(host.getAttribute('data-mode')).toBe('dark');
+    expect(
+      (host.shadowRoot.querySelector('.widget-shell') as HTMLElement).style
+        .getPropertyValue('--ui9000-color-text')
+        .trim(),
+    ).toBe('rgb(1, 2, 3)');
+
+    host.remove();
+    document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('owns the stock palette for a local data-theme wrapper, not html', async () => {
+    const wrap = document.createElement('div');
+    wrap.setAttribute('data-theme', 'dark');
+    const host = document.createElement('ui9000-flow-sankey-chart') as Shadowed;
+    // Ambient light ink on the element — owned dark palette must replace it.
+    host.style.setProperty('--ui9000-color-text', DEFAULT_THEME.text);
+    host.style.setProperty('--ui9000-color-text-muted', DEFAULT_THEME.textMuted);
+    wrap.appendChild(host);
+    document.body.appendChild(wrap);
+
+    host.setAttribute('data', JSON.stringify(figmaFixture));
+    await host.updateComplete;
+    sizeShadow(host, 900, 620);
+    for (const cb of observed) cb();
+    await frame();
+
+    expect(host.getAttribute('data-mode')).toBe('dark');
+    expect(
+      (host.shadowRoot.querySelector('.widget-shell') as HTMLElement).style
+        .getPropertyValue('--ui9000-color-text')
+        .trim(),
+    ).toBe(DARK_THEME.text);
+
+    wrap.remove();
+  });
+
+  it('redraws grid ink when the host theme flips after mount', async () => {
+    const host = await mount(figmaFixture);
+    const lightStroke = host.shadowRoot
+      .querySelector('.flow-axis line')
+      ?.getAttribute('stroke');
+
+    applyWidgetContext(host, { mode: 'dark' });
+    await frame();
+    await host.updateComplete;
+
+    const darkStroke = host.shadowRoot
+      .querySelector('.flow-axis line')
+      ?.getAttribute('stroke');
+    expect(lightStroke).toBe('#afb3bb');
+    expect(darkStroke).toBe('#444B57');
+    expect(host.getAttribute('data-mode')).toBe('dark');
     host.remove();
   });
 

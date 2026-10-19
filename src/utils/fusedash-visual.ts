@@ -25,6 +25,7 @@ export const FD_LIGHT = {
   parallelAxisLabelFill: '#5f6877',
   sankeyNodeRule: '#D3DBE3',
   sankeyNodeRuleActive: '#939BA7',
+  flowSankeyStageLabelFill: '#8C8579',
   networkLabelText: 'rgba(33, 38, 46, 0.9)',
   networkLabelHover: '#FFFFFF',
   mapSelectionStroke: '#000000',
@@ -51,6 +52,7 @@ export const FD_DARK = {
   parallelAxisLabelFill: '#A4A9B1',
   sankeyNodeRule: '#444B57',
   sankeyNodeRuleActive: '#A4A9B1',
+  flowSankeyStageLabelFill: '#A4A9B1',
   networkLabelText: '#EFF0F1',
   networkLabelHover: '#282E37',
   mapSelectionStroke: '#EFF0F1',
@@ -391,7 +393,7 @@ export const FD = {
   flowSankeyDimOpacity: 0.3,
   /** Stage header row above the plot */
   flowSankeyStageLabelSize: 9,
-  flowSankeyStageLabelFill: '#8C8579',
+  flowSankeyStageLabelFill: FD_LIGHT.flowSankeyStageLabelFill,
   flowSankeyStageLabelTracking: 0.8,
   /** Percentage gutter on the left */
   flowSankeyAxisTicks: 11,

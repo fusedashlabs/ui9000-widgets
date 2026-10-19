@@ -287,4 +287,18 @@ describe('renderFlowSankeyChart', () => {
 
     expect(railFill(light)).not.toBe(railFill(dark));
   });
+
+  it('paints grid stubs and stage labels from the mode palette', () => {
+    const light = draw(900, 620, { themeMode: 'light' });
+    const dark = draw(900, 620, { themeMode: 'dark' });
+    const gridStroke = (el: HTMLElement) =>
+      el.querySelector('.flow-axis line')?.getAttribute('stroke');
+    const stageFill = (el: HTMLElement) =>
+      el.querySelector('.flow-stages text')?.getAttribute('fill');
+
+    expect(gridStroke(light)).toBe('#afb3bb');
+    expect(gridStroke(dark)).toBe('#444B57');
+    expect(stageFill(light)).toBe('#8C8579');
+    expect(stageFill(dark)).toBe('#A4A9B1');
+  });
 });

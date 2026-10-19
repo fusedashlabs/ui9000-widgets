@@ -18,3 +18,4 @@ export {
   resolveRequestedMode,
   type ResolvedMode,
 } from './resolve-mode.js';
+export { HOST_THEME_EVENT, notifyHostTheme, subscribeHostTheme } from '../element/theme-watch.js';

@@ -19,6 +19,7 @@ import {
   fitBoard,
   glyphsFor,
   goalFootprint,
+  goalFringe,
   goalRadius,
   layoutBoard,
   markerSpots,
@@ -69,6 +70,20 @@ describe('goal layout', () => {
       }
     }
     expect(overlaps).toBe(0);
+  });
+
+  it('keeps the loose agents around each ring inside the fitted bounds', () => {
+    for (const goals of [model.goals, model.goals.map((g) => ({ ...g, position: null }))]) {
+      const layout = layoutBoard(goals);
+      for (const goal of goals) {
+        for (const node of goalFringe(goal, layout.byId.get(goal.id)!).nodes) {
+          expect(node.x - node.size).toBeGreaterThanOrEqual(layout.bounds.x0 - 1e-9);
+          expect(node.x + node.size).toBeLessThanOrEqual(layout.bounds.x1 + 1e-9);
+          expect(node.y - node.size).toBeGreaterThanOrEqual(layout.bounds.y0 - 1e-9);
+          expect(node.y + node.size).toBeLessThanOrEqual(layout.bounds.y1 + 1e-9);
+        }
+      }
+    }
   });
 
   it('fits the bounds into the viewport, centred and capped', () => {

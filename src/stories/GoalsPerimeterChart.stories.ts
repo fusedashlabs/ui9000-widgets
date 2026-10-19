@@ -92,11 +92,10 @@ const meta: Meta<GoalsPerimeterArgs> = {
   component: 'ui9000-goals-perimeter',
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreen',
     docs: {
       description: {
         component:
-          'Agents Management goals perimeter (AM-1): many agents arranged around a shared goal. Each goal is a cloud of its agents inside a perimeter: the arc is the goal health, clockwise from 12 o’clock, green above 80%, amber below, rose below 25%. Healthy, degraded, blocked and failed agents differ by colour and by marker (△, ⊘, ✕). Diamonds at the centre are resource groups coloured by state, and red ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. The state legend and the exception count sit in the shell. Hover any mark for its detail. Click a cluster (“click to open”) and it expands: the goal fills the plot, its agents regroup into one sector per health state with the reasons beside each, its resource groups are named, and the goals and dependencies it is joined to sit around it — click one to open it. “← All goals” or Esc zooms back out. Opening fires `goal-open`, closing `goal-close`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
+          'Agents Management goals perimeter (AM-2): many agents arranged around a shared goal. Each goal is a cloud of its agents inside a perimeter: the arc is the goal health, clockwise from 12 o’clock, green above 80%, amber below, rose below 25%. Healthy, degraded, blocked and failed agents differ by colour and by marker (△, ⊘, ✕). Diamonds at the centre are resource groups coloured by state, and red ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. The state legend and the exception count sit in the shell. Hover any mark for its detail. Click a cluster (“click to open”) and it expands: the goal fills the plot, its agents regroup into one sector per health state with the reasons beside each, its resource groups are named, and the goals and dependencies it is joined to sit around it — click one to open it. “← All goals” or Esc zooms back out. Opening fires `goal-open`, closing `goal-close`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
       },
     },
   },

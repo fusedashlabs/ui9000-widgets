@@ -1,4 +1,5 @@
 import { formatResourceGroups, goalSummary } from './format.js';
+import { goalFringe } from './scatter.js';
 import type { ExternalDependency, PerimeterGoal } from './types.js';
 
 /**
@@ -207,6 +208,12 @@ export function layoutBoard(
   }
   const boxes = placements.map(goalFootprint);
   for (const { x, y } of externals.values()) boxes.push({ x0: x - 16, y0: y - 16, x1: x + 16, y1: y + 16 });
+  // The loose agents around each ring are drawn too, so the fit keeps them inside the plot rather than clipping them at its edge.
+  goals.forEach((goal, i) => {
+    for (const node of goalFringe(goal, placements[i]!).nodes) {
+      boxes.push({ x0: node.x - node.size, y0: node.y - node.size, x1: node.x + node.size, y1: node.y + node.size });
+    }
+  });
 
   return {
     placements,

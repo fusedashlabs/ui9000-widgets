@@ -68,7 +68,7 @@ function anchorOf(event: MouseEvent | FocusEvent): MouseEvent {
 }
 
 /**
- * Goals perimeter (AM-1): agents arranged around shared goals. Each goal is a
+ * Goals perimeter (AM-2): agents arranged around shared goals. Each goal is a
  * cloud of its agents inside a perimeter whose arc is the goal's health;
  * healthy, degraded, blocked and failed agents are told apart by colour and
  * marker, and lines join goals, agents and external dependencies. The legend

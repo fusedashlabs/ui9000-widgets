@@ -64,17 +64,34 @@ export const goalsPerimeterStyles = css`
     font-size: 0.875rem;
   }
 
+  /*
+   * Shell header: the title keeps its full width (it ellipsises only when it
+   * is wider than the header on its own), and the exception summary never
+   * breaks between words. When the two do not fit side by side, the summary
+   * moves to its own line under the title.
+   */
+  .widget-header-main > .widget-title {
+    flex: 1 0 auto;
+    max-width: 100%;
+  }
+  .widget-aside {
+    white-space: nowrap;
+  }
+
   /* Shell: exception summary beside the title. */
   .exception-summary {
     display: inline-flex;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 6px;
     font-size: 12px;
     color: var(--ui9000-color-text-muted, #6b7280);
     white-space: nowrap;
   }
-  .exception-count {
+  .exception-count,
+  .down-count {
     display: inline-flex;
+    flex: none;
     align-items: center;
     gap: 4px;
   }

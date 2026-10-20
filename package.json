@@ -176,6 +176,10 @@
       "types": "./dist/components/component-asset-card/index.d.ts",
       "import": "./dist/components/component-asset-card/index.js"
     },
+    "./reasoning-orchestration-graph": {
+      "types": "./dist/components/reasoning-orchestration-graph/index.d.ts",
+      "import": "./dist/components/reasoning-orchestration-graph/index.js"
+    },
     "./asset-health-overview": {
       "types": "./dist/components/asset-health-overview/index.d.ts",
       "import": "./dist/components/asset-health-overview/index.js"
@@ -347,6 +351,10 @@
     "./lazy/component-asset-card": {
       "types": "./dist/lazy/component-asset-card.d.ts",
       "import": "./dist/lazy/component-asset-card.js"
+    },
+    "./lazy/reasoning-orchestration-graph": {
+      "types": "./dist/lazy/reasoning-orchestration-graph.d.ts",
+      "import": "./dist/lazy/reasoning-orchestration-graph.js"
     },
     "./lazy/asset-health-overview": {
       "types": "./dist/lazy/asset-health-overview.d.ts",

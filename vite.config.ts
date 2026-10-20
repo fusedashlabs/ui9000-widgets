@@ -138,6 +138,10 @@ const entries = {
     __dirname,
     'src/components/component-asset-card/index.ts',
   ),
+  'components/reasoning-orchestration-graph/index': resolve(
+    __dirname,
+    'src/components/reasoning-orchestration-graph/index.ts',
+  ),
   'components/asset-health-overview/index': resolve(
     __dirname,
     'src/components/asset-health-overview/index.ts',
@@ -211,6 +215,10 @@ const entries = {
   'lazy/status-gauge-widget': resolve(__dirname, 'src/lazy/status-gauge-widget.ts'),
   'lazy/power-path-card': resolve(__dirname, 'src/lazy/power-path-card.ts'),
   'lazy/component-asset-card': resolve(__dirname, 'src/lazy/component-asset-card.ts'),
+  'lazy/reasoning-orchestration-graph': resolve(
+    __dirname,
+    'src/lazy/reasoning-orchestration-graph.ts',
+  ),
   'lazy/asset-health-overview': resolve(__dirname, 'src/lazy/asset-health-overview.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(
     __dirname,

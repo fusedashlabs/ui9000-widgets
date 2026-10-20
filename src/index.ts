@@ -195,6 +195,10 @@ import {
   Ui9000ComponentAssetCard,
 } from './components/component-asset-card/index.js';
 import {
+  registerReasoningOrchestrationGraph,
+  Ui9000ReasoningOrchestrationGraph,
+} from './components/reasoning-orchestration-graph/index.js';
+import {
   registerAssetHealthOverview,
   Ui9000AssetHealthOverview,
 } from './components/asset-health-overview/index.js';
@@ -343,6 +347,8 @@ export {
   registerPowerPathCard,
   Ui9000ComponentAssetCard,
   registerComponentAssetCard,
+  Ui9000ReasoningOrchestrationGraph,
+  registerReasoningOrchestrationGraph,
   Ui9000AssetHealthOverview,
   registerAssetHealthOverview,
   Ui9000GiniImpurityEntropyChart,
@@ -422,6 +428,7 @@ export function registerAllCharts(): void {
   registerStatusGaugeWidget();
   registerPowerPathCard();
   registerComponentAssetCard();
+  registerReasoningOrchestrationGraph();
   registerAssetHealthOverview();
   registerGiniImpurityEntropyChart();
   registerMapChart();
@@ -856,6 +863,18 @@ export {
   type ComponentAssetTrendPoint,
   componentAssetCardMetadata,
 } from './components/component-asset-card/index.js';
+
+export {
+  normalizeReasoningOrchestration,
+  type PathSelectDetail,
+  type ReasoningModel,
+  type ReasoningNode,
+  type ReasoningOrchestrationModel,
+  type ReasoningOrchestrationPayload,
+  type ReasoningPath,
+  type ReasoningStage,
+  reasoningOrchestrationGraphMetadata,
+} from './components/reasoning-orchestration-graph/index.js';
 
 export {
   normalizeAssetHealth,

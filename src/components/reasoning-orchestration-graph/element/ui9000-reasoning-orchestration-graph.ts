@@ -557,11 +557,17 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
 
   private renderCapNote() {
     const { dropped, nodes, empty } = this._model;
-    if (empty || !dropped.nodes) return nothing;
-    return html`<div class="cap-note" part="note">
-      Showing ${formatNumber(MAX_NODES)} of ${formatNumber(nodes.length + dropped.nodes)} nodes; pruned and deepest
-      left out.
-    </div>`;
+    if (empty || (!dropped.nodes && !dropped.links)) return nothing;
+    const notes: string[] = [];
+    if (dropped.nodes) {
+      notes.push(
+        `Showing ${formatNumber(MAX_NODES)} of ${formatNumber(nodes.length + dropped.nodes)} nodes; pruned and deepest left out.`,
+      );
+    }
+    if (dropped.links) {
+      notes.push(`${formatNumber(dropped.links)} ${dropped.links === 1 ? 'link' : 'links'} left out.`);
+    }
+    return html`<div class="cap-note" part="note">${notes.join(' ')}</div>`;
   }
 
   override render() {

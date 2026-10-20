@@ -25,6 +25,8 @@
           "title": { "type": "string", "description": "Orchestration header. Alias: name." },
           "name": { "type": "string" },
           "subtitle": { "type": "string", "description": "Experiment metadata beside the title: dataset, method, source, run. Aliases: metadata, meta (a string or a list joined with ·)." },
+          "metadata": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "Alias of subtitle." },
+          "meta": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "Alias of subtitle." },
           "models": {
             "type": "array",
             "description": "Models or strategies. Each gets a colour, a label in the plot corner and a legend row. A model nodes name without listing it is added.",
@@ -41,6 +43,7 @@
             "description": "Transitions between nodes. Alias: edges. Nodes a link names without listing are added.",
             "items": { "$ref": "#/$defs/link" }
           },
+          "edges": { "type": "array", "description": "Alias of links.", "items": { "$ref": "#/$defs/link" } },
           "paths": {
             "type": "array",
             "description": "Candidate paths through the graph. Drawn subordinate to the active path; each hovers and highlights on click.",
@@ -122,6 +125,7 @@
               }
             ]
           },
+          "scaling": { "$ref": "#/properties/data/properties/computeScaling", "description": "Alias of computeScaling." },
           "computeScaling": {
             "type": "object",
             "description": "Metric against compute, one line per strategy (resample vs refine). Alias: scaling.",
@@ -179,7 +183,8 @@
         "type": "object",
         "properties": {
           "id": { "type": ["string", "number"] },
-          "name": { "type": "string" },
+          "name": { "type": "string", "description": "Alias: label." },
+          "label": { "type": "string", "description": "Alias of name." },
           "role": { "type": "string", "description": "Explore, Repair, Critic…; shown in the legend." },
           "detail": { "type": "string", "description": "Readout beside the name: \"Breadth T=0.8\"." },
           "temperature": { "type": ["number", "string"] },
@@ -190,7 +195,8 @@
         "type": "object",
         "properties": {
           "id": { "type": ["string", "number"] },
-          "label": { "type": "string" },
+          "label": { "type": "string", "description": "Alias: name." },
+          "name": { "type": "string", "description": "Alias of label." },
           "depth": {
             "description": "One depth or [from, to]. Without it, the depths of the stage's nodes, else an even split.",
             "oneOf": [
@@ -198,7 +204,7 @@
               { "type": "array", "items": { "type": ["number", "string"] }, "minItems": 2, "maxItems": 2 }
             ]
           },
-          "status": { "enum": ["done", "active", "running", "pending", "queued", "failed", "error"] },
+          "status": { "enum": ["done", "complete", "completed", "ok", "success", "passed", "active", "running", "current", "inprogress", "pending", "queued", "waiting", "todo", "skipped", "failed", "error", "blocked"] },
           "model": { "type": ["string", "number"] },
           "metrics": { "type": "object", "additionalProperties": { "type": ["number", "string"] } }
         }
@@ -212,7 +218,7 @@
           "stage": { "type": ["string", "number"] },
           "depth": { "type": ["number", "string"], "description": "Without it: the stage start, else links from a root." },
           "model": { "type": ["string", "number"] },
-          "state": { "enum": ["candidate", "refined", "verified", "pruned", "failed"], "description": "Pruned and failed draw red. Synonyms such as repaired, accepted, rejected and error are read." },
+          "state": { "enum": ["candidate", "explore", "exploring", "active", "open", "sampled", "refined", "refine", "repaired", "repair", "corrected", "revised", "verified", "verify", "accepted", "selected", "correct", "final", "pruned", "discarded", "rejected", "dropped", "abandoned", "failed", "fail", "error", "dead", "incorrect"], "description": "Pruned and failed draw red. Synonyms such as repaired, accepted, rejected and error are read." },
           "score": { "type": ["number", "string"], "description": "Confidence or reward, 0–1 (or 0–100). Sets the node size." },
           "parent": { "type": ["string", "number"] }
         }
@@ -224,7 +230,7 @@
           "id": { "type": ["string", "number"] },
           "source": { "type": ["string", "number"] },
           "target": { "type": ["string", "number"] },
-          "kind": { "enum": ["expand", "refine", "verify", "resample"] },
+          "kind": { "enum": ["expand", "branch", "sample", "explore", "refine", "repair", "correct", "revise", "verify", "check", "critic", "critique", "resample", "restart", "retry"] },
           "model": { "type": ["string", "number"] }
         }
       },
@@ -247,6 +253,7 @@
           "path": { "type": ["string", "number"] },
           "title": { "type": "string" },
           "lines": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+          "detail": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "Extra lines under the title, appended to lines." },
           "model": { "type": ["string", "number"] }
         }
       },
@@ -263,8 +270,9 @@
       "pipelineStage": {
         "type": "object",
         "properties": {
-          "label": { "type": "string" },
-          "status": { "enum": ["done", "active", "running", "pending", "queued", "failed", "error"] },
+          "label": { "type": "string", "description": "Alias: name." },
+          "name": { "type": "string", "description": "Alias of label." },
+          "status": { "enum": ["done", "complete", "completed", "ok", "success", "passed", "active", "running", "current", "inprogress", "pending", "queued", "waiting", "todo", "skipped", "failed", "error", "blocked"] },
           "detail": { "type": "string" }
         }
       }

@@ -135,6 +135,18 @@ describe('ui9000-reasoning-orchestration-graph', () => {
     expect(root.querySelector('svg.ro-svg')).toBe(svg);
   });
 
+  it('notes links left out by the cap even when every node is kept', async () => {
+    const nodes = Array.from({ length: 80 }, (_, i) => ({ id: `n${i}` }));
+    const links: Array<{ source: string; target: string }> = [];
+    for (let i = 0; i < nodes.length; i += 1) {
+      for (let j = i + 1; j < nodes.length; j += 1) links.push({ source: `n${i}`, target: `n${j}` });
+    }
+    const el = await mount({ nodes, links });
+    const note = el.shadowRoot!.querySelector('.cap-note')?.textContent?.replace(/\s+/g, ' ').trim();
+    expect(note).toContain('links left out');
+    expect(note).not.toContain('Showing');
+  });
+
   it('shows the empty state for a payload with no graph', async () => {
     const el = await mount({ title: 'Nothing' });
     const root = el.shadowRoot!;

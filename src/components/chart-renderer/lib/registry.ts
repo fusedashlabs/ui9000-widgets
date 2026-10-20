@@ -15,6 +15,7 @@ import lossIndicatorMeta from '../../loss-indicator/metadata.json';
 import statusGaugeMeta from '../../status-gauge-widget/metadata.json';
 import powerPathMeta from '../../power-path-card/metadata.json';
 import componentAssetMeta from '../../component-asset-card/metadata.json';
+import assetHealthMeta from '../../asset-health-overview/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
 import mapChartMeta from '../../map-chart/metadata.json';
@@ -75,6 +76,7 @@ const METADATA: ChartMetadataLike[] = [
   statusGaugeMeta,
   powerPathMeta,
   componentAssetMeta,
+  assetHealthMeta,
   lineMeta,
   lollipopMeta,
   mapChartMeta,

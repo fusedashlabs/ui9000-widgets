@@ -176,6 +176,10 @@
       "types": "./dist/components/component-asset-card/index.d.ts",
       "import": "./dist/components/component-asset-card/index.js"
     },
+    "./asset-health-overview": {
+      "types": "./dist/components/asset-health-overview/index.d.ts",
+      "import": "./dist/components/asset-health-overview/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -343,6 +347,10 @@
     "./lazy/component-asset-card": {
       "types": "./dist/lazy/component-asset-card.d.ts",
       "import": "./dist/lazy/component-asset-card.js"
+    },
+    "./lazy/asset-health-overview": {
+      "types": "./dist/lazy/asset-health-overview.d.ts",
+      "import": "./dist/lazy/asset-health-overview.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

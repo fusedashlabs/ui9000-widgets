@@ -1,0 +1,119 @@
+{
+  "id": "asset-health-overview",
+  "tag": "ui9000-asset-health-overview",
+  "title": "Asset Health Overview",
+  "description": "Goal health as a tilted bowl: agents on a stepped core with one state ring per step, assets tiled in category sectors, the last 24h as the outer wall when the payload sends error slots (one panel per 15 minutes, red = errors) and problems as beams with a callout and detail card. Drag to orbit, click a tile or header to isolate a category. D3 SVG in Lit, no Redux.",
+  "chartTypeKeys": ["assetHealthOverview"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/asset-health-overview",
+  "entry": "@ui9000/widgets/asset-health-overview",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "assetHealthOverview" },
+          "name": { "type": "string" },
+          "goal": {
+            "type": "object",
+            "description": "Agent counts are drawn as given and never recomputed. Alias: agents.",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "total": { "type": "number", "description": "Agents working on the goal." },
+              "awaiting": { "type": "number", "description": "Agents waiting for input." },
+              "blocked": { "type": "number" },
+              "failed": { "type": "number" },
+              "burn": { "type": "number", "description": "Optional; unused for drawing unless the host also sends a wall." }
+            },
+            "required": ["total"]
+          },
+          "agents": { "$ref": "#/properties/data/properties/goal" },
+          "categories": {
+            "type": "array",
+            "description": "One sector per category, up to 12. Alias: data (WidgetItem rows).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "category": { "type": "string" },
+                "total": { "type": "number", "description": "Assets in the category. Defaults to healthy + degraded + failing." },
+                "healthy": { "type": "number" },
+                "degraded": { "type": "number" },
+                "failing": { "type": "number", "description": "Failing assets. Alias: failed_assets. Not bare failed (that is agents)." },
+                "failed_assets": { "type": "number" },
+                "items": { "type": "array", "items": { "type": "string" }, "description": "Names of healthy assets." },
+                "problems": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "type": { "type": "string" },
+                      "why": { "type": "string" },
+                      "loc": { "type": "string" },
+                      "sev": { "enum": ["impaired", "degraded"] }
+                    },
+                    "required": ["name"]
+                  }
+                },
+                "agents": { "type": "number", "description": "WidgetItem: agent total may sit on a category row." },
+                "awaiting": { "type": "number" },
+                "blocked": { "type": "number" },
+                "failed": { "type": "number", "description": "WidgetItem: failed agents on this row — not failing assets." }
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "description": "WidgetItem category rows. Same item shape as categories; agent columns may sit on any row.",
+            "items": { "$ref": "#/properties/data/properties/categories/items" }
+          },
+          "wall": {
+            "type": "array",
+            "description": "Explicit 24h wall (96 quarter-hours). Omit or [] when there are no recent errors — nothing is invented. Alias: errors.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slot": { "type": "number", "minimum": 0, "maximum": 95 },
+                "err": { "type": "boolean" },
+                "hgt": { "type": "number" },
+                "reqs": { "type": "number" },
+                "nErr": { "type": "number" },
+                "src": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "type": { "type": "string" },
+                    "why": { "type": "string" },
+                    "loc": { "type": "string" },
+                    "sev": { "enum": ["impaired", "degraded"] },
+                    "catName": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "errors": { "$ref": "#/properties/data/properties/wall" }
+        }
+      },
+      "flat": { "type": "boolean", "description": "Top-down view without orbit or height." },
+      "problemsOnly": { "type": "boolean", "description": "Dim healthy tiles so only problems stand out." },
+      "theme": {
+        "type": "string",
+        "enum": ["light", "dark", ""],
+        "description": "Stage appearance. Empty follows a local data-theme wrapper (not html), then paintMode / host --ui9000-*."
+      }
+    }
+  }
+}

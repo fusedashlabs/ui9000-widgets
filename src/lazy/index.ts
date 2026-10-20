@@ -36,6 +36,7 @@ export type ChartKind =
   | 'status-gauge-widget'
   | 'power-path-card'
   | 'component-asset-card'
+  | 'asset-health-overview'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
   | 'custom-widget'
@@ -211,6 +212,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'component-asset-card': async () => {
     const mod = await import('../components/component-asset-card/index.js');
     return { register: mod.registerComponentAssetCard };
+  },
+  'asset-health-overview': async () => {
+    const mod = await import('../components/asset-health-overview/index.js');
+    return { register: mod.registerAssetHealthOverview };
   },
   'gini-impurity-entropy-chart': async () => {
     const mod = await import('../components/gini-impurity-entropy-chart/index.js');
@@ -441,6 +446,10 @@ export async function loadPowerPathCard(): Promise<LazyChartModule> {
 
 export async function loadComponentAssetCard(): Promise<LazyChartModule> {
   return loadChart('component-asset-card');
+}
+
+export async function loadAssetHealthOverview(): Promise<LazyChartModule> {
+  return loadChart('asset-health-overview');
 }
 
 export async function loadGiniImpurityEntropyChart(): Promise<LazyChartModule> {

@@ -195,6 +195,10 @@ import {
   Ui9000ComponentAssetCard,
 } from './components/component-asset-card/index.js';
 import {
+  registerAssetHealthOverview,
+  Ui9000AssetHealthOverview,
+} from './components/asset-health-overview/index.js';
+import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
 } from './components/gini-impurity-entropy-chart/index.js';
@@ -339,6 +343,8 @@ export {
   registerPowerPathCard,
   Ui9000ComponentAssetCard,
   registerComponentAssetCard,
+  Ui9000AssetHealthOverview,
+  registerAssetHealthOverview,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -416,6 +422,7 @@ export function registerAllCharts(): void {
   registerStatusGaugeWidget();
   registerPowerPathCard();
   registerComponentAssetCard();
+  registerAssetHealthOverview();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -849,6 +856,20 @@ export {
   type ComponentAssetTrendPoint,
   componentAssetCardMetadata,
 } from './components/component-asset-card/index.js';
+
+export {
+  normalizeAssetHealth,
+  normalizeWall,
+  formatAssetHealthCount,
+  WALL_SLOTS,
+  type AssetHealthCategory,
+  type AssetHealthGoal,
+  type AssetHealthModel,
+  type AssetHealthPayload,
+  type AssetHealthProblem,
+  type AssetHealthWallSlot,
+  assetHealthOverviewMetadata,
+} from './components/asset-health-overview/index.js';
 
 export {
   normalizeCustomWidget,

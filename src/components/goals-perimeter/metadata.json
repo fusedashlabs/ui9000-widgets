@@ -67,17 +67,19 @@
     "$defs": {
       "agent": {
         "type": "object",
-        "required": ["id"],
+        "description": "id falls back to name, then label, then its index; state falls back to status.",
         "properties": {
           "id": { "type": ["string", "number"] },
+          "name": { "type": "string", "description": "Fallback for id and label." },
           "label": { "type": "string" },
           "state": {
-            "enum": ["healthy", "degraded", "blocked", "failed", "idle", "ok", "warning", "error", "down", "waiting"],
-            "description": "Missing reads as healthy; an unknown word as idle."
+            "enum": ["healthy", "degraded", "blocked", "failed", "idle", "ok", "success", "active", "running", "online", "warning", "warn", "slow", "waiting", "held", "pending", "failure", "error", "crashed", "down", "offline", "unavailable", "inactive", "paused", "stopped"],
+            "description": "Missing reads as healthy; an unknown word as idle. Alias: status."
           },
+          "status": { "type": "string", "description": "Alias of state; same values." },
           "goal": { "type": "string", "description": "Goal id or name." },
           "reason": { "type": "string", "description": "Why it failed or what blocks it, in plain operational language." },
-          "blocker": { "enum": ["rule", "dependency", "human"], "description": "Blocked agents only." }
+          "blocker": { "enum": ["rule", "policy", "guardrail", "dependency", "upstream", "resource", "human", "approval", "person", "manual"], "description": "Blocked agents only; policy/guardrail read as rule, upstream/resource as dependency, approval/person/manual as human." }
         }
       },
       "goal": {
@@ -86,6 +88,7 @@
           "id": { "type": "string" },
           "name": { "type": "string" },
           "title": { "type": "string", "description": "Alias of name." },
+          "label": { "type": "string", "description": "Alias of name." },
           "agents": {
             "description": "Agent total, or the count per state. Without it the agent nodes are counted.",
             "oneOf": [
@@ -116,8 +119,9 @@
             "type": ["number", "string"],
             "description": "Agents needing attention, printed as IMPURE. Defaults to degraded + blocked + failed. Ticks outside the ring follow its square root, at most 12. Alias: impure."
           },
+          "impure": { "type": ["number", "string"], "description": "Alias of exceptionCount." },
           "status": {
-            "enum": ["healthy", "degraded", "critical", "ok", "warning", "error", "failed"],
+            "enum": ["healthy", "degraded", "critical", "ok", "success", "good", "green", "warning", "warn", "amber", "at_risk", "at-risk", "error", "failed", "danger", "red"],
             "description": "Perimeter colour override. Otherwise from health and thresholds."
           },
           "exceptions": {
@@ -125,12 +129,15 @@
             "description": "Agents per exceptional state with the reason. Each group gets one to four markers. Without it the agent nodes are grouped by state and reason.",
             "items": {
               "type": "object",
-              "required": ["state", "count"],
+              "description": "Entries without a readable state or count are skipped.",
               "properties": {
-                "state": { "enum": ["failed", "blocked", "degraded"] },
-                "count": { "type": ["number", "string"] },
-                "reason": { "type": "string" },
-                "blocker": { "enum": ["rule", "dependency", "human"], "description": "Blocked only." }
+                "state": { "enum": ["failed", "blocked", "degraded", "failure", "error", "crashed", "down", "unavailable", "waiting", "held", "warning", "slow"], "description": "Alias: status." },
+                "status": { "type": "string", "description": "Alias of state; same values." },
+                "count": { "type": ["number", "string"], "description": "Alias: value." },
+                "value": { "type": ["number", "string"], "description": "Alias of count." },
+                "reason": { "type": "string", "description": "Alias: label." },
+                "label": { "type": "string", "description": "Alias of reason." },
+                "blocker": { "enum": ["rule", "policy", "guardrail", "dependency", "upstream", "resource", "human", "approval", "person", "manual"], "description": "Blocked only; same aliases as agent blocker." }
               }
             }
           },
@@ -144,15 +151,18 @@
                   "type": "object",
                   "properties": {
                     "id": { "type": "string" },
-                    "name": { "type": "string" },
+                    "name": { "type": "string", "description": "Alias: label." },
+                    "label": { "type": "string", "description": "Alias of name." },
                     "kind": {
                       "type": "string",
-                      "description": "model, toolset, infrastructure, pipeline, data, sensor, policy, alert…; picks the glyph."
+                      "description": "model, toolset, infrastructure, pipeline, data, sensor, policy, alert…; picks the glyph. Alias: type."
                     },
+                    "type": { "type": "string", "description": "Alias of kind." },
                     "icon": {
                       "enum": ["sensor", "model", "network", "pipeline", "storage", "alert", "policy", "tool", "generic"]
                     },
-                    "state": { "enum": ["healthy", "degraded", "failed"] },
+                    "state": { "enum": ["healthy", "degraded", "failed", "ok", "success", "active", "warning", "warn", "slow", "error", "critical", "down", "unavailable", "blocked"], "description": "Alias: status." },
+                    "status": { "type": "string", "description": "Alias of state; same values." },
                     "agents": { "type": ["number", "string"] },
                     "detail": { "type": "string" }
                   }
@@ -161,30 +171,38 @@
             ]
           },
           "position": {
-            "type": "object",
-            "description": "Board position, each axis 0–1. Applies only when every goal has one; otherwise goals are laid out automatically.",
-            "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
-          }
+            "description": "Board position, each axis 0–1 (clamped). An [x, y] pair, an {x, y} object, or x / y on the goal itself. Applies only when every goal has one; otherwise goals are laid out automatically.",
+            "oneOf": [
+              { "type": "object", "properties": { "x": { "type": ["number", "string"] }, "y": { "type": ["number", "string"] } } },
+              { "type": "array", "items": { "type": ["number", "string"] }, "minItems": 2, "maxItems": 2 }
+            ]
+          },
+          "x": { "type": ["number", "string"], "description": "Board position x when position is not given." },
+          "y": { "type": ["number", "string"], "description": "Board position y when position is not given." }
         },
         "anyOf": [{ "required": ["name"] }, { "required": ["title"] }]
       },
       "link": {
         "type": "object",
+        "description": "source / target, or their aliases from / to; a link naming neither end is dropped.",
         "properties": {
           "id": { "type": "string" },
           "source": { "type": ["string", "number"] },
+          "from": { "type": ["string", "number"], "description": "Alias of source." },
           "target": { "type": ["string", "number"] },
+          "to": { "type": ["string", "number"], "description": "Alias of target." },
           "strands": {
             "type": ["number", "string"],
-            "description": "Lines in a goal-to-goal bundle, 1–16. Default 6 between two goals, one per agent link."
+            "description": "Lines in a goal-to-goal bundle, 1–16. Default 6 between two goals, one per agent link. Aliases: weight, value."
           },
-          "status": { "enum": ["active", "degraded", "unavailable"] },
+          "weight": { "type": ["number", "string"], "description": "Alias of strands." },
+          "value": { "type": ["number", "string"], "description": "Alias of strands." },
+          "status": { "enum": ["active", "degraded", "unavailable", "down", "broken", "disconnected", "failed", "offline", "error", "blocked", "exception", "warning", "slow", "partial", "unstable"], "description": "down/broken/failed/offline… read as unavailable; warning/slow/partial… as degraded." },
           "exception": { "type": "boolean", "description": "Tint an otherwise active link." },
           "label": { "type": "string" },
           "reason": { "type": "string", "description": "What is disconnected." },
           "impact": { "type": "string", "description": "What the outage stops." }
-        },
-        "required": ["source", "target"]
+        }
       }
     }
   }

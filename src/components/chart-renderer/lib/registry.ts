@@ -16,6 +16,7 @@ import statusGaugeMeta from '../../status-gauge-widget/metadata.json';
 import powerPathMeta from '../../power-path-card/metadata.json';
 import componentAssetMeta from '../../component-asset-card/metadata.json';
 import goalsPerimeterMeta from '../../goals-perimeter/metadata.json';
+import reasoningOrchestrationMeta from '../../reasoning-orchestration-graph/metadata.json';
 import assetHealthMeta from '../../asset-health-overview/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
@@ -78,6 +79,7 @@ const METADATA: ChartMetadataLike[] = [
   powerPathMeta,
   componentAssetMeta,
   goalsPerimeterMeta,
+  reasoningOrchestrationMeta,
   assetHealthMeta,
   lineMeta,
   lollipopMeta,

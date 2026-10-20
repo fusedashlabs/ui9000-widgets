@@ -37,6 +37,7 @@ export type ChartKind =
   | 'power-path-card'
   | 'component-asset-card'
   | 'goals-perimeter'
+  | 'reasoning-orchestration-graph'
   | 'asset-health-overview'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
@@ -217,6 +218,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'goals-perimeter': async () => {
     const mod = await import('../components/goals-perimeter/index.js');
     return { register: mod.registerGoalsPerimeterChart };
+  },
+  'reasoning-orchestration-graph': async () => {
+    const mod = await import('../components/reasoning-orchestration-graph/index.js');
+    return { register: mod.registerReasoningOrchestrationGraph };
   },
   'asset-health-overview': async () => {
     const mod = await import('../components/asset-health-overview/index.js');
@@ -455,6 +460,10 @@ export async function loadComponentAssetCard(): Promise<LazyChartModule> {
 
 export async function loadGoalsPerimeterChart(): Promise<LazyChartModule> {
   return loadChart('goals-perimeter');
+}
+
+export async function loadReasoningOrchestrationGraph(): Promise<LazyChartModule> {
+  return loadChart('reasoning-orchestration-graph');
 }
 
 export async function loadAssetHealthOverview(): Promise<LazyChartModule> {

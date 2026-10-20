@@ -1,0 +1,281 @@
+{
+  "id": "reasoning-orchestration-graph",
+  "tag": "ui9000-reasoning-orchestration-graph",
+  "title": "Reasoning Orchestration Graph",
+  "description": "Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps, with the active path highlighted. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc and deeper stages climb toward the top. Links are hairlines coloured by model, red and dashed into a pruned node; candidate paths sit above them, subordinate; the active path glows from the root and warms to its model's colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. The top chart compares a stage metric across depth over the breadth at each depth; step entropy, the refinement pipeline and compute scaling sit in panels under the plot. Hover explains a node, a path or a stage; a click highlights a path, or the path to a node (path-select), and Escape returns to the active path. Not a free-form node–link graph (that is network-graph) and not a workflow editor. D3, no Redux.",
+  "chartTypeKeys": ["reasoningOrchestrationGraph"],
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/reasoning-orchestration-graph",
+  "entry": "@ui9000/widgets/reasoning-orchestration-graph",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "select", "resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "reasoningOrchestrationGraph" },
+          "title": { "type": "string", "description": "Orchestration header. Alias: name." },
+          "name": { "type": "string" },
+          "subtitle": { "type": "string", "description": "Experiment metadata beside the title: dataset, method, source, run. Aliases: metadata, meta (a string or a list joined with ·)." },
+          "metadata": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "Alias of subtitle." },
+          "meta": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "Alias of subtitle." },
+          "models": {
+            "type": "array",
+            "description": "Models or strategies. Each gets a colour, a label in the plot corner and a legend row. A model nodes name without listing it is added.",
+            "items": { "$ref": "#/$defs/model" }
+          },
+          "stages": {
+            "type": "array",
+            "description": "Reasoning stages in order. Drawn as bands outward from the root, named on the right edge, and compared in the top chart. With a status they are also the refinement pipeline.",
+            "items": { "$ref": "#/$defs/stage" }
+          },
+          "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+          "links": {
+            "type": "array",
+            "description": "Transitions between nodes. Alias: edges. Nodes a link names without listing are added.",
+            "items": { "$ref": "#/$defs/link" }
+          },
+          "edges": { "type": "array", "description": "Alias of links.", "items": { "$ref": "#/$defs/link" } },
+          "paths": {
+            "type": "array",
+            "description": "Candidate paths through the graph. Drawn subordinate to the active path; each hovers and highlights on click.",
+            "items": { "$ref": "#/$defs/path" }
+          },
+          "activePath": {
+            "description": "The path to highlight: a path id, or the node ids of the path. Alias: activePathId. Without it nothing is highlighted until a click.",
+            "oneOf": [
+              { "type": ["string", "number"] },
+              { "type": "array", "items": { "type": ["string", "number"] } }
+            ]
+          },
+          "activePathId": { "type": ["string", "number"] },
+          "annotations": {
+            "type": "array",
+            "description": "Significant reasoning events, at most three drawn. Each hangs off a node (default: the end of its path, or of the active path).",
+            "items": { "$ref": "#/$defs/annotation" }
+          },
+          "summaryLabel": { "type": "string", "default": "Search topology" },
+          "summary": {
+            "description": "Readouts over the top chart. Defaults to candidates, refinements, paths and pruned counts.",
+            "oneOf": [{ "type": "string" }, { "type": "array", "items": { "$ref": "#/$defs/metric" } }]
+          },
+          "criterion": { "type": "string", "description": "Right-hand readout over the top chart." },
+          "stageMetric": { "type": "string", "description": "Stage metric the top chart compares. Defaults to the one most stages carry." },
+          "benchmarks": { "type": "array", "items": { "$ref": "#/$defs/metric" } },
+          "entropy": {
+            "description": "Step entropy under the plot: one series ticks up from the midline, a second down.",
+            "oneOf": [
+              { "type": "array", "items": { "type": ["number", "string"] } },
+              {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "description": "Caption over the strip." },
+                  "label": { "type": "string", "default": "Step entropy" },
+                  "series": {
+                    "type": "array",
+                    "maxItems": 2,
+                    "items": {
+                      "type": "object",
+                      "required": ["values"],
+                      "properties": {
+                        "label": { "type": "string" },
+                        "model": { "type": ["string", "number"] },
+                        "values": { "type": "array", "items": { "type": ["number", "string"] } }
+                      }
+                    }
+                  },
+                  "values": { "type": "array", "items": { "type": ["number", "string"] } },
+                  "highlight": {
+                    "type": "array",
+                    "description": "Step ranges to call out, inclusive.",
+                    "items": {
+                      "oneOf": [
+                        { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+                        {
+                          "type": "object",
+                          "required": ["from", "to"],
+                          "properties": { "from": { "type": "number" }, "to": { "type": "number" }, "label": { "type": "string" } }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "pipeline": {
+            "description": "Refinement pipeline status. Without it, stages that carry a status are the pipeline.",
+            "oneOf": [
+              { "type": "array", "items": { "$ref": "#/$defs/pipelineStage" } },
+              {
+                "type": "object",
+                "required": ["stages"],
+                "properties": {
+                  "label": { "type": "string", "default": "Refinement pipeline" },
+                  "stages": { "type": "array", "items": { "$ref": "#/$defs/pipelineStage" } }
+                }
+              }
+            ]
+          },
+          "scaling": { "$ref": "#/properties/data/properties/computeScaling", "description": "Alias of computeScaling." },
+          "computeScaling": {
+            "type": "object",
+            "description": "Metric against compute, one line per strategy (resample vs refine). Alias: scaling.",
+            "required": ["series"],
+            "properties": {
+              "label": { "type": "string", "default": "Compute scaling" },
+              "xLabel": { "type": "string", "default": "Compute" },
+              "yLabel": { "type": "string", "default": "Accuracy" },
+              "yUnit": { "type": "string", "description": "% prints y as a percentage." },
+              "series": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["points"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "label": { "type": "string" },
+                    "model": { "type": ["string", "number"] },
+                    "points": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "x": { "type": ["number", "string"] },
+                              "y": { "type": ["number", "string"] },
+                              "compute": { "type": ["number", "string"] },
+                              "accuracy": { "type": ["number", "string"] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "anyOf": [{ "required": ["nodes"] }, { "required": ["links"] }, { "required": ["paths"] }]
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "show-legend": { "type": "boolean", "default": true },
+      "show-tooltip": { "type": "boolean", "default": true },
+      "show-top-chart": { "type": "boolean", "default": true },
+      "show-panels": { "type": "boolean", "default": true },
+      "show-annotations": { "type": "boolean", "default": true },
+      "selected-path": { "type": "string", "description": "Path id to highlight instead of the active path." }
+    },
+    "$defs": {
+      "model": {
+        "type": "object",
+        "properties": {
+          "id": { "type": ["string", "number"] },
+          "name": { "type": "string", "description": "Alias: label." },
+          "label": { "type": "string", "description": "Alias of name." },
+          "role": { "type": "string", "description": "Explore, Repair, Critic…; shown in the legend." },
+          "detail": { "type": "string", "description": "Readout beside the name: \"Breadth T=0.8\"." },
+          "temperature": { "type": ["number", "string"] },
+          "color": { "type": "string" }
+        }
+      },
+      "stage": {
+        "type": "object",
+        "properties": {
+          "id": { "type": ["string", "number"] },
+          "label": { "type": "string", "description": "Alias: name." },
+          "name": { "type": "string", "description": "Alias of label." },
+          "depth": {
+            "description": "One depth or [from, to]. Without it, the depths of the stage's nodes, else an even split.",
+            "oneOf": [
+              { "type": ["number", "string"] },
+              { "type": "array", "items": { "type": ["number", "string"] }, "minItems": 2, "maxItems": 2 }
+            ]
+          },
+          "status": { "enum": ["done", "complete", "completed", "ok", "success", "passed", "active", "running", "current", "inprogress", "pending", "queued", "waiting", "todo", "skipped", "failed", "error", "blocked"] },
+          "model": { "type": ["string", "number"] },
+          "metrics": { "type": "object", "additionalProperties": { "type": ["number", "string"] } }
+        }
+      },
+      "node": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": ["string", "number"] },
+          "label": { "type": "string" },
+          "stage": { "type": ["string", "number"] },
+          "depth": { "type": ["number", "string"], "description": "Without it: the stage start, else links from a root." },
+          "model": { "type": ["string", "number"] },
+          "state": { "enum": ["candidate", "explore", "exploring", "active", "open", "sampled", "refined", "refine", "repaired", "repair", "corrected", "revised", "verified", "verify", "accepted", "selected", "correct", "final", "pruned", "discarded", "rejected", "dropped", "abandoned", "failed", "fail", "error", "dead", "incorrect"], "description": "Pruned and failed draw red. Synonyms such as repaired, accepted, rejected and error are read." },
+          "score": { "type": ["number", "string"], "description": "Confidence or reward, 0–1 (or 0–100). Sets the node size." },
+          "parent": { "type": ["string", "number"] }
+        }
+      },
+      "link": {
+        "type": "object",
+        "required": ["source", "target"],
+        "properties": {
+          "id": { "type": ["string", "number"] },
+          "source": { "type": ["string", "number"] },
+          "target": { "type": ["string", "number"] },
+          "kind": { "enum": ["expand", "branch", "sample", "explore", "refine", "repair", "correct", "revise", "verify", "check", "critic", "critique", "resample", "restart", "retry"] },
+          "model": { "type": ["string", "number"] }
+        }
+      },
+      "path": {
+        "type": "object",
+        "required": ["nodes"],
+        "properties": {
+          "id": { "type": ["string", "number"] },
+          "label": { "type": "string" },
+          "model": { "type": ["string", "number"] },
+          "nodes": { "type": "array", "minItems": 2, "items": { "type": ["string", "number"] } },
+          "score": { "type": ["number", "string"] }
+        }
+      },
+      "annotation": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "node": { "type": ["string", "number"] },
+          "path": { "type": ["string", "number"] },
+          "title": { "type": "string" },
+          "lines": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+          "detail": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "Extra lines under the title, appended to lines." },
+          "model": { "type": ["string", "number"] }
+        }
+      },
+      "metric": {
+        "type": "object",
+        "required": ["label", "value"],
+        "properties": {
+          "label": { "type": "string" },
+          "value": { "type": ["number", "string"] },
+          "delta": { "type": ["number", "string"] },
+          "unit": { "type": "string" }
+        }
+      },
+      "pipelineStage": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string", "description": "Alias: name." },
+          "name": { "type": "string", "description": "Alias of label." },
+          "status": { "enum": ["done", "complete", "completed", "ok", "success", "passed", "active", "running", "current", "inprogress", "pending", "queued", "waiting", "todo", "skipped", "failed", "error", "blocked"] },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  }
+}

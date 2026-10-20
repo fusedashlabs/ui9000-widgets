@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
-import { html } from 'lit';
+import { html, render } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { describe, expect, it } from 'vitest';
 
 import { chartShellStyles, Ui9000ChartElement } from './ui9000-chart-base.js';
+import { renderWidgetHeader } from './chart-shell-render.js';
 
 @customElement('ui9000-header-probe')
 class HeaderProbe extends Ui9000ChartElement {
@@ -162,5 +163,27 @@ describe('widget header variants', () => {
     const darkItems = ruleBody(css, ":host([data-mode='dark']) .menu-item {");
     expect(darkButtons).toContain('var(--ui9000-color-text, #eff0f1)');
     expect(darkItems).toContain('var(--ui9000-color-text, #eff0f1)');
+  });
+});
+
+describe('widget header title', () => {
+  const long = 'Test-time compute orchestrator / Opus 5.5 × GPT-6 Astra';
+  const header = (truncateTitle?: boolean) => {
+    const host = document.createElement('div');
+    render(
+      renderWidgetHeader({ title: long, menuOpen: false, onMenuToggle: () => {}, onMenuClose: () => {}, truncateTitle }),
+      host,
+    );
+    return host.querySelector('.widget-title')!;
+  };
+
+  it('cuts a long title by default and keeps the whole of it in the tooltip', () => {
+    const title = header();
+    expect(title.textContent!.trim().length).toBeLessThan(long.length);
+    expect(title.getAttribute('title')).toBe(long);
+  });
+
+  it('prints the whole title when the chart asks for it', () => {
+    expect(header(false).textContent!.trim()).toBe(long);
   });
 });

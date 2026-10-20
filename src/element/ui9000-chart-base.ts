@@ -171,6 +171,7 @@ export abstract class Ui9000ChartElement extends LitElement {
       subtitle?: string;
       aside?: unknown;
       showActions?: boolean;
+      truncateTitle?: boolean;
     } = {},
   ) {
     if (!title && !extras.subtitle && !extras.aside) return nothing;
@@ -179,6 +180,7 @@ export abstract class Ui9000ChartElement extends LitElement {
       subtitle: extras.subtitle,
       aside: extras.aside,
       showActions: extras.showActions,
+      truncateTitle: extras.truncateTitle,
       variant: this.headerVariant,
       handlers: this._headerHandlers,
       menuOpen: this._menuOpen,

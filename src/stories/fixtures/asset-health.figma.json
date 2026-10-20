@@ -1,0 +1,173 @@
+{
+  "chartType": "assetHealthOverview",
+  "goal": {
+    "id": "G-007",
+    "name": "Onboarding Velocity",
+    "total": 1204,
+    "awaiting": 19,
+    "blocked": 84,
+    "failed": 2,
+    "burn": 1.4
+  },
+  "categories": [
+    {
+      "id": "apps",
+      "name": "Applications",
+      "total": 12,
+      "items": [
+        "Salesforce",
+        "Slack",
+        "Jira",
+        "Workday",
+        "ServiceNow",
+        "Zendesk",
+        "Google Drive",
+        "Confluence"
+      ],
+      "problems": []
+    },
+    {
+      "id": "db",
+      "name": "Databases",
+      "total": 9,
+      "items": [
+        "orders-db",
+        "hr-records",
+        "audit-log",
+        "billing-db",
+        "s3 · reports",
+        "analytics-wh"
+      ],
+      "problems": [
+        {
+          "name": "crm-prod",
+          "type": "DATABASE",
+          "why": "writes blocked by R-047",
+          "loc": "eu-west-1 → us-east-1",
+          "sev": "impaired"
+        }
+      ]
+    },
+    {
+      "id": "dev",
+      "name": "Devices",
+      "total": 219,
+      "items": [
+        "badge readers · Hall C",
+        "door sensors · Hall D",
+        "motion sensors",
+        "NVR-02",
+        "cam-A-011",
+        "cam-B-207"
+      ],
+      "problems": [
+        {
+          "name": "cam-gw-sfo-01",
+          "type": "DEVICE",
+          "why": "feed gateway unreachable",
+          "loc": "SFO-01 · Hall D · San Francisco",
+          "sev": "impaired"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "AI models",
+      "total": 6,
+      "items": ["haiku v3.1", "embedder v2", "vision v1.4", "reranker v1"],
+      "problems": [
+        {
+          "name": "sonnet v4.2",
+          "type": "AI MODEL",
+          "why": "p95 2.1s over 1.2s",
+          "loc": "us-west-2",
+          "sev": "degraded"
+        }
+      ]
+    },
+    {
+      "id": "people",
+      "name": "People",
+      "total": 5,
+      "items": ["Finance approver", "HR reviewer", "Ops lead"],
+      "problems": []
+    },
+    {
+      "id": "tools",
+      "name": "Tools",
+      "total": 24,
+      "items": [
+        "code sandbox",
+        "PDF converter",
+        "OCR engine",
+        "web scraper",
+        "email sender",
+        "spreadsheet tool",
+        "translator"
+      ],
+      "problems": []
+    }
+  ],
+  "wall": [
+    {
+      "slot": 18,
+      "err": true,
+      "hgt": 44,
+      "reqs": 22,
+      "nErr": 4,
+      "src": {
+        "name": "crm-prod",
+        "type": "DATABASE",
+        "why": "writes blocked by R-047",
+        "loc": "eu-west-1 → us-east-1",
+        "sev": "impaired",
+        "catName": "Databases"
+      }
+    },
+    {
+      "slot": 41,
+      "err": true,
+      "hgt": 38,
+      "reqs": 15,
+      "nErr": 2,
+      "src": {
+        "name": "cam-gw-sfo-01",
+        "type": "DEVICE",
+        "why": "feed gateway unreachable",
+        "loc": "SFO-01 · Hall D · San Francisco",
+        "sev": "impaired",
+        "catName": "Devices"
+      }
+    },
+    {
+      "slot": 67,
+      "err": true,
+      "hgt": 32,
+      "reqs": 11,
+      "nErr": 1,
+      "src": {
+        "name": "sonnet v4.2",
+        "type": "AI MODEL",
+        "why": "p95 2.1s over 1.2s",
+        "loc": "us-west-2",
+        "sev": "degraded",
+        "catName": "AI models"
+      }
+    },
+    {
+      "slot": 88,
+      "err": true,
+      "hgt": 48,
+      "reqs": 28,
+      "nErr": 6,
+      "src": {
+        "name": "crm-prod",
+        "type": "DATABASE",
+        "why": "writes blocked by R-047",
+        "loc": "eu-west-1 → us-east-1",
+        "sev": "impaired",
+        "catName": "Databases"
+      }
+    }
+  ]
+}

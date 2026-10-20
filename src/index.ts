@@ -199,6 +199,10 @@ import {
   Ui9000GoalsPerimeterChart,
 } from './components/goals-perimeter/index.js';
 import {
+  registerAssetHealthOverview,
+  Ui9000AssetHealthOverview,
+} from './components/asset-health-overview/index.js';
+import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
 } from './components/gini-impurity-entropy-chart/index.js';
@@ -345,6 +349,8 @@ export {
   registerComponentAssetCard,
   Ui9000GoalsPerimeterChart,
   registerGoalsPerimeterChart,
+  Ui9000AssetHealthOverview,
+  registerAssetHealthOverview,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -423,6 +429,7 @@ export function registerAllCharts(): void {
   registerPowerPathCard();
   registerComponentAssetCard();
   registerGoalsPerimeterChart();
+  registerAssetHealthOverview();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -867,6 +874,20 @@ export {
   type PerimeterGoal,
   goalsPerimeterChartMetadata,
 } from './components/goals-perimeter/index.js';
+
+export {
+  normalizeAssetHealth,
+  normalizeWall,
+  formatAssetHealthCount,
+  WALL_SLOTS,
+  type AssetHealthCategory,
+  type AssetHealthGoal,
+  type AssetHealthModel,
+  type AssetHealthPayload,
+  type AssetHealthProblem,
+  type AssetHealthWallSlot,
+  assetHealthOverviewMetadata,
+} from './components/asset-health-overview/index.js';
 
 export {
   normalizeCustomWidget,

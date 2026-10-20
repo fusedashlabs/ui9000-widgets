@@ -88,8 +88,11 @@
                 "slot": { "type": ["number", "string"], "description": "Quarter-hour index; clamped to 0–95 by normalize." },
                 "err": { "type": ["boolean", "string", "number"] },
                 "hgt": { "type": ["number", "string"] },
+                "height": { "type": ["number", "string"], "description": "Alias of hgt." },
                 "reqs": { "type": ["number", "string"] },
+                "requests": { "type": ["number", "string"], "description": "Alias of reqs." },
                 "nErr": { "type": ["number", "string"] },
+                "errors": { "type": ["number", "string"], "description": "Alias of nErr." },
                 "src": {
                   "type": "object",
                   "properties": {
@@ -100,7 +103,8 @@
                     "sev": { "type": "string", "description": "Same free-text mapping as problems[].sev." },
                     "catName": { "type": "string" }
                   }
-                }
+                },
+                "source": { "$ref": "#/properties/data/properties/wall/items/properties/src", "description": "Alias of src." }
               }
             }
           },

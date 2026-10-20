@@ -179,6 +179,33 @@ describe('normalizeAssetHealth', () => {
 });
 
 describe('normalizeWall', () => {
+  it('reads the height / requests / errors / source aliases declared in the schema', () => {
+    const wall = normalizeWall([
+      {
+        slot: 3,
+        err: true,
+        height: 44,
+        requests: 9,
+        errors: 2,
+        source: {
+          name: 'crm-prod',
+          type: 'DATABASE',
+          why: 'writes blocked',
+          loc: 'eu-west-1',
+          sev: 'warning',
+          catName: 'Databases',
+        },
+      },
+    ]);
+    expect(wall[3]).toMatchObject({
+      err: true,
+      hgt: 44,
+      reqs: 9,
+      nErr: 2,
+      src: { name: 'crm-prod', sev: 'degraded', catName: 'Databases' },
+    });
+  });
+
   it('returns empty for missing, empty, or all-clear slots', () => {
     expect(normalizeWall(undefined)).toEqual([]);
     expect(normalizeWall([])).toEqual([]);

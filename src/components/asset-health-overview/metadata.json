@@ -29,11 +29,11 @@
             "properties": {
               "id": { "type": "string" },
               "name": { "type": "string" },
-              "total": { "type": "number", "description": "Agents working on the goal." },
-              "awaiting": { "type": "number", "description": "Agents waiting for input." },
-              "blocked": { "type": "number" },
-              "failed": { "type": "number" },
-              "burn": { "type": "number", "description": "Optional; unused for drawing unless the host also sends a wall." }
+              "total": { "type": ["number", "string"], "description": "Agents working on the goal." },
+              "awaiting": { "type": ["number", "string"], "description": "Agents waiting for input." },
+              "blocked": { "type": ["number", "string"] },
+              "failed": { "type": ["number", "string"] },
+              "burn": { "type": ["number", "string"], "description": "Optional; unused for drawing unless the host also sends a wall." }
             },
             "required": ["total"]
           },
@@ -47,12 +47,12 @@
                 "id": { "type": "string" },
                 "name": { "type": "string" },
                 "category": { "type": "string" },
-                "total": { "type": "number", "description": "Assets in the category. Defaults to healthy + degraded + failing." },
-                "healthy": { "type": "number" },
-                "degraded": { "type": "number" },
-                "failing": { "type": "number", "description": "Failing assets. Alias: failed_assets. Not bare failed (that is agents)." },
-                "failed_assets": { "type": "number" },
-                "items": { "type": "array", "items": { "type": "string" }, "description": "Names of healthy assets." },
+                "total": { "type": ["number", "string"], "description": "Assets in the category. Defaults to healthy + degraded + failing." },
+                "healthy": { "type": ["number", "string"] },
+                "degraded": { "type": ["number", "string"] },
+                "failing": { "type": ["number", "string"], "description": "Failing assets. Alias: failed_assets. Not bare failed (that is agents)." },
+                "failed_assets": { "type": ["number", "string"] },
+                "items": { "type": "array", "items": { "type": ["string", "number"] }, "description": "Names of healthy assets." },
                 "problems": {
                   "type": "array",
                   "items": {
@@ -62,15 +62,15 @@
                       "type": { "type": "string" },
                       "why": { "type": "string" },
                       "loc": { "type": "string" },
-                      "sev": { "enum": ["impaired", "degraded"] }
+                      "sev": { "type": "string", "description": "impaired (default) or degraded. Free text containing degrad / warn / slow / elevat / caution also maps to degraded; anything else is impaired." }
                     },
                     "required": ["name"]
                   }
                 },
-                "agents": { "type": "number", "description": "WidgetItem: agent total may sit on a category row." },
-                "awaiting": { "type": "number" },
-                "blocked": { "type": "number" },
-                "failed": { "type": "number", "description": "WidgetItem: failed agents on this row — not failing assets." }
+                "agents": { "type": ["number", "string"], "description": "WidgetItem: agent total may sit on a category row." },
+                "awaiting": { "type": ["number", "string"] },
+                "blocked": { "type": ["number", "string"] },
+                "failed": { "type": ["number", "string"], "description": "WidgetItem: failed agents on this row — not failing assets." }
               }
             }
           },
@@ -85,11 +85,11 @@
             "items": {
               "type": "object",
               "properties": {
-                "slot": { "type": "number", "minimum": 0, "maximum": 95 },
-                "err": { "type": "boolean" },
-                "hgt": { "type": "number" },
-                "reqs": { "type": "number" },
-                "nErr": { "type": "number" },
+                "slot": { "type": ["number", "string"], "description": "Quarter-hour index; clamped to 0–95 by normalize." },
+                "err": { "type": ["boolean", "string", "number"] },
+                "hgt": { "type": ["number", "string"] },
+                "reqs": { "type": ["number", "string"] },
+                "nErr": { "type": ["number", "string"] },
                 "src": {
                   "type": "object",
                   "properties": {
@@ -97,7 +97,7 @@
                     "type": { "type": "string" },
                     "why": { "type": "string" },
                     "loc": { "type": "string" },
-                    "sev": { "enum": ["impaired", "degraded"] },
+                    "sev": { "type": "string", "description": "Same free-text mapping as problems[].sev." },
                     "catName": { "type": "string" }
                   }
                 }

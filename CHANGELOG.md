@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- **asset-health-overview** (`ui9000-asset-health-overview`, chartType `assetHealthOverview`): the Agents Management asset health overview from Figma 278:52365. Agents sit on a stepped core with one state ring per step, assets are tiled in category sectors, the last 24h is the outer wall only when the payload sends error slots, and problems rise as beams with a callout and a detail card firing `show-agents` / `open-rule`. Drag to orbit, click a tile or header to isolate a category. Lit, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/asset-health-overview`.
+
 ## 0.7.5 — 2026-10-15
 
 ### Fixed

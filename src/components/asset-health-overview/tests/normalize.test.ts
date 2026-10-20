@@ -132,6 +132,21 @@ describe('normalizeAssetHealth', () => {
     expect(scene.pins).toHaveLength(1);
   });
 
+  it('labels unnamed tiles by tone, and filler tiles never claim to be healthy', () => {
+    const model = normalizeAssetHealth({
+      agents: { total: 50 },
+      categories: [{ name: 'Databases', healthy: 1, degraded: 1, failing: 1 }],
+    });
+    const tiles = buildScene(model).tiles.filter((t) => t.cat === model.categories[0]!.id);
+    const byTone = (tone: string) => tiles.find((t) => t.tone === tone);
+    expect(byTone('crit')?.tip).toContain('Failing');
+    expect(byTone('warn')?.tip).toContain('Degraded');
+    expect(byTone('ok')?.tip).toContain('healthy');
+    expect(byTone('neutral')).toBeTruthy();
+    expect(byTone('neutral')?.tip).not.toContain('healthy');
+    expect(byTone('neutral')?.tip).not.toContain('Failing');
+  });
+
   it('omits the error wall when the payload does not send one', () => {
     const model = normalizeAssetHealth({
       goal: { total: 1204, awaiting: 0, blocked: 84, failed: 2 },

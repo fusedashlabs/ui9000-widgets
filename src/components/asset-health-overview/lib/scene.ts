@@ -94,10 +94,18 @@ function buildWall(model: AssetHealthModel): WallPanel[] {
   });
 }
 
-function tileTip(c: AssetHealthCategory, p: AssetHealthProblem | null, name: string | null): string {
+function tileTip(
+  c: AssetHealthCategory,
+  p: AssetHealthProblem | null,
+  name: string | null,
+  tone: TileTone,
+): string {
   if (p) return `${p.type} · ${p.name}\n${p.why}\n${p.loc}`;
   if (name) return `${name}\n${c.name.replace(/s$/, '')} · healthy`;
-  return `${c.name}\nOne of ${c.total} · healthy`;
+  if (tone === 'crit') return `${c.name}\nFailing asset`;
+  if (tone === 'warn') return `${c.name}\nDegraded asset`;
+  if (tone === 'ok') return `${c.name}\nOne of ${c.total} · healthy`;
+  return `${c.name}\n${c.total} assets`;
 }
 
 /**
@@ -180,7 +188,7 @@ function buildTiles({ categories }: AssetHealthModel): Pick<AssetHealthScene, 't
         problem,
         name,
         noise,
-        tip: tileTip(c, problem, name),
+        tip: tileTip(c, problem, name, tone),
       });
       if (problem) {
         pins.push({

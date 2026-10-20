@@ -86,6 +86,78 @@ describe('ui9000-asset-health-overview', () => {
     el.remove();
   });
 
+  it('isolates a category when its header is clicked, and restores on a second click', async () => {
+    const el = await mount(figma, 'dark');
+    const groups = () => [...(el.shadowRoot?.querySelectorAll('svg g') ?? [])];
+    const byTitle = (title: string) =>
+      groups().find((g) => g.querySelector('title')?.textContent === title);
+    const tileOpacity = (titleStart: string) =>
+      groups()
+        .find((g) => g.querySelector('title')?.textContent?.startsWith(titleStart))
+        ?.getAttribute('opacity');
+
+    byTitle('Databases\nClick to show only this category')?.dispatchEvent(
+      new MouseEvent('click', { bubbles: true }),
+    );
+    expect(tileOpacity('Salesforce')).toBe('0.16');
+    expect(tileOpacity('orders-db')).toBe('1');
+
+    byTitle('Databases\nClick to show only this category')?.dispatchEvent(
+      new MouseEvent('click', { bubbles: true }),
+    );
+    expect(tileOpacity('Salesforce')).toBe('1');
+    el.remove();
+  });
+
+  it('opens the problem card on a beam click and fires show-agents / open-rule', async () => {
+    const el = await mount(figma, 'dark');
+    const texts = () => [...(el.shadowRoot?.querySelectorAll('text') ?? [])].map((n) => n.textContent);
+    const groupWithText = (label: string) =>
+      [...(el.shadowRoot?.querySelectorAll('text') ?? [])]
+        .find((t) => t.textContent === label)
+        ?.closest('g');
+    const openPin = () =>
+      groupWithText('crm-prod · writes blocked by R-047')?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true }),
+      );
+
+    openPin();
+    expect(texts()).toContain('Show agents');
+    expect(texts()).toContain('Open in Rules');
+
+    let shown: { categoryId?: string; problem?: { name?: string } } | undefined;
+    el.addEventListener('show-agents', (event) => {
+      shown = (event as CustomEvent).detail;
+    });
+    groupWithText('Show agents')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(shown?.categoryId).toBe('db');
+    expect(shown?.problem?.name).toBe('crm-prod');
+    expect(texts()).not.toContain('Open in Rules');
+
+    openPin();
+    let ruled: { problem?: { name?: string } } | undefined;
+    el.addEventListener('open-rule', (event) => {
+      ruled = (event as CustomEvent).detail;
+    });
+    groupWithText('Open in Rules')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(ruled?.problem?.name).toBe('crm-prod');
+    el.remove();
+  });
+
+  it('repaints with a new orbit after a drag', async () => {
+    const el = await mount(figma, 'dark');
+    const svg = el.shadowRoot?.querySelector('svg.scene') as SVGSVGElement;
+    const before = svg.innerHTML;
+    const pointer = (type: string, x: number, y: number) =>
+      new MouseEvent(type, { bubbles: true, button: 0, clientX: x, clientY: y });
+    svg.dispatchEvent(pointer('pointerdown', 100, 100));
+    svg.dispatchEvent(pointer('pointermove', 240, 140));
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    svg.dispatchEvent(pointer('pointerup', 240, 140));
+    expect(svg.innerHTML).not.toBe(before);
+    el.remove();
+  });
+
   it('shows empty state without data', async () => {
     const el = document.createElement('ui9000-asset-health-overview');
     document.body.appendChild(el);

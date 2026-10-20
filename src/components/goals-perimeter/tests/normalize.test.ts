@@ -98,6 +98,12 @@ describe('normalizeGoalsPerimeter', () => {
     expect(model.goals[0]!.agents).toMatchObject({ total: 4, healthy: 1, failed: 1, idle: 2 });
   });
 
+  it('names a goal from label when name and title are absent', () => {
+    const model = normalizeGoalsPerimeter({ goals: [{ label: 'Claims triage' }] });
+    expect(model.empty).toBe(false);
+    expect(model.goals.map((g) => g.name)).toEqual(['Claims triage']);
+  });
+
   it('makes one goal from agents alone', () => {
     const model = normalizeGoalsPerimeter({ title: 'Fleet', nodes: [{ id: 1 }, { id: 2, state: 'failed' }] });
     expect(model.goals.map((g) => g.name)).toEqual(['Fleet']);

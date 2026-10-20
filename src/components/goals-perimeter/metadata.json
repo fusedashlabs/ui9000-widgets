@@ -180,7 +180,7 @@
           "x": { "type": ["number", "string"], "description": "Board position x when position is not given." },
           "y": { "type": ["number", "string"], "description": "Board position y when position is not given." }
         },
-        "anyOf": [{ "required": ["name"] }, { "required": ["title"] }]
+        "anyOf": [{ "required": ["name"] }, { "required": ["title"] }, { "required": ["label"] }]
       },
       "link": {
         "type": "object",

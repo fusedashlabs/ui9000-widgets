@@ -206,6 +206,17 @@ describe('normalizeWall', () => {
     });
   });
 
+  it('reads the error / hasError aliases of the err flag declared in the schema', () => {
+    const wall = normalizeWall([
+      { slot: 4, error: true },
+      { slot: 5, hasError: 1 },
+      { slot: 6, hasError: 0 },
+    ]);
+    expect(wall[4]?.err).toBe(true);
+    expect(wall[5]?.err).toBe(true);
+    expect(wall[6]?.err).toBe(false);
+  });
+
   it('returns empty for missing, empty, or all-clear slots', () => {
     expect(normalizeWall(undefined)).toEqual([]);
     expect(normalizeWall([])).toEqual([]);

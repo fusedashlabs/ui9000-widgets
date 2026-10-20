@@ -87,6 +87,8 @@
               "properties": {
                 "slot": { "type": ["number", "string"], "description": "Quarter-hour index; clamped to 0–95 by normalize." },
                 "err": { "type": ["boolean", "string", "number"] },
+                "error": { "type": ["boolean", "string", "number"], "description": "Alias of err." },
+                "hasError": { "type": ["boolean", "string", "number"], "description": "Alias of err." },
                 "hgt": { "type": ["number", "string"] },
                 "height": { "type": ["number", "string"], "description": "Alias of hgt." },
                 "reqs": { "type": ["number", "string"] },

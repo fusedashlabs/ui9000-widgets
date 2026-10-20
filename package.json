@@ -180,6 +180,10 @@
       "types": "./dist/components/reasoning-orchestration-graph/index.d.ts",
       "import": "./dist/components/reasoning-orchestration-graph/index.js"
     },
+    "./asset-health-overview": {
+      "types": "./dist/components/asset-health-overview/index.d.ts",
+      "import": "./dist/components/asset-health-overview/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -351,6 +355,10 @@
     "./lazy/reasoning-orchestration-graph": {
       "types": "./dist/lazy/reasoning-orchestration-graph.d.ts",
       "import": "./dist/lazy/reasoning-orchestration-graph.js"
+    },
+    "./lazy/asset-health-overview": {
+      "types": "./dist/lazy/asset-health-overview.d.ts",
+      "import": "./dist/lazy/asset-health-overview.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

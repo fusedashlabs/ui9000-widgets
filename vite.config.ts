@@ -142,6 +142,10 @@ const entries = {
     __dirname,
     'src/components/reasoning-orchestration-graph/index.ts',
   ),
+  'components/asset-health-overview/index': resolve(
+    __dirname,
+    'src/components/asset-health-overview/index.ts',
+  ),
   'components/custom-widget/index': resolve(
     __dirname,
     'src/components/custom-widget/index.ts',
@@ -215,6 +219,7 @@ const entries = {
     __dirname,
     'src/lazy/reasoning-orchestration-graph.ts',
   ),
+  'lazy/asset-health-overview': resolve(__dirname, 'src/lazy/asset-health-overview.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(
     __dirname,
     'src/lazy/gini-impurity-entropy-chart.ts',

@@ -48,6 +48,7 @@ const CHART_ENTRIES = [
   'components/power-path-card/index.js',
   'components/component-asset-card/index.js',
   'components/reasoning-orchestration-graph/index.js',
+  'components/asset-health-overview/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
   'components/inspector/index.js',

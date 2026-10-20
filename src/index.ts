@@ -195,6 +195,10 @@ import {
   Ui9000ComponentAssetCard,
 } from './components/component-asset-card/index.js';
 import {
+  registerGoalsPerimeterChart,
+  Ui9000GoalsPerimeterChart,
+} from './components/goals-perimeter/index.js';
+import {
   registerReasoningOrchestrationGraph,
   Ui9000ReasoningOrchestrationGraph,
 } from './components/reasoning-orchestration-graph/index.js';
@@ -347,6 +351,8 @@ export {
   registerPowerPathCard,
   Ui9000ComponentAssetCard,
   registerComponentAssetCard,
+  Ui9000GoalsPerimeterChart,
+  registerGoalsPerimeterChart,
   Ui9000ReasoningOrchestrationGraph,
   registerReasoningOrchestrationGraph,
   Ui9000AssetHealthOverview,
@@ -428,6 +434,7 @@ export function registerAllCharts(): void {
   registerStatusGaugeWidget();
   registerPowerPathCard();
   registerComponentAssetCard();
+  registerGoalsPerimeterChart();
   registerReasoningOrchestrationGraph();
   registerAssetHealthOverview();
   registerGiniImpurityEntropyChart();
@@ -863,6 +870,17 @@ export {
   type ComponentAssetTrendPoint,
   componentAssetCardMetadata,
 } from './components/component-asset-card/index.js';
+
+export {
+  normalizeGoalsPerimeter,
+  type AgentNode as GoalsPerimeterAgent,
+  type AgentState as GoalsPerimeterAgentState,
+  type GoalOpenDetail,
+  type GoalsPerimeterModel,
+  type GoalsPerimeterPayload,
+  type PerimeterGoal,
+  goalsPerimeterChartMetadata,
+} from './components/goals-perimeter/index.js';
 
 export {
   normalizeReasoningOrchestration,

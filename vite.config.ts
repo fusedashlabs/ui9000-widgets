@@ -138,6 +138,10 @@ const entries = {
     __dirname,
     'src/components/component-asset-card/index.ts',
   ),
+  'components/goals-perimeter/index': resolve(
+    __dirname,
+    'src/components/goals-perimeter/index.ts',
+  ),
   'components/reasoning-orchestration-graph/index': resolve(
     __dirname,
     'src/components/reasoning-orchestration-graph/index.ts',
@@ -215,6 +219,7 @@ const entries = {
   'lazy/status-gauge-widget': resolve(__dirname, 'src/lazy/status-gauge-widget.ts'),
   'lazy/power-path-card': resolve(__dirname, 'src/lazy/power-path-card.ts'),
   'lazy/component-asset-card': resolve(__dirname, 'src/lazy/component-asset-card.ts'),
+  'lazy/goals-perimeter': resolve(__dirname, 'src/lazy/goals-perimeter.ts'),
   'lazy/reasoning-orchestration-graph': resolve(
     __dirname,
     'src/lazy/reasoning-orchestration-graph.ts',

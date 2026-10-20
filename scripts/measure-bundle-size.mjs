@@ -47,6 +47,7 @@ const CHART_ENTRIES = [
   'components/status-gauge-widget/index.js',
   'components/power-path-card/index.js',
   'components/component-asset-card/index.js',
+  'components/goals-perimeter/index.js',
   'components/reasoning-orchestration-graph/index.js',
   'components/asset-health-overview/index.js',
   'components/gini-impurity-entropy-chart/index.js',

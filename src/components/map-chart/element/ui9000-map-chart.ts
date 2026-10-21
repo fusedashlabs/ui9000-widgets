@@ -241,6 +241,7 @@ export class Ui9000MapChart extends Ui9000ChartElement {
   }
 
   protected override onThemeChange(): void {
+    this._model = null;
     this.scheduleDraw();
   }
 
@@ -250,7 +251,7 @@ export class Ui9000MapChart extends Ui9000ChartElement {
     const gen = ++this._drawGen;
 
     const parsed = parseJsonAttr<MapChartInput>(this.dataJson, null);
-    let model = this._model ?? normalizeMapData(parsed);
+    let model = this._model ?? this.withSeriesMode(() => normalizeMapData(parsed));
     this._model = model;
 
     if (!model.layers.length) {

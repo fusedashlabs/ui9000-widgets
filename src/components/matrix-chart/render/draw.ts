@@ -9,7 +9,7 @@ import {
 import {
   generateSequentialColorRanges,
   sequentialColorForValue,
-  SEQUENTIAL_1,
+  sequentialColors,
   type SequentialColorRange,
 } from '../../../utils/fuse-palette.js';
 import { FD, fdColors } from '../../../utils/fusedash-visual.js';
@@ -70,7 +70,7 @@ export interface RenderMatrixOptions extends AxisLabelTooltipHandlers {
 export function matrixColorRanges(model: MatrixModel): SequentialColorRange[] {
   return generateSequentialColorRanges(
     model.rawValues.filter((v) => Number.isFinite(v)),
-    SEQUENTIAL_1,
+    sequentialColors(),
   );
 }
 

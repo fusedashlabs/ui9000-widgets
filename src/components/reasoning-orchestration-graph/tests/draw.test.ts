@@ -64,6 +64,21 @@ describe('renderReasoningOrchestration', () => {
     el.remove();
   });
 
+  it('paints models that have no colour from the page style', () => {
+    const el = mount();
+    renderReasoningOrchestration(el, {
+      model,
+      width: 880,
+      height: 520,
+      themeMode: 'light',
+      styleId: 'palette1',
+    });
+    const palette = orchestrationPalette('light', 'palette1');
+    expect(palette.models[0]).toBe('#2039B4');
+    expect(el.querySelector('.ro-active-end')?.getAttribute('fill')).toBe(palette.models[1]);
+    el.remove();
+  });
+
   it('warms the active path to its model colour, in ink on light', () => {
     for (const mode of ['dark', 'light'] as const) {
       const el = mount();

@@ -44,6 +44,8 @@ export interface RenderOrchestrationOptions {
   width: number;
   height: number;
   themeMode: 'light' | 'dark';
+  /** Page style (`default`, `palette1` …). Models without their own colour use it. */
+  styleId?: string;
   fontFamily?: string;
   /** What is highlighted. Both null highlights the active path. */
   selection?: OrchestrationSelection;
@@ -112,7 +114,7 @@ export function renderReasoningOrchestration(
   container.replaceChildren();
   if (model.empty || width <= 0 || height <= 0) return null;
 
-  const palette = orchestrationPalette(themeMode);
+  const palette = orchestrationPalette(themeMode, options.styleId);
   const colorOf = modelColors(palette, model.models);
   const layout = layoutOrchestration(model, width, height);
   const nodeById = new Map(model.nodes.map((node) => [node.id, node]));

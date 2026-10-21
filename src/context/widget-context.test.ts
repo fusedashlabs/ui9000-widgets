@@ -6,9 +6,18 @@ import {
   themeToCssVars,
 } from '../context/widget-context.js';
 import { DARK_THEME, DEFAULT_CONTEXT, DEFAULT_THEME } from '../types/index.js';
+import { CHART_STYLE_IDS as themeStyleIds } from '../utils/chart-theme.js';
+import { CHART_STYLE_IDS, parseChartStyleId } from './index.js';
 import { parseJsonAttr } from '../utils/chart-helpers.js';
 
 describe('WidgetContext', () => {
+  it('exports the only page style allowlist', () => {
+    expect([...CHART_STYLE_IDS]).toEqual([...themeStyleIds]);
+    expect(parseChartStyleId('palette1')).toBe('palette1');
+    expect(parseChartStyleId('palette5')).toBe('default');
+    expect(parseChartStyleId('')).toBe('default');
+  });
+
   it('maps theme to CSS custom properties', () => {
     const vars = themeToCssVars(DEFAULT_THEME);
     expect(vars['--ui9000-color-primary']).toBe('#473DD9');

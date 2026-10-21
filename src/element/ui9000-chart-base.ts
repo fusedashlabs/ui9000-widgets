@@ -18,8 +18,9 @@ import {
   resolveHeaderTitle,
   type LabelTooltipState,
 } from '../utils/chart-shell.js';
-import { paintMode } from '../context/widget-context.js';
+import { CSS_VARS, paintMode, readCssVar } from '../context/widget-context.js';
 import type { ResolvedMode } from '../context/resolve-mode.js';
+import { parseChartStyleId, type ChartStyleId } from '../utils/chart-theme.js';
 import { useSeriesMode } from '../utils/fuse-palette.js';
 import {
   resolveHeaderVariant,
@@ -91,6 +92,7 @@ export abstract class Ui9000ChartElement extends LitElement {
   };
 
   private _resolvedMode: ResolvedMode = 'light';
+  private _styleId: ChartStyleId = 'default';
   private _unwatchTheme: (() => void) | null = null;
 
   override connectedCallback(): void {
@@ -121,9 +123,14 @@ export abstract class Ui9000ChartElement extends LitElement {
     return paintMode(this);
   }
 
-  /** Qualitative series colors follow this chart's mode while `run` normalizes. */
+  /** Page style (`default`, `palette1` …) from the host. Unknown values stay `default`. */
+  protected styleId(): ChartStyleId {
+    return parseChartStyleId(readCssVar(this, CSS_VARS.styleId, 'default'));
+  }
+
+  /** Qualitative and sequential colors follow this chart's mode and page style. */
   protected withSeriesMode<T>(run: () => T): T {
-    return useSeriesMode(this.themeMode(), run);
+    return useSeriesMode(this.themeMode(), run, this.styleId());
   }
 
   /**
@@ -136,8 +143,10 @@ export abstract class Ui9000ChartElement extends LitElement {
 
   private syncHostTheme(): void {
     const next = this.themeMode();
-    if (next === this._resolvedMode) return;
+    const styleId = this.styleId();
+    if (next === this._resolvedMode && styleId === this._styleId) return;
     this._resolvedMode = next;
+    this._styleId = styleId;
     if (this.getAttribute('data-mode') !== next) this.setAttribute('data-mode', next);
     this.onThemeChange();
   }

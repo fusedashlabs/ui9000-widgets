@@ -4,6 +4,12 @@
  */
 
 import type { ResolvedMode } from '../context/resolve-mode.js';
+import {
+  parseChartStyleId,
+  qualitativePalette,
+  sequentialPalette,
+  type ChartStyleId,
+} from './chart-theme.js';
 
 export type FuseFormattingEntry = { key?: string; color?: string | number };
 
@@ -17,15 +23,31 @@ const DARK_SERIES_INK: Record<string, string> = {
 };
 
 let seriesPaintMode: ResolvedMode = 'light';
+let seriesStyleId: ChartStyleId = 'default';
 
-/** Run palette resolution in the chart's current mode. Light stays the default. */
-export function useSeriesMode<T>(mode: ResolvedMode, run: () => T): T {
-  const previous = seriesPaintMode;
+/** Page style active while a chart normalizes or paints. */
+export function currentChartStyle(): ChartStyleId {
+  return seriesStyleId;
+}
+
+/**
+ * Run palette resolution in the chart's current mode and page style.
+ * Light + `default` stay the ambient values outside a chart.
+ */
+export function useSeriesMode<T>(
+  mode: ResolvedMode,
+  run: () => T,
+  styleId: ChartStyleId | string = seriesStyleId,
+): T {
+  const previousMode = seriesPaintMode;
+  const previousStyle = seriesStyleId;
   seriesPaintMode = mode;
+  seriesStyleId = parseChartStyleId(styleId);
   try {
     return run();
   } finally {
-    seriesPaintMode = previous;
+    seriesPaintMode = previousMode;
+    seriesStyleId = previousStyle;
   }
 }
 
@@ -35,41 +57,18 @@ export function seriesInk(color: string, mode: ResolvedMode = seriesPaintMode): 
   return DARK_SERIES_INK[color.trim().toLowerCase()] ?? color;
 }
 
-export const QUALITATIVE_2: string[] = ['#473DD9', '#36C4A5'];
+/** Qualitative palettes for the `default` page style. Other styles resolve at paint time. */
+export const QUALITATIVE_2: string[] = qualitativePalette('default', 2);
+export const QUALITATIVE_4: string[] = qualitativePalette('default', 4);
+export const QUALITATIVE_12: string[] = qualitativePalette('default', 12);
 
-export const QUALITATIVE_4: string[] = [
-  '#473DD9',
-  '#36C4A5',
-  '#FF8C47',
-  '#56546D',
-];
+/** SequentialColors1 for the active page style. Defaults to `default` outside a chart. */
+export function sequentialColors(): string[] {
+  return sequentialPalette(seriesStyleId);
+}
 
-/** Qualitative12Colors.default */
-export const QUALITATIVE_12: string[] = [
-  '#473DD9',
-  '#938CFF',
-  '#36C4A5',
-  '#ADF4E5',
-  '#BDBCC8',
-  '#56546D',
-  '#FF8C47',
-  '#FFCEB0',
-  '#FF4781',
-  '#FFB0C9',
-  '#47B0FF',
-  '#B0DDFF',
-];
-
-/** SequentialColors1.default — punchcard magnitude bands */
-export const SEQUENTIAL_1: string[] = [
-  '#D6D3FF',
-  '#B5B0FF',
-  '#938CFF',
-  '#7369FF',
-  '#5448FF',
-  '#473DD9',
-  '#3C33B5',
-];
+/** SequentialColors1.default — punchcard magnitude bands when no style is bound. */
+export const SEQUENTIAL_1: string[] = sequentialPalette('default');
 
 /** FuseDash punchcard discrete radii per color band */
 export const PUNCHCARD_RADII = [5, 10, 14, 17, 20, 24, 26] as const;
@@ -119,7 +118,7 @@ export function pickQualitativePalette(
   seriesCount = 1,
 ): string[] {
   const n = formattingCount > 0 ? formattingCount : seriesCount;
-  const palette = n > 4 ? QUALITATIVE_12 : n > 2 ? QUALITATIVE_4 : QUALITATIVE_2;
+  const palette = qualitativePalette(seriesStyleId, n);
   if (seriesPaintMode !== 'dark') return palette;
   return palette.map((color) => seriesInk(color, 'dark'));
 }

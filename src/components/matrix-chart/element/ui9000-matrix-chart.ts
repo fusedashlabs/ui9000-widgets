@@ -123,6 +123,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
       bodyHeight,
       viewportHeight,
       themeMode,
+      this.styleId(),
       this.showTooltip,
     ].join('|');
     if (this._drawnSignature === signature && this._drawnModel === model) return;
@@ -131,7 +132,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
 
     this._pinnedTopAxis = matrixLayout(model, viewportHeight, margin).separateTopAxis;
 
-    renderMatrixChart(root, {
+    this.withSeriesMode(() => renderMatrixChart(root, {
       model,
       width,
       height: viewportHeight,
@@ -147,7 +148,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
           }
         : undefined,
       onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
-    });
+    }));
   }
 
   /**
@@ -184,7 +185,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
   /** FuseDash `ChartLegend legendType="palette"` — Low → High swatch ramp. */
   private renderPaletteLegend(model: MatrixModel) {
     if (!this.showLegend) return nothing;
-    const ranges = matrixColorRanges(model);
+    const ranges = this.withSeriesMode(() => matrixColorRanges(model));
     if (!ranges.length) return nothing;
     return html`
       <div class="palette-legend" part="legend">
@@ -226,7 +227,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
               ></div>
             </div>
           </div>
-          ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${'No data'}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

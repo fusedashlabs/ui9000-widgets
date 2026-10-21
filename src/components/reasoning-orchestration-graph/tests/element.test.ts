@@ -43,6 +43,20 @@ afterEach(() => {
 });
 
 describe('ui9000-reasoning-orchestration-graph', () => {
+  it('repaints model chips when the page style id changes', async () => {
+    const el = await mount(fixture);
+    const dot = () => el.shadowRoot?.querySelector('.ro-dot');
+    expect(dot()?.getAttribute('style')?.toLowerCase()).toContain('#473dd9');
+
+    el.style.setProperty('--ui9000-style-id', 'palette1');
+    document.dispatchEvent(new Event('ui9000-theme'));
+    await el.updateComplete;
+    await flush();
+
+    expect(dot()?.getAttribute('style')?.toLowerCase()).toContain('#2039b4');
+    el.remove();
+  });
+
   it('renders the sample: header, readouts, graph, model labels, legend and panels', async () => {
     const el = await mount(fixture);
     const root = el.shadowRoot!;

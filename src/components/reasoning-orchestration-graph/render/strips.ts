@@ -28,6 +28,7 @@ export interface TopChartOptions {
   width: number;
   height: number;
   themeMode: 'light' | 'dark';
+  styleId?: string;
   /** Node ids of the highlighted chain; their depths are lit. */
   chain: string[];
   highlightColor: string;
@@ -41,10 +42,10 @@ export interface TopChartOptions {
  * the highlighted path passes through are lit.
  */
 export function renderTopChart(container: HTMLElement, options: TopChartOptions): void {
-  const { model, width, height, themeMode, chain, highlightColor } = options;
+  const { model, width, height, themeMode, styleId, chain, highlightColor } = options;
   container.replaceChildren();
   if (width <= 0 || height <= 0) return;
-  const palette = orchestrationPalette(themeMode);
+  const palette = orchestrationPalette(themeMode, styleId);
   const colorOf = modelColors(palette, model.models);
   const breadth = breadthByDepth(model);
   const columns = breadth.length;
@@ -178,14 +179,20 @@ export interface EntropyStripOptions {
   width: number;
   height: number;
   themeMode: 'light' | 'dark';
+  styleId?: string;
   highlightColor: string;
   onStepHover?: (step: number, values: { label: string; value: number }[], event: MouseEvent) => void;
   onLeave?: () => void;
 }
 
 /** Colour of an entropy series: its model, else the first two model slots. */
-export function entropyColors(entropy: EntropyStrip, model: ReasoningOrchestrationModel, themeMode: 'light' | 'dark'): string[] {
-  const palette = orchestrationPalette(themeMode);
+export function entropyColors(
+  entropy: EntropyStrip,
+  model: ReasoningOrchestrationModel,
+  themeMode: 'light' | 'dark',
+  styleId: string = 'default',
+): string[] {
+  const palette = orchestrationPalette(themeMode, styleId);
   const colorOf = modelColors(palette, model.models);
   return entropy.series.map((series, i) => colorOf(series.modelId) ?? palette.models[i % palette.models.length]!);
 }
@@ -199,8 +206,8 @@ export function renderEntropyStrip(container: HTMLElement, options: EntropyStrip
   const { entropy, width, height, themeMode, highlightColor } = options;
   container.replaceChildren();
   if (width <= 0 || height <= 0) return;
-  const palette = orchestrationPalette(themeMode);
-  const colors = entropyColors(entropy, options.model, themeMode);
+  const palette = orchestrationPalette(themeMode, options.styleId);
+  const colors = entropyColors(entropy, options.model, themeMode, options.styleId);
   const step = width / entropy.steps;
   const mid = entropy.series.length > 1 ? height / 2 : height - 1;
   const reach = entropy.series.length > 1 ? height / 2 - 1 : height - 2;
@@ -278,6 +285,7 @@ export interface ScalingChartOptions {
   width: number;
   height: number;
   themeMode: 'light' | 'dark';
+  styleId?: string;
   onPointHover?: (series: ScalingSeries, point: { x: number; y: number }, event: MouseEvent) => void;
   onLeave?: () => void;
 }
@@ -296,10 +304,10 @@ export function formatScalingX(value: number): string {
  * axis once compute spans eight times or more.
  */
 export function renderScalingChart(container: HTMLElement, options: ScalingChartOptions): void {
-  const { scaling, width, height, themeMode } = options;
+  const { scaling, width, height, themeMode, styleId } = options;
   container.replaceChildren();
   if (width <= 0 || height <= 0) return;
-  const palette = orchestrationPalette(themeMode);
+  const palette = orchestrationPalette(themeMode, styleId);
   const colorOf = modelColors(palette, options.model.models);
   const xs = scaling.series.flatMap((series) => series.points.map((p) => p.x));
   const ys = scaling.series.flatMap((series) => series.points.map((p) => p.y));

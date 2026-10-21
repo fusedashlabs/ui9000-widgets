@@ -56,6 +56,25 @@ async function mount(
 }
 
 describe('ui9000-network-graph', () => {
+  it('repaints an unknown category when the page style id changes', async () => {
+    const el = await mount({
+      nodes: [{ id: 'a', label: 'A', type: 'investment_bank', value: 1 }],
+      links: [],
+    });
+    const fill = () =>
+      el.shadowRoot.querySelector('.node-background')?.getAttribute('fill')?.toLowerCase();
+
+    expect(fill()).toBe('#473dd9');
+
+    el.style.setProperty('--ui9000-style-id', 'palette1');
+    document.dispatchEvent(new Event('ui9000-theme'));
+    await flush();
+    await el.updateComplete;
+
+    expect(fill()).toBe('#2039b4');
+    el.remove();
+  });
+
   it('shows the empty state and no plot for an unusable payload', async () => {
     const el = await mount({ nope: true });
     const root = el.shadowRoot;

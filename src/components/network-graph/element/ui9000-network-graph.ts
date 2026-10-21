@@ -59,6 +59,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
 
   private _model: NetworkGraphModel | null = null;
   private _modelMode: 'light' | 'dark' | null = null;
+  private _modelStyle: string | null = null;
   private _legendDrag?: {
     thumb: HTMLElement;
     move: (e: PointerEvent) => void;
@@ -91,6 +92,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       this._activeNodeId = null;
       this._model = null;
       this._modelMode = null;
+      this._modelStyle = null;
     }
     if (changed.has('showTooltip') && !this.showTooltip) {
       this._labelTooltip = null;
@@ -141,13 +143,15 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
 
   private model(): NetworkGraphModel {
     const mode = this.themeMode();
-    if (!this._model || this._modelMode !== mode) {
+    const styleId = this.styleId();
+    if (!this._model || this._modelMode !== mode || this._modelStyle !== styleId) {
       this._model = this.withSeriesMode(() =>
         normalizeNetworkGraphData(
           parseJsonAttr<NetworkGraphInput | null>(this.dataJson, null),
         ),
       );
       this._modelMode = mode;
+      this._modelStyle = styleId;
     }
     return this._model;
   }
@@ -327,9 +331,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this.renderLegend()}
           ${this._empty
-            ? html`<div class="empty" part="empty">
-                Network graph requires a nodes and links payload.
-              </div>`
+            ? html`<div class="empty" part="empty">${'Network graph requires a nodes and links payload.'}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

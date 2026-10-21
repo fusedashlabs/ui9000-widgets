@@ -17,7 +17,7 @@ import {
   punchcardLayoutMaxRadius,
   punchcardLeftGutter,
   punchcardScaledRadius,
-  SEQUENTIAL_1,
+  sequentialColors,
 } from '../../../utils/fuse-palette.js';
 import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
@@ -96,7 +96,7 @@ export function renderPunchcardChart(
   if (innerW < 8 || innerH < 8) return;
 
   const values = model.cells.map((c) => c.value).filter(Number.isFinite);
-  const ranges = generatePunchcardColorRanges(values, SEQUENTIAL_1);
+  const ranges = generatePunchcardColorRanges(values, sequentialColors());
 
   const layoutMaxR = punchcardLayoutMaxRadius(
     innerW,

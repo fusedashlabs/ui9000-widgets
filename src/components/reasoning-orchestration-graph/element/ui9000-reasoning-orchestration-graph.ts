@@ -187,6 +187,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
       width,
       height,
       themeMode: this.mode(),
+      styleId: this.styleId(),
       fontFamily: MONO_FONT,
       selection: this._selection,
       showAnnotations: this.showAnnotations,
@@ -227,6 +228,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
         width: top.clientWidth || fallbackWidth,
         height: top.clientHeight || 40,
         themeMode: mode,
+        styleId: this.styleId(),
         chain,
         highlightColor: highlight,
         onStageHover: (stage, nodes, event) => this.tip(event, this.stageTooltip(stage, nodes)),
@@ -241,6 +243,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
         width: entropy.clientWidth || fallbackWidth,
         height: entropy.clientHeight || 30,
         themeMode: mode,
+        styleId: this.styleId(),
         highlightColor: highlight,
         onStepHover: (step, values, event) =>
           this.tip(event, {
@@ -259,6 +262,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
         width: scaling.clientWidth || 240,
         height: scaling.clientHeight || 56,
         themeMode: mode,
+        styleId: this.styleId(),
         onPointHover: (series, point, event) =>
           this.tip(event, {
             title: series.label,
@@ -274,7 +278,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
 
   /** The highlighted path's colour at its far end: its model, else the palette glow. */
   private highlightColor(): string {
-    const palette = orchestrationPalette(this.mode());
+    const palette = orchestrationPalette(this.mode(), this.styleId());
     const { path, nodes } = highlightedChain(this._model, this._selection);
     const end = this._model.nodes.find((node) => node.id === nodes[nodes.length - 1]);
     const modelId = path?.modelId ?? end?.modelId;
@@ -419,7 +423,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
   private renderModels() {
     const { models, empty } = this._model;
     if (empty || !models.length) return nothing;
-    const palette = orchestrationPalette(this.mode());
+    const palette = orchestrationPalette(this.mode(), this.styleId());
     const chip = (model: (typeof models)[number]) => html`<span class="ro-chip" data-model=${model.id}>
       <span class="ro-dot" style="background:${modelColor(palette, model)}"></span>
       <span class="ro-chip-name">${model.name}</span> ${model.detail
@@ -438,7 +442,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
   private renderLegend() {
     if (!this.showLegend || this._model.empty) return nothing;
     const mode = this.mode();
-    const palette = orchestrationPalette(mode);
+    const palette = orchestrationPalette(mode, this.styleId());
     const { models, nodes, paths, activePathId } = this._model;
     const highlight = this.highlightColor();
     const pathLabel = this.hasSelection() ? 'Selected path' : 'Active path';
@@ -482,7 +486,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     if (!this.showPanels || empty) return nothing;
     if (!entropy && !pipeline && !scaling && !benchmarks.length) return nothing;
     const mode = this.mode();
-    const colors = entropy ? entropyColors(entropy, this._model, mode) : [];
+    const colors = entropy ? entropyColors(entropy, this._model, mode, this.styleId()) : [];
     const head = entropy?.title || (benchmarks.length ? 'Benchmarks' : '');
     const activeStep = this.highlightColor();
     return html`<div class="ro-panels" part="panels">
@@ -586,7 +590,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
             <div class="ro-canvas"></div>
             ${this.renderModels()} ${this.renderLegend()} ${this.renderReset()}
           </div>
-          ${empty ? html`<div class="empty" part="empty">No reasoning graph</div>` : nothing}
+          ${empty ? html`<div class="empty" part="empty">${'No reasoning graph'}</div>` : nothing}
           ${this.renderPanels()} ${this.renderCapNote()} ${this.renderShellLabelTooltip()}
         </div>
       </div>

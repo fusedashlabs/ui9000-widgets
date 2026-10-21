@@ -1,3 +1,4 @@
+import { parseChartStyleId, qualitativePalette, type ChartStyleId } from '../../../utils/chart-theme.js';
 import type { ReasoningModel } from '../lib/index.js';
 
 /**
@@ -31,7 +32,7 @@ export interface OrchestrationPalette {
 }
 
 const DARK: OrchestrationPalette = {
-  models: ['#9cb6ff', '#ff8a4c', '#4fd1c5', '#c49bff', '#f6c453', '#ff7eb6'],
+  models: [],
   neutralNode: 'rgba(214, 220, 232, 0.62)',
   neutralLink: 'rgba(196, 205, 222, 0.17)',
   pruned: '#ff5d5d',
@@ -50,7 +51,7 @@ const DARK: OrchestrationPalette = {
 };
 
 const LIGHT: OrchestrationPalette = {
-  models: ['#3b5bdb', '#e8590c', '#0f9488', '#7c3aed', '#b7791f', '#d6336c'],
+  models: [],
   neutralNode: 'rgba(55, 65, 81, 0.5)',
   neutralLink: 'rgba(55, 65, 81, 0.15)',
   pruned: '#e03131',
@@ -68,8 +69,15 @@ const LIGHT: OrchestrationPalette = {
   noteMuted: '#4b5563',
 };
 
-export function orchestrationPalette(mode: 'light' | 'dark'): OrchestrationPalette {
-  return mode === 'dark' ? DARK : LIGHT;
+export function orchestrationPalette(
+  mode: 'light' | 'dark',
+  styleId: ChartStyleId | string = 'default',
+): OrchestrationPalette {
+  const base = mode === 'dark' ? DARK : LIGHT;
+  return {
+    ...base,
+    models: qualitativePalette(parseChartStyleId(styleId), 12).slice(0, 6),
+  };
 }
 
 /** A model's colour: its own, else its palette slot. */

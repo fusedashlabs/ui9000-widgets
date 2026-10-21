@@ -83,7 +83,7 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
     const theme = readThemeFromElement(this);
     const { width, height, margin } = getPunchcardDimensions(root);
 
-    renderPunchcardChart(root, {
+    this.withSeriesMode(() => renderPunchcardChart(root, {
       model,
       width,
       height,
@@ -103,7 +103,7 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
           }
         : undefined,
       onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
-    });
+    }));
   }
 
   override render() {
@@ -114,7 +114,7 @@ export class Ui9000PunchcardChart extends Ui9000ChartElement {
         <div class="widget-body">
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
-            ? html`<div class="empty" part="empty">No data</div>`
+            ? html`<div class="empty" part="empty">${'No data'}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

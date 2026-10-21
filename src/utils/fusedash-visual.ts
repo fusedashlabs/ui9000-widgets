@@ -1,7 +1,8 @@
 import type { Selection } from 'd3-selection';
 
 import type { ResolvedMode } from '../context/resolve-mode.js';
-import { seriesInk } from './fuse-palette.js';
+import { QUALITATIVE, qualitativePalette } from './chart-theme.js';
+import { currentChartStyle, seriesInk } from './fuse-palette.js';
 
 /** FuseDash Widgets visual tokens — keep charts looking 1:1 with client. */
 
@@ -76,20 +77,7 @@ export const FD = {
    * Qualitative12Colors.default — used when series count unknown.
    * Prefer `resolveFormattingColor` / `pickQualitativePalette` for FuseDash widgets.
    */
-  series: [
-    '#473DD9',
-    '#938CFF',
-    '#36C4A5',
-    '#ADF4E5',
-    '#BDBCC8',
-    '#56546D',
-    '#FF8C47',
-    '#FFCEB0',
-    '#FF4781',
-    '#FFB0C9',
-    '#47B0FF',
-    '#B0DDFF',
-  ],
+  series: QUALITATIVE.default.q12,
   lineMargin: { top: 10, right: 1, bottom: 21, left: 40 },
   lollipopMargin: { top: 10, right: 3, bottom: 21, left: 40 },
   /** FuseDash RadarChart (useNewDesign) frame */
@@ -540,7 +528,8 @@ export function formatCompactNumber(value: number, decimals = 2): string {
 
 export function seriesColor(index: number, override?: string, mode?: ResolvedMode): string {
   if (override) return override;
-  return seriesInk(FD.series[index % FD.series.length], mode);
+  const palette = qualitativePalette(currentChartStyle(), 12);
+  return seriesInk(palette[index % palette.length] ?? palette[0] ?? FD.series[0], mode);
 }
 
 /** Line markers: donut = hollow ring (FuseDash default). */

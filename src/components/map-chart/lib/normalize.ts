@@ -1,7 +1,7 @@
 import {
   QUALITATIVE_2,
   resolveFormattingColor,
-  SEQUENTIAL_1,
+  sequentialColors,
   type FuseFormattingEntry,
 } from '../../../utils/fuse-palette.js';
 
@@ -186,10 +186,10 @@ function buildLayer(
   const customHex = layer.palette?.customColors?.find((c) => c.hex)?.hex;
   const fillColor =
     customHex ??
-    (isQualitative ? resolveFormattingColor(formatting, 'default', formatting.length || 1) : SEQUENTIAL_1[3]);
+    (isQualitative ? resolveFormattingColor(formatting, 'default', formatting.length || 1) : sequentialColors()[3]);
   const paletteColors = isQualitative
     ? [fillColor, ...QUALITATIVE_2.filter((c) => c !== fillColor)]
-    : [...SEQUENTIAL_1];
+    : [...sequentialColors()];
   const paletteRange = layer.palette?.range;
   const colorRanges =
     paletteRange && paletteRange.length > 1

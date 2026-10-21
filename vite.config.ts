@@ -281,7 +281,15 @@ export default defineConfig({
         id.startsWith('lit/') ||
         id === 'd3' ||
         id.startsWith('d3-') ||
-        id === 'mapbox-gl',
+        id === 'mapbox-gl' ||
+        id === '@fuselab-creative/design-system' ||
+        id.startsWith('@fuselab-creative/design-system/') ||
+        id === 'react' ||
+        id === 'react-dom' ||
+        id.startsWith('react-dom/') ||
+        id === 'react/jsx-runtime' ||
+        id === 'styled-components' ||
+        id.startsWith('styled-components/'),
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

@@ -1,5 +1,7 @@
 import { html, nothing, type TemplateResult } from 'lit';
 
+import { dsText } from './ds-text.js';
+
 export type ChartLegendSwatch =
   | { kind: 'line'; color: string }
   | { kind: 'swatch'; color: string; opacity?: number }
@@ -43,12 +45,12 @@ export function renderChartLegend(
   if (!entries.length) return nothing;
   return html`
     <div class="chart-legend" part="legend">
-      ${title ? html`<span class="legend-title">${title}</span>` : nothing}
+      ${title ? html`<span class="legend-title">${dsText(title, { size: 'sm', weight: 'semibold' })}</span>` : nothing}
       ${entries.map(
         (entry) => html`
           <span class="legend-item">
             ${renderSwatch(entry.swatch)}
-            <span class="legend-label">${entry.label}</span>
+            <span class="legend-label">${dsText(entry.label, { size: 'sm' })}</span>
           </span>
         `,
       )}
@@ -66,7 +68,7 @@ export function renderPaletteLegend(
   if (!colors.length) return nothing;
   return html`
     <div class="legend-palette" part="legend">
-      <span>Low</span>
+      ${dsText('Low', { size: 'sm' })}
       <div class="legend-palette-swatches">
         ${colors.map(
           (color) =>
@@ -76,7 +78,7 @@ export function renderPaletteLegend(
             ></div>`,
         )}
       </div>
-      <span>High</span>
+      ${dsText('High', { size: 'sm' })}
     </div>
   `;
 }

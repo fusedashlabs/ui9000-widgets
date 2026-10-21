@@ -80,7 +80,7 @@ class Ui9000JsonPlayground extends LitElement {
         }
         label {
           font:
-            600 13px/1.2 system-ui,
+            600 12px/16px Inter,
             sans-serif;
         }
         textarea {
@@ -95,7 +95,7 @@ class Ui9000JsonPlayground extends LitElement {
         }
         .status {
           font:
-            12px/1.4 system-ui,
+            12px/16px Inter,
             sans-serif;
           min-height: 1.4em;
           color: ${this.statusError ? "#b91c1c" : "inherit"};

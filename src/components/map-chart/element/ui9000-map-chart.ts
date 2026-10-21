@@ -30,6 +30,7 @@ import {
 } from '../lib/index.js';
 import { renderMapChart, resizeMapChart, stopMapChart, type MapChartController } from '../render/draw.js';
 import { mapChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 const SPIKE_COLOR = '#939BA7';
 
@@ -614,7 +615,7 @@ export class Ui9000MapChart extends Ui9000ChartElement {
         ${this.renderShellHeader(title)}
         <div class="widget-body">
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
-          ${this._empty ? html`<div class="empty" part="empty">${this._emptyReason}</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText(this._emptyReason, { size: 'md' })}</div>` : nothing}
           ${this.renderLegend()}
           ${notice && !this._empty ? html`<div class="match-notice">${notice}</div>` : nothing}
           ${this.renderShellLabelTooltip()}

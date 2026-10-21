@@ -7,6 +7,7 @@ import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { normalizeIncidentsReview, type IncidentsReviewModel } from '../lib/index.js';
 import { renderColumns, renderFilter } from '../render/index.js';
 import { incidentsReviewStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 /**
  * Incidents review card (Optivion OPT-5, Figma 34:24312): a title, an optional
@@ -52,7 +53,7 @@ export class Ui9000IncidentsReviewCard extends Ui9000ChartElement {
     const { filter, empty } = this._model;
     const title = this.chartTitle.trim() || this._model.title;
     if (empty) {
-      return html`<div class="card"><p class="empty">No incident data</p></div>`;
+      return html`<div class="card"><p class="empty">${dsText('No incident data', { size: 'md' })}</p></div>`;
     }
 
     return html`

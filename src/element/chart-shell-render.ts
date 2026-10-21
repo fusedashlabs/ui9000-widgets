@@ -1,5 +1,7 @@
 import { html, nothing, type TemplateResult } from 'lit';
 
+import { dsText } from './ds-text.js';
+
 import type { LabelTooltipState } from '../utils/chart-shell.js';
 import { headerTitleDisplay } from '../utils/chart-shell.js';
 import {
@@ -158,7 +160,7 @@ export function renderWidgetHeader(options: {
   const hasAside = options.aside !== undefined && options.aside !== nothing;
 
   const titleLine = html`<div class="widget-title" part="title" title=${options.title}>
-    ${displayTitle}
+    ${dsText(displayTitle, { size: 'sm' })}
   </div>`;
 
   // Only charts that pass a subtitle get the extra wrapper, so every other
@@ -167,7 +169,7 @@ export function renderWidgetHeader(options: {
     ? html`<div class="widget-heading">
         ${titleLine}
         <div class="widget-subtitle" part="subtitle" title=${options.subtitle}>
-          ${options.subtitle}
+          ${dsText(options.subtitle, { size: 'xs' })}
         </div>
       </div>`
     : titleLine;
@@ -197,7 +199,7 @@ export function renderLabelTooltip(tooltip: LabelTooltipState): TemplateResult |
     part="label-tooltip"
     style="left:${tooltip.x}px;top:${tooltip.y}px"
   >
-    ${tooltip.text}
+    ${dsText(tooltip.text, { size: 'sm' })}
   </div>`;
 }
 

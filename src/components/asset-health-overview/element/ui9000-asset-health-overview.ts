@@ -11,6 +11,7 @@ import type { AssetHealthCategory, AssetHealthProblem } from '../lib/types.js';
 import { DEFAULT_ORBIT, orbitBy, type Orbit } from '../render/camera.js';
 import { drawAssetHealthOverview, type AssetHealthHandlers } from '../render/draw.js';
 import { assetHealthStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 let nextSceneId = 0;
 
@@ -256,7 +257,7 @@ export class Ui9000AssetHealthOverview extends Ui9000ChartElement {
   override render() {
     const { model } = this._scene;
     if (model.empty) {
-      return html`<div class="stage"><p class="empty">No asset health data</p></div>`;
+      return html`<div class="stage"><p class="empty">${dsText('No asset health data', { size: 'md' })}</p></div>`;
     }
     const label = model.goal.name ? `Asset health overview: ${model.goal.name}` : 'Asset health overview';
     return html`

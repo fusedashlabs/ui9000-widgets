@@ -9,7 +9,7 @@ export const componentAssetStyles = css`
   :host {
     display: block;
     min-height: 0;
-    font-family: var(--ui9000-font-family, Inter, system-ui, -apple-system, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     -webkit-font-smoothing: antialiased;
     --cac-bezel: linear-gradient(180deg, #eceef1 0%, #e4e7eb 100%);
     --cac-border: #dfe2e7;
@@ -41,8 +41,7 @@ export const componentAssetStyles = css`
     --cac-divider: rgba(17, 20, 26, 0.55);
     --cac-pin-fill: #ffffff;
     --cac-pin-ring: #21262e;
-    --cac-value-font: 'DIN Alternate', Bahnschrift, 'Barlow Semi Condensed', 'Roboto Condensed',
-      var(--ui9000-font-family, Inter), sans-serif;
+    --cac-value-font: var(--ui9000-font-family, Inter, sans-serif);
   }
 
   :host([data-mode='dark']) {
@@ -138,7 +137,7 @@ export const componentAssetStyles = css`
     min-width: 0;
     margin: 0;
     overflow: hidden;
-    font-size: 15px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 20px;
@@ -157,7 +156,7 @@ export const componentAssetStyles = css`
     padding: 0 5px;
     border-radius: 4px;
     background: var(--cac-badge);
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-axis, 11px);
     line-height: 1;
     white-space: nowrap;
   }
@@ -194,7 +193,7 @@ export const componentAssetStyles = css`
     margin: 0;
     overflow: hidden;
     color: var(--cac-muted);
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-axis, 11px);
     line-height: 14px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -217,7 +216,7 @@ export const componentAssetStyles = css`
     gap: 3px;
     margin: 4px 0 0;
     color: var(--cac-soft);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     line-height: 16px;
     white-space: nowrap;
   }
@@ -314,7 +313,7 @@ export const componentAssetStyles = css`
     margin: 0;
     padding: 24px 0;
     color: var(--cac-muted);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
     text-align: center;
   }
 

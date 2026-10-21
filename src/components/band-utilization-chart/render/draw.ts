@@ -2,6 +2,7 @@ import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 
 import type { WidgetTheme } from '../../../types/index.js';
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
 import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import {
   BAND_LABEL_GAP,
@@ -168,7 +169,7 @@ export function renderBandUtilization(
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
           .attr('fill', inkOn(segment.color))
-          .attr('font-size', 12)
+          .attr('font-size', CHART_TYPE.label)
           .attr('font-weight', 600)
           .attr('pointer-events', 'none')
           .text(segment.text);

@@ -21,6 +21,7 @@ import {
 } from '../lib/index.js';
 import { renderSparkLineChart } from '../render/draw.js';
 import { sparkLineChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-spark-line-chart')
 export class Ui9000SparkLineChart extends Ui9000ChartElement {
@@ -148,7 +149,7 @@ export class Ui9000SparkLineChart extends Ui9000ChartElement {
         <div class="widget-body">
           ${this.renderLegend(series)}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
-          ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

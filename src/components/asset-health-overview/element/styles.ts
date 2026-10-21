@@ -8,7 +8,7 @@ export const assetHealthStyles = css`
   :host {
     display: block;
     min-height: 0;
-    font-family: var(--ui9000-font-family, 'Geist', 'Inter', system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     -webkit-font-smoothing: antialiased;
     --aho-stage: #f5f5f5;
     --aho-border: #e5e5e5;
@@ -44,7 +44,7 @@ export const assetHealthStyles = css`
     margin: 0;
     padding: 48px 16px;
     text-align: center;
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
     color: var(--aho-empty);
   }
 `;

@@ -8,21 +8,21 @@ import {
   type ReasoningOrchestrationModel,
   type ReasoningPath,
 } from '../lib/index.js';
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
 import { modelColors, orchestrationPalette, type OrchestrationPalette } from './palette.js';
 
-/** Monospace readouts, as on the design board. Charts measure text by this width. */
-export const MONO_FONT =
-  "var(--ui9000-font-family-mono, ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace)";
-/** Advance of one monospace character, in em. */
+/** Same family as bar, line, and lollipop. Text fit still assumes a 0.6em advance. */
+export const MONO_FONT = `var(--ui9000-font-family, ${CHART_TYPE.fontFamily})`;
+/** Advance of one character, in em. */
 export const MONO_ADVANCE = 0.6;
-const NOTE_FONT = 10;
+const NOTE_FONT = CHART_TYPE.axis;
 const NOTE_LINE = 14;
 const NOTE_PAD_X = 9;
 const NOTE_PAD_Y = 7;
 const NOTE_ACCENT = 3;
 const NOTE_MAX_CHARS = 46;
 const NOTE_GAP = 10;
-const READOUT_FONT = 9;
+const READOUT_FONT = CHART_TYPE.axis;
 /** A pointer this close to a node hovers it. */
 const HOVER_RADIUS = 14;
 

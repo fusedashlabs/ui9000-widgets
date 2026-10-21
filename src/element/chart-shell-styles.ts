@@ -1,4 +1,6 @@
-import { css } from 'lit';
+import { css, unsafeCSS } from 'lit';
+
+import { CHART_TYPE } from '../utils/chart-theme.js';
 
 /**
  * Chat draws its own card (padding + border). Dashboard charts sit in the
@@ -6,6 +8,26 @@ import { css } from 'lit';
  * header and the plot.
  */
 export const chartShellStyles = css`
+  :host {
+    --ui9000-font-size-axis: ${unsafeCSS(String(CHART_TYPE.axis))}px;
+    --ui9000-font-weight-axis: ${unsafeCSS(String(CHART_TYPE.axisWeight))};
+    --ui9000-line-height-axis: ${unsafeCSS(String(CHART_TYPE.axisLine))}px;
+    --ui9000-font-size-label: ${unsafeCSS(String(CHART_TYPE.label))}px;
+    --ui9000-font-weight-label: ${unsafeCSS(String(CHART_TYPE.labelWeight))};
+    --ui9000-line-height-label: ${unsafeCSS(String(CHART_TYPE.labelLine))}px;
+    --ui9000-font-size-title: ${unsafeCSS(String(CHART_TYPE.title))}px;
+    --ui9000-font-weight-title: ${unsafeCSS(String(CHART_TYPE.titleWeight))};
+    --ui9000-line-height-title: ${unsafeCSS(String(CHART_TYPE.titleLine))}px;
+    --ui9000-font-size-subtitle: ${unsafeCSS(String(CHART_TYPE.subtitle))}px;
+    --ui9000-font-weight-subtitle: ${unsafeCSS(String(CHART_TYPE.subtitleWeight))};
+    --ui9000-line-height-subtitle: ${unsafeCSS(String(CHART_TYPE.subtitleLine))}px;
+    --ui9000-letter-spacing-subtitle: ${unsafeCSS(CHART_TYPE.subtitleTracking)};
+    --ui9000-font-size-empty: ${unsafeCSS(CHART_TYPE.empty)};
+    --ui9000-font-weight-empty: ${unsafeCSS(String(CHART_TYPE.emptyWeight))};
+    --ui9000-line-height-empty: ${unsafeCSS(String(CHART_TYPE.emptyLine))}px;
+    font-family: var(--ui9000-font-family, ${unsafeCSS(CHART_TYPE.fontFamily)});
+  }
+
   .widget-shell {
     display: flex;
     flex-direction: column;
@@ -91,9 +113,10 @@ export const chartShellStyles = css`
 
   .widget-subtitle {
     min-width: 0;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 16px;
+    font-size: var(--ui9000-font-size-subtitle, 10px);
+    font-weight: var(--ui9000-font-weight-subtitle, 400);
+    line-height: var(--ui9000-line-height-subtitle, 14px);
+    letter-spacing: var(--ui9000-letter-spacing-subtitle, 0.02em);
     color: var(--ui9000-color-text-muted, #6c7584);
     white-space: nowrap;
     overflow: hidden;
@@ -131,12 +154,18 @@ export const chartShellStyles = css`
     max-width: 100%;
   }
 
+  /* Typography renders a paragraph. Keep it in the header line. */
+  ui9000-typography p {
+    margin: 0;
+    color: inherit !important;
+  }
+
   .widget-title {
     flex: 1;
     min-width: 0;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-title, 12px);
+    font-weight: var(--ui9000-font-weight-title, 400);
+    line-height: var(--ui9000-line-height-title, 16px);
     color: var(--ui9000-color-text, #111827);
     white-space: nowrap;
     overflow: hidden;
@@ -265,7 +294,7 @@ export const chartShellStyles = css`
     background: transparent;
     text-align: left;
     font-family: var(--ui9000-font-family, inherit);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 400;
     line-height: 20px;
     color: var(--ui9000-color-text, #111827);
@@ -281,7 +310,7 @@ export const chartShellStyles = css`
   .widget-header[data-variant='dash'] .menu-item {
     padding: 4px 12px;
     min-height: 32px;
-    font-size: 14px;
+    font-size: var(--ui9000-font-size-title, 12px);
     line-height: 20px;
   }
 
@@ -359,8 +388,9 @@ export const chartShellStyles = css`
     gap: 8px 16px;
     flex-shrink: 0;
     margin-bottom: 8px;
-    font-size: 11px;
-    line-height: 1.2;
+    font-size: var(--ui9000-font-size-axis, 12px);
+    font-weight: var(--ui9000-font-weight-axis, 400);
+    line-height: var(--ui9000-line-height-axis, 16px);
     color: var(--ui9000-color-text-muted, #6c7584);
   }
 
@@ -418,9 +448,9 @@ export const chartShellStyles = css`
     flex-shrink: 0;
     padding-top: 8px;
     padding-bottom: 12px;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 1.2;
+    font-size: var(--ui9000-font-size-label, 12px);
+    font-weight: var(--ui9000-font-weight-label, 400);
+    line-height: var(--ui9000-line-height-label, 16px);
     color: var(--ui9000-color-text-muted, #6c7584);
   }
 
@@ -453,12 +483,27 @@ export const chartShellStyles = css`
     padding: 2px 5px;
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
     border-radius: 5px;
-    font-size: 11px;
-    line-height: 1.35;
+    font-size: var(--ui9000-font-size-label, 12px);
+    font-weight: var(--ui9000-font-weight-label, 400);
+    line-height: var(--ui9000-line-height-label, 16px);
     background: var(--ui9000-color-surface, #fff);
     color: var(--ui9000-color-text-muted, #6c7584);
     box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
     transform: translate(-50%, calc(-100% - 8px));
     white-space: nowrap;
+  }
+
+  .tooltip {
+    font-family: inherit;
+    font-size: var(--ui9000-font-size-label, 12px);
+    font-weight: var(--ui9000-font-weight-label, 400);
+    line-height: var(--ui9000-line-height-label, 16px);
+  }
+
+  .empty {
+    color: var(--ui9000-color-text, #111827);
+    font-size: var(--ui9000-font-size-empty, 14px);
+    font-weight: var(--ui9000-font-weight-empty, 400);
+    line-height: var(--ui9000-line-height-empty, 20px);
   }
 `;

@@ -8,7 +8,7 @@ export const bandUtilizationStyles = css`
     height: 100%;
     min-height: var(--ui9000-host-min-height, 220px);
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
   }
 
@@ -29,7 +29,7 @@ export const bandUtilizationStyles = css`
     flex: 0 0 auto;
     margin-left: auto;
     padding-top: 1px;
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-axis, 11px);
     line-height: 16px;
     color: var(--ui9000-color-text-muted, #6c7584);
   }
@@ -51,6 +51,6 @@ export const bandUtilizationStyles = css`
     height: 100%;
     min-height: inherit;
     color: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 0.875rem;
+    font-size: var(--ui9000-font-size-empty, 0.875rem);
   }
 `;

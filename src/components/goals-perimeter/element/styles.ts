@@ -14,7 +14,7 @@ export const goalsPerimeterStyles = css`
     height: 100%;
     min-height: var(--ui9000-host-min-height, 420px);
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
     --gp-healthy: #009966;
     --gp-degraded: #e17100;
@@ -61,7 +61,7 @@ export const goalsPerimeterStyles = css`
     height: 100%;
     min-height: inherit;
     color: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 0.875rem;
+    font-size: var(--ui9000-font-size-empty, 0.875rem);
   }
 
   /*
@@ -84,7 +84,7 @@ export const goalsPerimeterStyles = css`
     flex-wrap: nowrap;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     color: var(--ui9000-color-text-muted, #6b7280);
     white-space: nowrap;
   }
@@ -124,7 +124,7 @@ export const goalsPerimeterStyles = css`
     align-items: center;
     gap: 10px;
     max-width: calc(100% - 12px);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     color: var(--ui9000-color-text-muted, #6b7280);
     animation: gp-crumbs-in 180ms ease-out;
   }
@@ -299,7 +299,7 @@ export const goalsPerimeterStyles = css`
   }
   .gp-svg .rg-more {
     fill: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
 
   .hit {
@@ -446,13 +446,13 @@ export const goalsPerimeterStyles = css`
     stroke-opacity: 0.6;
   }
   .gp-svg .sector-title {
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 600;
   }
   .gp-svg .reason text,
   .gp-svg .reason-more {
     fill: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
   .reason {
     cursor: default;
@@ -522,25 +522,25 @@ export const goalsPerimeterStyles = css`
     stroke-width: 2.2;
   }
   .gp-svg .rel-label {
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 500;
   }
   .gp-svg .rel-meta,
   .gp-svg .rg-name,
   .gp-svg .detail-meta {
     fill: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
   .gp-svg .detail-meta {
-    font-size: 14px;
+    font-size: var(--ui9000-font-size-title, 14px);
   }
   .gp-svg .detail-title {
-    font-size: 17px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 500;
   }
   .gp-svg .detail-impure {
     fill: var(--gp-impure);
-    font-size: 14px;
+    font-size: var(--ui9000-font-size-title, 14px);
     letter-spacing: 0.12em;
   }
   .rg.is-selected .rg-shape {

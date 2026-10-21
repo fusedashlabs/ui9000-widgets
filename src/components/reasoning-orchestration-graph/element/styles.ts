@@ -2,8 +2,7 @@ import { css } from 'lit';
 
 /**
  * The shell, its text and its rules follow the package theme like every
- * other chart. Readouts, model labels and panels use the design board's
- * monospace, upper-case treatment; their colours come from the palette.
+ * other chart. Readouts and labels use that same family and the base size.
  */
 export const reasoningOrchestrationStyles = css`
   :host {
@@ -13,9 +12,9 @@ export const reasoningOrchestrationStyles = css`
     height: 100%;
     min-height: var(--ui9000-host-min-height, 520px);
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
-    --ro-mono: var(--ui9000-font-family-mono, ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace);
+    --ro-mono: var(--ui9000-font-family, Inter, sans-serif);
     --ro-muted: var(--ui9000-color-text-muted, #6b7280);
     --ro-rule: var(--ui9000-color-border, #e5e7eb);
     --ro-chip: rgba(255, 255, 255, 0.86);
@@ -37,8 +36,8 @@ export const reasoningOrchestrationStyles = css`
   .ro-panels,
   .ro-reset,
   .cap-note {
-    font-family: var(--ro-mono);
-    font-size: 10px;
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
+    font-size: var(--ui9000-font-size-axis, 11px);
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -176,7 +175,7 @@ export const reasoningOrchestrationStyles = css`
     width: 6px;
     text-align: center;
     line-height: 1;
-    font-size: 9px;
+    font-size: var(--ui9000-font-size-axis, 11px);
   }
   .ro-reset {
     position: absolute;
@@ -344,7 +343,7 @@ export const reasoningOrchestrationStyles = css`
     height: 100%;
     min-height: inherit;
     color: var(--ro-muted);
-    font-size: 0.875rem;
+    font-size: var(--ui9000-font-size-empty, 0.875rem);
   }
   .cap-note {
     color: var(--ro-muted);

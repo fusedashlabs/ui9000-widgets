@@ -8,7 +8,7 @@ export const surfaceStyles = css`
     min-height: 0;
     box-sizing: border-box;
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     font-size: 14px;
     line-height: 20px;
   }

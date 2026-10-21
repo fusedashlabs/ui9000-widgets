@@ -9,7 +9,7 @@ export const statusGaugeStyles = css`
     display: block;
     height: 100%;
     min-height: 0;
-    font-family: var(--ui9000-font-family, Inter, system-ui, -apple-system, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     font-feature-settings: 'ss01' on, 'cv11' on;
     -webkit-font-smoothing: antialiased;
     --sg-text: var(--ui9000-color-text, #111827);
@@ -50,7 +50,7 @@ export const statusGaugeStyles = css`
 
   .title {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 600;
     letter-spacing: -0.011em;
     line-height: 22px;
@@ -59,7 +59,7 @@ export const statusGaugeStyles = css`
   .subtitle {
     margin: 2px 0 0;
     color: var(--sg-muted);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 400;
     line-height: 18px;
   }
@@ -83,7 +83,7 @@ export const statusGaugeStyles = css`
     align-items: center;
     gap: 8px;
     min-width: 0;
-    font-size: 14px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 600;
     line-height: 20px;
   }
@@ -112,7 +112,7 @@ export const statusGaugeStyles = css`
     padding: 3px 9px;
     border-radius: 14px;
     background: var(--sg-badge);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 500;
     line-height: 16px;
   }
@@ -180,7 +180,7 @@ export const statusGaugeStyles = css`
 
   .card-label {
     color: var(--sg-muted);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 500;
     line-height: 16px;
   }
@@ -210,7 +210,7 @@ export const statusGaugeStyles = css`
 
   .unit {
     margin-left: 4px;
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 500;
     color: var(--sg-muted);
   }
@@ -283,6 +283,6 @@ export const statusGaugeStyles = css`
   .empty {
     margin: auto;
     color: var(--sg-muted);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
 `;

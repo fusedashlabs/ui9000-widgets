@@ -20,6 +20,7 @@ import {
   type KpiWidgetModel,
 } from '../lib/index.js';
 import { kpiWidgetStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-kpi-widget')
 export class Ui9000KpiWidget extends Ui9000ChartElement {
@@ -262,9 +263,9 @@ export class Ui9000KpiWidget extends Ui9000ChartElement {
 
     return html`
       <div class="kpi-root" data-layout=${layout} data-single=${single ? 'true' : 'false'}>
-        ${title ? html`<div class="kpi-section-title">${title}</div>` : nothing}
+        ${title ? html`<div class="kpi-section-title">${dsText(title, { size: 'sm' })}</div>` : nothing}
         ${layout === 'empty'
-          ? html`<div class="empty">No KPI data</div>`
+          ? html`<div class="empty">${dsText('No KPI data', { size: 'md' })}</div>`
           : layout === 'advanced'
             ? this.renderAdvanced()
             : html`

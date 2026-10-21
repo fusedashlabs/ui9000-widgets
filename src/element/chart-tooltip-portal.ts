@@ -8,6 +8,8 @@
  */
 
 import { CSS_VARS, paintMode } from '../context/widget-context.js';
+import { CHART_TYPE } from '../utils/chart-theme.js';
+import './ds-text.js';
 
 export type ChartTooltipRow = { label: string; value: string };
 
@@ -48,7 +50,7 @@ const TOOLTIP_CSS = `
     0 2px 4px 0 rgba(20, 28, 44, 0.06),
     0 4px 8px 2px rgba(20, 28, 44, 0.06);
   pointer-events: none;
-  font-family: var(--ui9000-font-family, system-ui, sans-serif);
+  font-family: var(--ui9000-font-family, ${CHART_TYPE.fontFamily});
   opacity: 0;
   scale: 0.8;
 }
@@ -70,11 +72,15 @@ const TOOLTIP_CSS = `
 @keyframes ui9000-tooltip-in {
   to { opacity: 1; scale: 1; }
 }
+ui9000-typography p {
+  margin: 0;
+  color: inherit !important;
+}
 .ui9000-chart-tooltip__title {
   margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 16px;
+  font-size: ${CHART_TYPE.heading}px;
+  font-weight: ${CHART_TYPE.headingWeight};
+  line-height: ${CHART_TYPE.headingLine}px;
   text-align: left;
 }
 .ui9000-chart-tooltip__rows {
@@ -94,9 +100,9 @@ const TOOLTIP_CSS = `
   border: none;
 }
 .ui9000-chart-tooltip__label {
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 400;
+  font-size: ${CHART_TYPE.label}px;
+  line-height: ${CHART_TYPE.labelLine}px;
+  font-weight: ${CHART_TYPE.labelWeight};
   margin: 2px 0;
   min-width: 60px;
   max-width: 120px;
@@ -107,9 +113,9 @@ const TOOLTIP_CSS = `
   opacity: 0.6;
 }
 .ui9000-chart-tooltip__value {
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 500;
+  font-size: ${CHART_TYPE.label}px;
+  line-height: ${CHART_TYPE.labelLine}px;
+  font-weight: ${CHART_TYPE.labelWeight};
   margin: 2px 0;
   width: max-content;
 }
@@ -155,10 +161,10 @@ const TOOLTIP_CSS = `
   border-radius: 5px;
   background: var(--ui9000-color-surface, var(--colors-neutral-background-base, #fff));
   color: var(--ui9000-color-text-muted, var(--colors-neutral-text-weak, #6c7584));
-  font-family: var(--ui9000-font-family, system-ui, sans-serif);
-  font-size: 11px;
-  font-weight: 400;
-  line-height: 1.35;
+  font-family: var(--ui9000-font-family, ${CHART_TYPE.fontFamily});
+  font-size: ${CHART_TYPE.axis}px;
+  font-weight: ${CHART_TYPE.axisWeight};
+  line-height: ${CHART_TYPE.axisLine}px;
   pointer-events: none;
   white-space: nowrap;
 }
@@ -245,12 +251,21 @@ function syncTooltipMode(el: HTMLElement, owner: HTMLElement): void {
   if (el.getAttribute('data-mode') !== mode) el.setAttribute('data-mode', mode);
 }
 
+function typographyNode(text: string, size: 'sm' | 'md'): HTMLElement {
+  const node = document.createElement('ui9000-typography');
+  node.setAttribute('type', 'body');
+  node.setAttribute('size', size);
+  node.setAttribute('weight', 'regular');
+  node.setAttribute('text', text);
+  return node;
+}
+
 function fillHover(el: HTMLDivElement, content: ChartTooltipContent): void {
   el.replaceChildren();
   if (content.title) {
     const title = document.createElement('div');
     title.className = 'ui9000-chart-tooltip__title name';
-    title.textContent = content.title;
+    title.append(typographyNode(content.title, 'md'));
     el.appendChild(title);
   }
   if (!content.rows.length) return;
@@ -262,12 +277,12 @@ function fillHover(el: HTMLDivElement, content: ChartTooltipContent): void {
     if (row.label) {
       const label = document.createElement('div');
       label.className = 'ui9000-chart-tooltip__label';
-      label.textContent = row.label;
+      label.append(typographyNode(row.label, 'sm'));
       line.appendChild(label);
     }
     const value = document.createElement('div');
     value.className = 'ui9000-chart-tooltip__value';
-    value.textContent = row.value;
+    value.append(typographyNode(row.value, 'sm'));
     line.appendChild(value);
     rows.appendChild(line);
   }
@@ -355,7 +370,7 @@ export function presentLabelTooltip(
   if (!el) return;
   labelOwner = owner;
   syncTooltipMode(el, owner);
-  el.textContent = text;
+  el.replaceChildren(typographyNode(text, 'sm'));
   el.style.left = `${event.pageX}px`;
   el.style.top = `${event.pageY - 25}px`;
   el.classList.add('is-open');

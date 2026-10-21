@@ -8,6 +8,7 @@ import { normalizePowerPath, type PowerPathMetric, type PowerPathModel } from '.
 import { drawHealthLine } from '../render/index.js';
 import { ALERT_ICON, ANTENNA_ICON, BOLT_ICON } from './icons.js';
 import { powerPathStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 let nextGradientId = 0;
 
@@ -65,7 +66,7 @@ export class Ui9000PowerPathCard extends Ui9000ChartElement {
     const { badge, health, fault, metrics, empty } = this._model;
     const title = this.chartTitle.trim() || this._model.title;
     if (empty) {
-      return html`<div class="card" data-mode=${this._mode}><p class="empty">No power path data</p></div>`;
+      return html`<div class="card" data-mode=${this._mode}><p class="empty">${dsText('No power path data', { size: 'md' })}</p></div>`;
     }
 
     return html`

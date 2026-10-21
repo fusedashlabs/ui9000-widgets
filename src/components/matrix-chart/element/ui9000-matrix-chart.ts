@@ -20,6 +20,7 @@ import {
   renderMatrixChart,
 } from '../render/draw.js';
 import { matrixStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-matrix-chart')
 export class Ui9000MatrixChart extends Ui9000ChartElement {
@@ -227,7 +228,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
               ></div>
             </div>
           </div>
-          ${this._empty ? html`<div class="empty" part="empty">${'No data'}</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

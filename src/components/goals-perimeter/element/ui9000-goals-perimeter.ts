@@ -34,6 +34,7 @@ import {
   type GoalsPerimeterHandlers,
 } from '../render/index.js';
 import { goalsPerimeterStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 const STATE_NAME: Record<AgentState, string> = {
   healthy: 'Healthy',
@@ -413,7 +414,7 @@ export class Ui9000GoalsPerimeterChart extends Ui9000ChartElement {
             <div class="gp-canvas"></div>
             ${this.renderCrumbs()}
           </div>
-          ${this._model.empty ? html`<div class="empty" part="empty">No goal data</div>` : nothing}
+          ${this._model.empty ? html`<div class="empty" part="empty">${dsText('No goal data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

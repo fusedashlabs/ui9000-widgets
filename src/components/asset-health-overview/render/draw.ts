@@ -1,5 +1,6 @@
 import { create, select, type Selection } from 'd3-selection';
 
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
 import { formatAssetHealthCount } from '../lib/format.js';
 import { WALL_SLOTS } from '../lib/normalize.js';
 import {
@@ -363,7 +364,7 @@ export function drawAssetHealthOverview(
       x: q.x,
       y: q.y + 3,
       fill: C.ink,
-      'font-size': 18,
+      'font-size': CHART_TYPE.title,
       'font-weight': 600,
       'text-anchor': 'middle',
     });
@@ -371,7 +372,7 @@ export function drawAssetHealthOverview(
       x: q.x,
       y: q.y + 18,
       fill: C.muted,
-      'font-size': 11,
+      'font-size': CHART_TYPE.axis,
       'text-anchor': 'middle',
       'letter-spacing': '.16em',
     });
@@ -450,7 +451,7 @@ export function drawAssetHealthOverview(
       x: q.x,
       y: hy,
       fill: C.ink,
-      'font-size': 12,
+      'font-size': CHART_TYPE.label,
       'letter-spacing': '.14em',
       'text-anchor': anchor,
     });
@@ -458,7 +459,7 @@ export function drawAssetHealthOverview(
       x: q.x,
       y: hy + 15,
       fill: problemCount ? C.crit : C.muted,
-      'font-size': 11,
+      'font-size': CHART_TYPE.axis,
       'text-anchor': anchor,
     });
   });
@@ -546,7 +547,7 @@ export function drawAssetHealthOverview(
 
     add(group, 'rect', { x: top.x - 4, y: top.y - 4, width: 8, height: 8, fill: C.deep, stroke: color, 'stroke-width': 1.4 });
     add(group, 'rect', { x: bx0, y: by0, width: lw, height: 20, fill: C.deep, stroke: color });
-    addText(group, label, { x: bx0 + 8, y: by0 + 14, fill: C.ink, 'font-size': 11 });
+    addText(group, label, { x: bx0 + 8, y: by0 + 14, fill: C.ink, 'font-size': CHART_TYPE.axis });
   });
 
   // ---- problem detail card ------------------------------------------------------------
@@ -562,7 +563,7 @@ export function drawAssetHealthOverview(
     ] as const
   ).forEach(([color, label], i) => {
     add(svg, 'rect', { x: VIEW_W - 200, y: 20 + i * 18, width: 10, height: 10, fill: color, opacity: 0.7 });
-    addText(svg, label, { x: VIEW_W - 184, y: 29 + i * 18, fill: C.muted, 'font-size': 11 });
+    addText(svg, label, { x: VIEW_W - 184, y: 29 + i * 18, fill: C.muted, 'font-size': CHART_TYPE.axis });
   });
 }
 
@@ -600,12 +601,12 @@ function drawPopup(
   const card = add(svg, 'g');
   card.on('pointerdown', (event: Event) => event.stopPropagation());
   add(card, 'rect', { x: px, y: py, width: POPUP_WIDTH, height, rx: 10, fill: C.surface, stroke: color });
-  addText(card, p.name, { x: px + 14, y: py + 22, fill: C.ink, 'font-size': 13, 'font-weight': 500 });
+  addText(card, p.name, { x: px + 14, y: py + 22, fill: C.ink, 'font-size': CHART_TYPE.title, 'font-weight': 500 });
   addText(card, p.why.charAt(0).toUpperCase() + p.why.slice(1), {
     x: px + 14,
     y: py + 40,
     fill: color,
-    'font-size': 12,
+    'font-size': CHART_TYPE.label,
   });
 
   const close = add(card, 'g', { style: 'cursor:pointer' });
@@ -618,23 +619,23 @@ function drawPopup(
     x: px + POPUP_WIDTH - 19,
     y: py + 23,
     fill: C.muted,
-    'font-size': 12,
+    'font-size': CHART_TYPE.label,
     'text-anchor': 'middle',
   });
 
   add(card, 'line', { x1: px + 14, y1: py + 54, x2: px + POPUP_WIDTH - 14, y2: py + 54, stroke: C.line });
   rows.forEach(([key, value], i) => {
-    addText(card, key, { x: px + 14, y: py + 74 + i * 19, fill: C.dim, 'font-size': 12 });
+    addText(card, key, { x: px + 14, y: py + 74 + i * 19, fill: C.dim, 'font-size': CHART_TYPE.label });
     addText(card, value, {
       x: px + 110,
       y: py + 74 + i * 19,
       fill: key === 'Status' ? color : C.soft,
-      'font-size': 12,
+      'font-size': CHART_TYPE.label,
     });
   });
-  addText(card, 'Suggested', { x: px + 14, y: fy, fill: C.dim, 'font-size': 12 });
+  addText(card, 'Suggested', { x: px + 14, y: fy, fill: C.dim, 'font-size': CHART_TYPE.label });
   fixLines.forEach((line, i) =>
-    addText(card, line, { x: px + 14, y: fy + 18 + i * 16, fill: C.ok, 'font-size': 12 }),
+    addText(card, line, { x: px + 14, y: fy + 18 + i * 16, fill: C.ok, 'font-size': CHART_TYPE.label }),
   );
 
   const agents = add(card, 'g', { style: 'cursor:pointer' });
@@ -647,7 +648,7 @@ function drawPopup(
     x: px + 78,
     y: by + 17,
     fill: C.deep,
-    'font-size': 12,
+    'font-size': CHART_TYPE.label,
     'font-weight': 500,
     'text-anchor': 'middle',
   });
@@ -670,7 +671,7 @@ function drawPopup(
     x: px + 218,
     y: by + 17,
     fill: C.soft,
-    'font-size': 12,
+    'font-size': CHART_TYPE.label,
     'text-anchor': 'middle',
   });
 }

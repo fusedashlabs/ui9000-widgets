@@ -8,7 +8,7 @@ export const flowSankeyStyles = css`
     height: 100%;
     min-height: 280px;
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
   }
 
@@ -57,7 +57,7 @@ export const flowSankeyStyles = css`
     height: 26px;
     border-radius: 8px;
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     /* Icons paint with currentColor, so the chip sets their tone. */
     color: var(--ui9000-color-text-muted, #6b7280);
   }
@@ -83,18 +83,18 @@ export const flowSankeyStyles = css`
   }
 
   .summary-label {
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-axis, 11px);
     font-weight: 500;
   }
 
   .summary-caption {
-    font-size: 10px;
+    font-size: var(--ui9000-font-size-axis, 11px);
     color: var(--ui9000-color-text-muted, #6b7280);
   }
 
   .summary-value {
     margin-left: 4px;
-    font-size: 15px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 700;
     white-space: nowrap;
   }
@@ -112,13 +112,13 @@ export const flowSankeyStyles = css`
     padding: 20px;
     text-align: center;
     color: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 0.875rem;
+    font-size: var(--ui9000-font-size-empty, 0.875rem);
   }
 
   .cap-note {
     flex: 0 0 auto;
     padding: 4px 0 0;
     color: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 0.75rem;
+    font-size: var(--ui9000-font-size-axis, 11px);
   }
 `;

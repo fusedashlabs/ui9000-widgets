@@ -21,6 +21,7 @@ import {
 } from '../../spark-line-chart/lib/index.js';
 import { renderSparkLineChart } from '../../spark-line-chart/render/draw.js';
 import { sparkLineChartStyles } from '../../spark-line-chart/element/styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-spark-area-chart')
 export class Ui9000SparkAreaChart extends Ui9000ChartElement {
@@ -149,7 +150,7 @@ export class Ui9000SparkAreaChart extends Ui9000ChartElement {
         <div class="widget-body">
           ${this.renderLegend(series)}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
-          ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

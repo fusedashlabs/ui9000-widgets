@@ -10,6 +10,7 @@ import {
 } from '../lib/index.js';
 import { drawStatusGauge } from '../render/draw.js';
 import { statusGaugeStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 const CHECK = svg`<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.2 8.2 6.3 11.3 12.8 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
 
@@ -65,7 +66,7 @@ export class Ui9000StatusGaugeWidget extends Ui9000ChartElement {
 
   override render() {
     if (this._model.empty) {
-      return html`<div class="panel"><p class="empty">No status data</p></div>`;
+      return html`<div class="panel"><p class="empty">${dsText('No status data', { size: 'md' })}</p></div>`;
     }
 
     const { title, subtitle, gauge, metrics } = this._model;

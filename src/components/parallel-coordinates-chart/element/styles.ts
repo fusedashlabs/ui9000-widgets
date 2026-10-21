@@ -8,7 +8,7 @@ export const parallelCoordinatesStyles = css`
     height: 100%;
     min-height: 220px;
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
   }
   .chart-body {

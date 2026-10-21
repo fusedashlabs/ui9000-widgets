@@ -1,14 +1,73 @@
 /**
- * Chart series colors — the only file to edit when a page palette changes.
+ * Chart appearance — the only file to edit when series colors change.
  *
  * Palettes mirror the client page styles (`default`, `palette1` … `palette4`):
  * Qualitative 2 / 4 / 12 and SequentialColors1. Charts read them through
  * `pickQualitativePalette`, `seriesColor`, and `sequentialColors`.
+ *
+ * Text comes from `@fuselab-creative/design-system` (`fontFamilies`, `typography`),
+ * the same tokens the client `Typography` component renders. Shell and plot
+ * text read the CSS variables set from `CHART_TYPE`.
  */
 
+import { fontFamilies, typography } from '@fuselab-creative/design-system';
 import { type ChartStyleId } from '../context/chart-style.js';
 
 export { CHART_STYLE_IDS, parseChartStyleId, type ChartStyleId } from '../context/chart-style.js';
+
+/** Design-system `fontFamilies.body`. */
+export const FONT_FAMILY = fontFamilies.body;
+
+const bodySm = typography.body.sm.regular;
+const bodyXs = typography.body.xs.regular;
+const bodyMd = typography.body.md.regular;
+
+function px(value: string): number {
+  return Number.parseFloat(value);
+}
+
+/** `letter-spacing` accepts lengths. Design-system tracking is a percent of the font size. */
+function cssTracking(value: string): string {
+  const percent = /^(-?\d+(?:\.\d+)?)%$/.exec(value.trim());
+  if (!percent) return value;
+  return `${Number(percent[1]) / 100}em`;
+}
+
+/**
+ * Which design-system body style each piece of chart text uses.
+ * Title matches the client `WidgetHeaderTitle` (`typography.body.sm.regular`).
+ * Axis, legend and tooltip rows use that same style. Subtitles are
+ * `typography.body.xs.regular`. Tooltip headings and empty states are
+ * `typography.body.md.regular`.
+ */
+export const CHART_TYPE = {
+  fontFamily: FONT_FAMILY,
+  /** Axis ticks, legends, plot labels — body/sm */
+  axis: px(bodySm.fontSize),
+  axisWeight: Number(bodySm.fontWeight),
+  axisLine: px(bodySm.lineHeight),
+  /** Tooltip rows and secondary labels — body/sm */
+  label: px(bodySm.fontSize),
+  labelWeight: Number(bodySm.fontWeight),
+  labelLine: px(bodySm.lineHeight),
+  /** Widget title — body/sm, same as client Typography */
+  title: px(bodySm.fontSize),
+  titleWeight: Number(bodySm.fontWeight),
+  titleLine: px(bodySm.lineHeight),
+  /** Subtitle — body/xs */
+  subtitle: px(bodyXs.fontSize),
+  subtitleWeight: Number(bodyXs.fontWeight),
+  subtitleLine: px(bodyXs.lineHeight),
+  subtitleTracking: cssTracking(bodyXs.letterSpacing),
+  /** Tooltip heading — body/md */
+  heading: px(bodyMd.fontSize),
+  headingWeight: Number(bodyMd.fontWeight),
+  headingLine: px(bodyMd.lineHeight),
+  /** Empty state — body/md */
+  empty: bodyMd.fontSize,
+  emptyWeight: Number(bodyMd.fontWeight),
+  emptyLine: px(bodyMd.lineHeight),
+} as const;
 
 type QualitativeSet = { q2: string[]; q4: string[]; q12: string[] };
 

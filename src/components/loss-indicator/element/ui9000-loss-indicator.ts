@@ -6,6 +6,7 @@ import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { LOSS_COLORS, normalizeLossIndicator, type LossIndicatorModel } from '../lib/index.js';
 import { tickCountForWidth, tickFill, tickPaint } from '../render/ticks.js';
 import { lossIndicatorStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 const INFO = svg`<svg viewBox="0 0 24 24" width="25" height="25" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"></circle><circle cx="12" cy="8" r="1.15" fill="currentColor"></circle><path d="M12 11.2v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>`;
 
@@ -68,7 +69,7 @@ export class Ui9000LossIndicator extends Ui9000ChartElement {
 
   override render() {
     if (this._model.empty) {
-      return html`<div class="panel"><p class="empty">No loss data</p></div>`;
+      return html`<div class="panel"><p class="empty">${dsText('No loss data', { size: 'md' })}</p></div>`;
     }
 
     const { label, valueText, trend, level, ratio, ticks, bands, value } = this._model;

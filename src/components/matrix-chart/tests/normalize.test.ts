@@ -168,7 +168,7 @@ describe('matrixLayout', () => {
     ]);
     const layout = matrixLayout(model, 300, { top: 20, bottom: 30 });
     expect(layout.separateTopAxis).toBe(false);
-    expect(layout.topAxisHeight).toBe(41);
+    expect(layout.topAxisHeight).toBe(42);
     expect(layout.needsScroll).toBe(false);
     expect(layout.contentHeight).toBeLessThanOrEqual(300);
   });

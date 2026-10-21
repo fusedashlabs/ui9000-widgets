@@ -9,6 +9,7 @@ import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import { normalizeBandUtilization, type BandModel } from '../lib/index.js';
 import { renderBandUtilization } from '../render/draw.js';
 import { bandUtilizationStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 const EMPTY_MODEL: BandModel = {
   title: '',
@@ -131,7 +132,7 @@ export class Ui9000BandUtilizationChart extends Ui9000ChartElement {
               </div>`
             : nothing}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
-          ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

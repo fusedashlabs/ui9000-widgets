@@ -11,6 +11,7 @@ import {
 } from '../lib/index.js';
 import { drawTrend } from '../render/index.js';
 import { componentAssetStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 const ARROW = svg`<svg class="arrow" viewBox="0 0 7 9" fill="none" aria-hidden="true">
   <path d="M3.5 8.4V1.2M0.9 3.8 3.5 1.2l2.6 2.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -88,7 +89,7 @@ export class Ui9000ComponentAssetCard extends Ui9000ChartElement {
     const title = this.chartTitle.trim() || this._model.title;
     const image = this._imageFailed ? null : this._model.image;
     if (empty) {
-      return html`<div class="card"><p class="empty">No component data</p></div>`;
+      return html`<div class="card"><p class="empty">${dsText('No component data', { size: 'md' })}</p></div>`;
     }
 
     return html`

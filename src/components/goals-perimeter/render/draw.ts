@@ -1,6 +1,7 @@
 import { select, type Selection } from 'd3-selection';
 
 import type { WidgetTheme } from '../../../types/index.js';
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
 import {
   arcPath,
   cloudParticles,
@@ -149,10 +150,10 @@ function truncate(text: string, maxWidth: number, size: number): string {
 type LabelRow = 'title' | 'summary' | 'impure' | 'groups';
 
 const ROW_FONT: Record<LabelRow, { size: number; spacing: number }> = {
-  title: { size: 17, spacing: 0 },
-  summary: { size: 16, spacing: 0 },
-  impure: { size: 16, spacing: 0.12 },
-  groups: { size: 15, spacing: 0.1 },
+  title: { size: CHART_TYPE.title, spacing: 0 },
+  summary: { size: CHART_TYPE.label, spacing: 0 },
+  impure: { size: CHART_TYPE.label, spacing: 0.12 },
+  groups: { size: CHART_TYPE.label, spacing: 0.1 },
 };
 
 /**

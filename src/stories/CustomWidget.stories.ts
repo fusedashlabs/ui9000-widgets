@@ -58,7 +58,7 @@ function renderPaneSwitches(
         border: 1px solid #e5e7eb;
         border-radius: 8px;
         background: #fff;
-        font-family: system-ui, sans-serif;
+        font-family: Inter, sans-serif;
       }
       .pane-controls strong {
         margin-right: 4px;

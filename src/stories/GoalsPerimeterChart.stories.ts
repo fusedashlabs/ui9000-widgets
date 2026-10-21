@@ -83,7 +83,7 @@ const frame = (args: GoalsPerimeterArgs) => html`
       @goal-open=${logOpen}
       ${openOnMount(args.open)}
     ></ui9000-goals-perimeter>
-    <output style="display:block;margin-top:8px;font:12px system-ui;color:#737373;"></output>
+    <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>
   </div>
 `;
 

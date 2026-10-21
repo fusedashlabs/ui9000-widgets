@@ -20,6 +20,7 @@ import {
 } from '../lib/index.js';
 import { renderAreaChart } from '../render/draw.js';
 import { areaChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-area-chart')
 export class Ui9000AreaChart extends Ui9000ChartElement {
@@ -153,7 +154,7 @@ export class Ui9000AreaChart extends Ui9000ChartElement {
           ${this.renderLegend(model)}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
-            ? html`<div class="empty" part="empty">No data</div>`
+            ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

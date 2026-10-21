@@ -6,7 +6,7 @@ import {
   themeToCssVars,
 } from '../context/widget-context.js';
 import { DARK_THEME, DEFAULT_CONTEXT, DEFAULT_THEME } from '../types/index.js';
-import { CHART_STYLE_IDS as themeStyleIds } from '../utils/chart-theme.js';
+import { CHART_STYLE_IDS as themeStyleIds, FONT_FAMILY } from '../utils/chart-theme.js';
 import { CHART_STYLE_IDS, parseChartStyleId } from './index.js';
 import { parseJsonAttr } from '../utils/chart-helpers.js';
 
@@ -18,10 +18,16 @@ describe('WidgetContext', () => {
     expect(parseChartStyleId('')).toBe('default');
   });
 
+  it('keeps the context font family on the design-system body font', () => {
+    expect(DEFAULT_THEME.fontFamily).toBe(FONT_FAMILY);
+    expect(DARK_THEME.fontFamily).toBe(FONT_FAMILY);
+    expect(FONT_FAMILY).toBe('Inter, sans-serif');
+  });
+
   it('maps theme to CSS custom properties', () => {
     const vars = themeToCssVars(DEFAULT_THEME);
     expect(vars['--ui9000-color-primary']).toBe('#473DD9');
-    expect(vars['--ui9000-font-family']).toContain('system-ui');
+    expect(vars['--ui9000-font-family']).toBe('Inter, sans-serif');
   });
 
   it('maps full context including scale and mode', () => {

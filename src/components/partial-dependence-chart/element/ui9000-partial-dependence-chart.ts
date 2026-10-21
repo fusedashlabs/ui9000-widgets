@@ -17,6 +17,7 @@ import {
 } from '../lib/index.js';
 import { renderPartialDependenceChart } from '../render/draw.js';
 import { partialDependenceStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 /** Client tooltip prints three decimals for both axes. */
 const TOOLTIP_DECIMALS = 3;
@@ -136,9 +137,7 @@ export class Ui9000PartialDependenceChart extends Ui9000ChartElement {
           ${model ? this.renderLegend(model) : nothing}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
-            ? html`<div class="empty" part="empty">
-                Partial dependence needs numeric X and Y fields with at least one ICE series.
-              </div>`
+            ? html`<div class="empty" part="empty">${dsText('Partial dependence needs numeric X and Y fields with at least one ICE series.', { size: 'md' })}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

@@ -10,7 +10,7 @@ export const lossIndicatorStyles = css`
     display: block;
     height: 100%;
     min-height: 0;
-    font-family: var(--ui9000-font-family, Inter, system-ui, -apple-system, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     font-feature-settings: 'ss01' on, 'cv11' on;
     -webkit-font-smoothing: antialiased;
     --li-text: var(--ui9000-color-text, #111827);
@@ -150,7 +150,7 @@ export const lossIndicatorStyles = css`
     position: absolute;
     top: 0;
     color: var(--li-muted);
-    font-size: 14px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 500;
     line-height: 22px;
     font-variant-numeric: tabular-nums;
@@ -172,6 +172,6 @@ export const lossIndicatorStyles = css`
   .empty {
     margin: auto;
     color: var(--li-muted);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
 `;

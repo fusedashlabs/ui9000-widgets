@@ -30,7 +30,7 @@ export const chartRendererStyles = css`
     padding: 1rem;
     text-align: center;
     color: var(--ui9000-color-text-muted, #6b7280);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     font-size: 0.875rem;
     line-height: 1.4;
   }

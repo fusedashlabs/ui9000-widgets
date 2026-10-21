@@ -27,6 +27,7 @@ import {
   updateNetworkGraphVisibility,
 } from '../render/draw.js';
 import { networkGraphStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 /** Same diameters as map `DEFAULT_BUBBLES_RADIUS` (7 size steps). */
 const LEGEND_BUBBLE_SIZES = [10, 15, 20, 25, 30, 35, 40];
@@ -331,7 +332,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this.renderLegend()}
           ${this._empty
-            ? html`<div class="empty" part="empty">${'Network graph requires a nodes and links payload.'}</div>`
+            ? html`<div class="empty" part="empty">${dsText('Network graph requires a nodes and links payload.', { size: 'md' })}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

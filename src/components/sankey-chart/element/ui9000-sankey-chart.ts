@@ -17,6 +17,7 @@ import {
 } from '../lib/index.js';
 import { renderSankeyChart } from '../render/draw.js';
 import { sankeyStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 interface SankeyView {
   empty: boolean;
@@ -172,11 +173,9 @@ export class Ui9000SankeyChart extends Ui9000ChartElement {
           <div class="chart-root" part="chart" ?hidden=${empty}></div>
 
           ${empty
-            ? html`<div class="empty" part="empty">
-                ${circular
+            ? html`<div class="empty" part="empty">${dsText(circular
                   ? 'Circular dependency detected in the data — this cannot be drawn as a Sankey.'
-                  : 'No data'}
-              </div>`
+                  : 'No data', { size: 'md' })}</div>`
             : nothing}
 
           ${this.renderShellLabelTooltip()}

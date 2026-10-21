@@ -1,6 +1,8 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 import { select } from 'd3-selection';
 
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
+
 import {
   breadthByDepth,
   formatNumber,
@@ -15,7 +17,7 @@ import {
 import { MONO_ADVANCE, MONO_FONT } from './draw.js';
 import { modelColors, orchestrationPalette } from './palette.js';
 
-const LABEL_FONT = 9;
+const LABEL_FONT = CHART_TYPE.axis;
 
 function fit(value: string, room: number): string {
   const chars = Math.floor(room / (LABEL_FONT * MONO_ADVANCE));

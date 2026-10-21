@@ -1,6 +1,7 @@
 import type { Selection } from 'd3-selection';
 import { select } from 'd3-selection';
 
+import { CHART_TYPE } from './chart-theme.js';
 import { FD, fdColors } from './fusedash-visual.js';
 import { effectiveLabelLimit, truncateString } from './truncate.js';
 
@@ -134,7 +135,9 @@ export function applyLeftGutterYAxisLabels(
   axisGroup
     .selectAll('text')
     .attr('fill', fdColors(mode).axisLabelFill)
-    .attr('font-size', FD.axisLabelSize);
+    .attr('font-size', FD.axisLabelSize)
+    .attr('font-weight', CHART_TYPE.axisWeight)
+    .style('font-family', CHART_TYPE.fontFamily);
   if (options) {
     decorateAxisLabels(axisGroup, {
       ...options,

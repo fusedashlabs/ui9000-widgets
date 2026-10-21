@@ -36,6 +36,7 @@ import {
   type OrchestrationSelection,
 } from '../render/index.js';
 import { reasoningOrchestrationStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 /**
  * `show-*` flags arrive as the string "false" from `ui9000-chart-renderer`; a
@@ -590,7 +591,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
             <div class="ro-canvas"></div>
             ${this.renderModels()} ${this.renderLegend()} ${this.renderReset()}
           </div>
-          ${empty ? html`<div class="empty" part="empty">${'No reasoning graph'}</div>` : nothing}
+          ${empty ? html`<div class="empty" part="empty">${dsText('No reasoning graph', { size: 'md' })}</div>` : nothing}
           ${this.renderPanels()} ${this.renderCapNote()} ${this.renderShellLabelTooltip()}
         </div>
       </div>

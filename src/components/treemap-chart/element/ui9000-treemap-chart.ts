@@ -13,6 +13,7 @@ import { normalizeTreemapData } from '../lib/normalize.js';
 import type { TreemapChartData, TreemapModel } from '../lib/types.js';
 import { renderTreemapChart, type TreemapHoverPayload } from '../render/draw.js';
 import { treemapChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 type TooltipRow = { label: string; value: string };
 
@@ -149,7 +150,7 @@ export class Ui9000TreemapChart extends Ui9000ChartElement {
         <div class="widget-body">
           ${this.renderLegend()}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
-          ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

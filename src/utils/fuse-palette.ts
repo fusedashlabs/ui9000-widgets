@@ -5,6 +5,7 @@
 
 import type { ResolvedMode } from '../context/resolve-mode.js';
 import {
+  CHART_TYPE,
   parseChartStyleId,
   qualitativePalette,
   sequentialPalette,
@@ -83,7 +84,7 @@ export const PUNCHCARD_LABEL_GUTTER_PAD = 10;
 /** Tight left gutter from longest Y category (years ≈ 40px, not fixed 80). */
 export function punchcardLeftGutter(
   categories: string[],
-  fontSize = 11,
+  fontSize = CHART_TYPE.axis,
 ): number {
   const longest = categories.reduce(
     (max, c) => Math.max(max, String(c).length),

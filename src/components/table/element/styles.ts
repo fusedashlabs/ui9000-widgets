@@ -9,7 +9,7 @@ export const tableStyles = css`
     overflow: hidden;
     box-sizing: border-box;
     color: var(--ui9000-color-text, #111827);
-    font-family: var(--ui9000-font-family, system-ui, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
   }
 
   .table-root {

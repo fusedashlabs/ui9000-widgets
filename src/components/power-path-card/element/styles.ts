@@ -9,7 +9,7 @@ export const powerPathStyles = css`
     display: block;
     height: 100%;
     min-height: 0;
-    font-family: var(--ui9000-font-family, Inter, system-ui, -apple-system, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     -webkit-font-smoothing: antialiased;
     --ppc-surface: linear-gradient(200deg, #ffffff 0%, #f5f6f8 100%);
     --ppc-border: #e5e7eb;
@@ -30,8 +30,7 @@ export const powerPathStyles = css`
     --ppc-dot-critical: #ea4260;
     --ppc-dot-ring: rgba(17, 20, 26, 0.18);
     --ppc-accent-critical: linear-gradient(180deg, #ea607e, #fc6c72);
-    --ppc-score-font: 'DIN Alternate', Bahnschrift, 'Barlow Semi Condensed', 'Roboto Condensed',
-      var(--ui9000-font-family, Inter), sans-serif;
+    --ppc-score-font: var(--ui9000-font-family, Inter, sans-serif);
   }
 
   :host([data-mode='dark']) {
@@ -81,7 +80,7 @@ export const powerPathStyles = css`
     min-width: 0;
     margin: 0 0 0 1px;
     overflow: hidden;
-    font-size: 17px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 500;
     letter-spacing: -0.01em;
     line-height: 23px;
@@ -98,7 +97,7 @@ export const powerPathStyles = css`
     padding: 0 10px 0 11px;
     border-radius: 999px;
     background: var(--ppc-badge);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 500;
     line-height: 1;
     white-space: nowrap;
@@ -146,7 +145,7 @@ export const powerPathStyles = css`
     gap: 10px;
     min-width: 0;
     margin-right: auto;
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
     font-weight: 600;
     line-height: 18px;
     white-space: nowrap;
@@ -210,7 +209,7 @@ export const powerPathStyles = css`
     border-radius: 12px;
     background: var(--ppc-banner);
     color: var(--ppc-critical);
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     line-height: 16px;
   }
 
@@ -251,7 +250,7 @@ export const powerPathStyles = css`
     min-height: 29px;
     padding: 0 7px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     line-height: 16px;
   }
 
@@ -307,7 +306,7 @@ export const powerPathStyles = css`
   .empty {
     margin: auto;
     color: var(--ppc-muted);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
 
   @container (max-width: 300px) {

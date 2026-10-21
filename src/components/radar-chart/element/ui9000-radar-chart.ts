@@ -18,6 +18,7 @@ import {
 } from '../lib/index.js';
 import { renderRadarChart } from '../render/draw.js';
 import { radarChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-radar-chart')
 export class Ui9000RadarChart extends Ui9000ChartElement {
@@ -135,7 +136,7 @@ export class Ui9000RadarChart extends Ui9000ChartElement {
           ${this.renderLegend(model.series, model.groupBy)}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
-            ? html`<div class="empty" part="empty">No data</div>`
+            ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

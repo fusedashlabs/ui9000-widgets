@@ -15,6 +15,7 @@ import {
 } from '../lib/index.js';
 import { renderScatterPlot } from '../render/draw.js';
 import { scatterPlotStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-scatter-plot')
 export class Ui9000ScatterPlot extends Ui9000ChartElement {
@@ -140,9 +141,7 @@ export class Ui9000ScatterPlot extends Ui9000ChartElement {
           ${model ? this.renderLegend(model) : nothing}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
-            ? html`<div class="empty" part="empty">
-                Scatterplot requires two numeric fields. Pick numeric X and Y axes.
-              </div>`
+            ? html`<div class="empty" part="empty">${dsText('Scatterplot requires two numeric fields. Pick numeric X and Y axes.', { size: 'md' })}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

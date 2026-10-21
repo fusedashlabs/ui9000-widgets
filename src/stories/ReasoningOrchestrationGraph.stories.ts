@@ -83,7 +83,7 @@ const frame = (args: ReasoningArgs) => html`
       .showAnnotations=${args.showAnnotations}
       @path-select=${logSelect}
     ></ui9000-reasoning-orchestration-graph>
-    <output style="display:block;margin-top:8px;font:12px system-ui;color:#737373;"></output>
+    <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>
   </div>
 `;
 

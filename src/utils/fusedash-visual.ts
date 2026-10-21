@@ -1,7 +1,7 @@
 import type { Selection } from 'd3-selection';
 
 import type { ResolvedMode } from '../context/resolve-mode.js';
-import { QUALITATIVE, qualitativePalette } from './chart-theme.js';
+import { CHART_TYPE, QUALITATIVE, qualitativePalette } from './chart-theme.js';
 import { currentChartStyle, seriesInk } from './fuse-palette.js';
 
 /** FuseDash Widgets visual tokens — keep charts looking 1:1 with client. */
@@ -69,7 +69,7 @@ export const FD = {
   gridStroke: FD_LIGHT.gridStroke,
   gridDash: '1 2',
   axisLabelFill: FD_LIGHT.axisLabelFill,
-  axisLabelSize: 11,
+  axisLabelSize: CHART_TYPE.axis,
   axisStroke: FD_LIGHT.axisStroke,
   hoverGuideLight: '#6c7584',
   hoverGuideDark: '#ffffff',
@@ -223,7 +223,7 @@ export const FD = {
   polarSpokeCapRadius: 3,
   /** Category labels sit just outside the outermost ring */
   polarCategoryLabelFill: FD_LIGHT.polarCategoryLabelFill,
-  polarCategoryLabelSize: 12,
+  polarCategoryLabelSize: CHART_TYPE.label,
   polarCategoryLabelOffset: 12,
   /** Side room reserved for those labels, measured off the longest one */
   polarLabelCharWidth: 0.55,
@@ -259,8 +259,8 @@ export const FD = {
   radialBarGridStroke: FD_LIGHT.radialBarGridStroke,
   radialBarTickDash: '4,4',
   radialBarLabelFill: FD_LIGHT.radialBarLabelFill,
-  radialBarTickLabelSize: 12,
-  radialBarRingLabelSize: 11,
+  radialBarTickLabelSize: CHART_TYPE.label,
+  radialBarRingLabelSize: CHART_TYPE.axis,
   /** Value labels sit 12px outside the outer ring */
   radialBarTickLabelOffset: 12,
   /** Ring labels are cut at `(outer - inner) / 8` characters */
@@ -303,7 +303,7 @@ export const FD = {
   domainLimitArrow: 8,
   domainLimitLabelFill: '#141c2ce6',
   domainLimitLabelText: '#ffffff',
-  domainLimitLabelSize: 10,
+  domainLimitLabelSize: CHART_TYPE.axis,
   /** PartialDependenceChart — client DEFAULT_MARGIN */
   pdpMargin: { top: 16, right: 24, bottom: 28, left: 44 },
   /** ICE band: many faint curves under one dashed average line */
@@ -329,8 +329,8 @@ export const FD = {
   treemapLabelOnLight: '#0B101A',
   treemapLabelOnDark: '#FFFFFF',
   treemapLabelPadding: 4,
-  treemapLabelSize: 14,
-  treemapValueSize: 12,
+  treemapLabelSize: CHART_TYPE.title,
+  treemapValueSize: CHART_TYPE.label,
   /** A tile only gets a name below this, and a value below `MinValueHeight` */
   treemapMinLabelWidth: 40,
   treemapMinLabelHeight: 20,
@@ -380,17 +380,17 @@ export const FD = {
   flowSankeyLinkAlphaPct: 38,
   flowSankeyDimOpacity: 0.3,
   /** Stage header row above the plot */
-  flowSankeyStageLabelSize: 9,
+  flowSankeyStageLabelSize: CHART_TYPE.axis,
   flowSankeyStageLabelFill: FD_LIGHT.flowSankeyStageLabelFill,
   flowSankeyStageLabelTracking: 0.8,
   /** Percentage gutter on the left */
   flowSankeyAxisTicks: 11,
-  flowSankeyAxisLabelSize: 9,
+  flowSankeyAxisLabelSize: CHART_TYPE.axis,
   /** Node label block: icon chip, name, value + share badge */
   flowSankeyLabelGap: 10,
-  flowSankeyLabelSize: 11,
-  flowSankeyValueSize: 11,
-  flowSankeyShareSize: 9,
+  flowSankeyLabelSize: CHART_TYPE.axis,
+  flowSankeyValueSize: CHART_TYPE.label,
+  flowSankeyShareSize: CHART_TYPE.axis,
   flowSankeyIconSize: 18,
   flowSankeyIconRadius: 5,
   /** Selected node ring (Figma: dashed white outline) */
@@ -423,8 +423,8 @@ export const FD = {
   /** Client draws these axes a shade darker than the shared FD axis tokens */
   parallelAxisStroke: FD_LIGHT.parallelAxisStroke,
   parallelAxisLabelFill: FD_LIGHT.parallelAxisLabelFill,
-  parallelTitleSize: 11,
-  parallelTitleSizeActive: 13,
+  parallelTitleSize: CHART_TYPE.axis,
+  parallelTitleSizeActive: CHART_TYPE.title,
   /** GiniImpurityEntropyChart — client DEFAULT_MARGIN */
   giniMargin: { top: 20, right: 24, bottom: 28, left: 44 },
   /** Curves are drawn as smooth Catmull-Rom splines with this tension */

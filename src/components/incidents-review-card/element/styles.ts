@@ -9,7 +9,7 @@ export const incidentsReviewStyles = css`
   :host {
     display: block;
     min-height: 0;
-    font-family: var(--ui9000-font-family, Inter, system-ui, -apple-system, sans-serif);
+    font-family: var(--ui9000-font-family, Inter, sans-serif);
     -webkit-font-smoothing: antialiased;
     --irc-bezel: linear-gradient(180deg, #eceef1 0%, #e4e7eb 100%);
     --irc-border: #dfe2e7;
@@ -26,8 +26,7 @@ export const incidentsReviewStyles = css`
     --irc-tick: #c9cdd3;
     --irc-seg-from: 14%;
     --irc-seg-to: 36%;
-    --irc-value-font: 'Barlow Condensed', 'Avenir Next Condensed', 'Roboto Condensed', 'Arial Narrow',
-      var(--ui9000-font-family, Inter), sans-serif;
+    --irc-value-font: var(--ui9000-font-family, Inter, sans-serif);
   }
 
   :host([data-mode='dark']) {
@@ -84,7 +83,7 @@ export const incidentsReviewStyles = css`
     min-width: 0;
     margin: 0;
     overflow: hidden;
-    font-size: 15px;
+    font-size: var(--ui9000-font-size-title, 14px);
     font-weight: 500;
     letter-spacing: -0.01em;
     line-height: 20px;
@@ -98,7 +97,7 @@ export const incidentsReviewStyles = css`
     margin: 4px 0 0 auto;
     padding: 0 8.5px;
     overflow: hidden;
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
     line-height: 14px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -165,7 +164,7 @@ export const incidentsReviewStyles = css`
     gap: 4px;
     max-width: calc(100% - 6px);
     color: var(--irc-muted);
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-axis, 11px);
     line-height: 14px;
     white-space: nowrap;
   }
@@ -180,7 +179,7 @@ export const incidentsReviewStyles = css`
   /* No dot, so the total label sits tighter under its number, as in Figma. */
   .count.total .label {
     margin-top: -2px;
-    font-size: 12px;
+    font-size: var(--ui9000-font-size-label, 12px);
   }
 
   .dot {
@@ -246,7 +245,7 @@ export const incidentsReviewStyles = css`
     margin: 0;
     padding: 24px 0;
     color: var(--irc-muted);
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label, 12px);
     text-align: center;
   }
 

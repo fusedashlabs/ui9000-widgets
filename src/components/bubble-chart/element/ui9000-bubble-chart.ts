@@ -16,6 +16,7 @@ import {
 } from '../lib/index.js';
 import { renderBubbleChart } from '../render/draw.js';
 import { bubbleChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-bubble-chart')
 export class Ui9000BubbleChart extends Ui9000ChartElement {
@@ -134,9 +135,7 @@ export class Ui9000BubbleChart extends Ui9000ChartElement {
           ${model ? this.renderLegend(model) : nothing}
           <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
           ${this._empty
-            ? html`<div class="empty" part="empty">
-                Bubble chart requires two numeric fields. Pick numeric X and Y axes.
-              </div>`
+            ? html`<div class="empty" part="empty">${dsText('Bubble chart requires two numeric fields. Pick numeric X and Y axes.', { size: 'md' })}</div>`
             : nothing}
           ${this.renderShellLabelTooltip()}
         </div>

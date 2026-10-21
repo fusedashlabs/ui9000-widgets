@@ -58,7 +58,7 @@ export const DEFAULT_THEME: WidgetTheme = {
   surface: '#ffffff',
   surfaceMuted: '#f3f4f6',
   border: '#e5e7eb',
-  fontFamily: 'system-ui, -apple-system, sans-serif',
+  fontFamily: 'Inter, sans-serif',
 };
 
 /**
@@ -76,7 +76,7 @@ export const DARK_THEME: WidgetTheme = {
   surface: '#13161D',
   surfaceMuted: '#282E37',
   border: '#444B57',
-  fontFamily: 'system-ui, -apple-system, sans-serif',
+  fontFamily: 'Inter, sans-serif',
 };
 
 export const DEFAULT_CONTEXT: WidgetContextValue = {

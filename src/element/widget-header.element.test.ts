@@ -139,6 +139,11 @@ describe('widget header variants', () => {
     expect(el.shadowRoot?.querySelector('[part="chat-button"]')).toBeNull();
     expect(el.shadowRoot?.querySelector('[part="settings-button"]')).toBeNull();
     expect(el.shadowRoot?.querySelector('.widget-title')?.textContent?.trim()).toBe('Revenue');
+    const titleType = el.shadowRoot?.querySelector('.widget-title ui9000-typography');
+    expect(titleType?.getAttribute('size')).toBe('sm');
+    const label = titleType?.querySelector('p');
+    expect(label?.textContent).toBe('Revenue');
+    expect(getComputedStyle(label!).fontSize).toBe('12px');
     el.remove();
   });
 

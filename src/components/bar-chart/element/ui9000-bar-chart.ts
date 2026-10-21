@@ -23,6 +23,7 @@ import {
 } from '../lib/index.js';
 import { renderBarChart } from '../render/draw.js';
 import { barChartStyles } from './styles.js';
+import { dsText } from '../../../element/ds-text.js';
 
 @customElement('ui9000-bar-chart')
 export class Ui9000BarChart extends Ui9000ChartElement {
@@ -236,7 +237,7 @@ export class Ui9000BarChart extends Ui9000ChartElement {
               ?hidden=${!this._fixedXAxis}
             ></div>
           </div>
-          ${this._empty ? html`<div class="empty" part="empty">No data</div>` : nothing}
+          ${this._empty ? html`<div class="empty" part="empty">${dsText('No data', { size: 'md' })}</div>` : nothing}
           ${this.renderShellLabelTooltip()}
         </div>
       </div>

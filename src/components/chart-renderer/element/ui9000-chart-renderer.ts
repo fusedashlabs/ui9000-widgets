@@ -1,4 +1,3 @@
-import type { WidgetHeaderHandlers } from '../../../element/widget-header.js';
 import { loadChart } from '../../../lazy/index.js';
 import type { WidgetScale } from '../../../types/index.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
@@ -44,37 +43,49 @@ export class Ui9000ChartRenderer extends HTMLElement {
   private _host: HTMLDivElement | null = null;
   private _empty: HTMLDivElement | null = null;
   private _mountToken = 0;
-  private _headerHandlers: WidgetHeaderHandlers = {};
-
-  get headerHandlers(): WidgetHeaderHandlers {
-    return this._headerHandlers;
-  }
-
-  set headerHandlers(value: WidgetHeaderHandlers) {
-    this._headerHandlers = value ?? {};
-    const chart = this._host?.firstElementChild;
-    if (chart instanceof HTMLElement) this.applyHeaderHandlers(chart);
-  }
+  private _actionsObserver: MutationObserver | null = null;
 
   connectedCallback(): void {
-    if (this._host) return;
-    const root = this.attachShadow({ mode: 'open' });
-    const style = document.createElement('style');
-    style.textContent = chartRendererStyles.cssText;
-    root.appendChild(style);
+    if (!this._host) {
+      const root = this.attachShadow({ mode: 'open' });
+      const style = document.createElement('style');
+      style.textContent = chartRendererStyles.cssText;
+      root.appendChild(style);
 
-    this._host = document.createElement('div');
-    this._host.className = 'host';
-    this._host.part = 'chart';
-    root.appendChild(this._host);
+      this._host = document.createElement('div');
+      this._host.className = 'host';
+      this._host.part = 'chart';
+      root.appendChild(this._host);
 
-    this._empty = document.createElement('div');
-    this._empty.className = 'empty';
-    this._empty.part = 'empty';
-    this._empty.hidden = true;
-    root.appendChild(this._empty);
+      this._empty = document.createElement('div');
+      this._empty.className = 'empty';
+      this._empty.part = 'empty';
+      this._empty.hidden = true;
+      root.appendChild(this._empty);
 
-    void this.mountChart();
+      this.bindActionsObserver();
+      void this.mountChart();
+      return;
+    }
+
+    // Moved in the document: the shadow tree is still here, the observer is not.
+    this.bindActionsObserver();
+    const chart = this._host.firstElementChild;
+    if (chart instanceof HTMLElement) this.placeActions(chart);
+  }
+
+  disconnectedCallback(): void {
+    this._actionsObserver?.disconnect();
+    this._actionsObserver = null;
+  }
+
+  private bindActionsObserver(): void {
+    this._actionsObserver?.disconnect();
+    this._actionsObserver = new MutationObserver(() => {
+      const chart = this._host?.firstElementChild;
+      if (chart instanceof HTMLElement) this.placeActions(chart);
+    });
+    this._actionsObserver.observe(this, { childList: true });
   }
 
   attributeChangedCallback(): void {
@@ -119,10 +130,22 @@ export class Ui9000ChartRenderer extends HTMLElement {
     else el.removeAttribute('header-variant');
   }
 
-  private applyHeaderHandlers(el: HTMLElement): void {
-    if (!('headerHandlers' in el)) return;
-    (el as HTMLElement & { headerHandlers: WidgetHeaderHandlers }).headerHandlers =
-      this._headerHandlers;
+  /**
+   * The renderer's shadow root hides a light-DOM child from the chart's slot.
+   * Move `slot="actions"` onto the mounted chart, which is the slot host.
+   * Park it on this element before the chart node is replaced.
+   */
+  private takeActions(): HTMLElement | null {
+    const light = this.querySelector(':scope > [slot="actions"]');
+    if (light instanceof HTMLElement) return light;
+    const parked = this._host?.querySelector('[slot="actions"]');
+    return parked instanceof HTMLElement ? parked : null;
+  }
+
+  private placeActions(chart: HTMLElement): void {
+    const actions = this.takeActions();
+    if (!actions || actions.parentElement === chart) return;
+    chart.append(actions);
   }
 
   private copyHostAttr(el: HTMLElement, name: string): void {
@@ -138,6 +161,8 @@ export class Ui9000ChartRenderer extends HTMLElement {
 
   private showEmpty(message: string, detail?: string): void {
     if (!this._empty || !this._host) return;
+    const actions = this.takeActions();
+    if (actions) this.append(actions);
     this._host.replaceChildren();
     this._host.hidden = true;
     this._empty.hidden = false;
@@ -191,7 +216,11 @@ export class Ui9000ChartRenderer extends HTMLElement {
 
     let el = this._host.firstElementChild as HTMLElement | null;
     const reuse = !!el && el.tagName.toLowerCase() === target.tag;
+    // Reuse leaves the slotted node on the chart. Parking it on every update
+    // detaches host buttons (and flashes Download) for one slotchange.
     if (!reuse) {
+      const actions = this.takeActions();
+      if (actions) this.append(actions);
       el = document.createElement(target.tag);
     }
     if (!el) return;
@@ -207,7 +236,6 @@ export class Ui9000ChartRenderer extends HTMLElement {
       el.setAttribute('show-header', 'false');
     else el.removeAttribute('show-header');
     this.applyHeaderVariant(el);
-    this.applyHeaderHandlers(el);
 
     const showGrid = this.boolAttr('show-grid');
     const showLegend = this.boolAttr('show-legend');
@@ -250,6 +278,7 @@ export class Ui9000ChartRenderer extends HTMLElement {
       this._host.replaceChildren();
       this._host.appendChild(el);
     }
+    this.placeActions(el);
 
     this._empty.replaceChildren();
     this._empty.hidden = true;

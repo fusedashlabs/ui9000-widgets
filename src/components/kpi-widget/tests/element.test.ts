@@ -52,4 +52,24 @@ describe('kpi dark theme', () => {
       el.remove();
     }
   });
+
+  it('projects host actions into the card header', async () => {
+    const el = document.createElement('ui9000-kpi-widget') as Ui9000KpiWidget;
+    el.dataJson = JSON.stringify(SINGLE);
+    el.setAttribute('header-variant', 'dash');
+    const actions = document.createElement('button');
+    actions.slot = 'actions';
+    actions.textContent = 'Settings';
+    el.append(actions);
+    document.body.appendChild(el);
+    try {
+      await el.updateComplete;
+      await el.updateComplete;
+      const slot = el.shadowRoot?.querySelector('slot[name="actions"]');
+      expect(slot instanceof HTMLSlotElement ? slot.assignedElements() : []).toEqual([actions]);
+      expect(el.shadowRoot?.querySelector('.kpi-root')?.getAttribute('data-actions')).toBe('true');
+    } finally {
+      el.remove();
+    }
+  });
 });

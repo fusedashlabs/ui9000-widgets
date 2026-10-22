@@ -24,11 +24,30 @@ export const kpiWidgetStyles = css`
   .kpi-root {
     display: flex;
     flex-direction: column;
+    position: relative;
     width: 100%;
     height: 100%;
     min-height: inherit;
     min-width: 0;
     overflow: hidden;
+  }
+
+  .kpi-actions {
+    position: absolute;
+    z-index: 2;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+  .kpi-actions slot[name='actions'] {
+    display: flex;
+    align-items: center;
+  }
+
+  .kpi-root[data-actions='true'] .kpi-section-title {
+    padding-right: 88px;
   }
 
   .kpi-section-title {

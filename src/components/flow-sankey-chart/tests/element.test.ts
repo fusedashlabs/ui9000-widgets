@@ -103,7 +103,9 @@ describe('ui9000-flow-sankey-chart', () => {
       'chart-title': 'Tower Power Flow Analysis',
     });
 
-    expect(host.shadowRoot.querySelector('.widget-actions')).toBeNull();
+    const actions = host.shadowRoot.querySelector('.widget-actions');
+    expect(actions?.querySelector('slot[name="actions"]')).toBeTruthy();
+    expect(actions?.hasAttribute('data-slot-only')).toBe(true);
     expect(host.shadowRoot.querySelector('.menu-btn')).toBeNull();
     expect(host.shadowRoot.querySelector('[data-action="download-image"]')).toBeNull();
     // The rest of the header is untouched.

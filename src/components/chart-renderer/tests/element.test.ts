@@ -190,21 +190,36 @@ describe('Ui9000ChartRenderer', () => {
     host.remove();
   });
 
-  it('forwards header-variant and headerHandlers onto the mounted chart', async () => {
+  it('forwards header-variant and moves slotted actions onto the mounted chart', async () => {
     const host = document.createElement('ui9000-chart-renderer') as Ui9000ChartRenderer;
-    const onOpenChat = () => {};
+    const actions = document.createElement('button');
+    actions.slot = 'actions';
+    actions.textContent = 'Settings';
     host.setAttribute('data', JSON.stringify(lineFixture));
     host.setAttribute('header-variant', 'dash');
-    host.headerHandlers = { onOpenChat };
+    host.append(actions);
     document.body.appendChild(host);
 
     await waitFor(() => !!host.shadowRoot?.querySelector('ui9000-line-chart'));
 
-    const chart = host.shadowRoot?.querySelector('ui9000-line-chart') as HTMLElement & {
-      headerHandlers?: { onOpenChat?: () => void };
-    };
+    const chart = host.shadowRoot?.querySelector('ui9000-line-chart');
     expect(chart?.getAttribute('header-variant')).toBe('dash');
-    expect(chart?.headerHandlers?.onOpenChat).toBe(onOpenChat);
+    await waitFor(() => chart?.querySelector('[slot="actions"]') === actions);
+    await waitFor(() => !chart?.shadowRoot?.querySelector('[part="menu-button"]'));
+
+    host.widgetJson = JSON.stringify({ ...lineFixture, name: 'Updated title' });
+    await waitFor(() => chart?.getAttribute('chart-title') === 'Updated title');
+    expect(chart?.querySelector('[slot="actions"]')).toBe(actions);
+    expect(host.querySelector(':scope > [slot="actions"]')).toBeNull();
+
+    const parent = host.parentElement;
+    host.remove();
+    parent?.appendChild(host);
+    const after = document.createElement('button');
+    after.slot = 'actions';
+    after.textContent = 'After';
+    host.append(after);
+    await waitFor(() => chart?.contains(after) === true);
     host.remove();
   });
 });

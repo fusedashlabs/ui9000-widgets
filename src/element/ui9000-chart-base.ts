@@ -22,11 +22,7 @@ import { CSS_VARS, paintMode, readCssVar } from '../context/widget-context.js';
 import type { ResolvedMode } from '../context/resolve-mode.js';
 import { parseChartStyleId, type ChartStyleId } from '../utils/chart-theme.js';
 import { useSeriesMode } from '../utils/fuse-palette.js';
-import {
-  resolveHeaderVariant,
-  type WidgetHeaderHandlers,
-  type WidgetHeaderVariant,
-} from './widget-header.js';
+import { resolveHeaderVariant, type WidgetHeaderVariant } from './widget-header.js';
 import { subscribeHostTheme } from './theme-watch.js';
 
 /** Shared widget chrome: header, axis-label tooltip, menu. */
@@ -52,9 +48,11 @@ export abstract class Ui9000ChartElement extends LitElement {
   showHeader = true;
 
   /**
-   * `chat` (default): title + download menu, always visible.
-   * `dash`: dashboard chrome — chat, overflow actions, settings — shown only
-   * when the matching handler is set. Chat and overflow appear on hover.
+   * `chat` (default) and `dash` share the header. With nothing in the
+   * `actions` slot the header shows Download image. A host that appends an
+   * element with `slot="actions"` replaces that menu with its own buttons.
+   * On `dash`, those buttons stay hidden until the chart is hovered or
+   * focused, or the slotted element sets `data-open` / `data-persist`.
    */
   @property({
     attribute: 'header-variant',
@@ -64,22 +62,8 @@ export abstract class Ui9000ChartElement extends LitElement {
   })
   headerVariant: WidgetHeaderVariant = 'chat';
 
-  /**
-   * Host callbacks. Not a Lit property, so assigning them re-renders the
-   * header without redrawing the plot.
-   */
-  private _headerHandlers: WidgetHeaderHandlers = {};
-
-  get headerHandlers(): WidgetHeaderHandlers {
-    return this._headerHandlers;
-  }
-
-  set headerHandlers(value: WidgetHeaderHandlers) {
-    const next = value ?? {};
-    if (next === this._headerHandlers) return;
-    this._headerHandlers = next;
-    this.requestUpdate();
-  }
+  @state()
+  protected _hasHeaderActions = false;
 
   @state()
   protected _labelTooltip: LabelTooltipState = null;
@@ -191,7 +175,8 @@ export abstract class Ui9000ChartElement extends LitElement {
       showActions: extras.showActions,
       truncateTitle: extras.truncateTitle,
       variant: this.headerVariant,
-      handlers: this._headerHandlers,
+      customActions: this._hasHeaderActions,
+      onActionsSlotChange: (event: Event) => this.onHeaderActionsSlotChange(event),
       menuOpen: this._menuOpen,
       onMenuToggle: (e: Event) => {
         e.stopPropagation();
@@ -202,6 +187,15 @@ export abstract class Ui9000ChartElement extends LitElement {
       },
       onDownload: () => dispatchChartDownload(this),
     });
+  }
+
+  /** Host buttons projected into `slot="actions"`. Hides Download while any are assigned. */
+  protected onHeaderActionsSlotChange(event: Event): void {
+    const slot = event.target;
+    if (!(slot instanceof HTMLSlotElement)) return;
+    const has = slot.assignedElements({ flatten: true }).length > 0;
+    if (has === this._hasHeaderActions) return;
+    this._hasHeaderActions = has;
   }
 
   protected renderShellLabelTooltip() {

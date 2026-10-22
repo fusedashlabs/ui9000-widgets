@@ -262,7 +262,15 @@ export class Ui9000KpiWidget extends Ui9000ChartElement {
         : nothing;
 
     return html`
-      <div class="kpi-root" data-layout=${layout} data-single=${single ? 'true' : 'false'}>
+      <div
+        class="kpi-root"
+        data-layout=${layout}
+        data-single=${single ? 'true' : 'false'}
+        data-actions=${this._hasHeaderActions ? 'true' : 'false'}
+      >
+        <div class="kpi-actions">
+          <slot name="actions" @slotchange=${(event: Event) => this.onHeaderActionsSlotChange(event)}></slot>
+        </div>
         ${title ? html`<div class="kpi-section-title">${dsText(title, { size: 'sm' })}</div>` : nothing}
         ${layout === 'empty'
           ? html`<div class="empty">${dsText('No KPI data', { size: 'md' })}</div>`

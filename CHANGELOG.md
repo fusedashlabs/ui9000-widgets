@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Breaking
+
+- `WidgetHeaderHandlers` is no longer exported, and `headerHandlers` is no longer a property on chart elements or `ui9000-chart-renderer`. Hosts draw header buttons into the `actions` slot. With nothing slotted, the header keeps Download image and emits `ui9000-download`. On `header-variant="dash"`, slotted buttons stay hidden until the chart is hovered or focused, or the slotted element sets `data-open` (menu open) or `data-persist` (always visible, such as a public page).
+
 ### Added
 
 - **goals-perimeter** (`ui9000-goals-perimeter`, chartType `goalsPerimeter`, `GoalsPerimeterChart`): the Agents Management goals perimeter (AM-2). Many agents arranged around a shared goal: each goal is a cloud of its agents inside a perimeter whose arc is the goal's health (green, amber below 80%, rose below 25%). Healthy, degraded, blocked and failed agents differ by colour and by marker (△, ⊘, ✕); resource-group diamonds sit at the centre, and ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. It takes goals, agent nodes (`id`, `state`), optional links and an exception count; the state legend and the exception count sit in the shell. Every mark explains itself on hover. A click on a cluster expands it: the goal fills the plot with its agents in one sector per health state, the reasons beside each, its resource groups named, and the goals and dependencies it is joined to around it; “All goals” or Escape zooms back out. Opening dispatches `goal-open`, closing `goal-close`. D3, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/goals-perimeter`.

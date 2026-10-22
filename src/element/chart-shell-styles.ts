@@ -96,6 +96,7 @@ export const chartShellStyles = css`
     flex-shrink: 0;
     margin-bottom: 8px;
     min-width: 0;
+    position: relative;
   }
 
   /* Title + subtitle stacked, so an aside can share the header row. */
@@ -180,20 +181,37 @@ export const chartShellStyles = css`
     flex-shrink: 0;
   }
 
-  .hover-actions {
+  .widget-actions slot[name='actions'] {
     display: flex;
     align-items: center;
-    gap: 4px;
   }
 
-  /* Dashboard: chat + overflow stay hidden until the widget is hovered or the menu is open. */
-  .widget-header[data-variant='dash'] .hover-actions {
+  /* Empty opt-out: the slot stays mounted, but it must not push the title. */
+  .widget-actions[data-slot-only] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    gap: 0;
+  }
+
+  /*
+   * Dash host buttons live in the slot, inside this shadow tree, so a page
+   * hover rule cannot see them. Hide the slotted element until the chart is
+   * hovered or focused. data-open keeps it up while a menu portaled outside
+   * the chart is open. data-persist is the always-visible case (public page).
+   */
+  :host([header-variant='dash']) slot[name='actions']::slotted(*) {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
   }
 
-  .widget-shell:hover .widget-header[data-variant='dash'] .hover-actions,
-  .widget-header[data-variant='dash'] .hover-actions[data-open='true'] {
+  :host([header-variant='dash']:hover) slot[name='actions']::slotted(*),
+  :host([header-variant='dash']:focus-within) slot[name='actions']::slotted(*),
+  :host([header-variant='dash']) slot[name='actions']::slotted([data-open]),
+  :host([header-variant='dash']) slot[name='actions']::slotted([data-persist]) {
     opacity: 1;
   }
 
@@ -201,21 +219,7 @@ export const chartShellStyles = css`
     position: relative;
   }
 
-  .icon-btn,
-  .settings-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border: 1px solid var(--ui9000-color-border, #e5e7eb);
-    background: var(--ui9000-color-surface, #ffffff);
-    color: var(--ui9000-color-text, #111827);
-    cursor: pointer;
-  }
-
   .menu-btn svg,
-  .icon-btn svg,
-  .settings-btn svg,
   .menu-item svg {
     width: 16px;
     height: 16px;
@@ -239,23 +243,12 @@ export const chartShellStyles = css`
     cursor: pointer;
   }
 
-  .widget-header[data-variant='dash'] .menu-btn,
-  .widget-header[data-variant='dash'] .icon-btn {
+  .widget-header[data-variant='dash'] .menu-btn {
     width: auto;
     height: 24px;
     padding: 4px 6px;
     border-radius: 4px;
     font-size: 16px;
-  }
-
-  .settings-btn {
-    height: 24px;
-    padding: 4px;
-    border-radius: 24px;
-    background: var(--ui9000-color-surface, #fff);
-    box-shadow:
-      0 2px 2px rgb(0 0 0 / 6%),
-      0 2px 4px 1px rgb(0 0 0 / 4%);
   }
 
   .menu-btn:hover {
@@ -314,29 +307,19 @@ export const chartShellStyles = css`
     line-height: 20px;
   }
 
-  .menu-divider {
-    height: 1px;
-    margin: 4px 0;
-    background: var(--ui9000-color-border, #e5e7eb);
-  }
-
   .menu-item:hover,
   .menu-item:focus-visible {
     background: var(--ui9000-color-surface-muted, #f3f4f6);
     color: var(--ui9000-color-text, #111827);
   }
 
-  :host([data-mode='dark']) .menu-btn,
-  :host([data-mode='dark']) .icon-btn,
-  :host([data-mode='dark']) .settings-btn {
+  :host([data-mode='dark']) .menu-btn {
     background: var(--ui9000-color-surface, #13161d);
     border-color: var(--ui9000-color-border, #444b57);
     color: var(--ui9000-color-text, #eff0f1);
   }
 
-  :host([data-mode='dark']) .menu-btn:hover,
-  :host([data-mode='dark']) .icon-btn:hover,
-  :host([data-mode='dark']) .settings-btn:hover {
+  :host([data-mode='dark']) .menu-btn:hover {
     background: var(--ui9000-color-surface-muted, #282e37);
     color: var(--ui9000-color-text, #eff0f1);
   }
@@ -354,10 +337,6 @@ export const chartShellStyles = css`
   :host([data-mode='dark']) .menu-item:focus-visible {
     background: var(--ui9000-color-surface-muted, #282e37);
     color: var(--ui9000-color-text, #eff0f1);
-  }
-
-  :host([data-mode='dark']) .menu-divider {
-    background: var(--ui9000-color-border, #444b57);
   }
 
   .widget-body {

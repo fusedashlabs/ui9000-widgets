@@ -7,7 +7,7 @@ const NON_DRAW_PROPS = new Set(['headerVariant']);
  * True when a public (non-`_`*) property changed.
  * Internal Lit `@state` like `_tooltip` / `_empty` must not trigger D3 redraw —
  * otherwise hover destroys the SVG and the tooltip never sticks.
- * `headerVariant` is header chrome; `headerHandlers` is a plain field, not a Lit property.
+ * `headerVariant` is header chrome and must not redraw the plot.
  */
 export function chartPropsChanged(changed: PropertyValues): boolean {
   for (const key of changed.keys()) {

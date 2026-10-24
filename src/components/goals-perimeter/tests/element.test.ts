@@ -2,9 +2,9 @@
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import defaultFixture from '../../../stories/fixtures/goals-perimeter.default.json';
-import agentsFixture from '../../../stories/fixtures/goals-perimeter.agents.json';
-import type { GoalOpenDetail, Ui9000GoalsPerimeterChart } from '../index.js';
-import { detailGeometry, normalizeGoalsPerimeter, stateSectors } from '../lib/index.js';
+import type { Ui9000GoalsPerimeterChart } from '../index.js';
+import { DEFAULT_CAMERA } from '../lib/index.js';
+import { applyWidgetContext } from '../../../context/widget-context.js';
 
 let observed: (() => void)[] = [];
 
@@ -19,11 +19,13 @@ beforeAll(async () => {
     }
   }
   globalThis.ResizeObserver = StubResizeObserver as unknown as typeof ResizeObserver;
+  // jsdom draws no canvas: the board's instruments and labels are what it can test
+  HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext;
   await import('../index.js');
   await import('../../chart-renderer/index.js');
-});
+}, 60_000);
 
-const flush = () => new Promise((r) => setTimeout(r, 40));
+const flush = () => new Promise((r) => setTimeout(r, 60));
 /** Lets the zoom into or out of a goal finish. */
 const settle = () => new Promise((r) => setTimeout(r, 520));
 
@@ -36,6 +38,15 @@ async function mount(data: unknown): Promise<Ui9000GoalsPerimeterChart> {
   return el;
 }
 
+/** Gives the plot a size and lets the board refit. */
+async function sized(el: Ui9000GoalsPerimeterChart, width: number, height: number): Promise<void> {
+  const chart = el.shadowRoot!.querySelector<HTMLElement>('.chart-root')!;
+  Object.defineProperty(chart, 'clientWidth', { value: width, configurable: true });
+  Object.defineProperty(chart, 'clientHeight', { value: height, configurable: true });
+  for (const cb of observed) cb();
+  await flush();
+}
+
 async function waitFor(predicate: () => boolean, timeoutMs = 3000): Promise<void> {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
@@ -45,529 +56,333 @@ async function waitFor(predicate: () => boolean, timeoutMs = 3000): Promise<void
   throw new Error('Timed out waiting for condition');
 }
 
+/** Each match's text as it reads: its pieces of text, one space between. */
 const texts = (root: Element | ShadowRoot, selector: string) =>
-  [...root.querySelectorAll(selector)].map((node) => node.textContent?.replace(/\s+/g, ' ').trim());
+  [...root.querySelectorAll(selector)].map((node) => {
+    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    const parts: string[] = [];
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const text = n.textContent?.replace(/\s+/g, ' ').trim();
+      if (text) parts.push(text);
+    }
+    return parts.join(' ');
+  });
 
-const tooltip = () => document.querySelector('.ui9000-chart-tooltip')?.textContent ?? '';
+/** The shared chart tooltip on the page, while it is open. */
+const OPEN_TIP = '[data-ui9000-chart-tooltip].is-open';
+const card = () => document.querySelector<HTMLElement>('[data-ui9000-chart-tooltip]');
+
+/** The chart's tip, as it reads. */
+const tooltip = () => texts(document.body, OPEN_TIP)[0] ?? '';
+const tipRows = () => texts(document.body, `${OPEN_TIP} .ui9000-chart-tooltip__row`);
 
 afterEach(() => {
   document.body.replaceChildren();
 });
 
 describe('ui9000-goals-perimeter', () => {
-  it('renders the default sample with D3 inside the shell', async () => {
+  it('draws each goal with its ring, orbit and diamonds, and a callout, over the scene', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    expect(root.querySelector('.widget-shell .chart-root svg.gp-svg')).not.toBeNull();
-    expect(root.querySelector('.widget-header, .widget-title')?.textContent).toContain(
-      'Agents Management — Goals',
-    );
-
-    expect(texts(root, '.goal-label .row.title')).toEqual([
-      'Perimeter Watch',
-      'Onboarding Velocity',
-      'Maintain Verified Asset Visibility',
-      'Pipeline Quality',
-      'Incident Response',
+    // the scene behind the board, and the agents' picture in it
+    expect(root.querySelector('.gp-scene .gp-floor')).not.toBeNull();
+    expect(root.querySelector('.gp-scene .gp-field')).not.toBeNull();
+    const goals = [...root.querySelectorAll('g.gp-goal')];
+    expect(goals.map((g) => g.getAttribute('data-goal'))).toEqual([
+      'perimeter-watch',
+      'onboarding-velocity',
+      'maintain-verified-asset-visibility',
+      'pipeline-quality',
+      'incident-response',
+      'model-drift-watch',
     ]);
-    expect(texts(root, '.goal-label .row.summary')[0]).toBe('1,204 agents · 88% · 1.1×');
-    expect(texts(root, '.goal-label .row.impure')).toEqual([
-      'IMPURE · 35',
-      'IMPURE · 159',
-      'IMPURE · 15',
-      'IMPURE · 5',
-    ]);
-    expect(texts(root, '.goal-label .row.groups')[3]).toBe('1 resource group · click to open');
-    expect([...root.querySelectorAll('.ring')].map((ring) => ring.getAttribute('class'))).toEqual([
-      'ring healthy',
-      'ring degraded',
-      'ring degraded',
-      'ring healthy',
-      'ring degraded',
-    ]);
-    expect(
-      [...root.querySelectorAll('.goal-marks')].map(
-        (g) => g.querySelectorAll('.ticks line').length,
-      ),
-    ).toEqual([6, 12, 4, 0, 2]);
-    expect(root.querySelectorAll('.rg')).toHaveLength(10);
-    expect(root.querySelectorAll('.link-down')).toHaveLength(2);
-    expect(root.querySelectorAll('.strand').length).toBeGreaterThan(30);
-  });
-
-  it('puts the exception count and the state legend in the shell, matching the fixture', async () => {
-    const el = await mount(defaultFixture);
-    const root = el.shadowRoot!;
-    const summary = root.querySelector('.exception-summary')!;
-    expect(summary.querySelector('strong')?.textContent).toBe('214');
-    expect(summary.textContent?.replace(/\s+/g, ' ')).toContain('214 exceptions');
-    expect(summary.textContent).toContain('2 connections down');
-    // The summary is shell HTML, not text on the plot.
-    expect(root.querySelector('svg .exception-summary')).toBeNull();
-    expect(texts(root, '.chart-legend .legend-label')).toEqual([
-      'Healthy 2,906',
-      'Blocked 95',
-      'Failed 119',
-    ]);
-  });
-
-  it('tells healthy, degraded, blocked and failed agents apart', async () => {
-    const el = await mount(agentsFixture);
-    const root = el.shadowRoot!;
-    const agents = [...root.querySelectorAll<SVGRectElement>('rect.speck.agent')];
-    expect(agents).toHaveLength(72);
-    const fill = (state: string) =>
-      new Set(agents.filter((r) => r.classList.contains(state)).map((r) => r.getAttribute('fill')));
-    const fills = ['healthy', 'degraded', 'blocked', 'failed'].map(fill);
-    // Each state has its own colours, shared with no other state.
-    for (let i = 0; i < fills.length; i += 1) {
-      expect(fills[i]!.size).toBeGreaterThan(0);
-      for (let j = i + 1; j < fills.length; j += 1) {
-        expect([...fills[i]!].filter((c) => fills[j]!.has(c))).toEqual([]);
-      }
+    const onboarding = root.querySelector('g.gp-goal[data-goal="onboarding-velocity"]')!;
+    for (const part of ['.gp-orbit.far', '.gp-orbit.near', '.gp-ticks.on', '.gp-progress', '.gp-glint', '.gp-needle', '.gp-glass']) {
+      expect(onboarding.querySelector(part)?.getAttribute('d') ?? onboarding.querySelector(part)?.getAttribute('r'), part).toBeTruthy();
     }
-    // And its own marker: ✕ failed, ⊘ blocked, △ degraded.
-    expect(root.querySelectorAll('.marker.failed').length).toBeGreaterThan(0);
-    expect(root.querySelectorAll('.marker.blocked').length).toBeGreaterThan(0);
-    expect(root.querySelectorAll('.marker.degraded').length).toBeGreaterThan(0);
-    expect(root.querySelector('.exception-summary strong')?.textContent).toBe('20');
-    expect(texts(root, '.goal-label .row.groups')).toEqual(['2 resource groups · click to open']);
-    expect(texts(root, '.chart-legend .legend-label')).toEqual([
-      'Healthy 52',
-      'Degraded 8',
-      'Blocked 6',
-      'Failed 6',
-    ]);
+    // its diamonds, named, the held ones with their count
+    expect(texts(onboarding, '.gp-satellite-name')).toEqual(['APP', 'SYSTEM 94', 'TOOL 27', 'MODEL 33', 'HUMAN']);
+    const core = (key: string) => onboarding.querySelector(`[data-slot="rg:${key}"] .gp-diamond-core`)!;
+    expect(core('tool').getAttribute('fill')).toBe('var(--gp-failed)');
+    expect(core('system').getAttribute('fill')).toBe('var(--gp-blocked)');
+    expect(core('model').getAttribute('fill')).toBe('var(--gp-awaiting)');
+    expect(core('app').getAttribute('display')).toBe('none');
+    expect(onboarding.querySelector('[data-slot="rg:app"] .gp-diamond-dot')!.getAttribute('display')).toBeNull();
+    // seven links, the crashing tool's in failed red
+    const links = [...root.querySelectorAll('g.gp-link')];
+    expect(links).toHaveLength(7);
+    const red = links.filter((l) => l.querySelector('.gp-link-line')!.getAttribute('stroke') === 'var(--gp-failed)');
+    expect(red.map((l) => l.getAttribute('data-link'))).toEqual(['tool:onboarding-velocity|maintain-verified-asset-visibility']);
+    // a callout per goal: code, status, name and the readout
+    const callout = root.querySelector('.gp-callout[data-goal="onboarding-velocity"]')!;
+    expect(texts(callout, '.gp-callout-head')).toEqual(['G-007 BLOCKED']);
+    expect(texts(callout, '.gp-callout-name')).toEqual(['Onboarding Velocity']);
+    expect(texts(callout, '.gp-reading')).toEqual(['Agents 842', 'Progress 41%', 'Burn 4.2×', 'Held 175']);
+    expect(root.querySelectorAll('.gp-leader')).toHaveLength(6);
   });
 
-  it('draws agent links and external dependencies, red where they are down', async () => {
-    const el = await mount(agentsFixture);
-    const root = el.shadowRoot!;
-    expect(root.querySelectorAll('.agent-link')).toHaveLength(12);
-    expect([...root.querySelectorAll('.ext-node')].map((n) => n.getAttribute('class'))).toEqual([
-      'ext-node unavailable',
-      'ext-node degraded',
-      'ext-node active',
-    ]);
-    root
-      .querySelector('.ext-node.unavailable')!
-      .dispatchEvent(new MouseEvent('pointerenter', { clientX: 4, clientY: 4 }));
-    expect(tooltip()).toContain('PagerDuty');
-    expect(tooltip()).toContain('Failed agents cannot page the on-call engineer');
-  });
-
-  it('names an agent on hover', async () => {
-    const el = await mount(agentsFixture);
-    const root = el.shadowRoot!;
-    const failed = root.querySelector<SVGRectElement>('rect.speck.agent.failed')!;
-    failed.dispatchEvent(new MouseEvent('pointerover', { bubbles: true, clientX: 4, clientY: 4 }));
-    expect(tooltip()).toMatch(/agent-\d{3}/);
-    expect(tooltip()).toContain('Pager integration returns 503');
-  });
-
-  it('highlights a goal on hover and opens it on click', async () => {
+  it('reads the board under the title', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    const goal = root.querySelector<SVGGElement>('g.goal[data-goal="perimeter-watch"]')!;
-    goal.dispatchEvent(new MouseEvent('pointerenter', { clientX: 10, clientY: 10 }));
-    expect(goal.classList.contains('is-hover')).toBe(true);
-    expect(
-      root
-        .querySelector('.goal-label[data-goal="perimeter-watch"]')
-        ?.classList.contains('is-hover'),
-    ).toBe(true);
-    expect(tooltip()).toContain('Perimeter Watch');
-    expect(tooltip()).toContain('Exceptions');
-
-    const opened: GoalOpenDetail[] = [];
-    document.body.addEventListener('goal-open', (e) => opened.push(e.detail));
-    goal.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    root.querySelector('.rg')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    expect(opened).toEqual([
-      { goalId: 'perimeter-watch', goalName: 'Perimeter Watch' },
-      {
-        goalId: 'perimeter-watch',
-        goalName: 'Perimeter Watch',
-        resourceGroupId: 'perimeter-sensors',
-      },
-    ]);
-
-    goal.dispatchEvent(new MouseEvent('pointerleave'));
-    expect(goal.classList.contains('is-hover')).toBe(false);
+    expect(texts(root, '.widget-title')).toEqual(['Agent operations']);
+    expect(texts(root, '.gp-reading-line')).toEqual(['6 goals on map 3,120 agents 214 held']);
+    expect(root.querySelector('.gp-reading-line .gp-held')?.textContent).toBe('214 held');
   });
 
-  it('explains a blocked marker and a connection that is down', async () => {
+  it('shows the readout with room, and folds it away on a smaller board', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    const blocked = root.querySelector(
-      '.goal-marks[data-goal="onboarding-velocity"] .marker.blocked',
-    )!;
-    blocked.dispatchEvent(new MouseEvent('pointerenter', { clientX: 5, clientY: 5 }));
-    expect(tooltip()).toContain('Blocked · 67 agents');
-    expect(tooltip()).toContain('Human action');
-
-    root
-      .querySelector('.link-mark')!
-      .dispatchEvent(new MouseEvent('pointerenter', { clientX: 5, clientY: 5 }));
-    expect(tooltip()).toContain('Connection unavailable');
-    expect(tooltip()).toContain('New agents onboard without perimeter risk scores');
+    const compact = () => root.querySelector('.gp-callout-label')!.classList.contains('is-compact');
+    await sized(el, 1400, 760);
+    await waitFor(() => !compact());
+    expect(el.hasAttribute('data-compact')).toBe(false);
+    await sized(el, 900, 560);
+    await waitFor(() => compact());
+    expect(el.hasAttribute('data-compact')).toBe(true);
+    // compact, the readout is one line under the pointer
+    expect(texts(root, '.gp-callout[data-goal="perimeter-watch"] .gp-readout-line')).toEqual(['1,108 agents · 88% · 19 held']);
+    // zoomed in, there is room again
+    el.zoomBy(1.6);
+    await waitFor(() => !compact());
   });
 
-  it('keeps only the title and the exception row when the board is small', async () => {
+  it('keeps only the legend at the bottom left, with no angle readout; the camera still flattens and zooms through the element', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    const chart = root.querySelector<HTMLElement>('.chart-root')!;
-    Object.defineProperty(chart, 'clientWidth', {
-      value: 420,
-      configurable: true,
-    });
-    Object.defineProperty(chart, 'clientHeight', {
-      value: 360,
-      configurable: true,
-    });
-    for (const cb of observed) cb();
+    const controls = root.querySelector('.gp-controls')!;
+    expect([...controls.children].map((child) => child.getAttribute('aria-label'))).toEqual(['Legend']);
+    expect(root.querySelector('.gp-dim, .gp-zoom-reading, [aria-label="Zoom in"]')).toBeNull();
+    expect(root.querySelector('.gp-angle')).toBeNull();
+    el.zoomBy(1.25);
     await flush();
-    expect(root.querySelectorAll('.goal-label .row.title')).toHaveLength(5);
-    expect(root.querySelectorAll('.goal-label .row.impure')).toHaveLength(4);
-    expect(root.querySelector('.goal-label .row.summary, .goal-label .row.groups')).toBeNull();
-    // A resize re-fits; it does not rebuild the clouds.
-    expect(root.querySelectorAll('svg.gp-svg')).toHaveLength(1);
+    expect(el.camera.zoom).toBeCloseTo(1.25);
+    el.resetCamera();
+    await flush();
+    expect(el.camera).toEqual(DEFAULT_CAMERA);
+
+    // 2D: a plan view
+    el.dims = '2D';
+    await flush();
+    expect(el.dims).toBe('2D');
+    el.dims = '3D';
+    await flush();
+    expect(el.dims).toBe('3D');
   });
 
-  it('drops the resource group count when there is none', async () => {
-    const el = await mount({
-      goal: 'Solo',
-      agents: [{ id: 'a' }, { id: 'b', state: 'failed' }],
-    });
-    const root = el.shadowRoot!;
-    expect(texts(root, '.goal-label .row.groups')).toEqual(['click to open']);
-    expect(root.querySelectorAll('.rg')).toHaveLength(0);
-  });
-
-  it('hides the legend on request and shows an empty state without goals', async () => {
-    const el = await mount(defaultFixture);
-    el.showLegend = false;
-    await el.updateComplete;
-    expect(el.shadowRoot!.querySelector('.chart-legend')).toBeNull();
-
-    const empty = await mount({ goals: [] });
-    expect(empty.shadowRoot!.querySelector('.empty')?.textContent).toBe('No goal data');
-    expect(empty.shadowRoot!.querySelector('svg.gp-svg')).toBeNull();
-  });
-
-  it('expands a goal on click and shows that cluster in detail', async () => {
+  it('turns the board on a drag, swallowing the click that ends it, and zooms on the wheel', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    const opened: GoalOpenDetail[] = [];
-    el.addEventListener('goal-open', (e) => opened.push(e.detail));
-    root
-      .querySelector('g.goal[data-goal="perimeter-watch"]')!
-      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    const stage = root.querySelector<HTMLElement>('.gp-stage')!;
+    stage.setPointerCapture = () => {};
+    const mark = root.querySelector('g.gp-goal[data-goal="perimeter-watch"] .gp-goal-mark')!;
+    const pointer = (type: string, x: number, y: number) =>
+      mark.dispatchEvent(new MouseEvent(type, { bubbles: true, composed: true, clientX: x, clientY: y, button: 0 }));
+    pointer('pointerdown', 100, 100);
+    pointer('pointermove', 160, 120);
+    pointer('pointerup', 160, 120);
+    mark.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
     await el.updateComplete;
-    await settle();
-
-    expect(el.openGoal).toBe('perimeter-watch');
-    expect(opened).toEqual([{ goalId: 'perimeter-watch', goalName: 'Perimeter Watch' }]);
-    expect(root.querySelector<SVGGElement>('.gp-board')!.style.display).toBe('none');
-    const detail = root.querySelector('.gp-detail')!;
-    expect(detail.getAttribute('data-goal')).toBe('perimeter-watch');
-    // One sector per state, labelled with its count and the reasons behind it.
-    expect(texts(detail, '.sector-title')).toEqual([
-      'Healthy · 1,169',
-      'Blocked · 19',
-      'Failed · 16',
-    ]);
-    expect(texts(detail, '.reason text')).toEqual([
-      '19 Geo-fence policy holds outbound scans · Rule',
-      '16 Sensor feed timed out after three retries',
-    ]);
-    expect(texts(detail, '.rg-name')).toEqual([
-      'Perimeter sensors',
-      'Threat classifier',
-      'Edge gateways',
-    ]);
-    // The goals it is joined to, the one that is down marked.
-    // Labels shorten to the room beside them; the full name stays on the node.
-    expect(
-      [...detail.querySelectorAll('.rel-node.goal')]
-        .map((n) => n.getAttribute('aria-label'))
-        .sort(),
-    ).toEqual([
-      'Maintain Verified Asset Visibility. Open goal.',
-      'Onboarding Velocity. Open goal.',
-      'Pipeline Quality. Open goal.',
-    ]);
-    expect(detail.querySelectorAll('.relation .link-mark')).toHaveLength(1);
-    // The shell follows the open goal.
-    expect(root.querySelector('.gp-crumb-goal')?.textContent).toBe('Perimeter Watch');
-    expect(root.querySelector('.exception-summary strong')?.textContent).toBe('35');
-    expect(root.querySelector('.exception-summary')?.textContent).toContain('1 connection down');
-    expect(texts(root, '.chart-legend .legend-label')).toEqual([
-      'Healthy 1,169',
-      'Blocked 19',
-      'Failed 16',
-    ]);
+    expect(el.camera.yaw).toBeCloseTo(DEFAULT_CAMERA.yaw + 60 * 0.006);
+    expect(el.camera.pitch).toBeCloseTo(DEFAULT_CAMERA.pitch + 20 * 0.005);
+    expect(el.camera.zoom).toBe(1);
+    stage.dispatchEvent(new WheelEvent('wheel', { deltaY: -80, bubbles: true, cancelable: true }));
+    await waitFor(() => el.camera.zoom > 1.05);
+    // a double click puts the camera back
+    stage.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    await flush();
+    expect(el.camera).toEqual(DEFAULT_CAMERA);
   });
 
-  it('never puts a sector label or a neighbour on the open goal’s title and summary', async () => {
+  it('tells what the legend button does, under the pointer or under the focused button', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    const translate = (node: Element | null) => {
-      const m = /translate\(([-\d.]+) ([-\d.]+)\)/.exec(node?.getAttribute('transform') ?? '');
-      return m ? { x: Number(m[1]), y: Number(m[2]) } : { x: 0, y: 0 };
-    };
-    const chart = root.querySelector<HTMLElement>('.chart-root')!;
-    for (const [width, height] of [
-      [1400, 976],
-      [860, 600],
-      [640, 520],
-    ] as const) {
-      Object.defineProperty(chart, 'clientWidth', {
-        value: width,
-        configurable: true,
-      });
-      Object.defineProperty(chart, 'clientHeight', {
-        value: height,
-        configurable: true,
-      });
-      for (const cb of observed) cb();
-      await flush();
-      for (const goal of defaultFixture.goals) {
-        el.openGoalById(goal.id);
-        await el.updateComplete;
-        await settle();
-        const detail = root.querySelector('.gp-detail')!;
-        const summary = detail.querySelector('.detail-summary')!;
-        const top = translate(summary).y - 18;
-        const rows = summary.querySelectorAll('text').length;
-        const bottom = top + rows * 20 + 4;
-        const widest = Math.max(
-          ...[...summary.querySelectorAll('text')].map(
-            (t) => (t.textContent ?? '').length * 17 * 0.56,
-          ),
-        );
-        const box = { x0: -widest / 2, x1: widest / 2, y0: top, y1: bottom };
-        const hits = (x0: number, x1: number, y0: number, y1: number) =>
-          x0 < box.x1 && x1 > box.x0 && y0 < box.y1 && y1 > box.y0;
+    const tip = () => texts(document.body, OPEN_TIP)[0];
+    const point = (target: Element, type: string, x = 40, y = 500) =>
+      target.dispatchEvent(new MouseEvent(type, { clientX: x, clientY: y, bubbles: type !== 'mouseenter' && type !== 'mouseleave' }));
+    const legend = root.querySelector('.gp-legend-button')!;
 
-        for (const label of detail.querySelectorAll('.sector-label')) {
-          const at = translate(label);
-          const title = label.querySelector('.sector-title')!;
-          const width = (title.textContent ?? '').length * 13 * 0.56;
-          const anchor = title.getAttribute('text-anchor');
-          const x0 = anchor === 'start' ? at.x : anchor === 'end' ? at.x - width : at.x - width / 2;
-          const lines = label.querySelectorAll('text').length;
-          expect(
-            hits(x0, x0 + width, at.y - 8, at.y + (lines - 1) * 17 + 8),
-            `${width}px ${goal.name}: ${title.textContent}`,
-          ).toBe(false);
-        }
-        for (const node of detail.querySelectorAll('.rel-node')) {
-          const at = translate(node);
-          expect(
-            hits(at.x - 12, at.x + 12, at.y - 12, at.y + 12),
-            `${goal.name}: ${node.getAttribute('aria-label')}`,
-          ).toBe(false);
-        }
-
-        // Neighbours (dot and name) never sit on a sector label or its reasons either.
-        const labelBoxes = [...detail.querySelectorAll('.sector-label')].map((label) => {
-          const at = translate(label);
-          const texts = [...label.querySelectorAll('text')];
-          const width =
-            Math.max(...texts.map((t) => (t.textContent ?? '').length * 13 * 0.56)) + 14;
-          const anchor = texts[0]!.getAttribute('text-anchor');
-          const x0 =
-            anchor === 'start' ? at.x - 14 : anchor === 'end' ? at.x - width : at.x - width / 2;
-          return {
-            x0,
-            x1: x0 + width,
-            y0: at.y - 9,
-            y1: at.y + (texts.length - 1) * 17 + 9,
-            name: texts[0]!.textContent,
-          };
-        });
-        // Sector labels never sit on each other.
-        for (let i = 0; i < labelBoxes.length; i += 1) {
-          for (let j = i + 1; j < labelBoxes.length; j += 1) {
-            const a = labelBoxes[i]!;
-            const b = labelBoxes[j]!;
-            const overlap = a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
-            expect(overlap, `${width}px ${goal.name}: ${a.name} on ${b.name}`).toBe(false);
-          }
-        }
-        for (const node of detail.querySelectorAll('.rel-node')) {
-          const at = translate(node);
-          const name = node.querySelector('.rel-label')!;
-          const width = (name.textContent ?? '').length * 13 * 0.56;
-          const anchor = name.getAttribute('text-anchor');
-          const dx = Number(name.getAttribute('x'));
-          const dy = Number(name.getAttribute('y'));
-          const nx0 =
-            anchor === 'start'
-              ? at.x + dx
-              : anchor === 'end'
-                ? at.x + dx - width
-                : at.x - width / 2;
-          const boxes = [
-            { x0: at.x - 10, x1: at.x + 10, y0: at.y - 10, y1: at.y + 10 },
-            {
-              x0: nx0,
-              x1: nx0 + width,
-              y0: at.y + dy - 12,
-              y1: at.y + dy + 18,
-            },
-          ];
-          for (const b of boxes) {
-            for (const l of labelBoxes) {
-              const overlap = b.x0 < l.x1 && b.x1 > l.x0 && b.y0 < l.y1 && b.y1 > l.y0;
-              expect(overlap, `${goal.name}: ${node.getAttribute('aria-label')} on ${l.name}`).toBe(
-                false,
-              );
-            }
-          }
-        }
-        el.closeGoal();
-        await settle();
-      }
-    }
-  }, 60_000);
-
-  it('opens a goal without moving anything in the shell', async () => {
-    const el = await mount(defaultFixture);
-    const root = el.shadowRoot!;
-    const body = root.querySelector('.widget-body')!;
-    const shape = () =>
-      [...body.children].map((child) => child.className.toString().split(' ')[0]).join(' ');
-    const legend = () => texts(root, '.chart-legend .legend-label').length;
-    const before = { shape: shape(), legend: legend(), header: texts(root, '.widget-header').length };
-
-    // An all-healthy goal is the hardest case for the legend: it lacks two of the board's states.
-    el.openGoalById('pipeline-quality');
+    // pointing settles before the tip shows
+    point(legend, 'mouseenter');
     await el.updateComplete;
-    await settle();
+    expect(tip()).toBeUndefined();
+    await waitFor(() => !!tip());
+    expect(tip()).toBe('Legend What the shapes, colours and marks on the map mean.');
+    // the shared chart tooltip, above the pointer
+    expect(card()!.classList.contains('is-open')).toBe(true);
+    expect([card()!.style.left, card()!.style.top]).toEqual(['15px', '492px']);
+    point(legend, 'mousemove', 60, 510);
+    expect([card()!.style.left, card()!.style.top]).toEqual(['35px', '502px']);
 
-    expect(shape()).toBe(before.shape);
-    expect(legend()).toBe(before.legend);
-    expect(texts(root, '.chart-legend .legend-label')).toEqual(['Healthy 318', 'Blocked 0', 'Failed 0']);
-    expect(texts(root, '.widget-header').length).toBe(before.header);
-    // The way back floats over the plot, beside the drawing, not above it.
-    const crumbs = root.querySelector('.gp-crumbs')!;
-    expect(crumbs.parentElement?.classList.contains('chart-root')).toBe(true);
-    expect(root.querySelector('.chart-root > .gp-canvas svg.gp-svg')).not.toBeNull();
-    expect(crumbs.querySelector('.gp-crumb-goal')?.textContent).toBe('Pipeline Quality');
-    // The open goal keeps the overlay's band clear.
-    const detail = root.querySelector('.gp-detail')!;
-    const cy = Number(/translate\(([-\d.]+) ([-\d.]+)\)/.exec(detail.getAttribute('transform') ?? '')![2]);
-    for (const label of detail.querySelectorAll('.sector-label')) {
-      const y = Number(/translate\(([-\d.]+) ([-\d.]+)\)/.exec(label.getAttribute('transform') ?? '')![2]);
-      expect(cy + y - 9).toBeGreaterThanOrEqual(36);
-    }
+    point(legend, 'mouseleave');
+    await el.updateComplete;
+    expect(tip()).toBeUndefined();
+    // the controls no longer carry native titles as well
+    expect(root.querySelectorAll('.gp-controls [title]')).toHaveLength(0);
 
-    el.closeGoal();
-    await settle();
-    expect(shape()).toBe(before.shape);
-    expect(root.querySelector('.gp-crumbs')).toBeNull();
+    // a press answers the question: the tip goes, and stays quiet until the pointer leaves
+    point(legend, 'mouseenter');
+    await waitFor(() => !!tip());
+    legend.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    await el.updateComplete;
+    expect(tip()).toBeUndefined();
+    point(legend, 'mouseenter');
+    await new Promise((r) => setTimeout(r, 200));
+    expect(tip()).toBeUndefined();
+    point(legend, 'mouseleave');
+
+    // keyboard focus hangs the tip from the button's top centre
+    const button = legend as HTMLElement;
+    button.matches = ((selector: string) => selector === ':focus-visible') as typeof button.matches;
+    button.getBoundingClientRect = () => ({ left: 10, top: 300, right: 46, bottom: 324, width: 36, height: 24, x: 10, y: 300, toJSON() {} });
+    button.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+    await el.updateComplete;
+    expect(tip()).toBe('Legend What the shapes, colours and marks on the map mean.');
+    expect([card()!.style.left, card()!.style.top]).toEqual(['5px', '292px']);
+    button.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    await el.updateComplete;
+    expect(tip()).toBeUndefined();
   });
 
-  it('dims the other sectors while a sector of the open circle is hovered, not a label', async () => {
+  it('explains the marks in a legend beside its button, and closes it on Escape', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;
-    el.openGoalById('perimeter-watch');
+    const button = root.querySelector<HTMLButtonElement>('.gp-legend-button')!;
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    button.click();
     await el.updateComplete;
-    await settle();
-    const detail = root.querySelector<SVGGElement>('.gp-detail')!;
-    // jsdom has no SVG geometry: pin the group's box at the origin so pointer
-    // coordinates are plot px from the centre, as d3.pointer sees them in a browser.
-    detail.getBoundingClientRect = () => ({ left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0, toJSON() {} });
-    const { r } = detailGeometry(1400, 976);
-    const sectors = stateSectors(normalizeGoalsPerimeter(defaultFixture).goals[0]!);
-    const failed = sectors.find((s) => s.state === 'failed')!;
-    const mid = (failed.start + failed.end) / 2;
-    const hover = (target: Element, x: number, y: number) =>
-      target.dispatchEvent(new MouseEvent('pointermove', { bubbles: true, clientX: x, clientY: y }));
-    const dimmed = (selector: string) =>
-      [...detail.querySelectorAll(selector)].map((n) => [n.getAttribute('data-state') ?? n.getAttribute('class'), n.classList.contains('is-dimmed')]);
-
-    hover(detail.querySelector('.sector-hit')!, r * 0.6 * Math.sin(mid), -r * 0.6 * Math.cos(mid));
-    expect(dimmed('.sector')).toEqual([
-      ['healthy', true],
-      ['blocked', true],
-      ['failed', false],
-    ]);
-    expect(dimmed('.sector-label')).toEqual([
-      ['healthy', true],
-      ['blocked', true],
-      ['failed', false],
-    ]);
-    const specks = [...detail.querySelectorAll('.detail-cloud rect')];
-    expect(specks.filter((n) => n.classList.contains('failed')).every((n) => !n.classList.contains('is-dimmed'))).toBe(true);
-    expect(specks.filter((n) => n.classList.contains('healthy')).every((n) => n.classList.contains('is-dimmed'))).toBe(true);
-
-    // Over a label: nothing dims, even with the pointer near its sector.
-    hover(detail.querySelector('.sector-label[data-state="failed"] .sector-title')!, 0, -(r + 40));
-    expect(detail.querySelectorAll('.is-dimmed')).toHaveLength(0);
-
-    // The hub with the resource groups does not count as a sector either.
-    hover(detail.querySelector('.sector-hit')!, 2, -r * 0.6 * Math.cos(mid));
-    hover(detail.querySelector('.sector-hit')!, 0, -r * 0.1);
-    expect(detail.querySelectorAll('.is-dimmed')).toHaveLength(0);
-
-    // Leaving the circle clears it.
-    hover(detail.querySelector('.sector-hit')!, r * 0.6 * Math.sin(mid), -r * 0.6 * Math.cos(mid));
-    expect(detail.querySelectorAll('.is-dimmed').length).toBeGreaterThan(0);
-    detail.dispatchEvent(new MouseEvent('pointerleave'));
-    expect(detail.querySelectorAll('.is-dimmed')).toHaveLength(0);
-  });
-
-  it('opens a neighbour from the detail, and goes back to every goal', async () => {
-    const el = await mount(defaultFixture);
-    const root = el.shadowRoot!;
-    const closed: string[] = [];
-    el.addEventListener('goal-close', (e) => closed.push(e.detail.goalId));
-    el.openGoalById('perimeter-watch', 'threat-classifier');
-    await el.updateComplete;
-    await settle();
-    expect(root.querySelector('.gp-detail .rg.is-selected')?.getAttribute('data-group')).toBe(
-      'threat-classifier',
-    );
-
-    root
-      .querySelector('.rel-node.goal')!
-      .parentElement!.querySelector('.rel-node')!
-      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await el.updateComplete;
-    await settle();
-    expect(el.openGoal).not.toBe('perimeter-watch');
-    expect(root.querySelector('.gp-detail')?.getAttribute('data-goal')).toBe(el.openGoal);
-
-    root.querySelector<HTMLButtonElement>('.gp-back')!.click();
-    await el.updateComplete;
-    await settle();
-    expect(el.openGoal).toBeNull();
-    expect(closed).toHaveLength(1);
-    expect(root.querySelector('.gp-detail')).toBeNull();
-    expect(root.querySelector<SVGGElement>('.gp-board')!.style.display).toBe('');
-    expect(root.querySelector('.gp-crumbs')).toBeNull();
-    expect(root.querySelector('.exception-summary strong')?.textContent).toBe('214');
-  });
-
-  it('closes an open goal on Escape', async () => {
-    const el = await mount(agentsFixture);
-    el.openGoalById('incident-response');
-    await el.updateComplete;
-    await settle();
-    expect(el.shadowRoot!.querySelectorAll('.gp-detail rect.speck.agent')).toHaveLength(72);
-    expect(texts(el.shadowRoot!, '.gp-detail .rel-label').sort()).toEqual([
-      'CMDB',
-      'PagerDuty',
-      'Runbook library',
-    ]);
+    const legend = root.querySelector('.gp-legend')!;
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(texts(legend, 'h2')).toEqual(['Reading the map']);
+    expect(texts(legend, 'h3')).toEqual(['Marks', 'A goal and its resource groups']);
+    expect(texts(legend, '.gp-legend-row')).toContain('A blocked agent');
+    expect(texts(legend, '.gp-legend-row').at(-1)).toBe('Agents held there — in their colour, with their count');
     el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     await el.updateComplete;
+    expect(root.querySelector('.gp-legend')).toBeNull();
+    // and hides on request
+    el.showLegend = false;
+    await el.updateComplete;
+    expect(root.querySelector('.gp-legend-button')).toBeNull();
+  });
+
+  it('lights a goal under the pointer, traces a group across the board, and explains both', async () => {
+    const el = await mount(defaultFixture);
+    const root = el.shadowRoot!;
+    const mark = root.querySelector('g.gp-goal[data-goal="onboarding-velocity"] .gp-goal-mark')!;
+    mark.dispatchEvent(new MouseEvent('mouseenter', { clientX: 10, clientY: 10 }));
+    await flush();
+    expect(mark.classList.contains('is-lit')).toBe(true);
+    expect(root.querySelector('.gp-callout[data-goal="onboarding-velocity"]')!.classList.contains('is-lit')).toBe(true);
+    await waitFor(() => !!tooltip());
+    expect(tooltip()).toMatch(/^G-007 · Onboarding Velocity Each dot is one agent\./);
+    expect(tipRows()).toContain('Blocked 94');
+    mark.dispatchEvent(new MouseEvent('mouseleave'));
+    await flush();
+    expect(mark.classList.contains('is-lit')).toBe(false);
+
+    const tool = root.querySelector('g.gp-goal[data-goal="onboarding-velocity"] [data-slot="rg:tool"]')!;
+    tool.dispatchEvent(new MouseEvent('mouseenter', { clientX: 10, clientY: 10 }));
+    await flush();
+    await waitFor(() => tooltip().startsWith('Tool '));
+    expect(tooltip()).toContain('27 agents of Onboarding Velocity are failed here — Browser tool sandbox crash-loops');
+    expect(tipRows()).toContain('Shared with 2 other goals');
+    // every goal that draws on the tool lights its diamond
+    const traced = [...root.querySelectorAll('[data-slot="rg:tool"] .gp-diamond-trace')].filter((d) => d.getAttribute('display') !== 'none');
+    expect(traced).toHaveLength(3);
+
+    const link = root.querySelector('g.gp-link[data-link^="tool:onboarding-velocity|maintain"]')!;
+    link.dispatchEvent(new MouseEvent('mouseenter', { clientX: 10, clientY: 10 }));
+    await waitFor(() => tooltip().startsWith('Onboarding Velocity ↔'));
+    expect(tooltip()).toContain('Both draw on Tool, and the same trouble holds agents of both there.');
+    expect(tipRows()).toContain('At both ends Agents failed');
+    link.dispatchEvent(new MouseEvent('mouseleave'));
+    await el.updateComplete;
+    expect(tooltip()).toBe('');
+  });
+
+  it('moves every hover detail along with the pointer, at the right edge too', async () => {
+    const el = await mount(defaultFixture);
+    const root = el.shadowRoot!;
+    const at = () => [Number.parseFloat(card()!.style.left), Number.parseFloat(card()!.style.top)];
+    const move = (target: Element, x: number, y: number) =>
+      target.dispatchEvent(new MouseEvent('pointermove', { clientX: x, clientY: y, bubbles: true, composed: true }));
+    const targets = [
+      root.querySelector('g.gp-goal[data-goal="perimeter-watch"] .gp-goal-mark')!,
+      root.querySelector('g.gp-link')!,
+      root.querySelector('[data-slot="rg:tool"]')!,
+      root.querySelector('.gp-callout-label')!,
+    ];
+    for (const target of targets) {
+      target.dispatchEvent(new MouseEvent('mouseenter', { clientX: 300, clientY: 300 }));
+      await waitFor(() => !!tooltip());
+      expect(at()).toEqual([275, 292]);
+      // every move takes it along, the same way from the pointer
+      move(target, 340, 320);
+      expect(at()).toEqual([315, 312]);
+      move(target, 352, 290);
+      expect(at()).toEqual([327, 282]);
+      target.dispatchEvent(new MouseEvent('mouseleave'));
+      await el.updateComplete;
+      expect(tooltip()).toBe('');
+    }
+    // near the window's right edge it holds inside the window, and still follows up and down
+    const goal = targets[0]!;
+    const card0 = { w: 240, h: 120 };
+    goal.dispatchEvent(new MouseEvent('mouseenter', { clientX: window.innerWidth - 40, clientY: 300 }));
+    await waitFor(() => !!tooltip());
+    Object.defineProperty(card()!, 'offsetWidth', { value: card0.w, configurable: true });
+    Object.defineProperty(card()!, 'offsetHeight', { value: card0.h, configurable: true });
+    move(goal, window.innerWidth - 40, 300);
+    expect(at()).toEqual([window.innerWidth - card0.w - 30, 300 - card0.h - 8]);
+    move(goal, window.innerWidth - 60, 310);
+    expect(at()).toEqual([window.innerWidth - card0.w - 30, 310 - card0.h - 8]);
+  });
+
+  it('paints the scene from the page style and theme, and repaints when either changes', async () => {
+    const el = await mount(defaultFixture);
+    // a light page: the room by day, hairlines in the ramp's deep ink
+    expect(el.getAttribute('data-mode')).toBe('light');
+    expect(el.style.getPropertyValue('--gp-line')).toBe('rgb(54,60,119)');
+    el.style.setProperty('--ui9000-style-id', 'palette4');
+    document.dispatchEvent(new CustomEvent('ui9000-theme'));
+    await waitFor(() => el.style.getPropertyValue('--gp-grid') === 'rgb(24,122,76)');
+    // a dark page: the same style, lit
+    applyWidgetContext(el, { mode: 'dark', styleId: 'palette4' });
+    document.dispatchEvent(new CustomEvent('ui9000-theme'));
+    await waitFor(() => el.getAttribute('data-mode') === 'dark');
+    await waitFor(() => el.style.getPropertyValue('--gp-grid') === 'rgb(61,158,110)');
+    expect(el.style.getPropertyValue('--gp-glint-stroke')).toBe('#ffffff');
+  });
+
+  it('is a standalone chart: a click on a goal, a diamond, a link or a callout opens nothing', async () => {
+    const el = await mount(defaultFixture);
+    const root = el.shadowRoot!;
+    const fired: string[] = [];
+    for (const type of ['goal-open', 'goal-close', 'ui9000-select', 'ui9000-action'])
+      el.addEventListener(type, () => fired.push(type));
+    const before = root.querySelector('.chart-root')!.innerHTML.length;
+    for (const target of [
+      root.querySelector('g.gp-goal[data-goal="perimeter-watch"] .gp-goal-mark')!,
+      root.querySelector('g.gp-goal[data-goal="maintain-verified-asset-visibility"] [data-slot="rg:tool"]')!,
+      root.querySelector('g.gp-link')!,
+      root.querySelector('.gp-callout[data-goal="incident-response"] .gp-callout-label')!,
+    ])
+      target.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
     await settle();
-    expect(el.openGoal).toBeNull();
-    expect(el.shadowRoot!.querySelector('.gp-detail')).toBeNull();
+    expect(fired).toEqual([]);
+    // no view replaces the board, and nothing offers a way back
+    expect(root.querySelector('.gp-detail-svg, .gp-crumbs, .gp-back')).toBeNull();
+    expect(root.querySelector<HTMLElement>('.gp-stage')!.style.visibility).toBe('');
+    expect(root.querySelector('.gp-controls')).not.toBeNull();
+    expect(root.querySelector('.chart-root')!.innerHTML.length).toBeGreaterThan(before * 0.9);
+    // the callouts are labels, not buttons
+    expect(root.querySelectorAll('.gp-callout button')).toHaveLength(0);
+  });
+
+  it('shows an empty state without goals', async () => {
+    const el = await mount({ goals: [] });
+    expect(el.shadowRoot!.querySelector('.empty')?.textContent).toContain('No goal data');
+    expect(el.shadowRoot!.querySelector('.gp-controls')).toBeNull();
   });
 
   it('mounts through chart-renderer by chartType', async () => {
@@ -577,7 +392,7 @@ describe('ui9000-goals-perimeter', () => {
     await waitFor(() => !!renderer.shadowRoot?.querySelector('ui9000-goals-perimeter'));
     const chart = renderer.shadowRoot!.querySelector('ui9000-goals-perimeter')!;
     await chart.updateComplete;
-    await waitFor(() => chart.shadowRoot!.querySelectorAll('g.goal').length === 5);
-    expect(chart.shadowRoot!.querySelector('.exception-summary strong')?.textContent).toBe('214');
+    await waitFor(() => chart.shadowRoot!.querySelectorAll('g.gp-goal').length === 6);
+    expect(chart.shadowRoot!.querySelector('.gp-reading-line .gp-held')?.textContent).toBe('214 held');
   });
 });

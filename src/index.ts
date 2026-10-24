@@ -875,7 +875,6 @@ export {
   normalizeGoalsPerimeter,
   type AgentNode as GoalsPerimeterAgent,
   type AgentState as GoalsPerimeterAgentState,
-  type GoalOpenDetail,
   type GoalsPerimeterModel,
   type GoalsPerimeterPayload,
   type PerimeterGoal,

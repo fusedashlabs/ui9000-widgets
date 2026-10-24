@@ -25,6 +25,25 @@ describe('chart tooltip portal', () => {
     expect(tip?.getAttribute('data-mode')).toBe('light');
   });
 
+  it('sets a body line between the title and the rows', () => {
+    const owner = document.createElement('div');
+    document.body.appendChild(owner);
+
+    presentChartTooltip(
+      owner,
+      { pageX: 40, pageY: 40, clientX: 40, clientY: 80 },
+      { title: 'Q1', body: 'Sales booked this quarter.', rows: [{ label: 'Sales', value: '12' }] },
+    );
+
+    const tip = document.querySelector('[data-ui9000-chart-tooltip]')!;
+    expect([...tip.children].map((child) => child.className)).toEqual([
+      'ui9000-chart-tooltip__title name',
+      'ui9000-chart-tooltip__body',
+      'ui9000-chart-tooltip__rows',
+    ]);
+    expect(tip.querySelector('.ui9000-chart-tooltip__body')?.textContent).toBe('Sales booked this quarter.');
+  });
+
   it('copies the owner surface onto the body tooltip', () => {
     const owner = document.createElement('div');
     owner.style.setProperty('--ui9000-mode', 'dark');

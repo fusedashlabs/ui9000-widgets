@@ -8,39 +8,93 @@ describe('normalizeGoalsPerimeter', () => {
   it('reads the default sample', () => {
     const model = normalizeGoalsPerimeter(defaultFixture);
     expect(model.empty).toBe(false);
-    expect(model.title).toBe('Agents Management — Goals');
-    expect(model.goals.map((g) => g.name)).toEqual([
-      'Perimeter Watch',
-      'Onboarding Velocity',
-      'Maintain Verified Asset Visibility',
-      'Pipeline Quality',
-      'Incident Response',
+    expect(model.title).toBe('Agent operations');
+    expect(model.goals.map((g) => [g.code, g.name])).toEqual([
+      ['G-014', 'Perimeter Watch'],
+      ['G-007', 'Onboarding Velocity'],
+      ['G-022', 'Maintain Verified Asset Visibility'],
+      ['G-045', 'Pipeline Quality'],
+      ['G-052', 'Incident Response'],
+      ['G-061', 'Model Drift Watch'],
     ]);
     expect(model.goals.map(goalSummary)).toEqual([
-      '1,204 agents · 88% · 1.1×',
+      '1,108 agents · 88% · 1.1×',
       '842 agents · 41% · 4.2×',
       '612 agents · 66% · 1.3×',
       '318 agents · 92% · 0.8×',
       '144 agents · 78% · 1.6×',
+      '96 agents · 90% · 0.9×',
     ]);
-    expect(model.goals.map((g) => g.impure)).toEqual([35, 159, 15, 0, 5]);
+    expect(model.goals.map((g) => g.impure)).toEqual([19, 175, 15, 0, 5, 0]);
     expect(model.exceptionCount).toBe(214);
-    expect(model.goals.map((g) => g.status)).toEqual([
-      'healthy',
-      'degraded',
-      'degraded',
-      'healthy',
-      'degraded',
+    expect(model.goals[1]!.agents).toEqual({ total: 842, healthy: 645, degraded: 21, awaiting: 33, blocked: 94, failed: 27, idle: 22 });
+    expect(model.goals.map((g) => g.statusLabel)).toEqual(['ON TRACK', 'BLOCKED', 'AT RISK', 'ON TRACK', 'AT RISK', 'ON TRACK']);
+    expect(model.goals.map((g) => g.status)).toEqual(['healthy', 'critical', 'degraded', 'healthy', 'degraded', 'healthy']);
+    expect(model.goals.map((g) => g.multiplierLabel)).toEqual(Array(6).fill('Burn'));
+    expect(model.goals[1]!.resourceGroups.map((rg) => [rg.shareKey, rg.state, rg.held, rg.calls])).toEqual([
+      ['app', 'degraded', 0, 3300],
+      ['system', 'blocked', 94, 5400],
+      ['tool', 'failed', 27, 1800],
+      ['model', 'awaiting', 33, 6200],
+      ['human', 'degraded', 0, 14],
     ]);
-    expect(model.goals.map((g) => g.resourceGroupCount)).toEqual([3, 3, 2, 1, 1]);
-    expect(model.goals[0]!.resourceGroups.map((rg) => [rg.icon, rg.state])).toEqual([
-      ['sensor', 'degraded'],
-      ['model', 'failed'],
-      ['network', 'failed'],
-    ]);
-    expect(model.connections).toHaveLength(9);
-    expect(model.connections.filter((c) => c.status === 'unavailable')).toHaveLength(2);
+    expect(model.goals[0]!.position).toEqual({ x: 0.234375, y: 0.3, z: -0.117188, r: 0.069375 });
+    // the payload names no links: the board draws them from the groups the goals share
+    expect(model.connections).toEqual([]);
     expect(model.externals).toEqual([]);
+  });
+
+  it('reads awaiting agents and held resource groups', () => {
+    const { goals, agents } = normalizeGoalsPerimeter({
+      goals: [
+        {
+          name: 'A',
+          agents: { total: 50, awaiting: 4, degraded: 2 },
+          resourceGroups: [
+            { name: 'Tool', state: 'waiting', held: 4 },
+            { name: 'Queue', held: 3 },
+            { name: 'Model', state: 'healthy', held: 9 },
+            { name: 'Store', state: 'over budget' },
+          ],
+          position: { x: 0.5, y: 0.5, z: -3, r: 0.9 },
+        },
+      ],
+      agents: [{ id: 'x', state: 'holding' }, { id: 'y', state: 'over-budget' }, { id: 'z', state: 'working' }],
+    });
+    expect(goals[0]!.agents).toMatchObject({ awaiting: 4, degraded: 2, healthy: 44 });
+    expect(goals[0]!.impure).toBe(6);
+    // a held count with no state holds the group; a healthy group holds no one
+    expect(goals[0]!.resourceGroups.map((g) => [g.state, g.held])).toEqual([
+      ['awaiting', 4],
+      ['blocked', 3],
+      ['healthy', 0],
+      ['healthy', 0],
+    ]);
+    expect(goals[0]!.position).toEqual({ x: 0.5, y: 0.5, z: -1, r: 0.5 });
+    expect(agents.map((a) => a.state)).toEqual(['awaiting', 'degraded', 'healthy']);
+  });
+
+  it('reads a goal code and names its status', () => {
+    const { goals } = normalizeGoalsPerimeter({
+      goals: [
+        { name: 'A', code: 'G-001', agents: 10, health: 0.95 },
+        { name: 'B', agents: 10, health: 0.5 },
+        { name: 'C', agents: 10, health: 0.1 },
+        { name: 'D', agents: 10, health: 0.9, status: 'blocked' },
+        { name: 'E', agents: 10, health: 0.3, status: 'on track' },
+        { name: 'F', agents: 10, health: 0.9, status: 'at-risk' },
+        { name: 'G', agents: 10, health: 0.9, statusLabel: 'Paused for audit' },
+      ],
+    });
+    expect(goals.map((g) => [g.code, g.status, g.statusLabel])).toEqual([
+      ['G-001', 'healthy', 'ON TRACK'],
+      ['', 'degraded', 'AT RISK'],
+      ['', 'critical', 'OFF TRACK'],
+      ['', 'critical', 'BLOCKED'],
+      ['', 'healthy', 'ON TRACK'],
+      ['', 'degraded', 'AT RISK'],
+      ['', 'healthy', 'PAUSED FOR AUDIT'],
+    ]);
   });
 
   it('counts agent nodes into states, exceptions and the exception count', () => {
@@ -48,7 +102,7 @@ describe('normalizeGoalsPerimeter', () => {
     expect(model.goals).toHaveLength(1);
     const goal = model.goals[0]!;
     expect(goal.name).toBe('Incident Response');
-    expect(goal.agents).toEqual({ total: 72, healthy: 52, degraded: 8, blocked: 6, failed: 6, idle: 0 });
+    expect(goal.agents).toEqual({ total: 72, healthy: 52, degraded: 8, awaiting: 0, blocked: 6, failed: 6, idle: 0 });
     expect(goal.impure).toBe(20);
     expect(model.exceptionCount).toBe(20);
     expect(model.agents).toHaveLength(72);
@@ -91,11 +145,11 @@ describe('normalizeGoalsPerimeter', () => {
     expect(model.agents.map((a) => [a.id, a.state, a.goalId])).toEqual([
       ['a', 'failed', 'claims-triage'],
       ['b', 'healthy', 'claims-triage'],
-      ['c', 'blocked', 'fraud-review'],
+      ['c', 'awaiting', 'fraud-review'],
       ['d', 'idle', 'claims-triage'],
       ['e', 'idle', 'claims-triage'],
     ]);
-    expect(model.goals[0]!.agents).toMatchObject({ total: 4, healthy: 1, failed: 1, idle: 2 });
+    expect(model.goals[0]!.agents).toMatchObject({ total: 4, healthy: 1, failed: 1, idle: 2, awaiting: 0 });
   });
 
   it('names a goal from label when name and title are absent', () => {
@@ -130,7 +184,7 @@ describe('normalizeGoalsPerimeter', () => {
       goals: [{ name: 'Claims', agents: { healthy: 410, degraded: 38, blocked: 22, failed: 9, idle: 40 } }],
     });
     const goal = goals[0]!;
-    expect(goal.agents).toEqual({ total: 519, healthy: 410, degraded: 38, blocked: 22, failed: 9, idle: 40 });
+    expect(goal.agents).toEqual({ total: 519, healthy: 410, degraded: 38, awaiting: 0, blocked: 22, failed: 9, idle: 40 });
     expect(goal.impure).toBe(69);
     expect(goal.health).toBeCloseTo(410 / 519);
     expect(goal.exceptions.map((e) => [e.state, e.count])).toEqual([
@@ -207,9 +261,9 @@ describe('normalizeGoalsPerimeter', () => {
       ],
     });
     expect(goals.map((g) => g.position)).toEqual([
-      { x: 0.2, y: 1 },
-      { x: 0.5, y: 0.5 },
-      { x: 0.1, y: 0.9 },
+      { x: 0.2, y: 1, z: 0, r: null },
+      { x: 0.5, y: 0.5, z: 0, r: null },
+      { x: 0.1, y: 0.9, z: 0, r: null },
       null,
     ]);
   });

@@ -1,16 +1,29 @@
 /** Perimeter colour. Health below the thresholds turns it amber, then rose. */
 export type GoalHealth = 'healthy' | 'degraded' | 'critical';
 
-/** Agent states the cloud, the markers and the legend tell apart. */
-export type AgentState = 'healthy' | 'degraded' | 'blocked' | 'failed' | 'idle';
+/**
+ * Agent states the cloud, the marks and the legend tell apart: healthy agents
+ * are white, idle grey, and each held state wears a mark of its own —
+ * awaiting (waiting on a person or a slow dependency), blocked, failed, and
+ * degraded (slowed, or past its budget).
+ */
+export type AgentState = 'healthy' | 'degraded' | 'awaiting' | 'blocked' | 'failed' | 'idle';
 
-/** States that get a marker and count as exceptions. */
-export type ExceptionState = 'failed' | 'blocked' | 'degraded';
+/** States that get a mark and count as held. */
+export type ExceptionState = 'failed' | 'blocked' | 'awaiting' | 'degraded';
+
+/** What holds a goal's agents on a resource group, or both ends of a link. */
+export type HoldState = 'awaiting' | 'blocked' | 'failed';
 
 /** What holds a blocked agent: a rule, a dependency, or a person. */
 export type BlockerKind = 'rule' | 'dependency' | 'human';
 
-export type ResourceState = 'healthy' | 'degraded' | 'failed';
+/**
+ * How a goal fares with one of its resource groups: its traffic flows
+ * (`healthy`), some of it is slowed (`degraded`), or agents are held there,
+ * in the state that holds them.
+ */
+export type ResourceState = 'healthy' | 'degraded' | HoldState;
 
 /** Glyph drawn inside a resource-group diamond. */
 export type ResourceIcon =
@@ -31,6 +44,7 @@ export interface AgentsBreakdownInput {
   total?: number | string;
   healthy?: number | string;
   degraded?: number | string;
+  awaiting?: number | string;
   blocked?: number | string;
   failed?: number | string;
   idle?: number | string;
@@ -71,20 +85,31 @@ export interface ResourceGroupInput {
   type?: string;
   /** Glyph override: one of the `ResourceIcon` names. */
   icon?: string;
+  /** `healthy`, `degraded`, or what holds agents there: `awaiting`, `blocked`, `failed`. */
   state?: string;
   status?: string;
   /** Agents that depend on this group. */
   agents?: number | string;
+  /** Agents of the goal held on this group; printed beside its name (`TOOL 27`). */
+  held?: number | string;
+  /** Calls a minute the goal makes to it: more calls, more sparks and more light on its links. */
+  calls?: number | string;
   detail?: string;
 }
 
 export interface GoalPositionInput {
   x?: number | string;
   y?: number | string;
+  /** Depth, as a share of the board's width; further away when positive. */
+  z?: number | string;
+  /** Radius, as a share of the board's width. Defaults to one sized by the goal's agents. */
+  r?: number | string;
 }
 
 export interface GoalInput {
   id?: string;
+  /** Short reference shown above the name, e.g. `G-014`. */
+  code?: string;
   name?: string;
   title?: string;
   label?: string;
@@ -99,12 +124,14 @@ export interface GoalInput {
   /** Agents needing attention. Defaults to degraded + blocked + failed. Alias: `impure`. */
   exceptionCount?: number | string;
   impure?: number | string;
-  /** Perimeter override: `healthy`, `degraded`, `critical` or their aliases. */
+  /** Status override: `healthy`, `degraded`, `critical`, or `on track`, `at risk`, `blocked`, `off track` and other aliases. */
   status?: string;
+  /** Words shown beside the status dot. Defaults to ON TRACK, AT RISK or BLOCKED / OFF TRACK. */
+  statusLabel?: string;
   exceptions?: GoalExceptionInput[] | null;
   /** The groups, or only how many there are. */
   resourceGroups?: ResourceGroupInput[] | number | string | null;
-  /** Layout hint, each axis 0–1 across the board. All goals need one for it to apply. */
+  /** Layout hint, x and y 0–1 across the board, with an optional depth and radius. All goals need one for it to apply. */
   position?: GoalPositionInput | [number, number] | null;
   x?: number | string;
   y?: number | string;
@@ -163,6 +190,7 @@ export interface AgentsBreakdown {
   total: number;
   healthy: number;
   degraded: number;
+  awaiting: number;
   blocked: number;
   failed: number;
   idle: number;
@@ -186,35 +214,56 @@ export interface GoalException {
 
 export interface ResourceGroup {
   id: string;
+  /** The same group on another goal's orbit: its name, lowercased, else its kind. */
+  shareKey: string;
   name: string;
   kind: string;
   icon: ResourceIcon;
   state: ResourceState;
   agents: number | null;
+  /** Agents held on it: 0 unless its state is a hold. */
+  held: number;
+  calls: number | null;
   detail: string;
 }
 
 export interface PerimeterGoal {
   id: string;
+  /** Short reference, e.g. `G-014`; empty when the payload gives none. */
+  code: string;
   name: string;
   agents: AgentsBreakdown;
   /** 0–1. Taken from the payload, else the healthy share. */
   health: number;
   status: GoalHealth;
+  /** Uppercase words beside the status dot: ON TRACK, AT RISK, BLOCKED… */
+  statusLabel: string;
   multiplier: number | null;
   multiplierLabel: string;
-  /** Agents needing attention: the IMPURE count under the goal. */
+  /** Agents needing attention: the HELD count in the goal's callout. */
   impure: number;
   exceptions: GoalException[];
   /** Drawn as diamonds. */
   resourceGroups: ResourceGroup[];
   /** Printed count; may exceed the listed groups. */
   resourceGroupCount: number;
-  /** 0–1 board position, or null for the automatic layout. */
-  position: { x: number; y: number } | null;
+  /** 0–1 board position, with depth and radius when given, or null for the automatic layout. */
+  position: GoalPosition | null;
 }
 
-/** Goal-to-goal: a bundle of strands, or the red line when it is down. */
+export interface GoalPosition {
+  x: number;
+  y: number;
+  /** Share of the board's width; 0 when not given. */
+  z: number;
+  /** Share of the board's width, or null to size the goal by its agents. */
+  r: number | null;
+}
+
+/**
+ * Goal to goal. Given in the payload, or — when it gives none — one for each
+ * resource group two goals share, running between that group's diamonds.
+ */
 export interface GoalConnection {
   id: string;
   source: string;
@@ -224,6 +273,10 @@ export interface GoalConnection {
   label: string;
   reason: string;
   impact: string;
+  /** The shared resource group it runs through (its `shareKey`), or '' for none. */
+  via: string;
+  /** Set when the same hold stops agents at both ends: the line takes that colour. */
+  hold: HoldState | null;
 }
 
 /** Something outside the goals that one goal depends on. */

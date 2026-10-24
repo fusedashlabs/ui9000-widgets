@@ -1,10 +1,8 @@
 import { html } from 'lit';
-import { ref } from 'lit/directives/ref.js';
 import type { Meta, StoryObj } from '@storybook/web-components';
 
 import '../components/goals-perimeter/index.js';
 import '../components/chart-renderer/index.js';
-import type { GoalOpenDetail, Ui9000GoalsPerimeterChart } from '../components/goals-perimeter/index.js';
 import defaultFixture from './fixtures/goals-perimeter.default.json';
 import agentsFixture from './fixtures/goals-perimeter.agents.json';
 
@@ -12,18 +10,7 @@ type GoalsPerimeterArgs = {
   data: unknown;
   width: string;
   height: string;
-  /** Goal id to open once the board is drawn, as a click on its cluster would. */
-  open?: string;
 };
-
-/** Opens `goalId` after the first draw, the way a click on its cluster does. */
-function openOnMount(goalId: string | undefined) {
-  return ref((node) => {
-    if (!goalId || !node) return;
-    const chart = node as Ui9000GoalsPerimeterChart;
-    setTimeout(() => chart.openGoalById(goalId), 120);
-  });
-}
 
 /** Same goals with no positions: the automatic layout places them. */
 const autoLayout = {
@@ -69,21 +56,9 @@ const extraAgents = {
   links: [{ source: 'claims-1', target: 'Fraud bureau API', status: 'degraded', reason: 'Rate limited' }],
 };
 
-function logOpen(event: CustomEvent<GoalOpenDetail>): void {
-  const log = (event.currentTarget as HTMLElement).parentElement?.querySelector('output');
-  if (!log) return;
-  const { goalName, resourceGroupId } = event.detail;
-  log.textContent = `goal-open → ${goalName}${resourceGroupId ? ` · ${resourceGroupId}` : ''}`;
-}
-
 const frame = (args: GoalsPerimeterArgs) => html`
   <div style="width:${args.width};height:${args.height};">
-    <ui9000-goals-perimeter
-      data=${JSON.stringify(args.data)}
-      @goal-open=${logOpen}
-      ${openOnMount(args.open)}
-    ></ui9000-goals-perimeter>
-    <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>
+    <ui9000-goals-perimeter data=${JSON.stringify(args.data)}></ui9000-goals-perimeter>
   </div>
 `;
 
@@ -95,13 +70,12 @@ const meta: Meta<GoalsPerimeterArgs> = {
     docs: {
       description: {
         component:
-          'Agents Management goals perimeter (AM-2): many agents arranged around a shared goal. Each goal is a cloud of its agents inside a perimeter: the arc is the goal health, clockwise from 12 o’clock, green above 80%, amber below, rose below 25%. Healthy, degraded, blocked and failed agents differ by colour and by marker (△, ⊘, ✕). Diamonds at the centre are resource groups coloured by state, and red ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. The state legend and the exception count sit in the shell. Hover any mark for its detail. Click a cluster (“click to open”) and it expands: the goal fills the plot, its agents regroup into one sector per health state with the reasons beside each, its resource groups are named, and the goals and dependencies it is joined to sit around it — click one to open it. “← All goals” or Esc zooms back out. Opening fires `goal-open`, closing `goal-close`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
+          'Agents Management goals perimeter (AM-2), after the Agent operations design. The goals are clouds of their agents — one point an agent, white at work, grey idle, a periwinkle ring awaiting, an orange dot blocked, a red cross failed, an amber triangle degraded — drawn in WebGL with smoke, glass and bloom (a plain canvas where WebGL 2 is missing). Each goal has a progress ring on a tick scale, an orbit of the resource groups it draws on (a diamond empty when traffic flows, dotted when slowed, solid in the held agents’ colour with their count), links to the goals that share a group (in a held colour when the same trouble holds both ends) and a callout with its code, status and name, plus AGENTS / PROGRESS / BURN / HELD when the board is drawn at 90% of its design size or more. Drag to turn the board, shift-drag to pan, scroll to zoom, double-click to reset; the legend button sits at the bottom left. Hover any mark or control for its detail; the tip follows the pointer. Clicking a goal does nothing for now: it is a standalone chart. A free-form node–link graph stays network-graph. It fills the card and follows the page’s light or dark theme: by day the picture is laid down in ink on a pale room. Use the toolbar for light or dark. Its colours follow the page style like every other chart: SequentialColors1 lights the scene (glow, glass, healthy agents, hairlines, floor) and the secondary colour carries the traffic; held states keep their own hues.',
       },
     },
   },
   argTypes: {
     data: { control: false, table: { disable: true } },
-    open: { control: 'text' },
     width: { control: 'text' },
     height: { control: 'text' },
   },
@@ -112,22 +86,24 @@ const meta: Meta<GoalsPerimeterArgs> = {
 export default meta;
 type Story = StoryObj<GoalsPerimeterArgs>;
 
-/** Five goals on one board, fitted to the panel like every other story. */
+/** The six goals of the design, fitted to the panel like every other story. */
 export const Default: Story = { name: 'Default' };
 
-export const OpenGoal: Story = {
-  name: 'Open goal (Perimeter Watch)',
-  args: { width: '100%', height: '720px', open: 'perimeter-watch' },
+/**
+ * Room for the design's full callouts: the board fills the visible canvas (less
+ * the canvas padding) and is drawn at its design size or more once that is about
+ * 1,250 × 640 or larger. In the docs it gets a frame of its own, as tall as the design.
+ */
+export const Spacious: Story = {
+  name: 'Spacious (readouts)',
+  args: { width: 'calc(100vw - 2rem)', height: 'calc(100vh - 2rem)' },
+  parameters: { docs: { story: { inline: false, height: '820px' } } },
 };
 
-export const OpenDegradedGoal: Story = {
-  name: 'Open goal (Onboarding Velocity)',
-  args: { width: '100%', height: '720px', open: 'onboarding-velocity' },
-};
-
-export const OpenAgentNodes: Story = {
-  name: 'Open goal from agent nodes',
-  args: { data: agentsFixture, width: '100%', height: '720px', open: 'incident-response' },
+/** A smaller board: callouts keep to their heads, and show their readout under the pointer. */
+export const Compact: Story = {
+  name: 'Compact',
+  args: { width: '960px', height: '600px' },
 };
 
 export const AgentNodes: Story = {

@@ -9,6 +9,35 @@ function applyStoryTheme(mode: 'light' | 'dark'): void {
   applyWidgetContext(root, { mode });
 }
 
+/**
+ * The docs page's own preview document, when this story is framed inside it
+ * (`docs.story.inline: false`). Such a frame gets no globals from the toolbar,
+ * so it follows the docs page's theme instead.
+ */
+function docsPage(): Document | null {
+  try {
+    if (window.parent === window || !window.parent.location.pathname.endsWith('iframe.html')) return null;
+    return window.parent.document;
+  } catch {
+    return null;
+  }
+}
+
+let followingDocs = false;
+
+/** Themes a framed story like the docs page around it, and again whenever the page's theme changes. */
+function followDocsTheme(page: Document): 'light' | 'dark' {
+  const read = (): 'light' | 'dark' => (page.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  if (!followingDocs) {
+    followingDocs = true;
+    new MutationObserver(() => applyStoryTheme(read())).observe(page.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  }
+  return read();
+}
+
 const preview: Preview = {
   parameters: {
     layout: 'padded',
@@ -59,7 +88,8 @@ const preview: Preview = {
   },
   decorators: [
     (story, context) => {
-      const mode = context.globals.theme === 'dark' ? 'dark' : 'light';
+      const page = docsPage();
+      const mode = page ? followDocsTheme(page) : context.globals.theme === 'dark' ? 'dark' : 'light';
       applyStoryTheme(mode);
       return html`<div
         style=${styleMap({

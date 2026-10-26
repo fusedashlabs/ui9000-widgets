@@ -1,6 +1,6 @@
 {
   "name": "@fusedashlabs/widgets",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "description": "Props-only chart web components for UI9000 / FuseDash MCP resources",
   "license": "Apache-2.0",
   "type": "module",
@@ -525,7 +525,7 @@
     "lint": "eslint src playground --ext .ts",
     "typecheck": "tsc --noEmit",
     "bundle-size": "node scripts/measure-bundle-size.mjs",
-    "license-check": "license-checker --production --summary --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0'"
+    "license-check": "license-checker --production --summary --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0;Python-2.0'"
   },
   "dependencies": {
     "d3": "^7.9.0",

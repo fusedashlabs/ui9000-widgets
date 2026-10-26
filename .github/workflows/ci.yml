@@ -9,6 +9,8 @@ on:
 jobs:
   widgets:
     runs-on: ubuntu-latest
+    env:
+      FUSELAB_TOKEN: ${{ secrets.FUSELAB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,6 +31,8 @@ jobs:
 
   playground:
     runs-on: ubuntu-latest
+    env:
+      FUSELAB_TOKEN: ${{ secrets.FUSELAB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -46,6 +50,8 @@ jobs:
 
   storybook:
     runs-on: ubuntu-latest
+    env:
+      FUSELAB_TOKEN: ${{ secrets.FUSELAB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

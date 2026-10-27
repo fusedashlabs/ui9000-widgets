@@ -598,15 +598,23 @@ export class Ui9000GoalsPerimeterChart extends Ui9000ChartElement {
     if (this._legendOpen) this.placeLegend();
   }
 
-  /** To the right of its button, its foot level with the button's. */
+  /**
+   * To the right of its button, its foot level with the button's — placed in
+   * the chart's shell, not the window, so it stays put under a scaled or
+   * scrolled ancestor (as on the Storybook docs page).
+   */
   private placeLegend(): void {
     const button = this.shadowRoot?.querySelector('.gp-legend-button');
-    if (!button) return;
+    const shell = this.shadowRoot?.querySelector<HTMLElement>('.widget-shell');
+    if (!button || !shell) return;
+    const box = shell.getBoundingClientRect();
     const rect = button.getBoundingClientRect();
-    const width = Math.min(340, window.innerWidth - 24);
-    const left = Math.max(12, Math.min(rect.right + 16, window.innerWidth - width - 12));
-    const bottom = Math.max(12, window.innerHeight - rect.bottom);
-    this._legendAt = { left, bottom, maxHeight: Math.max(160, rect.bottom - 12) };
+    // an ancestor's transform scales what the rects measure, not the shell's own px
+    const k = shell.offsetWidth ? box.width / shell.offsetWidth : 1;
+    const width = Math.min(340, shell.offsetWidth - 24);
+    const left = Math.max(12, Math.min((rect.right - box.left) / k + 16, shell.offsetWidth - width - 12));
+    const bottom = Math.max(12, (box.bottom - rect.bottom) / k);
+    this._legendAt = { left, bottom, maxHeight: Math.max(160, (rect.bottom - box.top) / k - 12) };
   }
 
   /** How to read the map: what the shapes, colours and marks mean. */

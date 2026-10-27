@@ -583,11 +583,11 @@ export const goalsPerimeterStyles = css`
 
   /* Reading the map: the legend, opened from its button. */
   .gp-legend {
-    position: fixed;
+    position: absolute;
     z-index: 1000;
     display: flex;
     width: 340px;
-    max-width: calc(100vw - 24px);
+    max-width: calc(100% - 24px);
     flex-direction: column;
     gap: 12px;
     box-sizing: border-box;

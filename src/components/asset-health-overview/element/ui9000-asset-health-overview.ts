@@ -67,7 +67,7 @@ const DIAMOND_HEALTH: { mark: unknown; label: string }[] = [
   { mark: mark(svg`<path d=${DIAMOND} class="warn"></path><circle cx="9" cy="9" r="1.5" class="solid warn"></circle>`), label: 'Some of it slowed' },
   {
     mark: mark(svg`<path d=${DIAMOND} class="blocked"></path><path d="M9 6.2 11.8 9 9 11.8 6.2 9Z" class="solid blocked"></path>`),
-    label: 'Agents held there — in their colour, with their count',
+    label: 'Agents held there, with their count — orange blocked, red failed, purple awaiting',
   },
 ];
 

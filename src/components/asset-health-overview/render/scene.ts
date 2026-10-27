@@ -222,7 +222,9 @@ export function renderAssetHealth(container: HTMLElement, options: RenderAssetHe
     }
     const host = fieldHost.getBoundingClientRect();
     const plot = stage.getBoundingClientRect();
-    fieldRect = host.width && host.height ? { left: host.left - plot.left, top: host.top - plot.top, width: host.width, height: host.height } : { left: 0, top: 0, width: size.width, height: size.height };
+    // an ancestor's transform (the docs page's zoom) scales what the rects measure, not the plot's own px
+    const k = stage.offsetWidth ? plot.width / stage.offsetWidth : 1;
+    fieldRect = host.width && host.height ? { left: (host.left - plot.left) / k, top: (host.top - plot.top) / k, width: host.width / k, height: host.height / k } : { left: 0, top: 0, width: size.width, height: size.height };
   };
   measure();
 

@@ -32,17 +32,18 @@ function dashSlotOpacity(css: string, state: DashSlotState): string | null {
   const sheet = css.replace(/\/\*[\s\S]*?\*\//g, '');
   const rules = [...sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   let winner: { score: number; index: number; opacity: string } | null = null;
-  rules.forEach((rule, index) => {
-    const opacity = (rule[2] ?? '').match(/(?:^|;)\s*opacity:\s*([^;]+)/)?.[1]?.trim();
-    if (!opacity) return;
-    for (const selector of (rule[1] ?? '').split(',')) {
+  for (let index = 0; index < rules.length; index++) {
+    const rule = rules[index];
+    const opacity = (rule?.[2] ?? '').match(/(?:^|;)\s*opacity:\s*([^;]+)/)?.[1]?.trim();
+    if (!opacity) continue;
+    for (const selector of (rule?.[1] ?? '').split(',')) {
       if (!dashSlotSelectorMatches(selector, state)) continue;
       const score = selectorScore(selector);
       if (!winner || score > winner.score || (score === winner.score && index >= winner.index)) {
         winner = { score, index, opacity };
       }
     }
-  });
+  }
   return winner?.opacity ?? null;
 }
 

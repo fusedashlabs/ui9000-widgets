@@ -1,0 +1,2148 @@
+{
+  "chartType": "assetHealthOverview",
+  "goal": {
+    "id": "G-007",
+    "name": "Onboarding Velocity",
+    "total": 842,
+    "working": 645,
+    "idle": 22,
+    "awaiting": 33,
+    "blocked": 94,
+    "failed": 27,
+    "overBudget": 21,
+    "progress": 0.41,
+    "burn": 4.2,
+    "status": "blocked"
+  },
+  "categories": [
+    {
+      "id": "RG-SYS",
+      "name": "SYSTEM",
+      "unit": "systems of record",
+      "unitOne": "system of record",
+      "total": 9,
+      "healthy": 1246,
+      "degraded": 34,
+      "failing": 4,
+      "hold": "blocked",
+      "calls": 5400,
+      "traffic": {
+        "flowing": 0.62,
+        "awaiting": 0.07,
+        "blocked": 0.31
+      },
+      "rules": [
+        "R-047",
+        "R-088"
+      ],
+      "items": [
+        "workday",
+        "crm-prod",
+        "billing-db",
+        "identity-store",
+        "payroll-db",
+        "audit-log",
+        "hr-records",
+        "asset-ledger",
+        "contracts-db"
+      ],
+      "problems": [
+        {
+          "name": "crm-prod",
+          "type": "DATABASE",
+          "where": "eu-west-1 → us-east-1",
+          "why": "writes need a credential grant",
+          "state": "blocked",
+          "agents": 84,
+          "since": 14,
+          "rule": "R-047"
+        },
+        {
+          "name": "hr-records",
+          "type": "DATABASE",
+          "where": "eu-west-1",
+          "why": "bulk writes held · data residency",
+          "state": "blocked",
+          "agents": 10,
+          "since": 127,
+          "rule": "R-047"
+        }
+      ],
+      "day": [
+        {
+          "calls": 28395,
+          "away": 0
+        },
+        {
+          "calls": 28477,
+          "away": 0
+        },
+        {
+          "calls": 25070,
+          "away": 0
+        },
+        {
+          "calls": 30831,
+          "away": 0
+        },
+        {
+          "calls": 34575,
+          "away": 0
+        },
+        {
+          "calls": 24334,
+          "away": 0
+        },
+        {
+          "calls": 31228,
+          "away": 0
+        },
+        {
+          "calls": 33290,
+          "away": 0
+        },
+        {
+          "calls": 35136,
+          "away": 0
+        },
+        {
+          "calls": 27184,
+          "away": 0
+        },
+        {
+          "calls": 34093,
+          "away": 0
+        },
+        {
+          "calls": 25973,
+          "away": 0
+        },
+        {
+          "calls": 22545,
+          "away": 0
+        },
+        {
+          "calls": 33273,
+          "away": 0
+        },
+        {
+          "calls": 27319,
+          "away": 0
+        },
+        {
+          "calls": 21878,
+          "away": 0
+        },
+        {
+          "calls": 29821,
+          "away": 0
+        },
+        {
+          "calls": 26984,
+          "away": 0
+        },
+        {
+          "calls": 33308,
+          "away": 0
+        },
+        {
+          "calls": 30852,
+          "away": 0
+        },
+        {
+          "calls": 23073,
+          "away": 0
+        },
+        {
+          "calls": 33275,
+          "away": 0
+        },
+        {
+          "calls": 32239,
+          "away": 0
+        },
+        {
+          "calls": 29644,
+          "away": 0
+        },
+        {
+          "calls": 23977,
+          "away": 0
+        },
+        {
+          "calls": 22272,
+          "away": 0
+        },
+        {
+          "calls": 31235,
+          "away": 0
+        },
+        {
+          "calls": 34029,
+          "away": 0
+        },
+        {
+          "calls": 33696,
+          "away": 0
+        },
+        {
+          "calls": 31772,
+          "away": 0
+        },
+        {
+          "calls": 30925,
+          "away": 0
+        },
+        {
+          "calls": 33799,
+          "away": 0
+        },
+        {
+          "calls": 33925,
+          "away": 0
+        },
+        {
+          "calls": 43651,
+          "away": 0
+        },
+        {
+          "calls": 45657,
+          "away": 0
+        },
+        {
+          "calls": 41842,
+          "away": 0
+        },
+        {
+          "calls": 46881,
+          "away": 0
+        },
+        {
+          "calls": 54225,
+          "away": 0
+        },
+        {
+          "calls": 49067,
+          "away": 0
+        },
+        {
+          "calls": 53007,
+          "away": 0
+        },
+        {
+          "calls": 54890,
+          "away": 0
+        },
+        {
+          "calls": 57366,
+          "away": 0
+        },
+        {
+          "calls": 63728,
+          "away": 0
+        },
+        {
+          "calls": 67774,
+          "away": 0
+        },
+        {
+          "calls": 74875,
+          "away": 0
+        },
+        {
+          "calls": 68153,
+          "away": 0
+        },
+        {
+          "calls": 74528,
+          "away": 0
+        },
+        {
+          "calls": 76675,
+          "away": 0
+        },
+        {
+          "calls": 75859,
+          "away": 0
+        },
+        {
+          "calls": 76042,
+          "away": 0
+        },
+        {
+          "calls": 76008,
+          "away": 0
+        },
+        {
+          "calls": 80387,
+          "away": 0
+        },
+        {
+          "calls": 88716,
+          "away": 0
+        },
+        {
+          "calls": 84109,
+          "away": 0
+        },
+        {
+          "calls": 80947,
+          "away": 0
+        },
+        {
+          "calls": 85555,
+          "away": 0
+        },
+        {
+          "calls": 78065,
+          "away": 0
+        },
+        {
+          "calls": 81566,
+          "away": 0
+        },
+        {
+          "calls": 76247,
+          "away": 0
+        },
+        {
+          "calls": 80044,
+          "away": 0
+        },
+        {
+          "calls": 76061,
+          "away": 0
+        },
+        {
+          "calls": 80051,
+          "away": 0
+        },
+        {
+          "calls": 72026,
+          "away": 0
+        },
+        {
+          "calls": 80136,
+          "away": 0
+        },
+        {
+          "calls": 72663,
+          "away": 0
+        },
+        {
+          "calls": 68029,
+          "away": 0
+        },
+        {
+          "calls": 60170,
+          "away": 0
+        },
+        {
+          "calls": 57082,
+          "away": 0
+        },
+        {
+          "calls": 55196,
+          "away": 0
+        },
+        {
+          "calls": 55716,
+          "away": 0
+        },
+        {
+          "calls": 52523,
+          "away": 0
+        },
+        {
+          "calls": 54810,
+          "away": 0
+        },
+        {
+          "calls": 42642,
+          "away": 0
+        },
+        {
+          "calls": 52357,
+          "away": 0
+        },
+        {
+          "calls": 48783,
+          "away": 0
+        },
+        {
+          "calls": 37293,
+          "away": 0
+        },
+        {
+          "calls": 43942,
+          "away": 0
+        },
+        {
+          "calls": 34272,
+          "away": 0
+        },
+        {
+          "calls": 33138,
+          "away": 0
+        },
+        {
+          "calls": 29809,
+          "away": 0
+        },
+        {
+          "calls": 30078,
+          "away": 0
+        },
+        {
+          "calls": 31017,
+          "away": 0
+        },
+        {
+          "calls": 22344,
+          "away": 0
+        },
+        {
+          "calls": 24470,
+          "away": 0
+        },
+        {
+          "calls": 30384,
+          "away": 0
+        },
+        {
+          "calls": 25452,
+          "away": 0
+        },
+        {
+          "calls": 26936,
+          "away": 0
+        },
+        {
+          "calls": 28428,
+          "away": 0.019
+        },
+        {
+          "calls": 18092,
+          "away": 0.04
+        },
+        {
+          "calls": 25949,
+          "away": 0.04
+        },
+        {
+          "calls": 19662,
+          "away": 0.04
+        },
+        {
+          "calls": 21658,
+          "away": 0.04
+        },
+        {
+          "calls": 23936,
+          "away": 0.04
+        },
+        {
+          "calls": 31068,
+          "away": 0.04
+        },
+        {
+          "calls": 29244,
+          "away": 0.04
+        },
+        {
+          "calls": 81000,
+          "away": 0.357
+        }
+      ]
+    },
+    {
+      "id": "RG-APP",
+      "name": "APP",
+      "unit": "apps",
+      "unitOne": "app",
+      "total": 12,
+      "healthy": 8931,
+      "degraded": 9,
+      "failing": 0,
+      "calls": 3300,
+      "traffic": {
+        "flowing": 0.88,
+        "throttled": 0.12
+      },
+      "items": [
+        "Jira",
+        "ServiceNow",
+        "Okta",
+        "DocuSign",
+        "Email",
+        "Slack",
+        "Salesforce",
+        "Confluence",
+        "Zendesk",
+        "Google Drive",
+        "Zoom",
+        "Notion"
+      ],
+      "problems": [
+        {
+          "name": "Okta",
+          "type": "APP",
+          "where": "eu-west-1",
+          "why": "rate-limited · writes throttled",
+          "state": "slowed"
+        }
+      ],
+      "day": [
+        {
+          "calls": 16889,
+          "away": 0.01
+        },
+        {
+          "calls": 19198,
+          "away": 0.01
+        },
+        {
+          "calls": 15824,
+          "away": 0.01
+        },
+        {
+          "calls": 16931,
+          "away": 0.01
+        },
+        {
+          "calls": 17392,
+          "away": 0.01
+        },
+        {
+          "calls": 14796,
+          "away": 0.01
+        },
+        {
+          "calls": 18836,
+          "away": 0.01
+        },
+        {
+          "calls": 15960,
+          "away": 0.01
+        },
+        {
+          "calls": 19005,
+          "away": 0.01
+        },
+        {
+          "calls": 18087,
+          "away": 0.01
+        },
+        {
+          "calls": 17051,
+          "away": 0.121
+        },
+        {
+          "calls": 14232,
+          "away": 0.174
+        },
+        {
+          "calls": 20424,
+          "away": 0.01
+        },
+        {
+          "calls": 21023,
+          "away": 0.095
+        },
+        {
+          "calls": 17719,
+          "away": 0.01
+        },
+        {
+          "calls": 20714,
+          "away": 0.052
+        },
+        {
+          "calls": 20477,
+          "away": 0.01
+        },
+        {
+          "calls": 18491,
+          "away": 0.01
+        },
+        {
+          "calls": 19362,
+          "away": 0.01
+        },
+        {
+          "calls": 19178,
+          "away": 0.01
+        },
+        {
+          "calls": 13028,
+          "away": 0.09
+        },
+        {
+          "calls": 14971,
+          "away": 0.01
+        },
+        {
+          "calls": 15044,
+          "away": 0.01
+        },
+        {
+          "calls": 16916,
+          "away": 0.01
+        },
+        {
+          "calls": 14292,
+          "away": 0.01
+        },
+        {
+          "calls": 13419,
+          "away": 0.01
+        },
+        {
+          "calls": 19104,
+          "away": 0.072
+        },
+        {
+          "calls": 18424,
+          "away": 0.01
+        },
+        {
+          "calls": 18816,
+          "away": 0.01
+        },
+        {
+          "calls": 22400,
+          "away": 0.01
+        },
+        {
+          "calls": 20045,
+          "away": 0.01
+        },
+        {
+          "calls": 23679,
+          "away": 0.153
+        },
+        {
+          "calls": 26426,
+          "away": 0.057
+        },
+        {
+          "calls": 21314,
+          "away": 0.01
+        },
+        {
+          "calls": 24052,
+          "away": 0.01
+        },
+        {
+          "calls": 24506,
+          "away": 0.171
+        },
+        {
+          "calls": 27067,
+          "away": 0.01
+        },
+        {
+          "calls": 31449,
+          "away": 0.01
+        },
+        {
+          "calls": 29940,
+          "away": 0.096
+        },
+        {
+          "calls": 34275,
+          "away": 0.01
+        },
+        {
+          "calls": 32061,
+          "away": 0.161
+        },
+        {
+          "calls": 37466,
+          "away": 0.01
+        },
+        {
+          "calls": 35965,
+          "away": 0.077
+        },
+        {
+          "calls": 41099,
+          "away": 0.104
+        },
+        {
+          "calls": 45295,
+          "away": 0.01
+        },
+        {
+          "calls": 39921,
+          "away": 0.01
+        },
+        {
+          "calls": 44058,
+          "away": 0.158
+        },
+        {
+          "calls": 47610,
+          "away": 0.01
+        },
+        {
+          "calls": 44110,
+          "away": 0.187
+        },
+        {
+          "calls": 46759,
+          "away": 0.01
+        },
+        {
+          "calls": 53411,
+          "away": 0.01
+        },
+        {
+          "calls": 51473,
+          "away": 0.01
+        },
+        {
+          "calls": 51163,
+          "away": 0.01
+        },
+        {
+          "calls": 53510,
+          "away": 0.169
+        },
+        {
+          "calls": 51154,
+          "away": 0.01
+        },
+        {
+          "calls": 53535,
+          "away": 0.01
+        },
+        {
+          "calls": 50590,
+          "away": 0.166
+        },
+        {
+          "calls": 47067,
+          "away": 0.01
+        },
+        {
+          "calls": 51527,
+          "away": 0.092
+        },
+        {
+          "calls": 47957,
+          "away": 0.176
+        },
+        {
+          "calls": 47109,
+          "away": 0.069
+        },
+        {
+          "calls": 47309,
+          "away": 0.01
+        },
+        {
+          "calls": 47743,
+          "away": 0.159
+        },
+        {
+          "calls": 43741,
+          "away": 0.167
+        },
+        {
+          "calls": 44823,
+          "away": 0.079
+        },
+        {
+          "calls": 42763,
+          "away": 0.103
+        },
+        {
+          "calls": 37651,
+          "away": 0.09
+        },
+        {
+          "calls": 38894,
+          "away": 0.01
+        },
+        {
+          "calls": 34831,
+          "away": 0.06
+        },
+        {
+          "calls": 33534,
+          "away": 0.01
+        },
+        {
+          "calls": 32264,
+          "away": 0.01
+        },
+        {
+          "calls": 33158,
+          "away": 0.159
+        },
+        {
+          "calls": 27106,
+          "away": 0.01
+        },
+        {
+          "calls": 27546,
+          "away": 0.138
+        },
+        {
+          "calls": 27037,
+          "away": 0.052
+        },
+        {
+          "calls": 27860,
+          "away": 0.01
+        },
+        {
+          "calls": 21690,
+          "away": 0.01
+        },
+        {
+          "calls": 20991,
+          "away": 0.152
+        },
+        {
+          "calls": 18099,
+          "away": 0.01
+        },
+        {
+          "calls": 23524,
+          "away": 0.174
+        },
+        {
+          "calls": 19811,
+          "away": 0.105
+        },
+        {
+          "calls": 18729,
+          "away": 0.189
+        },
+        {
+          "calls": 16073,
+          "away": 0.01
+        },
+        {
+          "calls": 14047,
+          "away": 0.01
+        },
+        {
+          "calls": 17874,
+          "away": 0.01
+        },
+        {
+          "calls": 15453,
+          "away": 0.01
+        },
+        {
+          "calls": 14844,
+          "away": 0.06
+        },
+        {
+          "calls": 11903,
+          "away": 0.01
+        },
+        {
+          "calls": 13962,
+          "away": 0.19
+        },
+        {
+          "calls": 17450,
+          "away": 0.01
+        },
+        {
+          "calls": 11423,
+          "away": 0.074
+        },
+        {
+          "calls": 11809,
+          "away": 0.01
+        },
+        {
+          "calls": 12643,
+          "away": 0.01
+        },
+        {
+          "calls": 14562,
+          "away": 0.054
+        },
+        {
+          "calls": 12220,
+          "away": 0.01
+        },
+        {
+          "calls": 49500,
+          "away": 0.12
+        }
+      ]
+    },
+    {
+      "id": "RG-TOOL",
+      "name": "TOOL",
+      "unit": "tools",
+      "unitOne": "tool",
+      "total": 24,
+      "healthy": 4570,
+      "degraded": 38,
+      "failing": 4,
+      "hold": "failed",
+      "calls": 1800,
+      "traffic": {
+        "flowing": 0.74,
+        "failed": 0.26
+      },
+      "items": [
+        "OCR engine",
+        "browser runner",
+        "code sandbox",
+        "PDF converter",
+        "email sender",
+        "spreadsheet tool",
+        "translator",
+        "web scraper"
+      ],
+      "problems": [
+        {
+          "name": "browser runner",
+          "type": "TOOL",
+          "where": "platform cluster b",
+          "why": "crash-loops on cold start",
+          "state": "failed",
+          "agents": 27,
+          "since": 51
+        }
+      ],
+      "day": [
+        {
+          "calls": 8862,
+          "away": 0
+        },
+        {
+          "calls": 7224,
+          "away": 0
+        },
+        {
+          "calls": 7421,
+          "away": 0
+        },
+        {
+          "calls": 9422,
+          "away": 0
+        },
+        {
+          "calls": 9363,
+          "away": 0
+        },
+        {
+          "calls": 7503,
+          "away": 0
+        },
+        {
+          "calls": 11655,
+          "away": 0
+        },
+        {
+          "calls": 9330,
+          "away": 0
+        },
+        {
+          "calls": 11077,
+          "away": 0
+        },
+        {
+          "calls": 9932,
+          "away": 0
+        },
+        {
+          "calls": 8359,
+          "away": 0
+        },
+        {
+          "calls": 8635,
+          "away": 0
+        },
+        {
+          "calls": 10904,
+          "away": 0
+        },
+        {
+          "calls": 11222,
+          "away": 0
+        },
+        {
+          "calls": 10855,
+          "away": 0
+        },
+        {
+          "calls": 10051,
+          "away": 0
+        },
+        {
+          "calls": 9222,
+          "away": 0
+        },
+        {
+          "calls": 10667,
+          "away": 0
+        },
+        {
+          "calls": 9348,
+          "away": 0
+        },
+        {
+          "calls": 9336,
+          "away": 0
+        },
+        {
+          "calls": 8959,
+          "away": 0
+        },
+        {
+          "calls": 10065,
+          "away": 0
+        },
+        {
+          "calls": 8263,
+          "away": 0
+        },
+        {
+          "calls": 9859,
+          "away": 0
+        },
+        {
+          "calls": 7718,
+          "away": 0
+        },
+        {
+          "calls": 9626,
+          "away": 0
+        },
+        {
+          "calls": 9749,
+          "away": 0
+        },
+        {
+          "calls": 8722,
+          "away": 0
+        },
+        {
+          "calls": 8524,
+          "away": 0
+        },
+        {
+          "calls": 10932,
+          "away": 0
+        },
+        {
+          "calls": 10899,
+          "away": 0
+        },
+        {
+          "calls": 13843,
+          "away": 0
+        },
+        {
+          "calls": 12888,
+          "away": 0
+        },
+        {
+          "calls": 12718,
+          "away": 0
+        },
+        {
+          "calls": 12786,
+          "away": 0
+        },
+        {
+          "calls": 16517,
+          "away": 0
+        },
+        {
+          "calls": 13769,
+          "away": 0
+        },
+        {
+          "calls": 16686,
+          "away": 0
+        },
+        {
+          "calls": 15636,
+          "away": 0
+        },
+        {
+          "calls": 19656,
+          "away": 0
+        },
+        {
+          "calls": 19171,
+          "away": 0
+        },
+        {
+          "calls": 20114,
+          "away": 0
+        },
+        {
+          "calls": 21146,
+          "away": 0
+        },
+        {
+          "calls": 20096,
+          "away": 0
+        },
+        {
+          "calls": 22909,
+          "away": 0
+        },
+        {
+          "calls": 23524,
+          "away": 0
+        },
+        {
+          "calls": 25148,
+          "away": 0
+        },
+        {
+          "calls": 26096,
+          "away": 0
+        },
+        {
+          "calls": 25440,
+          "away": 0
+        },
+        {
+          "calls": 24985,
+          "away": 0
+        },
+        {
+          "calls": 25700,
+          "away": 0
+        },
+        {
+          "calls": 25978,
+          "away": 0
+        },
+        {
+          "calls": 29624,
+          "away": 0
+        },
+        {
+          "calls": 28541,
+          "away": 0
+        },
+        {
+          "calls": 29391,
+          "away": 0
+        },
+        {
+          "calls": 26033,
+          "away": 0
+        },
+        {
+          "calls": 26094,
+          "away": 0
+        },
+        {
+          "calls": 28386,
+          "away": 0
+        },
+        {
+          "calls": 25637,
+          "away": 0
+        },
+        {
+          "calls": 27526,
+          "away": 0
+        },
+        {
+          "calls": 25152,
+          "away": 0
+        },
+        {
+          "calls": 25674,
+          "away": 0
+        },
+        {
+          "calls": 26487,
+          "away": 0
+        },
+        {
+          "calls": 22643,
+          "away": 0
+        },
+        {
+          "calls": 24632,
+          "away": 0
+        },
+        {
+          "calls": 24938,
+          "away": 0
+        },
+        {
+          "calls": 22227,
+          "away": 0
+        },
+        {
+          "calls": 23062,
+          "away": 0
+        },
+        {
+          "calls": 20301,
+          "away": 0
+        },
+        {
+          "calls": 17849,
+          "away": 0
+        },
+        {
+          "calls": 16553,
+          "away": 0
+        },
+        {
+          "calls": 17633,
+          "away": 0
+        },
+        {
+          "calls": 17741,
+          "away": 0
+        },
+        {
+          "calls": 15172,
+          "away": 0
+        },
+        {
+          "calls": 15682,
+          "away": 0
+        },
+        {
+          "calls": 15161,
+          "away": 0
+        },
+        {
+          "calls": 14362,
+          "away": 0
+        },
+        {
+          "calls": 12708,
+          "away": 0
+        },
+        {
+          "calls": 11086,
+          "away": 0
+        },
+        {
+          "calls": 12241,
+          "away": 0
+        },
+        {
+          "calls": 9830,
+          "away": 0
+        },
+        {
+          "calls": 9925,
+          "away": 0
+        },
+        {
+          "calls": 7328,
+          "away": 0
+        },
+        {
+          "calls": 6978,
+          "away": 0
+        },
+        {
+          "calls": 7725,
+          "away": 0
+        },
+        {
+          "calls": 7273,
+          "away": 0
+        },
+        {
+          "calls": 9356,
+          "away": 0
+        },
+        {
+          "calls": 9803,
+          "away": 0
+        },
+        {
+          "calls": 7126,
+          "away": 0
+        },
+        {
+          "calls": 9931,
+          "away": 0
+        },
+        {
+          "calls": 7134,
+          "away": 0
+        },
+        {
+          "calls": 8478,
+          "away": 0
+        },
+        {
+          "calls": 7290,
+          "away": 0.104
+        },
+        {
+          "calls": 6385,
+          "away": 0.26
+        },
+        {
+          "calls": 6691,
+          "away": 0.26
+        },
+        {
+          "calls": 27000,
+          "away": 0.26
+        }
+      ]
+    },
+    {
+      "id": "RG-HUMAN",
+      "name": "HUMAN",
+      "unit": "people",
+      "unitOne": "person",
+      "total": 5,
+      "healthy": 41,
+      "degraded": 0,
+      "failing": 0,
+      "calls": 14,
+      "traffic": {
+        "flowing": 0.4,
+        "awaiting": 0.6
+      },
+      "rules": [
+        "R-047"
+      ],
+      "items": [
+        "HR reviewer",
+        "Security on-call",
+        "Finance approver",
+        "IT service desk",
+        "Hiring manager"
+      ],
+      "problems": [
+        {
+          "name": "Security on-call",
+          "type": "PERSON",
+          "where": "on-call rota",
+          "why": "owes the R-047 credential grant",
+          "state": "slowed",
+          "rule": "R-047"
+        }
+      ],
+      "day": [
+        {
+          "calls": 55,
+          "away": 0.652
+        },
+        {
+          "calls": 76,
+          "away": 0.32
+        },
+        {
+          "calls": 71,
+          "away": 0.752
+        },
+        {
+          "calls": 67,
+          "away": 0.048
+        },
+        {
+          "calls": 70,
+          "away": 0.048
+        },
+        {
+          "calls": 88,
+          "away": 0.048
+        },
+        {
+          "calls": 89,
+          "away": 0.048
+        },
+        {
+          "calls": 87,
+          "away": 0.895
+        },
+        {
+          "calls": 89,
+          "away": 0.048
+        },
+        {
+          "calls": 59,
+          "away": 0.844
+        },
+        {
+          "calls": 60,
+          "away": 0.048
+        },
+        {
+          "calls": 59,
+          "away": 0.545
+        },
+        {
+          "calls": 73,
+          "away": 0.048
+        },
+        {
+          "calls": 58,
+          "away": 0.048
+        },
+        {
+          "calls": 76,
+          "away": 0.048
+        },
+        {
+          "calls": 89,
+          "away": 0.649
+        },
+        {
+          "calls": 81,
+          "away": 0.048
+        },
+        {
+          "calls": 66,
+          "away": 0.733
+        },
+        {
+          "calls": 81,
+          "away": 0.048
+        },
+        {
+          "calls": 63,
+          "away": 0.949
+        },
+        {
+          "calls": 86,
+          "away": 0.048
+        },
+        {
+          "calls": 75,
+          "away": 0.048
+        },
+        {
+          "calls": 75,
+          "away": 0.426
+        },
+        {
+          "calls": 70,
+          "away": 0.048
+        },
+        {
+          "calls": 60,
+          "away": 0.409
+        },
+        {
+          "calls": 83,
+          "away": 0.855
+        },
+        {
+          "calls": 78,
+          "away": 0.048
+        },
+        {
+          "calls": 87,
+          "away": 0.616
+        },
+        {
+          "calls": 67,
+          "away": 0.048
+        },
+        {
+          "calls": 69,
+          "away": 0.048
+        },
+        {
+          "calls": 84,
+          "away": 0.048
+        },
+        {
+          "calls": 92,
+          "away": 0.048
+        },
+        {
+          "calls": 95,
+          "away": 0.601
+        },
+        {
+          "calls": 88,
+          "away": 0.048
+        },
+        {
+          "calls": 122,
+          "away": 0.048
+        },
+        {
+          "calls": 127,
+          "away": 0.048
+        },
+        {
+          "calls": 113,
+          "away": 0.048
+        },
+        {
+          "calls": 134,
+          "away": 0.048
+        },
+        {
+          "calls": 136,
+          "away": 0.048
+        },
+        {
+          "calls": 146,
+          "away": 0.048
+        },
+        {
+          "calls": 165,
+          "away": 0.048
+        },
+        {
+          "calls": 172,
+          "away": 0.576
+        },
+        {
+          "calls": 176,
+          "away": 0.048
+        },
+        {
+          "calls": 158,
+          "away": 0.048
+        },
+        {
+          "calls": 164,
+          "away": 0.048
+        },
+        {
+          "calls": 171,
+          "away": 0.447
+        },
+        {
+          "calls": 199,
+          "away": 0.048
+        },
+        {
+          "calls": 207,
+          "away": 0.267
+        },
+        {
+          "calls": 217,
+          "away": 0.048
+        },
+        {
+          "calls": 210,
+          "away": 0.048
+        },
+        {
+          "calls": 215,
+          "away": 0.048
+        },
+        {
+          "calls": 212,
+          "away": 0.048
+        },
+        {
+          "calls": 202,
+          "away": 0.048
+        },
+        {
+          "calls": 234,
+          "away": 0.747
+        },
+        {
+          "calls": 216,
+          "away": 0.048
+        },
+        {
+          "calls": 210,
+          "away": 0.863
+        },
+        {
+          "calls": 221,
+          "away": 0.048
+        },
+        {
+          "calls": 201,
+          "away": 0.048
+        },
+        {
+          "calls": 229,
+          "away": 0.794
+        },
+        {
+          "calls": 213,
+          "away": 0.048
+        },
+        {
+          "calls": 220,
+          "away": 0.048
+        },
+        {
+          "calls": 210,
+          "away": 0.433
+        },
+        {
+          "calls": 190,
+          "away": 0.048
+        },
+        {
+          "calls": 202,
+          "away": 0.564
+        },
+        {
+          "calls": 184,
+          "away": 0.048
+        },
+        {
+          "calls": 188,
+          "away": 0.048
+        },
+        {
+          "calls": 170,
+          "away": 0.821
+        },
+        {
+          "calls": 150,
+          "away": 0.048
+        },
+        {
+          "calls": 142,
+          "away": 0.576
+        },
+        {
+          "calls": 143,
+          "away": 0.048
+        },
+        {
+          "calls": 141,
+          "away": 0.048
+        },
+        {
+          "calls": 121,
+          "away": 0.048
+        },
+        {
+          "calls": 141,
+          "away": 0.048
+        },
+        {
+          "calls": 134,
+          "away": 0.398
+        },
+        {
+          "calls": 125,
+          "away": 0.868
+        },
+        {
+          "calls": 116,
+          "away": 0.835
+        },
+        {
+          "calls": 88,
+          "away": 0.853
+        },
+        {
+          "calls": 110,
+          "away": 0.048
+        },
+        {
+          "calls": 95,
+          "away": 0.048
+        },
+        {
+          "calls": 84,
+          "away": 0.747
+        },
+        {
+          "calls": 86,
+          "away": 0.048
+        },
+        {
+          "calls": 88,
+          "away": 0.048
+        },
+        {
+          "calls": 58,
+          "away": 0.473
+        },
+        {
+          "calls": 86,
+          "away": 0.599
+        },
+        {
+          "calls": 82,
+          "away": 0.921
+        },
+        {
+          "calls": 75,
+          "away": 0.048
+        },
+        {
+          "calls": 60,
+          "away": 0.048
+        },
+        {
+          "calls": 59,
+          "away": 0.048
+        },
+        {
+          "calls": 52,
+          "away": 0.49
+        },
+        {
+          "calls": 60,
+          "away": 0.724
+        },
+        {
+          "calls": 72,
+          "away": 0.048
+        },
+        {
+          "calls": 72,
+          "away": 0.639
+        },
+        {
+          "calls": 69,
+          "away": 0.048
+        },
+        {
+          "calls": 76,
+          "away": 0.048
+        },
+        {
+          "calls": 83,
+          "away": 0.048
+        },
+        {
+          "calls": 210,
+          "away": 0.6
+        }
+      ]
+    },
+    {
+      "id": "RG-MODEL",
+      "name": "MODEL",
+      "unit": "models",
+      "unitOne": "model",
+      "total": 6,
+      "healthy": 22,
+      "degraded": 2,
+      "failing": 0,
+      "hold": "awaiting",
+      "calls": 6200,
+      "traffic": {
+        "flowing": 0.95,
+        "awaiting": 0.05
+      },
+      "items": [
+        "haiku v3.1",
+        "sonnet v4.2",
+        "embedder v2",
+        "reranker v1",
+        "vision v1.4",
+        "guard v2"
+      ],
+      "problems": [
+        {
+          "name": "sonnet v4.2",
+          "type": "AI MODEL",
+          "where": "model gateway · us-west-2",
+          "why": "p95 2.1s against 1.2s",
+          "state": "awaiting",
+          "agents": 33,
+          "since": 28
+        }
+      ],
+      "day": [
+        {
+          "calls": 34088,
+          "away": 0
+        },
+        {
+          "calls": 26596,
+          "away": 0
+        },
+        {
+          "calls": 34928,
+          "away": 0
+        },
+        {
+          "calls": 37400,
+          "away": 0
+        },
+        {
+          "calls": 37137,
+          "away": 0
+        },
+        {
+          "calls": 40066,
+          "away": 0
+        },
+        {
+          "calls": 27542,
+          "away": 0
+        },
+        {
+          "calls": 39773,
+          "away": 0
+        },
+        {
+          "calls": 26753,
+          "away": 0
+        },
+        {
+          "calls": 27918,
+          "away": 0
+        },
+        {
+          "calls": 28725,
+          "away": 0
+        },
+        {
+          "calls": 31333,
+          "away": 0
+        },
+        {
+          "calls": 34947,
+          "away": 0
+        },
+        {
+          "calls": 31742,
+          "away": 0
+        },
+        {
+          "calls": 27491,
+          "away": 0
+        },
+        {
+          "calls": 39536,
+          "away": 0
+        },
+        {
+          "calls": 24815,
+          "away": 0
+        },
+        {
+          "calls": 34724,
+          "away": 0
+        },
+        {
+          "calls": 35306,
+          "away": 0
+        },
+        {
+          "calls": 25889,
+          "away": 0
+        },
+        {
+          "calls": 36445,
+          "away": 0
+        },
+        {
+          "calls": 26473,
+          "away": 0
+        },
+        {
+          "calls": 37904,
+          "away": 0
+        },
+        {
+          "calls": 25627,
+          "away": 0
+        },
+        {
+          "calls": 28863,
+          "away": 0
+        },
+        {
+          "calls": 38242,
+          "away": 0
+        },
+        {
+          "calls": 39705,
+          "away": 0
+        },
+        {
+          "calls": 38953,
+          "away": 0
+        },
+        {
+          "calls": 29797,
+          "away": 0
+        },
+        {
+          "calls": 43503,
+          "away": 0
+        },
+        {
+          "calls": 37529,
+          "away": 0
+        },
+        {
+          "calls": 45397,
+          "away": 0
+        },
+        {
+          "calls": 39966,
+          "away": 0
+        },
+        {
+          "calls": 48771,
+          "away": 0
+        },
+        {
+          "calls": 43718,
+          "away": 0
+        },
+        {
+          "calls": 52624,
+          "away": 0
+        },
+        {
+          "calls": 52744,
+          "away": 0
+        },
+        {
+          "calls": 62058,
+          "away": 0
+        },
+        {
+          "calls": 55763,
+          "away": 0
+        },
+        {
+          "calls": 65480,
+          "away": 0
+        },
+        {
+          "calls": 70245,
+          "away": 0
+        },
+        {
+          "calls": 66987,
+          "away": 0
+        },
+        {
+          "calls": 69514,
+          "away": 0
+        },
+        {
+          "calls": 69883,
+          "away": 0
+        },
+        {
+          "calls": 85496,
+          "away": 0
+        },
+        {
+          "calls": 86750,
+          "away": 0
+        },
+        {
+          "calls": 89175,
+          "away": 0
+        },
+        {
+          "calls": 85364,
+          "away": 0
+        },
+        {
+          "calls": 96642,
+          "away": 0
+        },
+        {
+          "calls": 88585,
+          "away": 0
+        },
+        {
+          "calls": 93031,
+          "away": 0
+        },
+        {
+          "calls": 90397,
+          "away": 0
+        },
+        {
+          "calls": 93794,
+          "away": 0
+        },
+        {
+          "calls": 101559,
+          "away": 0
+        },
+        {
+          "calls": 102745,
+          "away": 0
+        },
+        {
+          "calls": 97115,
+          "away": 0
+        },
+        {
+          "calls": 102076,
+          "away": 0
+        },
+        {
+          "calls": 95245,
+          "away": 0
+        },
+        {
+          "calls": 95210,
+          "away": 0
+        },
+        {
+          "calls": 90374,
+          "away": 0
+        },
+        {
+          "calls": 95673,
+          "away": 0
+        },
+        {
+          "calls": 82683,
+          "away": 0
+        },
+        {
+          "calls": 87356,
+          "away": 0
+        },
+        {
+          "calls": 90818,
+          "away": 0
+        },
+        {
+          "calls": 77676,
+          "away": 0
+        },
+        {
+          "calls": 82717,
+          "away": 0
+        },
+        {
+          "calls": 80742,
+          "away": 0
+        },
+        {
+          "calls": 71911,
+          "away": 0
+        },
+        {
+          "calls": 62428,
+          "away": 0
+        },
+        {
+          "calls": 60546,
+          "away": 0
+        },
+        {
+          "calls": 68158,
+          "away": 0
+        },
+        {
+          "calls": 64395,
+          "away": 0.004
+        },
+        {
+          "calls": 51289,
+          "away": 0.03
+        },
+        {
+          "calls": 55342,
+          "away": 0.03
+        },
+        {
+          "calls": 45867,
+          "away": 0.018
+        },
+        {
+          "calls": 39908,
+          "away": 0
+        },
+        {
+          "calls": 40905,
+          "away": 0
+        },
+        {
+          "calls": 38666,
+          "away": 0
+        },
+        {
+          "calls": 44481,
+          "away": 0
+        },
+        {
+          "calls": 40347,
+          "away": 0
+        },
+        {
+          "calls": 29068,
+          "away": 0
+        },
+        {
+          "calls": 34587,
+          "away": 0
+        },
+        {
+          "calls": 31980,
+          "away": 0
+        },
+        {
+          "calls": 35628,
+          "away": 0
+        },
+        {
+          "calls": 30681,
+          "away": 0
+        },
+        {
+          "calls": 36199,
+          "away": 0
+        },
+        {
+          "calls": 26921,
+          "away": 0
+        },
+        {
+          "calls": 26013,
+          "away": 0
+        },
+        {
+          "calls": 32114,
+          "away": 0
+        },
+        {
+          "calls": 25067,
+          "away": 0
+        },
+        {
+          "calls": 30278,
+          "away": 0
+        },
+        {
+          "calls": 31678,
+          "away": 0
+        },
+        {
+          "calls": 34569,
+          "away": 0
+        },
+        {
+          "calls": 23277,
+          "away": 0
+        },
+        {
+          "calls": 32035,
+          "away": 0.043
+        },
+        {
+          "calls": 93000,
+          "away": 0.05
+        }
+      ]
+    }
+  ]
+}

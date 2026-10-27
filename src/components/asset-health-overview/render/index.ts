@@ -1,6 +1,8 @@
-export { DEFAULT_ORBIT, orbitBy, type Orbit } from './camera.js';
 export {
-  drawAssetHealthOverview,
+  renderAssetHealth,
+  type AssetHealthController,
   type AssetHealthHandlers,
-  type AssetHealthView,
-} from './draw.js';
+  type RenderAssetHealthOptions,
+} from './scene.js';
+export { createPainter, type Painter } from './field-painter.js';
+export { scenePalette, type ScenePalette } from './scene-palette.js';

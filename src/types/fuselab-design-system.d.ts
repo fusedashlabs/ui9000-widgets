@@ -26,8 +26,20 @@ declare module '@fuselab-creative/design-system' {
     };
   };
 
-  export const lightTheme: object;
-  export const darkTheme: object;
+  type Theme = {
+    colors: {
+      dataViz: {
+        sequential_7_1: string[];
+        qualitative_2_1: string[];
+        qualitative_2_2: string[];
+        qualitative_4: string[];
+        qualitative_12: string[];
+      };
+    };
+  };
+
+  export const lightTheme: Theme;
+  export const darkTheme: Theme;
 
   export function Typography(props: {
     children?: string;

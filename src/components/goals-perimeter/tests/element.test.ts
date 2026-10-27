@@ -354,6 +354,36 @@ describe('ui9000-goals-perimeter', () => {
     expect(el.style.getPropertyValue('--gp-glint-stroke')).toBe('#ffffff');
   });
 
+  it('lets only what is held stand out with problems-only, and shows everything again without it', async () => {
+    const el = await mount(defaultFixture);
+    const root = el.shadowRoot!;
+    const opacity = (selector: string) => Number(root.querySelector(selector)!.getAttribute('opacity'));
+    const quiet = 'g.gp-goal[data-goal="model-drift-watch"]';
+    const held = 'g.gp-goal[data-goal="onboarding-velocity"]';
+    const failedLink = 'g.gp-link[data-link="tool:onboarding-velocity|maintain-verified-asset-visibility"]';
+    expect(opacity(quiet)).toBeGreaterThanOrEqual(0.74);
+
+    el.problemsOnly = true;
+    await el.updateComplete;
+    await flush();
+    expect(el.hasAttribute('problems-only')).toBe(true);
+    // a goal none of whose agents is held steps back, with its callout; one with held agents keeps its light
+    expect(opacity(quiet)).toBeLessThanOrEqual(0.35);
+    expect(Number(root.querySelector<HTMLElement>('.gp-callout[data-goal="model-drift-watch"]')!.style.opacity)).toBeLessThanOrEqual(0.35);
+    expect(opacity(held)).toBeGreaterThanOrEqual(0.74);
+    // the line the same trouble holds keeps its light; a line where traffic flows steps back
+    expect(opacity(failedLink)).toBe(1);
+    const clean = [...root.querySelectorAll('g.gp-link')].filter((l) => l.querySelector('.gp-link-line')!.getAttribute('stroke') === 'var(--gp-line)');
+    expect(clean.length).toBeGreaterThan(0);
+    for (const link of clean) expect(Number(link.getAttribute('opacity'))).toBeLessThanOrEqual(0.22);
+
+    el.problemsOnly = false;
+    await el.updateComplete;
+    await flush();
+    expect(opacity(quiet)).toBeGreaterThanOrEqual(0.74);
+    expect(opacity(failedLink)).toBe(1);
+  });
+
   it('is a standalone chart: a click on a goal, a diamond, a link or a callout opens nothing', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;

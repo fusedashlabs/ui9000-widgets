@@ -67,7 +67,12 @@
         "default": true,
         "description": "Shows the legend button beside the camera controls."
       },
-      "show-tooltip": { "type": "boolean", "default": true }
+      "show-tooltip": { "type": "boolean", "default": true },
+      "problems-only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Only what is held stands out: agents at work all but go out, and goals, lines and groups with nothing held step back."
+      }
     },
     "$defs": {
       "agent": {

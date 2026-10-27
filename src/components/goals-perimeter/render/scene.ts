@@ -55,6 +55,7 @@ import {
   type SceneLink,
   type StageCamera,
 } from '../lib/index.js';
+import { EXCEPTIONS, goalShown, healthShown } from './exceptions.js';
 import { createPainter, type Painter } from './field-painter.js';
 import { scenePalette, type ScenePalette } from './scene-palette.js';
 
@@ -89,6 +90,8 @@ export interface RenderGoalsPerimeterOptions {
   /** The camera and the view to start from: kept by the element across redraws. */
   camera?: StageCamera;
   dims?: SceneDims;
+  /** Only what is held stands out: the agents at work all but go out, and whatever has nothing held steps back. */
+  problemsOnly?: boolean;
   /** Off: no drift, no intro, the picture painted only when something changes. Defaults to the reader's preference. */
   motion?: boolean;
 }
@@ -97,6 +100,7 @@ export interface GoalsPerimeterController {
   /** Re-fits the board to a new plot size. */
   resize: (width: number, height: number) => void;
   setDims: (dims: SceneDims) => void;
+  setProblemsOnly: (on: boolean) => void;
   /** Zooms about the view's centre, easing there. */
   zoomBy: (factor: number) => void;
   /** Back to 100% and the resting angle. */
@@ -219,6 +223,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
   const rail = options.rail ?? RAIL;
   let size = { width: options.width, height: options.height };
   let dims: SceneDims = options.dims ?? '3D';
+  let problemsOnly = options.problemsOnly ?? false;
   let target: StageCamera = { ...(options.camera ?? DEFAULT_CAMERA) };
   let eased: StageCamera = { ...target };
   let drift = { yaw: 0, pitch: 0 };
@@ -230,6 +235,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
 
   const connections = deriveConnections(model, layout);
   const goals = sceneGoals(model, layout);
+  const goalById = new Map(goals.map((g) => [g.id, g.goal]));
   const links = sceneLinks(goals, connections);
   const items = orbitItems(goals, links, model.externals);
   const orbitsFor: Record<SceneDims, Orbits> = {
@@ -378,7 +384,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
         points: world,
         calls: linkCalls(link),
         seed,
-        alpha: 1,
+        alpha: Math.min(goalShown(link.a.goal, problemsOnly), goalShown(link.b.goal, problemsOnly)),
         ...(link.connection.hold ? { hold: link.connection.hold } : {}),
       }));
       if (!started) started = now;
@@ -387,7 +393,11 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
         painter.paint({
           pose,
           unit: u,
-          healthy: 1,
+          healthy: problemsOnly ? EXCEPTIONS.healthy : 1,
+          goalAlpha: (id) => {
+            const goal = goalById.get(id);
+            return goal ? goalShown(goal, problemsOnly) : 1;
+          },
           links: tracks,
           orbit: MARK.orbit * u,
           flat,
@@ -486,6 +496,8 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
         const g = select(this);
         g.select('.gp-link-hit').attr('d', path);
         const color = linkColor(d.link.connection);
+        const shown = Math.min(goalShown(d.link.a.goal, problemsOnly), goalShown(d.link.b.goal, problemsOnly));
+        g.attr('opacity', shown * healthShown(d.link.connection.hold ? 'held' : 'clean', problemsOnly));
         g.select('.gp-link-line')
           .attr('d', path)
           .attr('stroke', color ?? 'var(--gp-line)')
@@ -545,7 +557,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
         const progress = g.goal.health;
         const outer = select(this);
         // goals further from the camera sit back a little
-        outer.attr('opacity', Math.max(0.74, Math.min(1, 1 - c.z / 1500)));
+        outer.attr('opacity', goalShown(g.goal, problemsOnly) * Math.max(0.74, Math.min(1, 1 - c.z / 1500)));
         const mark = outer.select('.gp-goal-mark');
         mark.classed('is-lit', lit);
         const ring = R + MARK.ring;
@@ -629,7 +641,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
         const dd = MARK.diamond;
         g.select('.gp-hit').attr('cx', f1(s.x)).attr('cy', f1(s.y));
         // behind the goal the diamond sits back; its name stays readable
-        g.select('.gp-diamond').attr('opacity', s.front ? 1 : 0.6);
+        g.select('.gp-diamond').attr('opacity', (s.front ? 1 : 0.6) * healthShown(s.health, problemsOnly));
         g.select('.gp-diamond-edge').attr('d', diamondD(s.x, s.y, dd)).attr('stroke', color);
         g.select('.gp-diamond-dot')
           .attr('cx', f1(s.x))
@@ -648,7 +660,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
           .attr('x', f1(s.labelX))
           .attr('y', f1(s.labelY + 3.5))
           .attr('text-anchor', s.anchor)
-          .attr('opacity', (tiny || (compact && s.health === 'clean')) && !lit && !isOn ? 0 : 1)
+          .attr('opacity', (tiny || (compact && s.health === 'clean')) && !lit && !isOn ? 0 : healthShown(s.health, problemsOnly && !lit && !isOn))
           .classed('is-lit', isOn || lit);
         text.select('.gp-name').text(s.name);
         text.select('.gp-count').text(s.held ? ` ${s.held}` : '');
@@ -684,7 +696,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
       .each(function (e) {
         const c = e.callout;
         const lit = !e.ghost && hovered === e.p.g.id;
-        const g = select(this).attr('opacity', c.fade);
+        const g = select(this).attr('opacity', c.fade * goalShown(e.p.g.goal, problemsOnly));
         g.select('.gp-leader-line')
           .attr('d', `M${f1(c.ax)} ${f1(c.ay)}L${f1(c.ex)} ${f1(c.ey)}L${f1(c.hx)} ${f1(c.hy)}`)
           .attr('opacity', lit ? 0.85 : 0.42);
@@ -729,7 +741,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
           .classed('is-lit', !e.ghost && hovered === e.p.g.id)
           .style('left', `${f1(right ? c.rect.x0 : c.rect.x1)}px`)
           .style('top', `${f1(c.rect.y0)}px`)
-          .style('opacity', c.fade);
+          .style('opacity', c.fade * goalShown(e.p.g.goal, problemsOnly));
         div.select('.gp-callout-label').classed('is-compact', compact);
       });
   };
@@ -960,6 +972,12 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
       if (next === dims) return;
       dims = next;
       on.onCamera?.({ ...target }, dims);
+      requestOverlay();
+      if (!motion) drawFrame(performance.now(), true);
+    },
+    setProblemsOnly(next) {
+      if (next === problemsOnly) return;
+      problemsOnly = next;
       requestOverlay();
       if (!motion) drawFrame(performance.now(), true);
     },

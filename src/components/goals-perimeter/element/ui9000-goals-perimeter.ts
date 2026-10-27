@@ -174,6 +174,10 @@ export class Ui9000GoalsPerimeterChart extends Ui9000ChartElement {
   @property({ type: Boolean, attribute: 'show-tooltip' })
   showTooltip = true;
 
+  /** Only problems stand out: the agents at work all but go out, and whatever has nothing held steps back. */
+  @property({ type: Boolean, attribute: 'problems-only', reflect: true })
+  problemsOnly = false;
+
   @state()
   private _model: GoalsPerimeterModel = normalizeGoalsPerimeter(null);
 
@@ -260,15 +264,16 @@ export class Ui9000GoalsPerimeterChart extends Ui9000ChartElement {
 
   override updated(changed: PropertyValues): void {
     if (changed.has('showTooltip') && !this.showTooltip) this.hideTip();
+    if (changed.has('problemsOnly') && this._controller) this._controller.setProblemsOnly(this.problemsOnly);
     if (this.shouldRedraw(changed)) this.scheduleDraw();
   }
 
-  /** The legend and the tooltip are shell chrome; toggling them leaves the plot alone. */
+  /** The legend and the tooltip are shell chrome, and Problems only only re-weights the board; toggling them leaves the plot alone. */
   private shouldRedraw(changed: PropertyValues): boolean {
     if (!chartPropsChanged(changed)) return false;
     for (const key of changed.keys()) {
       if (typeof key !== 'string' || key.startsWith('_')) continue;
-      if (key === 'showLegend' || key === 'showTooltip') continue;
+      if (key === 'showLegend' || key === 'showTooltip' || key === 'problemsOnly') continue;
       return true;
     }
     return false;
@@ -342,6 +347,7 @@ export class Ui9000GoalsPerimeterChart extends Ui9000ChartElement {
       palette,
       camera: this._camera,
       dims: this._dims,
+      problemsOnly: this.problemsOnly,
     });
   }
 

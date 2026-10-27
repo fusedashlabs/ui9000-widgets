@@ -1,14 +1,18 @@
 import { css, unsafeCSS } from 'lit';
 
 import { CHART_TYPE } from '../../../utils/chart-theme.js';
+import { statusCss } from '../render/scene-palette.js';
+
+const DARK_STATUS = statusCss('dark');
+const LIGHT_STATUS = statusCss('light');
 
 /**
  * The board is a scene, as in the Agent operations design: a graphite room
  * lit from above, a faint perspective floor, film grain, the clouds of
  * agents, and hairline instruments in the scene's ink. It fills the card,
  * dark with a dark page and light with a light one (the same room by day).
- * Colour only speaks when something deviates: status mint, amber, hold
- * orange, failed red and awaiting periwinkle mean the same everywhere.
+ * Colour only speaks when something deviates: the design system's dataViz
+ * green, yellow, orange, red and purple mean the same everywhere.
  *
  * The board's own words — goal names and readings — are set in FuseDash's
  * chart face and type scale (design-system body md and sm, as other charts'
@@ -44,11 +48,11 @@ export const goalsPerimeterStyles = css`
     --gp-panel-shadow:
       0 2px 4px 0 #141c2c0f,
       0 4px 8px 2px #141c2c0f;
-    --gp-ok: #7ee8a2;
-    --gp-warn: #f5b84f;
-    --gp-blocked: #ff6a2c;
-    --gp-failed: #ff4861;
-    --gp-awaiting: #a8a1ff;
+    --gp-ok: ${unsafeCSS(DARK_STATUS.ok)};
+    --gp-warn: ${unsafeCSS(DARK_STATUS.warn)};
+    --gp-blocked: ${unsafeCSS(DARK_STATUS.blocked)};
+    --gp-failed: ${unsafeCSS(DARK_STATUS.failed)};
+    --gp-awaiting: ${unsafeCSS(DARK_STATUS.awaiting)};
     /* from the page style's sequential palette; the element sets them, these are the default style's */
     --gp-line: rgb(229 229 251);
     --gp-arc-glow: rgb(147 140 255 / 0.6);
@@ -110,9 +114,12 @@ export const goalsPerimeterStyles = css`
     display: flex;
     align-items: center;
     gap: 10px;
-    font: 11px/1 var(--gp-mono);
-    letter-spacing: -0.045em;
-    word-spacing: -0.18em;
+    /* the design system's body/xs, as every chart's subtitle */
+    font-family: var(--gp-face);
+    font-size: var(--ui9000-font-size-subtitle, 10px);
+    font-weight: var(--ui9000-font-weight-subtitle, 400);
+    line-height: var(--ui9000-line-height-subtitle, 14px);
+    letter-spacing: var(--ui9000-letter-spacing-subtitle, 0.02em);
     text-transform: uppercase;
     color: var(--ui9000-color-text-muted, #6b7280);
     white-space: nowrap;
@@ -372,13 +379,17 @@ export const goalsPerimeterStyles = css`
   .gp-callout.is-ghost .gp-callout-label {
     pointer-events: none;
   }
+  /* in the callouts the small caps are the design system's body/xs, not the instrument mono */
   .gp-callout-head,
   .gp-caption,
   .gp-readout-line {
-    font: 10px/1 var(--gp-mono);
-    letter-spacing: -0.045em;
-    word-spacing: -0.18em;
+    font-family: var(--gp-face);
+    font-size: ${unsafeCSS(String(CHART_TYPE.subtitle))}px;
+    font-weight: ${unsafeCSS(String(CHART_TYPE.subtitleWeight))};
+    line-height: 1;
+    letter-spacing: ${unsafeCSS(CHART_TYPE.subtitleTracking)};
     text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
   }
   .gp-callout-head {
     display: flex;
@@ -416,15 +427,17 @@ export const goalsPerimeterStyles = css`
   .gp-callout.is-left .gp-reading {
     align-items: flex-end;
   }
-  .gp-reading.agents,
+  .gp-reading.agents {
+    width: 42px;
+  }
   .gp-reading.held {
     width: 36px;
   }
   .gp-reading.progress {
-    width: 44px;
+    width: 58px;
   }
   .gp-reading.burn {
-    width: 28px;
+    width: 30px;
   }
   .gp-value {
     display: flex;
@@ -673,7 +686,7 @@ export const goalsPerimeterStyles = css`
   /*
    * Light mode: the same room by day. A pale, faintly cool floor; the picture
    * laid down in ink (the WebGL pass does that); hairlines and text in the
-   * page's inks; status hues one step deeper so they hold on white.
+   * page's inks; status hues deepened so they hold on white.
    */
   :host([data-mode='light']) {
     --gp-scene: #f6f7fb;
@@ -686,11 +699,11 @@ export const goalsPerimeterStyles = css`
     --gp-surface: var(--ui9000-color-surface, #ffffff);
     --gp-surface-muted: var(--ui9000-color-surface-muted, #f3f4f6);
     --gp-border: var(--ui9000-color-border, #e5e7eb);
-    --gp-ok: #16a34a;
-    --gp-warn: #c97a06;
-    --gp-blocked: #e5560f;
-    --gp-failed: #e11d48;
-    --gp-awaiting: #6d5ce8;
+    --gp-ok: ${unsafeCSS(LIGHT_STATUS.ok)};
+    --gp-warn: ${unsafeCSS(LIGHT_STATUS.warn)};
+    --gp-blocked: ${unsafeCSS(LIGHT_STATUS.blocked)};
+    --gp-failed: ${unsafeCSS(LIGHT_STATUS.failed)};
+    --gp-awaiting: ${unsafeCSS(LIGHT_STATUS.awaiting)};
     /* the default style's, light; the element sets the page style's */
     --gp-line: rgb(54 60 119);
     --gp-arc-glow: rgb(84 72 255 / 0.35);

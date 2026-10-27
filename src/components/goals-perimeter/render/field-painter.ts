@@ -2,7 +2,7 @@ import { LINK_SAMPLES } from '../lib/cloud.js';
 import type { AgentField, PaintOptions } from '../lib/field.js';
 import { PIVOT_X, PIVOT_Y } from '../lib/scene.js';
 import { createFieldRenderer } from './gl/renderer.js';
-import type { ScenePalette } from './scene-palette.js';
+import { STATUS, type ScenePalette } from './scene-palette.js';
 
 /**
  * What draws the agents: the WebGL picture where the device has WebGL 2, the
@@ -29,10 +29,10 @@ const css = (c: RGB, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 /** Held agents keep these on every page; healthy agents and traffic come from the page's palette. */
 const HOLD_TINT = {
   idle: hex('#929BA8'),
-  awaiting: hex('#A8A1FF'),
-  blocked: hex('#FF6A2C'),
-  failed: hex('#FF4861'),
-  degraded: hex('#F5B84F'),
+  awaiting: hex(STATUS.awaiting),
+  blocked: hex(STATUS.blocked),
+  failed: hex(STATUS.failed),
+  degraded: hex(STATUS.warn),
 } as const;
 const MIST_LIGHT: RGB = [226, 226, 226];
 /** `rgb(r,g,b)` → its channels. */

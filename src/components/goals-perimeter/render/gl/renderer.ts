@@ -3,7 +3,7 @@ import { LINK_SAMPLES } from '../../lib/cloud.js';
 import { hashString, rng } from '../../lib/random.js';
 import { PIVOT_X, PIVOT_Y, projector } from '../../lib/scene.js';
 import { BOARD } from '../../lib/layout.js';
-import type { ScenePalette } from '../scene-palette.js';
+import { STATUS, type ScenePalette } from '../scene-palette.js';
 import {
   bindTarget,
   createMesh,
@@ -77,10 +77,10 @@ const linear = (hex: string): RGB => {
 
 const IDLE: RGB = [0.2, 0.29, 0.38];
 const HOLD = {
-  awaiting: linear('#A8A1FF'),
-  blocked: linear('#FF6A2C'),
-  failed: linear('#FF4861'),
-  degraded: linear('#F5B84F'),
+  awaiting: linear(STATUS.awaiting),
+  blocked: linear(STATUS.blocked),
+  failed: linear(STATUS.failed),
+  degraded: linear(STATUS.warn),
 } as const;
 
 export interface FieldRenderer {

@@ -255,7 +255,7 @@ describe('ui9000-goals-perimeter', () => {
     expect(texts(legend, 'h2')).toEqual(['Reading the map']);
     expect(texts(legend, 'h3')).toEqual(['Marks', 'A goal and its resource groups']);
     expect(texts(legend, '.gp-legend-row')).toContain('A blocked agent');
-    expect(texts(legend, '.gp-legend-row').at(-1)).toBe('Agents held there — in their colour, with their count');
+    expect(texts(legend, '.gp-legend-row').at(-1)).toBe('Agents held there, with their count — orange blocked, red failed, purple awaiting');
     el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     await el.updateComplete;
     expect(root.querySelector('.gp-legend')).toBeNull();

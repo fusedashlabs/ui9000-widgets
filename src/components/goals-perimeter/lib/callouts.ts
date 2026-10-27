@@ -27,7 +27,7 @@ export const CALLOUT = {
   compactHeight: 36,
   head: 36,
   /** Readout width — the narrowest a label gets. */
-  readout: 186,
+  readout: 208,
 } as const;
 
 /** Width of a goal's label: the wider of its name and its readout; compact, as wide as its head. */

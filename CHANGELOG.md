@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- **goals-dependency-graph** (`ui9000-goals-dependency-graph`, chartType `goalsDependencyGraph`, `GoalsDependencyGraph`): the Agent operations Graph view. Every goal is a tree rooted on a baseline, one tip per agent in its state's mark, drawn by the goals perimeter's WebGL painter (canvas fallback); the resource groups hang in a row over the trees, and a line rises from each goal's root to every group it draws on, in the colour of the agents held there, with light running up it as fast as the goal's calls. The goal at the centre grows its full tree, shows its readings and has its worst line traced with a callout (cause, held, for, rule, owner). Click a goal to glide it to the centre, a group or a line to trace it; drag to pan, scroll to zoom, double-click to reset; `problems-only` keeps only what is held. It takes the goals perimeter's payload, plus an optional row of groups and `center`. Colours follow the page style and the dataViz status hues; every word is in the chart face and type scale. The legend opens inside the chart's shell, so it stays beside its button on the Storybook docs page. D3 and WebGL, `tier: "host"`; mounts through chart-renderer and `@ui9000/widgets/lazy/goals-dependency-graph`.
+- The shared chart tooltip takes a `body` line under its title.
+
 ## 0.8.0 — 2026-10-26
 
 ### Breaking

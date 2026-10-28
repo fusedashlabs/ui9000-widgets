@@ -146,6 +146,10 @@ const entries = {
     __dirname,
     'src/components/reasoning-orchestration-graph/index.ts',
   ),
+  'components/goals-dependency-graph/index': resolve(
+    __dirname,
+    'src/components/goals-dependency-graph/index.ts',
+  ),
   'components/asset-health-overview/index': resolve(
     __dirname,
     'src/components/asset-health-overview/index.ts',
@@ -224,6 +228,7 @@ const entries = {
     __dirname,
     'src/lazy/reasoning-orchestration-graph.ts',
   ),
+  'lazy/goals-dependency-graph': resolve(__dirname, 'src/lazy/goals-dependency-graph.ts'),
   'lazy/asset-health-overview': resolve(__dirname, 'src/lazy/asset-health-overview.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(
     __dirname,

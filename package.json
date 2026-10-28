@@ -184,6 +184,10 @@
       "types": "./dist/components/reasoning-orchestration-graph/index.d.ts",
       "import": "./dist/components/reasoning-orchestration-graph/index.js"
     },
+    "./goals-dependency-graph": {
+      "types": "./dist/components/goals-dependency-graph/index.d.ts",
+      "import": "./dist/components/goals-dependency-graph/index.js"
+    },
     "./asset-health-overview": {
       "types": "./dist/components/asset-health-overview/index.d.ts",
       "import": "./dist/components/asset-health-overview/index.js"
@@ -363,6 +367,10 @@
     "./lazy/reasoning-orchestration-graph": {
       "types": "./dist/lazy/reasoning-orchestration-graph.d.ts",
       "import": "./dist/lazy/reasoning-orchestration-graph.js"
+    },
+    "./lazy/goals-dependency-graph": {
+      "types": "./dist/lazy/goals-dependency-graph.d.ts",
+      "import": "./dist/lazy/goals-dependency-graph.js"
     },
     "./lazy/asset-health-overview": {
       "types": "./dist/lazy/asset-health-overview.d.ts",

@@ -203,6 +203,10 @@ import {
   Ui9000ReasoningOrchestrationGraph,
 } from './components/reasoning-orchestration-graph/index.js';
 import {
+  registerGoalsDependencyGraph,
+  Ui9000GoalsDependencyGraph,
+} from './components/goals-dependency-graph/index.js';
+import {
   registerAssetHealthOverview,
   Ui9000AssetHealthOverview,
 } from './components/asset-health-overview/index.js';
@@ -355,6 +359,8 @@ export {
   registerGoalsPerimeterChart,
   Ui9000ReasoningOrchestrationGraph,
   registerReasoningOrchestrationGraph,
+  Ui9000GoalsDependencyGraph,
+  registerGoalsDependencyGraph,
   Ui9000AssetHealthOverview,
   registerAssetHealthOverview,
   Ui9000GiniImpurityEntropyChart,
@@ -436,6 +442,7 @@ export function registerAllCharts(): void {
   registerComponentAssetCard();
   registerGoalsPerimeterChart();
   registerReasoningOrchestrationGraph();
+  registerGoalsDependencyGraph();
   registerAssetHealthOverview();
   registerGiniImpurityEntropyChart();
   registerMapChart();
@@ -893,6 +900,16 @@ export {
   type ReasoningStage,
   reasoningOrchestrationGraphMetadata,
 } from './components/reasoning-orchestration-graph/index.js';
+
+export {
+  normalizeGoalsDependencyGraph,
+  type GoalsDependencyGraphModel,
+  type GoalsDependencyGraphPayload,
+  type GraphEdge as GoalsDependencyGraphEdge,
+  type GraphGoal as GoalsDependencyGraphGoal,
+  type GraphResource as GoalsDependencyGraphResource,
+  goalsDependencyGraphMetadata,
+} from './components/goals-dependency-graph/index.js';
 
 export {
   normalizeAssetHealth,

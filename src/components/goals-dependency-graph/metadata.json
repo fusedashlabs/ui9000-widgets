@@ -1,0 +1,154 @@
+{
+  "id": "goals-dependency-graph",
+  "tag": "ui9000-goals-dependency-graph",
+  "title": "Goals Dependency Graph",
+  "description": "Agents Management goals dependency graph, after the Agent operations design's Graph view. Every goal is a tree rooted on a baseline, each tip of it one of its agents: white at work, grey idle, a purple ring awaiting, an orange dot blocked, a red cross failed, a yellow triangle degraded — drawn in WebGL with smoke and bloom (a plain canvas where WebGL 2 is missing). The resource groups hang in a row over the trees (a diamond empty when traffic flows, dotted when slowed, solid in the held agents' colour with their count across the goals, e.g. SYSTEM 94), and a line rises from each goal's root to every group it draws on, in the colour of the agents it holds there, with light running up it as fast as the goal's calls. The goal at the centre grows its full tree, has a progress ring and readings (AGENTS / PROGRESS / BURN / HELD) under it, and its worst line traced with a callout (the cause, how many held, for how long, the rule and the owner where the payload says); the others stand as miniatures with one line of readings. Click a goal to glide it to the centre, a group or a line to trace it; pointing at a goal or a group lights what it is tied to. Drag to pan, scroll to zoom, double-click to reset; a legend button sits at the bottom left, and the line under the title reads goals, resource groups, agents and held. It takes the goals perimeter's payload (goals with their agents and the resource groups they draw on, groups of the same name being one group), draws up to eight goals, fills the card and follows the page's light or dark theme; its colours follow the page style like every other chart (SequentialColors1 lights the scene, the secondary colour carries the traffic; held states keep the design system's dataViz hues). Not a free-form node–link graph (that is network-graph) and not the clouds view of the same goals (that is goals-perimeter). D3 and WebGL, no Redux.",
+  "chartTypeKeys": ["goalsDependencyGraph"],
+  "stack": "d3",
+  "lazyImport": "@ui9000/widgets/lazy/goals-dependency-graph",
+  "entry": "@ui9000/widgets/goals-dependency-graph",
+  "usageConditions": { "host": "mcp-chat", "notFor": "fusedash-editor", "mapsExcluded": true },
+  "allowedActions": ["hover", "select", "pan", "zoom", "resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "const": "goalsDependencyGraph" },
+          "name": { "type": "string", "description": "Shell title." },
+          "title": { "type": "string", "description": "Alias of name." },
+          "goals": {
+            "type": "array",
+            "description": "The goals, rooted along the baseline. Up to eight are drawn.",
+            "maxItems": 8,
+            "items": { "$ref": "#/$defs/goal" }
+          },
+          "resourceGroups": {
+            "type": "array",
+            "description": "The row of groups, in order, with what each holds as a whole. Groups only goals name join the row after these; a group no goal draws on is left out.",
+            "items": { "$ref": "#/$defs/group" }
+          },
+          "center": {
+            "type": "string",
+            "description": "The goal at the centre on load, by id, code or name. Defaults to the goal with the most agents held."
+          },
+          "exceptionCount": {
+            "type": ["number", "string"],
+            "description": "Agents held across the graph, in the line under the title. Defaults to the goals' sum."
+          },
+          "thresholds": {
+            "type": "object",
+            "description": "Without a status, progress below degraded reads AT RISK and below critical OFF TRACK.",
+            "properties": {
+              "degraded": { "type": ["number", "string"], "default": 0.8 },
+              "critical": { "type": ["number", "string"], "default": 0.25 }
+            }
+          }
+        },
+        "required": ["goals"]
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "show-legend": { "type": "boolean", "default": true, "description": "Shows the legend button at the bottom left." },
+      "show-tooltip": { "type": "boolean", "default": true },
+      "problems-only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Only what is held stands out: agents at work all but go out, and goals, lines and groups with nothing held step back."
+      },
+      "theme": {
+        "enum": ["", "light", "dark"],
+        "default": "",
+        "description": "Empty follows a local data-theme wrapper, then the host's paint mode."
+      }
+    },
+    "$defs": {
+      "goal": {
+        "type": "object",
+        "description": "id falls back to the name, slugged; name falls back to title, then label.",
+        "properties": {
+          "id": { "type": "string" },
+          "code": { "type": "string", "description": "Short reference above the name, e.g. G-014." },
+          "name": { "type": "string" },
+          "title": { "type": "string" },
+          "label": { "type": "string" },
+          "agents": {
+            "description": "Agent total, or the count per state. Working agents default to what the total leaves.",
+            "oneOf": [
+              { "type": ["number", "string"] },
+              {
+                "type": "object",
+                "properties": {
+                  "total": { "type": ["number", "string"] },
+                  "healthy": { "type": ["number", "string"], "description": "At work." },
+                  "idle": { "type": ["number", "string"] },
+                  "awaiting": { "type": ["number", "string"] },
+                  "blocked": { "type": ["number", "string"] },
+                  "failed": { "type": ["number", "string"] },
+                  "degraded": { "type": ["number", "string"], "description": "Slowed, or past 80% of the token budget." }
+                }
+              }
+            ]
+          },
+          "progress": { "type": ["number", "string"], "description": "Progress to target: 0.88, 88 or \"88%\". Alias: health." },
+          "health": { "type": ["number", "string"], "description": "Alias of progress, as the goals perimeter names it." },
+          "multiplier": { "type": ["number", "string"], "description": "Token burn against the goal's baseline, printed as 1.1×." },
+          "multiplierLabel": { "type": "string", "default": "Burn" },
+          "exceptionCount": { "type": ["number", "string"], "description": "Agents held. Defaults to awaiting + blocked + failed + degraded. Alias: impure." },
+          "impure": { "type": ["number", "string"] },
+          "status": {
+            "type": "string",
+            "description": "on track, at risk, blocked, off track, or healthy, degraded, critical and other aliases."
+          },
+          "statusLabel": { "type": "string", "description": "Words beside the status dot. Defaults to ON TRACK, AT RISK, BLOCKED or OFF TRACK." },
+          "resourceGroups": {
+            "type": "array",
+            "description": "The groups the goal draws on, as it meets them: a line rises from its root to each.",
+            "items": { "$ref": "#/$defs/dependency" }
+          }
+        }
+      },
+      "dependency": {
+        "type": "object",
+        "description": "Groups of the same name (or kind, without one) on different goals are one group of the row.",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "label": { "type": "string" },
+          "kind": { "type": "string" },
+          "type": { "type": "string" },
+          "state": {
+            "type": "string",
+            "description": "healthy, degraded, or what holds agents there: awaiting, blocked, failed. A held count without a state reads as blocked."
+          },
+          "status": { "type": "string", "description": "Alias of state." },
+          "held": { "type": ["number", "string"], "description": "Agents of the goal held there." },
+          "calls": { "type": ["number", "string"], "description": "Calls a minute the goal makes to it." },
+          "detail": { "type": "string", "description": "What is wrong, in plain language." },
+          "cause": { "type": "string", "description": "The cause that holds agents here: the traced line's title." },
+          "owner": { "type": "string" },
+          "since": { "type": "string", "description": "How long it has held them, e.g. 14m." },
+          "rule": { "type": "string", "description": "The rule that holds them, e.g. R-047." }
+        }
+      },
+      "group": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "label": { "type": "string" },
+          "kind": { "type": "string" },
+          "type": { "type": "string" },
+          "count": { "type": ["number", "string"], "description": "Assets in the group." },
+          "healthy": { "type": ["number", "string"] },
+          "degraded": { "type": ["number", "string"] },
+          "impaired": { "type": ["number", "string"] },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  }
+}

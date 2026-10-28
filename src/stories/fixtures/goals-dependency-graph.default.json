@@ -1,0 +1,337 @@
+{
+  "chartType": "goalsDependencyGraph",
+  "name": "Agent operations",
+  "exceptionCount": 214,
+  "resourceGroups": [
+    {
+      "name": "Camera",
+      "kind": "camera",
+      "count": 31204,
+      "healthy": 30892,
+      "degraded": 287,
+      "impaired": 25
+    },
+    {
+      "name": "App",
+      "kind": "app",
+      "count": 8940,
+      "healthy": 8931,
+      "degraded": 9,
+      "impaired": 0
+    },
+    {
+      "name": "System",
+      "kind": "system",
+      "count": 1284,
+      "healthy": 1246,
+      "degraded": 34,
+      "impaired": 4
+    },
+    {
+      "name": "Tool",
+      "kind": "tool",
+      "count": 4612,
+      "healthy": 4570,
+      "degraded": 38,
+      "impaired": 4
+    },
+    {
+      "name": "Store",
+      "kind": "store",
+      "count": 340,
+      "healthy": 340,
+      "degraded": 0,
+      "impaired": 0
+    },
+    {
+      "name": "Model",
+      "kind": "model",
+      "count": 24,
+      "healthy": 22,
+      "degraded": 2,
+      "impaired": 0
+    },
+    {
+      "name": "Human",
+      "kind": "human",
+      "count": 41,
+      "healthy": 41,
+      "degraded": 0,
+      "impaired": 0
+    }
+  ],
+  "goals": [
+    {
+      "id": "perimeter-watch",
+      "code": "G-014",
+      "name": "Perimeter Watch",
+      "status": "on track",
+      "agents": {
+        "total": 1108,
+        "healthy": 1070,
+        "idle": 19,
+        "awaiting": 19
+      },
+      "progress": 0.88,
+      "multiplier": 1.1,
+      "resourceGroups": [
+        {
+          "id": "pw-camera",
+          "name": "Camera",
+          "kind": "camera",
+          "state": "degraded",
+          "calls": 14200,
+          "detail": "7% of streams throttled, 2% blocked by R-047"
+        },
+        {
+          "id": "pw-system",
+          "name": "System",
+          "kind": "system",
+          "state": "healthy",
+          "calls": 2100
+        },
+        {
+          "id": "pw-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "awaiting",
+          "calls": 8800,
+          "held": 19,
+          "detail": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out",
+          "cause": "gateway p95 breach",
+          "owner": "M. Reyes",
+          "since": "9m"
+        }
+      ]
+    },
+    {
+      "id": "onboarding-velocity",
+      "code": "G-007",
+      "name": "Onboarding Velocity",
+      "status": "blocked",
+      "agents": {
+        "total": 842,
+        "healthy": 645,
+        "idle": 22,
+        "awaiting": 33,
+        "blocked": 94,
+        "failed": 27,
+        "degraded": 21
+      },
+      "progress": 0.41,
+      "multiplier": 4.2,
+      "resourceGroups": [
+        {
+          "id": "ov-app",
+          "name": "App",
+          "kind": "app",
+          "state": "degraded",
+          "calls": 3300,
+          "detail": "12% of writes throttled"
+        },
+        {
+          "id": "ov-system",
+          "name": "System",
+          "kind": "system",
+          "state": "blocked",
+          "calls": 5400,
+          "held": 94,
+          "detail": "Credential grant required, and regional residency holds bulk writes",
+          "cause": "credential grant required",
+          "owner": "Security on-call",
+          "since": "14m",
+          "rule": "R-047"
+        },
+        {
+          "id": "ov-tool",
+          "name": "Tool",
+          "kind": "tool",
+          "state": "failed",
+          "calls": 1800,
+          "held": 27,
+          "detail": "Browser tool sandbox crash-loops on cold start; retries exhausted",
+          "cause": "tool sandbox crash — browser",
+          "owner": "Platform on-call",
+          "since": "22m"
+        },
+        {
+          "id": "ov-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "awaiting",
+          "calls": 6200,
+          "held": 33,
+          "detail": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out",
+          "cause": "gateway p95 breach",
+          "owner": "M. Reyes",
+          "since": "9m"
+        },
+        {
+          "id": "ov-human",
+          "name": "Human",
+          "kind": "human",
+          "state": "degraded",
+          "calls": 14,
+          "detail": "The credential grant waits on Security on-call"
+        }
+      ]
+    },
+    {
+      "id": "maintain-verified-asset-visibility",
+      "code": "G-022",
+      "name": "Maintain Verified Asset Visibility",
+      "status": "at risk",
+      "agents": {
+        "total": 612,
+        "healthy": 586,
+        "idle": 11,
+        "awaiting": 4,
+        "failed": 11
+      },
+      "progress": 0.66,
+      "multiplier": 1.3,
+      "resourceGroups": [
+        {
+          "id": "mv-camera",
+          "name": "Camera",
+          "kind": "camera",
+          "state": "degraded",
+          "calls": 9100,
+          "detail": "3% of streams blocked"
+        },
+        {
+          "id": "mv-tool",
+          "name": "Tool",
+          "kind": "tool",
+          "state": "failed",
+          "calls": 1300,
+          "held": 11,
+          "detail": "Browser tool sandbox crash-loops on cold start; retries exhausted",
+          "cause": "tool sandbox crash — browser",
+          "owner": "Platform on-call",
+          "since": "22m"
+        },
+        {
+          "id": "mv-store",
+          "name": "Store",
+          "kind": "store",
+          "state": "healthy",
+          "calls": 740
+        },
+        {
+          "id": "mv-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "awaiting",
+          "calls": 4600,
+          "held": 4,
+          "detail": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out",
+          "cause": "gateway p95 breach",
+          "owner": "M. Reyes",
+          "since": "9m"
+        }
+      ]
+    },
+    {
+      "id": "pipeline-quality",
+      "code": "G-045",
+      "name": "Pipeline Quality",
+      "status": "on track",
+      "agents": {
+        "total": 318,
+        "healthy": 315,
+        "idle": 3
+      },
+      "progress": 0.92,
+      "multiplier": 0.8,
+      "resourceGroups": [
+        {
+          "id": "pq-tool",
+          "name": "Tool",
+          "kind": "tool",
+          "state": "healthy",
+          "calls": 2600
+        },
+        {
+          "id": "pq-store",
+          "name": "Store",
+          "kind": "store",
+          "state": "healthy",
+          "calls": 980
+        },
+        {
+          "id": "pq-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "healthy",
+          "calls": 2400
+        }
+      ]
+    },
+    {
+      "id": "incident-response",
+      "code": "G-052",
+      "name": "Incident Response",
+      "status": "at risk",
+      "agents": {
+        "total": 144,
+        "healthy": 137,
+        "idle": 2,
+        "awaiting": 5
+      },
+      "progress": 0.78,
+      "multiplier": 1.6,
+      "resourceGroups": [
+        {
+          "id": "ir-system",
+          "name": "System",
+          "kind": "system",
+          "state": "healthy",
+          "calls": 1900
+        },
+        {
+          "id": "ir-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "healthy",
+          "calls": 1100
+        },
+        {
+          "id": "ir-human",
+          "name": "Human",
+          "kind": "human",
+          "state": "awaiting",
+          "calls": 22,
+          "held": 5,
+          "detail": "Access approval pending for 41 minutes",
+          "cause": "access approval pending",
+          "owner": "Security on-call",
+          "since": "41m",
+          "rule": "R-027"
+        }
+      ]
+    },
+    {
+      "id": "model-drift-watch",
+      "code": "G-061",
+      "name": "Model Drift Watch",
+      "status": "on track",
+      "agents": {
+        "total": 96,
+        "healthy": 94,
+        "idle": 2
+      },
+      "progress": 0.9,
+      "multiplier": 0.9,
+      "resourceGroups": [
+        {
+          "id": "md-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "healthy",
+          "calls": 3100
+        }
+      ]
+    }
+  ]
+}

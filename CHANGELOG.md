@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Breaking
+
+- **goals-perimeter**: clicking a goal no longer opens it. The open-goal view is gone, with its `goal-open` and `goal-close` events and the `GoalOpenDetail` type. `fitBoard` and `COMPACT_SCALE` are no longer exported from `@fusedashlabs/widgets/goals-perimeter`.
+
+### Changed
+
+- **goals-perimeter** is rebuilt on the Agent operations design. The goals are clouds of their agents — one point an agent: white at work, grey idle, a purple ring awaiting, an orange dot blocked, a red cross failed, a yellow triangle degraded — drawn in WebGL with smoke, glass vessels, depth of field, sparks and bloom (a plain canvas where WebGL 2 is missing), under hairline instruments: a progress ring on a tick scale, an orbit of the resource groups the goal draws on (a diamond empty, dotted or solid in the held agents' colour with their count), lines joining goals that share a group (in a held colour when the same trouble holds both ends), and a callout with the goal's code, status and name, plus AGENTS / PROGRESS / BURN / HELD when the board is drawn at 90% of its design size or more. One orbit camera: drag to turn, shift-drag to pan, scroll to zoom, double-click to reset; `problems-only` leaves only what is held standing out; a “Reading the map” legend button sits at the bottom left, and the line under the title reads goals, agents and held. Every mark and control explains itself in the shared chart tooltip — a title, a line, the figures as rows — that follows the pointer. It fills the card and follows the page's light or dark theme: by day the picture is laid down in ink on a pale room. Its colours follow the page style like every other chart: SequentialColors1 lights the scene (glow, glass, healthy agents, hairlines, floor) and the secondary colour carries the traffic; held states keep the design system's dataViz hues. Goal names and readings are set in FuseDash's chart face and type scale (design-system body md and sm), and the subtitle line, codes and captions in its body/xs like every chart's subtitle; diamond names stay in mono. It takes goals (optional `code`, `statusLabel`, and a `position` with depth and radius), agent nodes (`id`, `state`, including `awaiting`), resource groups (`held`, `calls`), optional links and an exception count; with no links it joins goals through the groups they share. D3 and WebGL, no new dependencies.
+
 ## 0.8.0 — 2026-10-26
 
 ### Breaking

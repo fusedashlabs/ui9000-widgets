@@ -1,10 +1,23 @@
-import { css } from 'lit';
+import { css, unsafeCSS } from 'lit';
+
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
+import { statusCss } from '../render/scene-palette.js';
+
+const DARK_STATUS = statusCss('dark');
+const LIGHT_STATUS = statusCss('light');
 
 /**
- * Status colours are sampled from the design board: Tailwind v4 emerald-500,
- * amber-500, rose-500 and red-400. Light mode keeps the hues one step darker.
- * Text and lines follow the package theme, so the board sits in the shell
- * like the other charts.
+ * The board is a scene, as in the Agent operations design: a graphite room
+ * lit from above, a faint perspective floor, film grain, the clouds of
+ * agents, and hairline instruments in the scene's ink. It fills the card,
+ * dark with a dark page and light with a light one (the same room by day).
+ * Colour only speaks when something deviates: the design system's dataViz
+ * green, yellow, orange, red and purple mean the same everywhere.
+ *
+ * The board's own words — goal names and readings — are set in FuseDash's
+ * chart face and type scale (design-system body md and sm, as other charts'
+ * labels); its tips are the shared chart tooltip. Captions, codes, statuses and the
+ * diamonds' names stay in the instrument mono.
  */
 export const goalsPerimeterStyles = css`
   :host {
@@ -16,35 +29,51 @@ export const goalsPerimeterStyles = css`
     color: var(--ui9000-color-text, #111827);
     font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
-    --gp-healthy: #009966;
-    --gp-degraded: #e17100;
-    --gp-critical: #ec003f;
-    --gp-impure: #ec003f;
-    --gp-failed: #e7000b;
-    --gp-blocked: #ec003f;
-    --gp-tick: #fb2c36;
-    --gp-down: #e7000b;
-    --gp-line: rgba(64, 64, 64, 0.16);
-    --gp-line-bright: rgba(23, 23, 23, 0.4);
-    --gp-fringe-line: rgba(82, 82, 82, 0.18);
-    --gp-hover: rgba(0, 0, 0, 0.05);
-    --gp-chip: rgba(0, 0, 0, 0.06);
+    --gp-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+    /* FuseDash's chart face: design-system body md (names) and body sm (figures) */
+    --gp-face: var(--ui9000-font-family, ${unsafeCSS(CHART_TYPE.fontFamily)});
+    --gp-text-md: ${unsafeCSS(String(CHART_TYPE.headingWeight))} ${unsafeCSS(String(CHART_TYPE.heading))}px / ${unsafeCSS(String(CHART_TYPE.headingLine))}px var(--gp-face);
+    --gp-text-sm: ${unsafeCSS(String(CHART_TYPE.labelWeight))} ${unsafeCSS(String(CHART_TYPE.label))}px / ${unsafeCSS(String(CHART_TYPE.labelLine))}px var(--gp-face);
+    --gp-scene: #06080b;
+    --gp-ink: #f1f4f8;
+    --gp-ink-2: #d1d7df;
+    --gp-mute: #a8b0bc;
+    --gp-faint: #929ba8;
+    --gp-dim: #424a55;
+    --gp-hairline: rgb(196 216 255 / 0.11);
+    /* The legend button sits on the page's surface, and it and the legend take the page's border, as every other chart's legend does. */
+    --gp-surface: var(--ui9000-color-surface, #13161d);
+    --gp-surface-muted: var(--ui9000-color-surface-muted, #282e37);
+    --gp-border: var(--ui9000-color-border, #444b57);
+    --gp-panel-shadow:
+      0 2px 4px 0 #141c2c0f,
+      0 4px 8px 2px #141c2c0f;
+    --gp-ok: ${unsafeCSS(DARK_STATUS.ok)};
+    --gp-warn: ${unsafeCSS(DARK_STATUS.warn)};
+    --gp-blocked: ${unsafeCSS(DARK_STATUS.blocked)};
+    --gp-failed: ${unsafeCSS(DARK_STATUS.failed)};
+    --gp-awaiting: ${unsafeCSS(DARK_STATUS.awaiting)};
+    /* from the page style's sequential palette; the element sets them, these are the default style's */
+    --gp-line: rgb(229 229 251);
+    --gp-arc-glow: rgb(147 140 255 / 0.6);
+    --gp-glint: rgb(181 176 255 / 0.9);
+    --gp-grid: rgb(147 140 255);
+    --gp-mist: 127, 134, 223;
+    --gp-floor-mist: 77, 81, 170;
+    --gp-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
-  :host([data-mode='dark']) {
-    --gp-healthy: #00bc7d;
-    --gp-degraded: #fe9a00;
-    --gp-critical: #ff2056;
-    --gp-impure: #ff2056;
-    --gp-failed: #ff6467;
-    --gp-blocked: #ff2056;
-    --gp-tick: #fb7072;
-    --gp-down: #ff6467;
-    --gp-line: rgba(212, 212, 212, 0.2);
-    --gp-line-bright: rgba(245, 245, 245, 0.45);
-    --gp-fringe-line: rgba(161, 161, 161, 0.2);
-    --gp-hover: rgba(255, 255, 255, 0.08);
-    --gp-chip: rgba(255, 255, 255, 0.1);
+  .widget-shell {
+    position: relative;
+    isolation: isolate;
+  }
+  .widget-header,
+  .widget-body {
+    position: relative;
+    z-index: 1;
+  }
+  :host([data-mode='dark']) .widget-shell {
+    background: var(--gp-scene);
   }
 
   .chart-root {
@@ -65,502 +94,701 @@ export const goalsPerimeterStyles = css`
   }
 
   /*
-   * Shell header: the title keeps its full width (it ellipsises only when it
-   * is wider than the header on its own), and the exception summary never
-   * breaks between words. When the two do not fit side by side, the summary
-   * moves to its own line under the title.
+   * Shell header: the title, and under it the line that reads the board.
    */
-  .widget-header-main > .widget-title {
-    flex: 1 0 auto;
+  .widget-header .widget-header-main {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .widget-header .widget-header-main > .widget-title {
     max-width: 100%;
   }
-  .widget-aside {
-    white-space: nowrap;
+  .widget-header .widget-aside {
+    align-self: flex-start;
+    max-width: 100%;
+    overflow: hidden;
   }
-
-  /* Shell: exception summary beside the title. */
-  .exception-summary {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--ui9000-font-size-label, 12px);
-    color: var(--ui9000-color-text-muted, #6b7280);
-    white-space: nowrap;
-  }
-  .exception-count,
-  .down-count {
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    gap: 4px;
-  }
-  .exception-count.has-exceptions {
-    color: var(--gp-impure);
-  }
-  .exception-count svg {
-    width: 12px;
-    height: 12px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.4;
-    overflow: visible;
-  }
-  .exception-count strong {
-    font-weight: 600;
-  }
-
-  /* The way back from an open goal: over the plot's top-left corner, so nothing in the shell moves. */
-  .gp-canvas {
-    position: absolute;
-    inset: 0;
-  }
-  .gp-crumbs {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    z-index: 1;
+  .gp-reading-line {
     display: flex;
     align-items: center;
     gap: 10px;
-    max-width: calc(100% - 12px);
-    font-size: var(--ui9000-font-size-label, 12px);
+    /* the design system's body/xs, as every chart's subtitle */
+    font-family: var(--gp-face);
+    font-size: var(--ui9000-font-size-subtitle, 10px);
+    font-weight: var(--ui9000-font-weight-subtitle, 400);
+    line-height: var(--ui9000-line-height-subtitle, 14px);
+    letter-spacing: var(--ui9000-letter-spacing-subtitle, 0.02em);
+    text-transform: uppercase;
     color: var(--ui9000-color-text-muted, #6b7280);
-    animation: gp-crumbs-in 180ms ease-out;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
-  @keyframes gp-crumbs-in {
+  :host([data-mode='dark']) .gp-reading-line {
+    color: var(--gp-mute);
+  }
+  .gp-divider {
+    flex: none;
+    width: 1px;
+    height: 8px;
+    background: var(--gp-dim);
+  }
+  .gp-held {
+    color: var(--gp-blocked);
+  }
+  .gp-status-dot {
+    flex: none;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gp-ok);
+  }
+  .gp-status-dot.degraded {
+    background: var(--gp-warn);
+  }
+  .gp-status-dot.critical {
+    background: var(--gp-blocked);
+  }
+
+  /* The scene: the room, its floor and grain, the motes, and the agents' picture. */
+  .gp-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    background: var(--gp-scene);
+    pointer-events: none;
+  }
+  .gp-scene[hidden] {
+    display: none;
+  }
+  .gp-backdrop,
+  .gp-floor,
+  .gp-grain,
+  .gp-motes,
+  .gp-field,
+  .gp-field-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .gp-backdrop {
+    background:
+      radial-gradient(35% 39% at 53% 9%, rgba(var(--gp-mist), 0.05), rgba(var(--gp-mist), 0.02) 55%, transparent),
+      radial-gradient(26% 50% at 80% 22%, rgba(var(--gp-mist), 0.05), transparent 70%),
+      radial-gradient(32% 37% at 34% 113%, rgba(var(--gp-floor-mist), 0.16), rgba(var(--gp-floor-mist), 0.05) 60%, transparent),
+      radial-gradient(22% 28% at 74% 116%, rgba(var(--gp-floor-mist), 0.1), rgba(var(--gp-floor-mist), 0.03) 60%, transparent),
+      radial-gradient(70% 60% at 50% 44%, rgb(18 24 32 / 0.5), transparent 70%),
+      radial-gradient(120% 80% at 50% 120%, #0f141b, transparent 60%),
+      linear-gradient(to bottom, #05070a, #070a0e 60%, var(--gp-scene));
+  }
+  .gp-grid {
+    stroke: var(--gp-grid);
+    stroke-width: 1;
+    opacity: 0.09;
+  }
+  .gp-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: 0.05;
+    mix-blend-mode: screen;
+  }
+  .gp-field {
+    transition: opacity 200ms ease;
+  }
+
+  /* The plot: the stage that turns, its overlay of instruments and its callouts. */
+  .gp-canvas,
+  .gp-stage,
+  .gp-overlay,
+  .gp-labels {
+    position: absolute;
+    inset: 0;
+  }
+  .gp-stage {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+  .gp-stage.is-dragging {
+    cursor: grabbing;
+  }
+  .gp-overlay {
+    overflow: visible;
+    pointer-events: none;
+  }
+  .gp-labels {
+    pointer-events: none;
+  }
+
+  .gp-link {
+    pointer-events: auto;
+  }
+  .gp-link-hit {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 14;
+    pointer-events: stroke;
+  }
+  .gp-link-line {
+    fill: none;
+    stroke-width: 1;
+    transition: opacity 200ms ease;
+  }
+
+  .gp-goal-mark {
+    fill: none;
+    pointer-events: auto;
+  }
+  .gp-goal-mark .gp-hit,
+  .gp-satellite .gp-hit {
+    fill: transparent;
+  }
+  .gp-orbit {
+    stroke: var(--gp-line);
+    stroke-width: 1;
+    stroke-dasharray: 1 3.5;
+  }
+  .gp-orbit.far {
+    opacity: 0.16;
+  }
+  .gp-glass {
+    pointer-events: none;
+  }
+  .gp-ticks,
+  .gp-rest,
+  .gp-needle,
+  .gp-progress,
+  .gp-brackets {
+    stroke: var(--gp-line);
+    stroke-width: 1;
+  }
+  .gp-needle {
+    stroke-width: 1.25;
+  }
+  .gp-progress {
+    stroke-width: 1.25;
+    opacity: 0.85;
+    stroke-dasharray: 1;
+    filter: drop-shadow(0 0 3px var(--gp-arc-glow));
+  }
+  .gp-glint {
+    stroke: var(--gp-glint-stroke, #fff);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-dasharray: 0.05 1;
+    stroke-dashoffset: 0.06;
+    filter: drop-shadow(0 0 4px var(--gp-glint));
+    pointer-events: none;
+    animation: gp-glint 7.5s cubic-bezier(0.65, 0, 0.35, 1) infinite backwards;
+  }
+  .gp-brackets {
+    transition: opacity 200ms ease;
+  }
+
+  .gp-diamond {
+    transition: opacity 300ms ease;
+  }
+  .gp-diamond-edge {
+    fill: var(--gp-scene);
+    stroke-width: 1.1;
+    stroke-linejoin: miter;
+  }
+  .gp-diamond-trace {
+    fill: none;
+    stroke: var(--gp-line);
+    stroke-width: 1;
+    stroke-dasharray: 2 2.5;
+  }
+  .gp-satellite-name {
+    font: 10px/1 var(--gp-mono);
+    letter-spacing: -0.045em;
+    word-spacing: -0.18em;
+    text-transform: uppercase;
+    stroke: var(--gp-scene);
+    stroke-width: 3;
+    stroke-opacity: 0.55;
+    paint-order: stroke;
+    transition: opacity 200ms ease;
+  }
+  .gp-satellite-name .gp-name {
+    fill: var(--gp-faint);
+  }
+  .gp-satellite-name .gp-count {
+    fill: var(--gp-ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .gp-satellite-name.is-lit .gp-name {
+    fill: var(--gp-ink-2);
+  }
+  .gp-satellite-name.is-lit .gp-count {
+    fill: var(--gp-ink);
+  }
+
+  .gp-leader {
+    pointer-events: none;
+  }
+  .gp-leader-line {
+    fill: none;
+    stroke: var(--gp-line);
+    stroke-width: 1;
+    transition: opacity 200ms ease;
+  }
+  .gp-leader-end {
+    fill: var(--gp-line);
+    opacity: 0.9;
+  }
+  .gp-spine {
+    stroke: var(--gp-line);
+    stroke-width: 1;
+    opacity: 0.2;
+  }
+  .gp-bar {
+    fill: var(--gp-line);
+    opacity: 0.95;
+  }
+
+  /* A goal's label: code and status, name, and the readout. */
+  .gp-callout {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+  .gp-callout-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: var(--gp-ink);
+    text-align: left;
+    white-space: nowrap;
+    pointer-events: auto;
+  }
+  .gp-callout.is-left .gp-callout-label {
+    right: 0;
+    left: auto;
+    align-items: flex-end;
+    text-align: right;
+  }
+  .gp-callout.is-ghost .gp-callout-label {
+    pointer-events: none;
+  }
+  /* in the callouts the small caps are the design system's body/xs, not the instrument mono */
+  .gp-callout-head,
+  .gp-caption,
+  .gp-readout-line {
+    font-family: var(--gp-face);
+    font-size: ${unsafeCSS(String(CHART_TYPE.subtitle))}px;
+    font-weight: ${unsafeCSS(String(CHART_TYPE.subtitleWeight))};
+    line-height: 1;
+    letter-spacing: ${unsafeCSS(CHART_TYPE.subtitleTracking)};
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .gp-callout-head {
+    display: flex;
+    height: 14px;
+    align-items: center;
+    gap: 6px;
+  }
+  .gp-code,
+  .gp-caption {
+    color: var(--gp-faint);
+  }
+  .gp-status {
+    color: var(--gp-mute);
+  }
+  .gp-callout-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+    font: var(--gp-text-md);
+  }
+  .gp-callout.is-left .gp-callout-name {
+    flex-direction: row-reverse;
+  }
+  .gp-readout {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+  }
+  .gp-reading {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .gp-callout.is-left .gp-reading {
+    align-items: flex-end;
+  }
+  .gp-reading.agents {
+    width: 42px;
+  }
+  .gp-reading.held {
+    width: 36px;
+  }
+  .gp-reading.progress {
+    width: 58px;
+  }
+  .gp-reading.burn {
+    width: 30px;
+  }
+  .gp-value {
+    display: flex;
+    height: 16px;
+    align-items: center;
+    gap: 6px;
+    color: var(--gp-ink);
+    font: var(--gp-text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .gp-quiet {
+    color: var(--gp-faint);
+  }
+  .gp-held-mark {
+    flex: none;
+    width: 5px;
+    height: 5px;
+    border-radius: 1px;
+    background: var(--gp-blocked);
+  }
+  .gp-readout-line {
+    position: absolute;
+    top: 46px;
+    left: 0;
+    display: none;
+    height: 12px;
+    align-items: center;
+    gap: 6px;
+    color: var(--gp-mute);
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+  .gp-callout.is-left .gp-readout-line {
+    right: 0;
+    left: auto;
+  }
+  .gp-sep {
+    color: var(--gp-dim);
+  }
+  .gp-callout-label.is-compact .gp-readout {
+    display: none;
+  }
+  .gp-callout-label.is-compact .gp-readout-line {
+    display: flex;
+  }
+  .gp-callout.is-lit .gp-readout-line {
+    opacity: 1;
+  }
+
+  /* The map window, framed like a viewfinder. */
+  .gp-frame {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 60px;
+    pointer-events: none;
+    animation: gp-rise 560ms var(--gp-ease) 600ms backwards;
+  }
+  .gp-crop {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 0 solid rgb(255 255 255 / 0.2);
+  }
+  .gp-crop.tl {
+    top: 0;
+    left: 0;
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+  .gp-crop.tr {
+    top: 0;
+    right: 0;
+    border-top-width: 1px;
+    border-right-width: 1px;
+  }
+  .gp-crop.bl {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+  }
+  .gp-crop.br {
+    right: 0;
+    bottom: 0;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+  }
+
+  /* The legend button at the bottom left. */
+  .gp-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 4px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    animation: gp-rise 560ms var(--gp-ease) 260ms backwards;
+  }
+  .gp-well {
+    display: flex;
+    flex-direction: column;
+    padding: 2px;
+    border: 1px solid var(--gp-border);
+    border-radius: 8px;
+    background: var(--gp-surface);
+    box-shadow: var(--gp-panel-shadow);
+  }
+  .gp-legend-button:focus-visible {
+    outline: 1px solid var(--gp-ink-2);
+    outline-offset: 1px;
+  }
+  .gp-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+  .gp-legend-button {
+    width: 40px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: var(--gp-mute);
+    cursor: pointer;
+    transition:
+      color 150ms ease,
+      background-color 150ms ease;
+  }
+  .gp-legend-button .gp-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .gp-legend-button:hover,
+  .gp-legend-button[aria-expanded='true'] {
+    background: var(--gp-surface-muted);
+    color: var(--gp-ink);
+  }
+
+  /* Reading the map: the legend, opened from its button. */
+  .gp-legend {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    width: 340px;
+    max-width: calc(100% - 24px);
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+    padding: 16px;
+    overflow-y: auto;
+    border: 1px solid var(--gp-border);
+    border-radius: 16px;
+    background:
+      linear-gradient(180deg, rgb(196 216 255 / 0.06) 0%, rgb(196 216 255 / 0) 34%),
+      rgb(13 17 23 / 0.9);
+    box-shadow: 0 32px 72px -16px rgb(0 0 0 / 0.7);
+    backdrop-filter: blur(30px) saturate(1.08) brightness(1.08);
+    color: var(--gp-ink);
+    font-size: 14px;
+    animation: gp-pop 200ms var(--gp-ease);
+  }
+  .gp-legend-head {
+    display: flex;
+    height: 16px;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .gp-legend > .gp-legend-head {
+    margin-bottom: 2px;
+  }
+  .gp-legend-head .gp-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--gp-mute);
+  }
+  .gp-legend-head h2,
+  .gp-legend-head h3 {
+    margin: 0;
+    color: var(--gp-ink-2);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    text-transform: uppercase;
+  }
+  .gp-legend-well {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 11px;
+    background-color: rgb(255 255 255 / 0.025);
+    background-image: linear-gradient(90deg, rgb(255 255 255 / 0.065), rgb(255 255 255 / 0.026) 22%, rgb(255 255 255 / 0.01) 55%, rgb(255 255 255 / 0));
+  }
+  .gp-legend-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .gp-legend-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--gp-mute);
+    font-size: 12px;
+    line-height: 1.375;
+  }
+  .gp-legend-mark {
+    display: block;
+    flex: none;
+    margin-top: -1px;
+    fill: none;
+    stroke: var(--gp-ink-2);
+    stroke-width: 1.1;
+  }
+  .gp-legend-mark .solid {
+    fill: var(--gp-ink-2);
+    stroke: none;
+  }
+  .gp-legend-mark .blocked {
+    stroke: var(--gp-blocked);
+  }
+  .gp-legend-mark .solid.blocked {
+    fill: var(--gp-blocked);
+    stroke: none;
+  }
+  .gp-legend-mark .failed {
+    stroke: var(--gp-failed);
+  }
+  .gp-legend-mark .awaiting {
+    stroke: var(--gp-awaiting);
+  }
+  .gp-legend-mark .degraded {
+    stroke: var(--gp-warn);
+  }
+  .gp-legend-mark .solid.degraded {
+    fill: var(--gp-warn);
+    stroke: none;
+  }
+
+  /*
+   * Light mode: the same room by day. A pale, faintly cool floor; the picture
+   * laid down in ink (the WebGL pass does that); hairlines and text in the
+   * page's inks; status hues deepened so they hold on white.
+   */
+  :host([data-mode='light']) {
+    --gp-scene: #f6f7fb;
+    --gp-ink: #111827;
+    --gp-ink-2: #1f2937;
+    --gp-mute: #4b5563;
+    --gp-faint: #6b7280;
+    --gp-dim: #c7cdd8;
+    --gp-hairline: rgb(17 24 39 / 0.1);
+    --gp-surface: var(--ui9000-color-surface, #ffffff);
+    --gp-surface-muted: var(--ui9000-color-surface-muted, #f3f4f6);
+    --gp-border: var(--ui9000-color-border, #e5e7eb);
+    --gp-ok: ${unsafeCSS(LIGHT_STATUS.ok)};
+    --gp-warn: ${unsafeCSS(LIGHT_STATUS.warn)};
+    --gp-blocked: ${unsafeCSS(LIGHT_STATUS.blocked)};
+    --gp-failed: ${unsafeCSS(LIGHT_STATUS.failed)};
+    --gp-awaiting: ${unsafeCSS(LIGHT_STATUS.awaiting)};
+    /* the default style's, light; the element sets the page style's */
+    --gp-line: rgb(54 60 119);
+    --gp-arc-glow: rgb(84 72 255 / 0.35);
+    --gp-glint: rgb(115 105 255 / 0.5);
+    --gp-glint-stroke: rgb(71 61 217);
+    --gp-grid: rgb(71 61 217);
+    --gp-mist: 181, 176, 255;
+    --gp-floor-mist: 147, 140, 255;
+  }
+  :host([data-mode='light']) .gp-backdrop {
+    background:
+      radial-gradient(35% 39% at 53% 9%, rgba(var(--gp-mist), 0.16), rgba(var(--gp-mist), 0.05) 55%, transparent),
+      radial-gradient(32% 37% at 34% 113%, rgba(var(--gp-floor-mist), 0.14), rgba(var(--gp-floor-mist), 0.04) 60%, transparent),
+      radial-gradient(22% 28% at 74% 116%, rgba(var(--gp-floor-mist), 0.1), transparent 60%),
+      linear-gradient(to bottom, #fbfcfe, #f3f5fa 60%, var(--gp-scene));
+  }
+  :host([data-mode='light']) .gp-grid {
+    opacity: 0.08;
+  }
+  :host([data-mode='light']) .gp-grain {
+    display: none;
+  }
+  :host([data-mode='light']) .gp-crop {
+    border-color: rgb(17 24 39 / 0.22);
+  }
+  :host([data-mode='light']) .gp-legend {
+    background: rgb(255 255 255 / 0.96);
+    box-shadow: 0 18px 44px -16px rgb(15 23 42 / 0.28);
+  }
+  :host([data-mode='light']) .gp-legend-well {
+    background-color: rgb(17 24 39 / 0.025);
+    background-image: linear-gradient(90deg, rgb(17 24 39 / 0.045), rgb(17 24 39 / 0.015) 22%, rgb(17 24 39 / 0));
+  }
+
+  /* Entrances: each part comes up in place, then stays as it is. */
+  .gp-appear {
+    animation: gp-appear 800ms var(--gp-ease) backwards;
+  }
+  .gp-rise {
+    animation: gp-rise 560ms var(--gp-ease) backwards;
+  }
+  .gp-draw {
+    animation: gp-draw 1100ms var(--gp-ease) backwards;
+  }
+  @keyframes gp-appear {
     from {
       opacity: 0;
     }
   }
-  .gp-back {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    border: 1px solid var(--ui9000-color-border, #e5e7eb);
-    border-radius: 6px;
-    background: transparent;
-    color: var(--ui9000-color-text, #111827);
-    font: inherit;
-    cursor: pointer;
-  }
-  .gp-back {
-    background: var(--ui9000-color-surface, #ffffff);
-  }
-  .gp-back:hover,
-  .gp-back:focus-visible {
-    background: var(--gp-hover);
-  }
-  .gp-crumb-goal {
-    min-width: 0;
-    overflow: hidden;
-    color: var(--ui9000-color-text, #111827);
-    font-weight: 600;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Plot. */
-  .gp-svg text {
-    fill: var(--ui9000-color-text, #111827);
-  }
-
-  .strand {
-    fill: none;
-    stroke: var(--gp-line);
-    stroke-width: 0.7px;
-    vector-effect: non-scaling-stroke;
-  }
-  .strand.exception {
-    stroke-width: 1.1px;
-  }
-  .strand-dash {
-    fill: none;
-    stroke: var(--gp-line-bright);
-    stroke-width: 1.3px;
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .fringe-links {
-    fill: none;
-    stroke: var(--gp-fringe-line);
-    stroke-width: 0.6px;
-    vector-effect: non-scaling-stroke;
-  }
-  .fringe circle {
-    opacity: 0.85;
-  }
-
-  .clouds,
-  .fringe,
-  .strands,
-  .agent-links,
-  .labels {
-    pointer-events: none;
-  }
-  .speck.agent {
-    pointer-events: all;
-    cursor: default;
-  }
-
-  .agent-link {
-    stroke: var(--gp-line);
-    stroke-width: 0.8px;
-    vector-effect: non-scaling-stroke;
-  }
-  .agent-link.degraded,
-  .agent-link.unavailable {
-    stroke: var(--gp-down);
-    stroke-opacity: 0.6;
-  }
-
-  .goal-box {
-    fill: transparent;
-    transition: fill 120ms ease;
-  }
-  .goal {
-    cursor: pointer;
-    outline: none;
-  }
-  .goal.is-hover .goal-box,
-  .goal:focus-visible .goal-box {
-    fill: var(--gp-hover);
-  }
-  .goal:focus-visible .goal-box {
-    stroke: var(--ui9000-color-text-muted, #6b7280);
-    stroke-width: 1px;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .ring {
-    fill: none;
-    stroke-width: 3.5;
-  }
-  .ring.healthy {
-    stroke: var(--gp-healthy);
-  }
-  .ring.degraded {
-    stroke: var(--gp-degraded);
-  }
-  .ring.critical {
-    stroke: var(--gp-critical);
-  }
-
-  .ticks line {
-    stroke: var(--gp-tick);
-    stroke-width: 2.5;
-  }
-
-  .rg,
-  .marker,
-  .link-mark,
-  .ext-node {
-    cursor: pointer;
-    outline: none;
-  }
-  .rg {
-    --rg-color: var(--gp-healthy);
-  }
-  .rg.degraded {
-    --rg-color: var(--gp-degraded);
-  }
-  .rg.failed {
-    --rg-color: var(--gp-critical);
-  }
-  .rg-base {
-    fill: var(--ui9000-color-surface, #ffffff);
-    fill-opacity: 0.88;
-  }
-  .rg-shape {
-    fill: var(--rg-color);
-    fill-opacity: 0.07;
-    stroke: var(--rg-color);
-    stroke-width: 2;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--rg-color) 35%, transparent));
-  }
-  .rg:hover .rg-shape,
-  .rg:focus-visible .rg-shape {
-    fill-opacity: 0.18;
-    stroke-width: 2.6;
-  }
-  .glyph {
-    fill: none;
-    stroke: var(--rg-color);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .glyph .fill {
-    fill: var(--rg-color);
-  }
-  .gp-svg .rg-more {
-    fill: var(--ui9000-color-text-muted, #6b7280);
-    font-size: var(--ui9000-font-size-label, 12px);
-  }
-
-  .hit {
-    fill: transparent;
-    stroke: none;
-  }
-  .marker path,
-  .marker circle:not(.hit) {
-    fill: none;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .marker.failed {
-    stroke: var(--gp-failed);
-  }
-  .marker.blocked {
-    stroke: var(--gp-blocked);
-    opacity: 0.9;
-  }
-  .marker.degraded {
-    stroke: var(--gp-degraded);
-  }
-  .marker:hover path,
-  .marker:hover circle:not(.hit),
-  .marker:focus-visible path,
-  .marker:focus-visible circle:not(.hit) {
-    stroke-width: 2.4;
-  }
-
-  .link-line {
-    fill: none;
-    stroke: var(--gp-down);
-    stroke-width: 1.6;
-    stroke-opacity: 0.85;
-  }
-  .link-mark circle,
-  .link-mark path,
-  .ext-node.unavailable circle:not(.hit),
-  .ext-node.unavailable path {
-    stroke: var(--gp-down);
-    stroke-width: 2.2;
-    stroke-linecap: round;
-  }
-  .link-mark circle,
-  .ext-node.unavailable circle:not(.hit) {
-    fill: var(--ui9000-color-surface, #ffffff);
-  }
-  .link-mark path,
-  .ext-node path {
-    fill: none;
-  }
-  .link-mark:hover circle,
-  .link-mark:hover path,
-  .link-mark:focus-visible circle,
-  .link-mark:focus-visible path {
-    stroke-width: 3;
-  }
-
-  .ext-line {
-    stroke: var(--gp-line-bright);
-    stroke-width: 1px;
-    stroke-dasharray: 3 3;
-    vector-effect: non-scaling-stroke;
-  }
-  .ext-line.degraded {
-    stroke: var(--gp-degraded);
-  }
-  .ext-line.unavailable {
-    stroke: var(--gp-down);
-    stroke-dasharray: none;
-  }
-  .ext-dot {
-    fill: var(--ui9000-color-surface, #ffffff);
-    stroke: var(--ui9000-color-text-muted, #6b7280);
-    stroke-width: 1.5;
-  }
-  .ext-node.degraded .ext-dot {
-    stroke: var(--gp-degraded);
-  }
-  .ext-node:hover .ext-dot,
-  .ext-node:focus-visible .ext-dot {
-    stroke-width: 2.5;
-  }
-
-  /* Labels under each ring, in screen px at 100%. */
-  .goal-label .row text {
-    fill: var(--ui9000-color-text-muted, #6b7280);
-  }
-  .goal-label .row.title text {
-    fill: var(--ui9000-color-text, #111827);
-    font-weight: 500;
-  }
-  .goal-label .row.impure text {
-    fill: var(--gp-impure);
-  }
-  .impure-mark circle,
-  .impure-mark path {
-    fill: none;
-    stroke: var(--gp-impure);
-    stroke-width: 1.4;
-  }
-  .chip {
-    fill: transparent;
-  }
-  .goal-label.is-hover .chip {
-    fill: var(--gp-chip);
-  }
-
-  /* An open goal. */
-  .gp-detail .sector {
-    fill: none;
-    stroke-width: 3;
-    stroke-linecap: butt;
-    stroke-opacity: 0.75;
-  }
-  .gp-detail .glow {
-    pointer-events: none;
-  }
-  .gp-detail .sector-hit {
-    fill: transparent;
-    pointer-events: all;
-  }
-  /* A hovered sector stays at full strength; the others step back. */
-  .gp-detail .sector,
-  .gp-detail .sector-label,
-  .gp-detail .sector-leader,
-  .gp-detail .detail-cloud .speck,
-  .gp-detail .agent-links {
-    transition: opacity 120ms ease;
-  }
-  .gp-detail .is-dimmed {
-    opacity: 0.2;
-  }
-  .gp-detail .detail-cloud .speck {
-    pointer-events: none;
-  }
-  .gp-detail .detail-cloud .speck.agent {
-    pointer-events: all;
-  }
-  .sector-leader {
-    fill: none;
-    stroke-width: 1;
-    stroke-opacity: 0.6;
-  }
-  .gp-svg .sector-title {
-    font-size: var(--ui9000-font-size-title, 14px);
-    font-weight: 600;
-  }
-  .gp-svg .reason text,
-  .gp-svg .reason-more {
-    fill: var(--ui9000-color-text-muted, #6b7280);
-    font-size: var(--ui9000-font-size-label, 12px);
-  }
-  .reason {
-    cursor: default;
-    outline: none;
-  }
-  .reason:hover text,
-  .reason:focus-visible text {
-    fill: var(--ui9000-color-text, #111827);
-  }
-  .reason-glyph path,
-  .reason-glyph circle {
-    fill: none;
-    stroke-width: 1.4;
-    stroke-linecap: round;
-  }
-  .reason.failed .reason-glyph {
-    stroke: var(--gp-failed);
-  }
-  .reason.blocked .reason-glyph {
-    stroke: var(--gp-blocked);
-  }
-  .reason.degraded .reason-glyph {
-    stroke: var(--gp-degraded);
-  }
-  .rel-strand {
-    fill: none;
-    stroke: var(--gp-line);
-    stroke-width: 1px;
-    vector-effect: non-scaling-stroke;
-  }
-  .rel-strand.degraded {
-    stroke: var(--gp-degraded);
-    stroke-opacity: 0.7;
-  }
-  .rel-node {
-    cursor: pointer;
-    outline: none;
-  }
-  .rel-node.external {
-    cursor: default;
-  }
-  .rel-dot {
-    fill: var(--ui9000-color-surface, #ffffff);
-    stroke: var(--gp-line-bright);
-    stroke-width: 1.5;
-  }
-  .rel-arc {
-    fill: none;
-    stroke-width: 2.5;
-    stroke: var(--gp-healthy);
-  }
-  .rel-node.degraded .rel-arc {
-    stroke: var(--gp-degraded);
-  }
-  .rel-node.critical .rel-arc {
-    stroke: var(--gp-critical);
-  }
-  .rel-node:hover .rel-dot,
-  .rel-node:focus-visible .rel-dot {
-    fill: var(--gp-hover);
-    stroke-width: 2.5;
-  }
-  .rel-node.unavailable circle:not(.hit),
-  .rel-node.unavailable path {
-    fill: var(--ui9000-color-surface, #ffffff);
-    stroke: var(--gp-down);
-    stroke-width: 2.2;
-  }
-  .gp-svg .rel-label {
-    font-size: var(--ui9000-font-size-title, 14px);
-    font-weight: 500;
-  }
-  .gp-svg .rel-meta,
-  .gp-svg .rg-name,
-  .gp-svg .detail-meta {
-    fill: var(--ui9000-color-text-muted, #6b7280);
-    font-size: var(--ui9000-font-size-label, 12px);
-  }
-  .gp-svg .detail-meta {
-    font-size: var(--ui9000-font-size-title, 14px);
-  }
-  .gp-svg .detail-title {
-    font-size: var(--ui9000-font-size-title, 14px);
-    font-weight: 500;
-  }
-  .gp-svg .detail-impure {
-    fill: var(--gp-impure);
-    font-size: var(--ui9000-font-size-title, 14px);
-    letter-spacing: 0.12em;
-  }
-  .rg.is-selected .rg-shape {
-    fill-opacity: 0.22;
-    stroke-width: 3;
+  @keyframes gp-rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes gp-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  @keyframes gp-glint {
+    0% {
+      stroke-dashoffset: 0.06;
+    }
+    34%,
+    100% {
+      stroke-dashoffset: -1;
+    }
+  }
+  @keyframes gp-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.98) translateX(-6px);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .goal-box {
-      transition: none;
-    }
-    .gp-crumbs {
+    .gp-appear,
+    .gp-rise,
+    .gp-draw,
+    .gp-glint,
+    .gp-frame,
+    .gp-controls,
+    .gp-legend {
       animation: none;
-    }
-    .gp-detail .sector,
-    .gp-detail .sector-label,
-    .gp-detail .sector-leader,
-    .gp-detail .detail-cloud .speck,
-    .gp-detail .agent-links {
-      transition: none;
     }
   }
 `;

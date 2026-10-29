@@ -1,10 +1,8 @@
 import { html } from 'lit';
-import { ref } from 'lit/directives/ref.js';
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryContext, StoryObj } from '@storybook/web-components';
 
 import '../components/goals-perimeter/index.js';
 import '../components/chart-renderer/index.js';
-import type { GoalOpenDetail, Ui9000GoalsPerimeterChart } from '../components/goals-perimeter/index.js';
 import defaultFixture from './fixtures/goals-perimeter.default.json';
 import agentsFixture from './fixtures/goals-perimeter.agents.json';
 
@@ -12,35 +10,13 @@ type GoalsPerimeterArgs = {
   data: unknown;
   width: string;
   height: string;
-  /** Goal id to open once the board is drawn, as a click on its cluster would. */
-  open?: string;
+  problemsOnly: boolean;
 };
-
-/** Opens `goalId` after the first draw, the way a click on its cluster does. */
-function openOnMount(goalId: string | undefined) {
-  return ref((node) => {
-    if (!goalId || !node) return;
-    const chart = node as Ui9000GoalsPerimeterChart;
-    setTimeout(() => chart.openGoalById(goalId), 120);
-  });
-}
 
 /** Same goals with no positions: the automatic layout places them. */
 const autoLayout = {
   ...defaultFixture,
   goals: defaultFixture.goals.map(({ position: _position, ...goal }) => goal),
-};
-
-/** Two states only (healthy and failed): same layout, the legend shows two swatches. */
-const fewerStates = {
-  chartType: 'goalsPerimeter',
-  name: 'Release agents',
-  goal: { name: 'Pipeline Quality', health: 0.94, multiplier: 0.9 },
-  agents: Array.from({ length: 48 }, (_, i) => ({
-    id: `build-${String(i + 1).padStart(2, '0')}`,
-    state: i % 12 === 5 ? 'failed' : 'healthy',
-    ...(i % 12 === 5 ? { reason: 'Release stage timed out' } : {}),
-  })),
 };
 
 /** 2,400 agents around one goal: the cloud samples them, the counts stay exact. */
@@ -69,23 +45,22 @@ const extraAgents = {
   links: [{ source: 'claims-1', target: 'Fraud bureau API', status: 'degraded', reason: 'Rate limited' }],
 };
 
-function logOpen(event: CustomEvent<GoalOpenDetail>): void {
-  const log = (event.currentTarget as HTMLElement).parentElement?.querySelector('output');
-  if (!log) return;
-  const { goalName, resourceGroupId } = event.detail;
-  log.textContent = `goal-open → ${goalName}${resourceGroupId ? ` · ${resourceGroupId}` : ''}`;
-}
+/** On the docs page a frame wider than the column scrolls across in it rather than being cut off. */
+const inColumn = (context: StoryContext, story: unknown) =>
+  context.viewMode === 'docs' ? html`<div style="max-width: 100%; overflow-x: auto">${story}</div>` : story;
 
-const frame = (args: GoalsPerimeterArgs) => html`
-  <div style="width:${args.width};height:${args.height};">
-    <ui9000-goals-perimeter
-      data=${JSON.stringify(args.data)}
-      @goal-open=${logOpen}
-      ${openOnMount(args.open)}
-    ></ui9000-goals-perimeter>
-    <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>
-  </div>
-`;
+/** On the docs page the story's block is as tall as its frame, so the board is not cut off at the bottom, with what the story shows. */
+const inDocs = (height: string, story?: string) => ({ docs: { story: { height }, ...(story ? { description: { story } } : {}) } });
+
+const frame = (args: GoalsPerimeterArgs, context: StoryContext) =>
+  inColumn(
+    context,
+    html`
+      <div style="width:${args.width};height:${args.height};">
+        <ui9000-goals-perimeter ?problems-only=${args.problemsOnly} data=${JSON.stringify(args.data)}></ui9000-goals-perimeter>
+      </div>
+    `,
+  );
 
 const meta: Meta<GoalsPerimeterArgs> = {
   title: 'Graph/Goals perimeter',
@@ -93,74 +68,97 @@ const meta: Meta<GoalsPerimeterArgs> = {
   tags: ['autodocs'],
   parameters: {
     docs: {
+      story: { height: '720px' },
       description: {
         component:
-          'Agents Management goals perimeter (AM-2): many agents arranged around a shared goal. Each goal is a cloud of its agents inside a perimeter: the arc is the goal health, clockwise from 12 o’clock, green above 80%, amber below, rose below 25%. Healthy, degraded, blocked and failed agents differ by colour and by marker (△, ⊘, ✕). Diamonds at the centre are resource groups coloured by state, and red ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. The state legend and the exception count sit in the shell. Hover any mark for its detail. Click a cluster (“click to open”) and it expands: the goal fills the plot, its agents regroup into one sector per health state with the reasons beside each, its resource groups are named, and the goals and dependencies it is joined to sit around it — click one to open it. “← All goals” or Esc zooms back out. Opening fires `goal-open`, closing `goal-close`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
+          'AM-2 Goals perimeter, after the Agent operations design: every live goal as a cloud of its agents, one point an agent. Each goal has a progress ring, an orbit of the resource groups it draws on, lines to the goals that share a group, and a callout with its code, status and name. Held agents, and the groups that hold them, take the colour of what holds them. Drag to turn, scroll to zoom, shift-drag to pan, double-click to reset. It follows the page’s light or dark theme (toolbar Light/Dark).',
       },
     },
   },
   argTypes: {
     data: { control: false, table: { disable: true } },
-    open: { control: 'text' },
     width: { control: 'text' },
     height: { control: 'text' },
+    problemsOnly: { control: 'boolean' },
   },
-  args: { data: defaultFixture, width: '100%', height: '720px' },
+  args: { data: defaultFixture, width: '100%', height: '720px', problemsOnly: false },
   render: frame,
 };
 
 export default meta;
 type Story = StoryObj<GoalsPerimeterArgs>;
 
-/** Five goals on one board, fitted to the panel like every other story. */
+/** The six goals of the design, fitted to the panel like every other story. */
 export const Default: Story = { name: 'Default' };
 
-export const OpenGoal: Story = {
-  name: 'Open goal (Perimeter Watch)',
-  args: { width: '100%', height: '720px', open: 'perimeter-watch' },
+export const ProblemsOnly: Story = {
+  name: 'Problems only',
+  args: { problemsOnly: true },
+  parameters: inDocs(
+    '720px',
+    'With `problems-only` set, only what is held stands out: the agents at work all but go out, and a goal with none of its agents held steps back, as do the lines and groups where traffic flows.',
+  ),
 };
 
-export const OpenDegradedGoal: Story = {
-  name: 'Open goal (Onboarding Velocity)',
-  args: { width: '100%', height: '720px', open: 'onboarding-velocity' },
+/**
+ * Room for the design's full callouts: the board fills the visible canvas (less
+ * the canvas padding) and is drawn at its design size or more once that is about
+ * 1,250 × 640 or larger. In the docs it gets a frame of its own, as tall as the design.
+ */
+export const Spacious: Story = {
+  name: 'Spacious (readouts)',
+  args: { width: 'calc(100vw - 2rem)', height: 'calc(100vh - 2rem)' },
+  parameters: { docs: { story: { inline: false, height: '820px' } } },
 };
 
-export const OpenAgentNodes: Story = {
-  name: 'Open goal from agent nodes',
-  args: { data: agentsFixture, width: '100%', height: '720px', open: 'incident-response' },
+/** A smaller board: callouts keep to their heads, and show their readout under the pointer. */
+export const Compact: Story = {
+  name: 'Compact',
+  args: { width: '960px', height: '600px' },
+  parameters: inDocs('600px'),
 };
 
 export const AgentNodes: Story = {
   name: 'Agent nodes around one goal',
   args: { data: agentsFixture, width: '100%', height: '620px' },
-};
-
-export const FewerStates: Story = {
-  name: 'Fewer states',
-  args: { data: fewerStates, width: '100%', height: '560px' },
+  parameters: inDocs(
+    '620px',
+    'One goal drawn from a list of its agents rather than their counts: each agent is a point in the cloud, in the colour of its state, with the goal’s resource groups on its orbit.',
+  ),
 };
 
 export const ExtraAgents: Story = {
   name: 'Extra agents',
   args: { data: extraAgents, width: '100%', height: '620px' },
+  parameters: inDocs('620px', '2,400 agents around one goal: the cloud draws a sample of them, while the counts on the board stay exact.'),
 };
 
 export const AutoLayout: Story = {
   name: 'Automatic layout',
   args: { data: autoLayout, width: '100%', height: '720px' },
+  parameters: inDocs('720px', 'The six goals of the design sent without positions: the board lays them out itself.'),
 };
 
 export const Narrow: Story = {
   name: 'Narrow',
   args: { width: '420px', height: '560px' },
+  parameters: inDocs('560px'),
 };
 
 export const ThroughRenderer: Story = {
   name: 'Through chart-renderer',
   args: { width: '100%', height: '640px' },
-  render: (args) => html`
-    <div style="width:${args.width};height:${args.height};">
-      <ui9000-chart-renderer data=${JSON.stringify(args.data)}></ui9000-chart-renderer>
-    </div>
-  `,
+  parameters: inDocs(
+    '640px',
+    'The default payload passed to `<ui9000-chart-renderer>`, which picks this chart from its `chartType: "goalsPerimeter"`.',
+  ),
+  render: (args, context) =>
+    inColumn(
+      context,
+      html`
+        <div style="width:${args.width};height:${args.height};">
+          <ui9000-chart-renderer data=${JSON.stringify(args.data)}></ui9000-chart-renderer>
+        </div>
+      `,
+    ),
 };

@@ -15,6 +15,8 @@ export type ChartTooltipRow = { label: string; value: string };
 
 export type ChartTooltipContent = {
   title?: string;
+  /** A line of explanation under the title. */
+  body?: string;
   rows: ChartTooltipRow[];
 };
 
@@ -82,6 +84,13 @@ ui9000-typography p {
   font-weight: ${CHART_TYPE.headingWeight};
   line-height: ${CHART_TYPE.headingLine}px;
   text-align: left;
+}
+.ui9000-chart-tooltip__body {
+  max-width: 240px;
+  font-size: ${CHART_TYPE.label}px;
+  line-height: ${CHART_TYPE.labelLine}px;
+  font-weight: ${CHART_TYPE.labelWeight};
+  opacity: 0.6;
 }
 .ui9000-chart-tooltip__rows {
   display: flex;
@@ -267,6 +276,12 @@ function fillHover(el: HTMLDivElement, content: ChartTooltipContent): void {
     title.className = 'ui9000-chart-tooltip__title name';
     title.append(typographyNode(content.title, 'md'));
     el.appendChild(title);
+  }
+  if (content.body) {
+    const body = document.createElement('div');
+    body.className = 'ui9000-chart-tooltip__body';
+    body.append(typographyNode(content.body, 'sm'));
+    el.appendChild(body);
   }
   if (!content.rows.length) return;
   const rows = document.createElement('div');

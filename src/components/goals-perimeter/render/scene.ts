@@ -307,7 +307,9 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
     return canvas;
   };
   try {
-    painter = createPainter(freshCanvas, field, options.palette ?? scenePalette('default'));
+    // the WebGL picture holds every link and every call slot of either view
+    const slots = Math.max(...Object.values(orbitsFor).map((orbits) => Object.values(orbits).flat().filter((slot) => slot.group).length));
+    painter = createPainter(freshCanvas, field, options.palette ?? scenePalette('default'), { links: links.length, slots });
   } catch {
     painter = null;
   }

@@ -14,7 +14,10 @@
  * 3.00 prelude three.js adds, so uniform arrays can be indexed per goal.
  */
 
-/** Camera, canvas mapping and per-goal data shared by every program. */
+/**
+ * Camera, canvas mapping and per-goal data shared by every program. Arrays
+ * hold the whole board: the renderer defines GOALS, LINKS and SLOTS from it.
+ */
 const COMMON = /* glsl */ `
 uniform vec4 uCam;      // cos yaw, sin yaw, cos pitch, sin pitch
 uniform float uFocal;
@@ -27,12 +30,12 @@ uniform float uTime;
 uniform float uIntro;   // 0–1 while the scene settles in
 uniform float uHealthy; // brightness of working and idle agents
 uniform float uCount;   // goals
-uniform vec4 uGoal[8];  // world x, y, z, radius
-uniform vec4 uGoalB[8]; // spin angle, alpha, heat, pulse
-uniform vec4 uLight[8]; // projected x, y, radius; intensity
-uniform vec3 uLightCol[8];
+uniform vec4 uGoal[GOALS];  // world x, y, z, radius
+uniform vec4 uGoalB[GOALS]; // spin angle, alpha, heat, pulse
+uniform vec4 uLight[GOALS]; // projected x, y, radius; intensity
+uniform vec3 uLightCol[GOALS];
 uniform float uDrift;   // how far working agents wander about their places: 1 in a cloud
-uniform float uScale[8]; // each goal's agents drawn in from or out about its centre: 1 in a cloud
+uniform float uScale[GOALS]; // each goal's agents drawn in from or out about its centre: 1 in a cloud
 uniform vec3 uGlass;    // light the glass catches at its limb, from the page's palette
 
 vec3 project(vec3 w) {
@@ -115,7 +118,7 @@ void main() {
   vec3 col = uCool * (dens * 0.0002 + mix(0.5, dens, 0.3) * cone * rays * 0.02);
 
   // every goal lights the smoke round it
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < GOALS; i++) {
     if (float(i) >= uCount) break;
     vec4 L = uLight[i];
     vec2 d = (vD - L.xy) / L.z;
@@ -323,8 +326,8 @@ void main() {
 export const SPARK_VERT = /* glsl */ `
 ${COMMON}
 attribute vec4 aSpark;
-uniform vec4 uSlot[24];    // goal, angle on the orbit, share of calls turned away, sparks shown
-uniform vec3 uSlotCol[24];
+uniform vec4 uSlot[SLOTS];    // goal, angle on the orbit, share of calls turned away, sparks shown
+uniform vec3 uSlotCol[SLOTS];
 uniform float uOrbit;      // the orbit's radius beyond the goal's, design px
 uniform float uFlat;
 uniform vec3 uSparkCol;
@@ -368,19 +371,19 @@ void main() {
 }
 `
 
-const LINKS = /* glsl */ `
-uniform vec3 uLinkA[8];
-uniform vec3 uLinkM[8];
-uniform vec3 uLinkB[8];
-uniform vec4 uLinkCol[8];  // colour; brightness
-uniform vec4 uLinkFlow[8]; // lights shown; 1 when the same trouble holds agents at both ends
+const LINK_CURVES = /* glsl */ `
+uniform vec3 uLinkA[LINKS];
+uniform vec3 uLinkM[LINKS];
+uniform vec3 uLinkB[LINKS];
+uniform vec4 uLinkCol[LINKS];  // colour; brightness
+uniform vec4 uLinkFlow[LINKS]; // lights shown; 1 when the same trouble holds agents at both ends
 vec3 along(int i, float t) { float it = 1.0 - t; return it * it * uLinkA[i] + 2.0 * it * t * uLinkM[i] + t * t * uLinkB[i]; }
 `
 
 /** A link's glow: a soft band along its curve. `position` is link, place along it, side. */
 export const LINK_VERT = /* glsl */ `
 ${COMMON}
-${LINKS}
+${LINK_CURVES}
 varying vec3 vL;   // side, place along, link
 varying vec4 vCol;
 void main() {
@@ -413,7 +416,7 @@ void main() {
 /** Traffic: lights running both ways along a link, each with a short tail. `position` is link, random number, place in the tail. */
 export const FLOW_VERT = /* glsl */ `
 ${COMMON}
-${LINKS}
+${LINK_CURVES}
 attribute float aOrd;
 varying vec4 vCol;
 void main() {

@@ -31,6 +31,7 @@ import {
 } from '../lib/index.js';
 import defaultFixture from '../../../stories/fixtures/goals-perimeter.default.json';
 import agentsFixture from '../../../stories/fixtures/goals-perimeter.agents.json';
+import * as shaders from '../render/gl/shaders.js';
 
 const model = normalizeGoalsPerimeter(defaultFixture);
 const layout = layoutBoard(model.goals);
@@ -291,5 +292,17 @@ describe('agent field', () => {
     expect(counts.healthy).toBe(5600);
     const agents = normalizeGoalsPerimeter(agentsFixture);
     expect(fieldCounts(sceneGoals(agents, layoutBoard(agents.goals)))['incident-response']!.healthy).toBe(agents.goals[0]!.agents.healthy);
+  });
+
+  it('gives a board of nine goals nine clouds, and the WebGL picture a place for every goal, link and slot', () => {
+    const nine = normalizeGoalsPerimeter({
+      goals: Array.from({ length: 9 }, (_, i) => ({ name: `Goal ${i + 1}`, agents: { total: 40 + i, blocked: 2 } })),
+    });
+    const field = buildAgentField(sceneGoals(nine, layoutBoard(nine.goals)));
+    expect(field.clouds.map((c) => c.position.length / 3)).toEqual(nine.goals.map((g) => g.agents.total));
+    // no shader array stops at a fixed count of goals, links or call slots: the renderer sizes them to the board
+    const sized = new Set(Object.values(shaders).join('\n').match(/uniform \w+ u(Goal|Light|Scale|Slot|Link)\w*\[\w+\]/g));
+    expect(sized.size).toBe(12);
+    for (const line of sized) expect(line).toMatch(/\[(GOALS|LINKS|SLOTS)\]$/);
   });
 });

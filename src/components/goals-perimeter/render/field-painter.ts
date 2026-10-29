@@ -1,7 +1,7 @@
 import { LINK_SAMPLES } from '../lib/cloud.js';
 import type { AgentField, PaintOptions } from '../lib/field.js';
 import { PIVOT_X, PIVOT_Y } from '../lib/scene.js';
-import { createFieldRenderer } from './gl/renderer.js';
+import { createFieldRenderer, type FieldCapacity } from './gl/renderer.js';
 import { STATUS, type ScenePalette } from './scene-palette.js';
 
 /**
@@ -357,13 +357,19 @@ function canvasPainter(canvas: HTMLCanvasElement, field: AgentField, palette: Sc
  * on a canvas of its own, since a canvas keeps the first kind of context it
  * gives — the 2D painter. Null where neither can draw (a test DOM).
  */
-export function createPainter(fresh: () => HTMLCanvasElement, field: AgentField, palette: ScenePalette): Painter | null {
+export function createPainter(
+  fresh: () => HTMLCanvasElement,
+  field: AgentField,
+  palette: ScenePalette,
+  capacity: FieldCapacity,
+): Painter | null {
   const first = fresh();
   try {
-    const gl = createFieldRenderer(first, field, palette);
+    const gl = createFieldRenderer(first, field, palette, capacity);
     if (gl) return { canvas: first, kind: 'webgl', resize: gl.resize, paint: gl.render, dispose: gl.dispose };
   } catch {
-    // a driver that will not take the shaders: the plain painter draws instead
+    // a driver that will not take the shaders, or a board too big for them: the plain painter draws instead
+    first.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext();
     first.remove();
     return canvasPainter(fresh(), field, palette);
   }

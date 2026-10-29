@@ -49,11 +49,12 @@ import {
  *
  * Nothing here is drawn that is not the scene's light or its data: a point is
  * always an agent, a spark a call, a light on a link traffic.
+ *
+ * Every goal, link and call slot on the board has its place in the shaders'
+ * arrays. A board too big for the device's uniforms does not link, and the
+ * canvas painter draws it instead.
  */
 
-const MAX_GOALS = 8;
-const MAX_LINKS = 8;
-const MAX_SLOTS = 24;
 /** Points in a moving light's tail. */
 const TAIL = 7;
 const SPARKS_PER_SLOT = 12;
@@ -83,6 +84,12 @@ const HOLD = {
   degraded: linear(STATUS.warn),
 } as const;
 
+/** How many links and call slots the board draws; the field gives its goals. */
+export interface FieldCapacity {
+  links: number;
+  slots: number;
+}
+
 export interface FieldRenderer {
   /** Sets the backing store, in canvas px. */
   resize(width: number, height: number): void;
@@ -110,7 +117,12 @@ function blurKernel(kernelRadius: number) {
  * instead). The scene's light, the glass, the healthy agents and the traffic
  * take their colours from `palette`; held agents keep theirs.
  */
-export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField, palette: ScenePalette): FieldRenderer | null {
+export function createFieldRenderer(
+  canvas: HTMLCanvasElement,
+  field: AgentField,
+  palette: ScenePalette,
+  capacity: FieldCapacity,
+): FieldRenderer | null {
   const gl = canvas.getContext('webgl2', {
     alpha: true,
     premultipliedAlpha: true,
@@ -129,6 +141,10 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
   const half = halfFloatTargets(gl);
 
   const goals = field.clouds.map((c) => c.goal);
+  // the shaders' arrays, one place per goal, link and slot (GLSL takes no empty array)
+  const GOALS = Math.max(1, goals.length);
+  const LINKS = Math.max(1, capacity.links);
+  const SLOTS = Math.max(1, capacity.slots);
   const { light: COOL, agent: WORKING, traffic: TRAFFIC } = palette;
   const light = palette.mode === 'light';
   // one set of values behind every program
@@ -143,37 +159,37 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
     uTime: 0,
     uIntro: 1,
     uHealthy: 1,
-    uCount: Math.min(MAX_GOALS, goals.length),
-    uGoal: new Float32Array(MAX_GOALS * 4),
-    uGoalB: new Float32Array(MAX_GOALS * 4),
-    uLight: new Float32Array(MAX_GOALS * 4),
-    uLightCol: new Float32Array(MAX_GOALS * 3),
+    uCount: goals.length,
+    uGoal: new Float32Array(GOALS * 4),
+    uGoalB: new Float32Array(GOALS * 4),
+    uLight: new Float32Array(GOALS * 4),
+    uLightCol: new Float32Array(GOALS * 3),
     uShift: new Float32Array(2),
     uCool: Float32Array.from(COOL),
     uGlass: Float32Array.from(palette.glass),
     uGrain: 1,
     uDrift: 1,
-    uScale: new Float32Array(MAX_GOALS).fill(1),
+    uScale: new Float32Array(GOALS).fill(1),
     uNear: 1,
     uFocus: 0,
     uAperture: 0.0022,
     uCol: Float32Array.from([WORKING, IDLE, HOLD.awaiting, HOLD.blocked, HOLD.failed, HOLD.degraded].flat()),
-    uSlot: new Float32Array(MAX_SLOTS * 4),
-    uSlotCol: new Float32Array(MAX_SLOTS * 3),
+    uSlot: new Float32Array(SLOTS * 4),
+    uSlotCol: new Float32Array(SLOTS * 3),
     uOrbit: 26,
     uFlat: 0,
     uSparkCol: Float32Array.from(TRAFFIC),
-    uLinkA: new Float32Array(MAX_LINKS * 3),
-    uLinkM: new Float32Array(MAX_LINKS * 3),
-    uLinkB: new Float32Array(MAX_LINKS * 3),
-    uLinkCol: new Float32Array(MAX_LINKS * 4),
-    uLinkFlow: new Float32Array(MAX_LINKS * 4),
+    uLinkA: new Float32Array(LINKS * 3),
+    uLinkM: new Float32Array(LINKS * 3),
+    uLinkB: new Float32Array(LINKS * 3),
+    uLinkCol: new Float32Array(LINKS * 4),
+    uLinkFlow: new Float32Array(LINKS * 4),
   } satisfies Uniforms;
 
   const programs: Program[] = [];
   const meshes: Mesh[] = [];
   const program = (vertex: string, fragment: string, defines?: Record<string, number>) => {
-    const p = createProgram(gl, vertex, fragment, defines);
+    const p = createProgram(gl, vertex, fragment, { GOALS, LINKS, SLOTS, ...defines });
     programs.push(p);
     return p;
   };
@@ -192,7 +208,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
 
   // ── the goals as vessels: a square each ──
   const corners = [-1, -1, 1, -1, 1, 1, -1, 1];
-  const vessels = field.clouds.slice(0, MAX_GOALS).map((_, i) => i);
+  const vessels = field.clouds.map((_, i) => i);
   const orbProgram = program(ORB_VERT, ORB_FRAG);
   const orbMesh = mesh(
     orbProgram,
@@ -204,7 +220,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
   // ── links: a band of glow each, and the lights that run along it ──
   const band: number[] = [];
   const bandIndex: number[] = [];
-  for (let l = 0; l < MAX_LINKS; l++) {
+  for (let l = 0; l < LINKS; l++) {
     for (let s = 0; s <= RIBBON_STEPS; s++) band.push(l, s / RIBBON_STEPS, -1, l, s / RIBBON_STEPS, 1);
     for (let s = 0; s < RIBBON_STEPS; s++) {
       const at = l * (RIBBON_STEPS + 1) * 2 + s * 2;
@@ -217,7 +233,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
   const flowRnd = rng(9127);
   const flow: number[] = [];
   const flowOrd: number[] = [];
-  for (let l = 0; l < MAX_LINKS; l++)
+  for (let l = 0; l < LINKS; l++)
     for (let n = 0; n < LIGHTS_PER_LINK; n++) {
       const seed = flowRnd();
       for (let k = 0; k < TAIL; k++) {
@@ -231,7 +247,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
   // ── agents: the healthy and idle as added light, the held laid over it ──
   const free: number[][] = [[], []];
   const held: number[][] = [[], []];
-  field.clouds.slice(0, MAX_GOALS).forEach((cloud, gi) => {
+  field.clouds.forEach((cloud, gi) => {
     FIELD_STATES.forEach((state, si) => {
       const [from, to] = cloud.ranges[state];
       const into = si < 2 ? free : held;
@@ -357,7 +373,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
       // zoomed in, the lens focuses on the goal nearest the middle of the frame, as an eye would
       const pull = Math.max(0, Math.min(1, (o.zoom - 1.12) / 0.5));
       let nearest = Infinity;
-      field.clouds.slice(0, MAX_GOALS).forEach((cloud, i) => {
+      field.clouds.forEach((cloud, i) => {
         const g = cloud.goal;
         const a = g.goal.agents;
         const c = P(g.x, g.y, g.z);
@@ -402,7 +418,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
       U.uAperture = pose.focal > 1e6 ? 0 : aperture * (light ? 0.5 : 1);
 
       // calls: one slot per resource group on a goal's orbit
-      const slots = o.slots.slice(0, MAX_SLOTS);
+      const slots = o.slots.slice(0, SLOTS);
       const index = Object.fromEntries(goals.map((g, i) => [g.id, i]));
       const key = slots.map((s) => s.goal).join();
       if (key !== sparkKey) {
@@ -417,7 +433,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
       });
 
       // links: the curve through each one's samples
-      for (let i = 0; i < MAX_LINKS; i++) {
+      for (let i = 0; i < LINKS; i++) {
         const link = o.links[i];
         if (!link) {
           U.uLinkCol.set([0, 0, 0, 0], i * 4);

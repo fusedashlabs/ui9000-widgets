@@ -1,257 +1,347 @@
 {
   "chartType": "goalsPerimeter",
-  "name": "Agents Management — Goals",
+  "name": "Agent operations",
   "exceptionCount": 214,
   "goals": [
     {
       "id": "perimeter-watch",
+      "code": "G-014",
       "name": "Perimeter Watch",
-      "agents": 1204,
+      "status": "on track",
+      "agents": {
+        "total": 1108,
+        "healthy": 1070,
+        "idle": 19,
+        "awaiting": 19
+      },
       "health": 0.88,
       "multiplier": 1.1,
-      "exceptionCount": 35,
       "exceptions": [
         {
-          "state": "failed",
-          "count": 16,
-          "reason": "Sensor feed timed out after three retries"
-        },
-        {
-          "state": "blocked",
+          "state": "awaiting",
           "count": 19,
-          "reason": "Geo-fence policy holds outbound scans",
-          "blocker": "rule"
+          "reason": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out"
         }
       ],
       "resourceGroups": [
         {
-          "id": "perimeter-sensors",
-          "name": "Perimeter sensors",
-          "kind": "sensor",
+          "id": "pw-camera",
+          "name": "Camera",
+          "kind": "camera",
           "state": "degraded",
-          "agents": 640,
-          "detail": "Two of nine sensor arrays report late"
+          "calls": 14200,
+          "detail": "7% of streams throttled, 2% blocked by R-047"
         },
         {
-          "id": "threat-classifier",
-          "name": "Threat classifier",
+          "id": "pw-system",
+          "name": "System",
+          "kind": "system",
+          "state": "healthy",
+          "calls": 2100
+        },
+        {
+          "id": "pw-model",
+          "name": "Model",
           "kind": "model",
-          "state": "failed",
-          "agents": 412,
-          "detail": "Model endpoint returns 5xx"
-        },
-        {
-          "id": "edge-gateways",
-          "name": "Edge gateways",
-          "kind": "infrastructure",
-          "state": "failed",
-          "agents": 152,
-          "detail": "Gateway pool below quorum"
+          "state": "awaiting",
+          "calls": 8800,
+          "held": 19,
+          "detail": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out"
         }
       ],
       "position": {
-        "x": 0.195,
-        "y": 0.34
+        "x": 0.234375,
+        "y": 0.3,
+        "z": -0.117188,
+        "r": 0.069375
       }
     },
     {
       "id": "onboarding-velocity",
+      "code": "G-007",
       "name": "Onboarding Velocity",
-      "agents": 842,
+      "status": "blocked",
+      "agents": {
+        "total": 842,
+        "healthy": 645,
+        "idle": 22,
+        "awaiting": 33,
+        "blocked": 94,
+        "failed": 27,
+        "degraded": 21
+      },
       "health": 0.41,
       "multiplier": 4.2,
-      "exceptionCount": 159,
       "exceptions": [
         {
-          "state": "failed",
-          "count": 92,
-          "reason": "Identity provider rejects provisioning calls"
+          "state": "blocked",
+          "count": 84,
+          "reason": "Credential grant required — R-047 External Transmission fires on every write outside the authorised region",
+          "blocker": "rule"
         },
         {
           "state": "blocked",
-          "count": 67,
-          "reason": "Waiting for manager approval of access grants",
-          "blocker": "human"
+          "count": 10,
+          "reason": "Bulk writes held under DP-04 Regional Data Residency",
+          "blocker": "rule"
+        },
+        {
+          "state": "awaiting",
+          "count": 33,
+          "reason": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out"
+        },
+        {
+          "state": "failed",
+          "count": 27,
+          "reason": "Browser tool sandbox crash-loops on cold start; retries exhausted"
+        },
+        {
+          "state": "degraded",
+          "count": 21,
+          "reason": "Past 80% of its token budget — a runaway loop in ONB-squad-03, 4.2× its median burn"
         }
       ],
       "resourceGroups": [
         {
-          "id": "provisioning-workflow",
-          "name": "Provisioning workflow",
-          "kind": "pipeline",
-          "state": "failed",
-          "agents": 380
-        },
-        {
-          "id": "access-policies",
-          "name": "Access policies",
-          "kind": "policy",
+          "id": "ov-app",
+          "name": "App",
+          "kind": "app",
           "state": "degraded",
-          "agents": 842
+          "calls": 3300,
+          "detail": "12% of writes throttled"
         },
         {
-          "id": "hr-integrations",
-          "name": "HR integrations",
-          "kind": "integration",
-          "icon": "network",
+          "id": "ov-system",
+          "name": "System",
+          "kind": "system",
+          "state": "blocked",
+          "calls": 5400,
+          "held": 94,
+          "detail": "Credential grant required, and regional residency holds bulk writes"
+        },
+        {
+          "id": "ov-tool",
+          "name": "Tool",
+          "kind": "tool",
           "state": "failed",
-          "agents": 210
+          "calls": 1800,
+          "held": 27,
+          "detail": "Browser tool sandbox crash-loops on cold start; retries exhausted"
+        },
+        {
+          "id": "ov-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "awaiting",
+          "calls": 6200,
+          "held": 33,
+          "detail": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out"
+        },
+        {
+          "id": "ov-human",
+          "name": "Human",
+          "kind": "human",
+          "state": "degraded",
+          "calls": 14,
+          "detail": "The credential grant waits on Security on-call"
         }
       ],
       "position": {
-        "x": 0.661,
-        "y": 0.294
+        "x": 0.640625,
+        "y": 0.241935,
+        "z": 0.09375,
+        "r": 0.058125
       }
     },
     {
       "id": "maintain-verified-asset-visibility",
+      "code": "G-022",
       "name": "Maintain Verified Asset Visibility",
-      "agents": 612,
+      "status": "at risk",
+      "agents": {
+        "total": 612,
+        "healthy": 586,
+        "idle": 11,
+        "awaiting": 4,
+        "failed": 11
+      },
       "health": 0.66,
       "multiplier": 1.3,
-      "exceptionCount": 15,
       "exceptions": [
         {
           "state": "failed",
-          "count": 8,
-          "reason": "Scanner agents lost their credentials"
+          "count": 11,
+          "reason": "Browser tool sandbox crash-loops on cold start; retries exhausted"
         },
         {
-          "state": "blocked",
-          "count": 7,
-          "reason": "CMDB sync paused upstream",
-          "blocker": "dependency"
+          "state": "awaiting",
+          "count": 4,
+          "reason": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out"
         }
       ],
       "resourceGroups": [
         {
-          "id": "asset-inventory",
-          "name": "Asset inventory",
-          "kind": "data",
-          "state": "healthy",
-          "agents": 612
+          "id": "mv-camera",
+          "name": "Camera",
+          "kind": "camera",
+          "state": "degraded",
+          "calls": 9100,
+          "detail": "3% of streams blocked"
         },
         {
-          "id": "discovery-scanners",
-          "name": "Discovery scanners",
-          "kind": "infrastructure",
+          "id": "mv-tool",
+          "name": "Tool",
+          "kind": "tool",
+          "state": "failed",
+          "calls": 1300,
+          "held": 11,
+          "detail": "Browser tool sandbox crash-loops on cold start; retries exhausted"
+        },
+        {
+          "id": "mv-store",
+          "name": "Store",
+          "kind": "store",
           "state": "healthy",
-          "agents": 230
+          "calls": 740
+        },
+        {
+          "id": "mv-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "awaiting",
+          "calls": 4600,
+          "held": 4,
+          "detail": "Model gateway sonnet lane p95 at 2.1s against a 1.2s threshold — agents hold rather than time out"
         }
       ],
       "position": {
-        "x": 0.83,
-        "y": 0.548
+        "x": 0.789062,
+        "y": 0.56129,
+        "z": -0.054688,
+        "r": 0.049687
       }
     },
     {
       "id": "pipeline-quality",
+      "code": "G-045",
       "name": "Pipeline Quality",
-      "agents": 318,
+      "status": "on track",
+      "agents": {
+        "total": 318,
+        "healthy": 315,
+        "idle": 3
+      },
       "health": 0.92,
       "multiplier": 0.8,
       "resourceGroups": [
         {
-          "id": "build-pipeline",
-          "name": "Build pipeline",
-          "kind": "pipeline",
-          "state": "failed",
-          "agents": 318,
-          "detail": "Release stage stalled"
+          "id": "pq-tool",
+          "name": "Tool",
+          "kind": "tool",
+          "state": "healthy",
+          "calls": 2600
+        },
+        {
+          "id": "pq-store",
+          "name": "Store",
+          "kind": "store",
+          "state": "healthy",
+          "calls": 980
+        },
+        {
+          "id": "pq-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "healthy",
+          "calls": 2400
         }
       ],
       "position": {
-        "x": 0.507,
-        "y": 0.66
+        "x": 0.50625,
+        "y": 0.703226,
+        "z": 0.140625,
+        "r": 0.036562
       }
     },
     {
       "id": "incident-response",
+      "code": "G-052",
       "name": "Incident Response",
-      "agents": 144,
+      "status": "at risk",
+      "agents": {
+        "total": 144,
+        "healthy": 137,
+        "idle": 2,
+        "awaiting": 5
+      },
       "health": 0.78,
       "multiplier": 1.6,
-      "exceptionCount": 5,
       "exceptions": [
         {
-          "state": "failed",
-          "count": 3,
-          "reason": "Pager integration returns 503"
-        },
-        {
-          "state": "blocked",
-          "count": 2,
-          "reason": "Escalation needs on-call sign-off",
-          "blocker": "human"
+          "state": "awaiting",
+          "count": 5,
+          "reason": "Elevated access to production logs waits on Security on-call (R-027)"
         }
       ],
       "resourceGroups": [
         {
-          "id": "on-call-responders",
-          "name": "On-call responders",
-          "kind": "responder",
+          "id": "ir-system",
+          "name": "System",
+          "kind": "system",
           "state": "healthy",
-          "agents": 144
+          "calls": 1900
+        },
+        {
+          "id": "ir-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "healthy",
+          "calls": 1100
+        },
+        {
+          "id": "ir-human",
+          "name": "Human",
+          "kind": "human",
+          "state": "awaiting",
+          "calls": 22,
+          "held": 5,
+          "detail": "Access approval pending for 41 minutes"
         }
       ],
       "position": {
-        "x": 0.152,
-        "y": 0.67
+        "x": 0.196875,
+        "y": 0.716129,
+        "z": -0.15625,
+        "r": 0.028125
       }
-    }
-  ],
-  "links": [
-    {
-      "source": "perimeter-watch",
-      "target": "onboarding-velocity",
-      "strands": 9
     },
     {
-      "source": "perimeter-watch",
-      "target": "onboarding-velocity",
-      "status": "unavailable",
-      "label": "Threat feed",
-      "reason": "Threat feed to onboarding risk checks is down",
-      "impact": "New agents onboard without perimeter risk scores"
-    },
-    {
-      "source": "perimeter-watch",
-      "target": "maintain-verified-asset-visibility",
-      "strands": 10,
-      "status": "degraded"
-    },
-    {
-      "source": "perimeter-watch",
-      "target": "pipeline-quality",
-      "strands": 4
-    },
-    {
-      "source": "onboarding-velocity",
-      "target": "pipeline-quality",
-      "strands": 12
-    },
-    {
-      "source": "onboarding-velocity",
-      "target": "maintain-verified-asset-visibility",
-      "strands": 4
-    },
-    {
-      "source": "pipeline-quality",
-      "target": "maintain-verified-asset-visibility",
-      "status": "unavailable",
-      "label": "Asset registry publish",
-      "reason": "Pipeline cannot publish verified builds to the asset registry",
-      "impact": "New builds are missing from asset visibility"
-    },
-    {
-      "source": "incident-response",
-      "target": "pipeline-quality",
-      "strands": 6
-    },
-    {
-      "source": "incident-response",
-      "target": "maintain-verified-asset-visibility",
-      "strands": 5
+      "id": "model-drift-watch",
+      "code": "G-061",
+      "name": "Model Drift Watch",
+      "status": "on track",
+      "agents": {
+        "total": 96,
+        "healthy": 94,
+        "idle": 2
+      },
+      "health": 0.9,
+      "multiplier": 0.9,
+      "resourceGroups": [
+        {
+          "id": "md-model",
+          "name": "Model",
+          "kind": "model",
+          "state": "healthy",
+          "calls": 3100
+        }
+      ],
+      "position": {
+        "x": 0.373437,
+        "y": 0.793548,
+        "z": 0.03125,
+        "r": 0.024375
+      }
     }
   ]
 }

@@ -2,17 +2,13 @@
   "id": "goals-perimeter",
   "tag": "ui9000-goals-perimeter",
   "title": "Goals Perimeter Chart",
-  "description": "Agents Management goals perimeter (AM-2): many agents arranged around a shared goal. Each goal is a cloud of its agents inside a perimeter whose arc is the goal's health and whose colour turns amber, then rose, as health drops. Healthy, degraded, blocked and failed agents are told apart by colour and by marker (△, ⊘, ✕); resource-group diamonds sit at the centre; ticks outside the ring grow with the exception count. Lines join goals, agents and external dependencies, red with a ⊘ where a connection is down. The state legend and the exception count sit in the shell; every mark explains itself on hover. A click on a cluster opens it: the goal fills the plot, its agents regroup into one sector per health state with the reasons beside each, its resource groups are named, and the goals and dependencies it is joined to sit around it (a click opens one of them). “All goals” or Escape zooms back out. Opening dispatches goal-open with { goalId, goalName, resourceGroupId? }, closing goal-close with { goalId }. Not a free-form node–link graph (that is network-graph) and not a KPI row. D3, no Redux.",
+  "description": "Agents Management goals perimeter (AM-2), after the Agent operations design. The live goals are clouds of their agents — one point an agent: white at work, grey idle, a purple ring awaiting, an orange dot blocked, a red cross failed, a yellow triangle degraded — drawn in WebGL with smoke, glass and bloom (a plain canvas where WebGL 2 is missing), under hairline instruments: each goal's progress ring on a tick scale, an orbit of the resource groups it draws on (a diamond empty when traffic flows, dotted when slowed, solid in the held agents' colour with their count, e.g. TOOL 27), lines joining goals that share a group (in a held colour where the same trouble holds both ends; payload links are drawn instead when given), and a callout with the goal's code, status and name, plus AGENTS / PROGRESS / BURN / HELD when the board is drawn at 90% of its design size or more. The board is one orbit camera: drag to turn it, shift-drag to pan, scroll to zoom, double-click to reset; a legend button sits at the bottom left, and the line under the title reads goals, agents and held. It fills the card and follows the page's light or dark theme: by day the picture is laid down in ink on a pale room. Its colours follow the page style like every other chart: SequentialColors1 lights the scene (glow, glass, healthy agents, hairlines, floor) and the secondary colour carries the traffic; held states keep the design system's dataViz hues. Every mark and control explains itself in a tip that follows the pointer; clicking a goal does nothing — it is a standalone chart. Not a free-form node–link graph (that is network-graph) and not a KPI row. D3 and WebGL, no Redux.",
   "chartTypeKeys": ["goalsPerimeter"],
   "stack": "d3",
   "lazyImport": "@ui9000/widgets/lazy/goals-perimeter",
   "entry": "@ui9000/widgets/goals-perimeter",
-  "usageConditions": {
-    "host": "mcp-chat",
-    "notFor": "fusedash-editor",
-    "mapsExcluded": true
-  },
-  "allowedActions": ["hover", "select", "zoom", "resize"],
+  "usageConditions": { "host": "mcp-chat", "notFor": "fusedash-editor", "mapsExcluded": true },
+  "allowedActions": ["hover", "zoom", "resize"],
   "tier": "host",
   "propsSchema": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -57,12 +53,26 @@
             }
           }
         },
-        "anyOf": [{ "required": ["goal"] }, { "required": ["goals"] }, { "required": ["agents"] }, { "required": ["nodes"] }]
+        "anyOf": [
+          { "required": ["goal"] },
+          { "required": ["goals"] },
+          { "required": ["agents"] },
+          { "required": ["nodes"] }
+        ]
       },
       "chart-title": { "type": "string" },
       "show-header": { "type": "boolean", "default": true },
-      "show-legend": { "type": "boolean", "default": true },
-      "show-tooltip": { "type": "boolean", "default": true }
+      "show-legend": {
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the legend button beside the camera controls."
+      },
+      "show-tooltip": { "type": "boolean", "default": true },
+      "problems-only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Only what is held stands out: agents at work all but go out, and goals, lines and groups with nothing held step back."
+      }
     },
     "$defs": {
       "agent": {
@@ -73,19 +83,69 @@
           "name": { "type": "string", "description": "Fallback for id and label." },
           "label": { "type": "string" },
           "state": {
-            "enum": ["healthy", "degraded", "blocked", "failed", "idle", "ok", "success", "active", "running", "online", "warning", "warn", "slow", "waiting", "held", "pending", "failure", "error", "crashed", "down", "offline", "unavailable", "inactive", "paused", "stopped"],
-            "description": "Missing reads as healthy; an unknown word as idle. Alias: status."
+            "enum": [
+              "healthy",
+              "degraded",
+              "awaiting",
+              "blocked",
+              "failed",
+              "idle",
+              "ok",
+              "success",
+              "active",
+              "running",
+              "online",
+              "working",
+              "warning",
+              "warn",
+              "slow",
+              "over budget",
+              "over-budget",
+              "waiting",
+              "holding",
+              "pending",
+              "on hold",
+              "held",
+              "failure",
+              "error",
+              "crashed",
+              "down",
+              "offline",
+              "unavailable",
+              "inactive",
+              "paused",
+              "stopped"
+            ],
+            "description": "Missing reads as healthy; an unknown word as idle. waiting/holding/pending read as awaiting, held as blocked, over budget as degraded. Alias: status."
           },
           "status": { "type": "string", "description": "Alias of state; same values." },
           "goal": { "type": "string", "description": "Goal id or name." },
-          "reason": { "type": "string", "description": "Why it failed or what blocks it, in plain operational language." },
-          "blocker": { "enum": ["rule", "policy", "guardrail", "dependency", "upstream", "resource", "human", "approval", "person", "manual"], "description": "Blocked agents only; policy/guardrail read as rule, upstream/resource as dependency, approval/person/manual as human." }
+          "reason": {
+            "type": "string",
+            "description": "Why it failed or what blocks it, in plain operational language."
+          },
+          "blocker": {
+            "enum": [
+              "rule",
+              "policy",
+              "guardrail",
+              "dependency",
+              "upstream",
+              "resource",
+              "human",
+              "approval",
+              "person",
+              "manual"
+            ],
+            "description": "Blocked agents only; policy/guardrail read as rule, upstream/resource as dependency, approval/person/manual as human."
+          }
         }
       },
       "goal": {
         "type": "object",
         "properties": {
           "id": { "type": "string" },
+          "code": { "type": "string", "description": "Short reference shown above the name, e.g. G-014." },
           "name": { "type": "string" },
           "title": { "type": "string", "description": "Alias of name." },
           "label": { "type": "string", "description": "Alias of name." },
@@ -99,6 +159,7 @@
                   "total": { "type": ["number", "string"] },
                   "healthy": { "type": ["number", "string"] },
                   "degraded": { "type": ["number", "string"] },
+                  "awaiting": { "type": ["number", "string"] },
                   "blocked": { "type": ["number", "string"] },
                   "failed": { "type": ["number", "string"] },
                   "idle": { "type": ["number", "string"] }
@@ -108,41 +169,92 @@
           },
           "health": {
             "type": ["number", "string"],
-            "description": "0.88, 88 or \"88%\". The perimeter arc runs clockwise from 12 o'clock for this share. Omitted, the healthy share of agents."
+            "description": "0.88, 88 or \"88%\". Shown as PROGRESS; the progress arc runs clockwise from 12 o'clock for this share. Omitted, the healthy share of agents."
           },
           "multiplier": {
             "type": ["number", "string"],
-            "description": "Ratio against the goal's baseline, printed as 1.1×. 2× or more lights a bright core in the cloud."
+            "description": "Ratio against the goal's baseline, shown as BURN (1.1×). A goal that burns hotter turns its cloud a little faster."
           },
-          "multiplierLabel": { "type": "string", "default": "Rate vs baseline" },
+          "multiplierLabel": { "type": "string", "default": "Burn" },
           "exceptionCount": {
             "type": ["number", "string"],
-            "description": "Agents needing attention, printed as IMPURE. Defaults to degraded + blocked + failed. Ticks outside the ring follow its square root, at most 12. Alias: impure."
+            "description": "Agents needing attention, shown as HELD. Defaults to degraded + awaiting + blocked + failed. Alias: impure."
           },
           "impure": { "type": ["number", "string"], "description": "Alias of exceptionCount." },
           "status": {
-            "enum": ["healthy", "degraded", "critical", "ok", "success", "good", "green", "warning", "warn", "amber", "at_risk", "at-risk", "error", "failed", "danger", "red"],
-            "description": "Perimeter colour override. Otherwise from health and thresholds."
+            "enum": [
+              "healthy",
+              "degraded",
+              "critical",
+              "ok",
+              "warning",
+              "error",
+              "failed",
+              "on track",
+              "at risk",
+              "off track",
+              "blocked"
+            ],
+            "description": "Status override. Otherwise from health and thresholds: healthy is ON TRACK, degraded AT RISK, critical OFF TRACK; blocked reads as critical and is labelled BLOCKED."
+          },
+          "statusLabel": {
+            "type": "string",
+            "description": "Words beside the status dot; shown uppercase. Defaults to ON TRACK, AT RISK or OFF TRACK, or BLOCKED for status blocked."
           },
           "exceptions": {
             "type": "array",
-            "description": "Agents per exceptional state with the reason. Each group gets one to four markers. Without it the agent nodes are grouped by state and reason.",
+            "description": "Agents per held state with the reason. Without it the agent nodes are grouped by state and reason.",
             "items": {
               "type": "object",
               "description": "Entries without a readable state or count are skipped.",
               "properties": {
-                "state": { "enum": ["failed", "blocked", "degraded", "failure", "error", "crashed", "down", "unavailable", "waiting", "held", "warning", "slow"], "description": "Alias: status." },
+                "state": {
+                  "enum": [
+                    "failed",
+                    "blocked",
+                    "awaiting",
+                    "degraded",
+                    "failure",
+                    "error",
+                    "crashed",
+                    "down",
+                    "unavailable",
+                    "held",
+                    "waiting",
+                    "holding",
+                    "pending",
+                    "on hold",
+                    "warning",
+                    "slow",
+                    "over budget"
+                  ],
+                  "description": "Alias: status."
+                },
                 "status": { "type": "string", "description": "Alias of state; same values." },
                 "count": { "type": ["number", "string"], "description": "Alias: value." },
                 "value": { "type": ["number", "string"], "description": "Alias of count." },
                 "reason": { "type": "string", "description": "Alias: label." },
                 "label": { "type": "string", "description": "Alias of reason." },
-                "blocker": { "enum": ["rule", "policy", "guardrail", "dependency", "upstream", "resource", "human", "approval", "person", "manual"], "description": "Blocked only; same aliases as agent blocker." }
+                "blocker": {
+                  "enum": [
+                    "rule",
+                    "policy",
+                    "guardrail",
+                    "dependency",
+                    "upstream",
+                    "resource",
+                    "human",
+                    "approval",
+                    "person",
+                    "manual"
+                  ],
+                  "description": "Blocked only; same aliases as agent blocker."
+                }
               }
             }
           },
           "resourceGroups": {
-            "description": "The groups (up to four drawn as diamonds) or only how many there are.",
+            "description": "The groups on the goal's orbit, or only how many there are. A group with the same name on several goals is the same group: when no links are given, a line joins the goals that share it (a group every goal uses is left unjoined).",
             "oneOf": [
               { "type": ["number", "string"] },
               {
@@ -151,7 +263,10 @@
                   "type": "object",
                   "properties": {
                     "id": { "type": "string" },
-                    "name": { "type": "string", "description": "Alias: label." },
+                    "name": {
+                      "type": "string",
+                      "description": "Printed on the orbit, uppercase; also how the same group is recognised on other goals. Alias: label."
+                    },
                     "label": { "type": "string", "description": "Alias of name." },
                     "kind": {
                       "type": "string",
@@ -159,11 +274,52 @@
                     },
                     "type": { "type": "string", "description": "Alias of kind." },
                     "icon": {
-                      "enum": ["sensor", "model", "network", "pipeline", "storage", "alert", "policy", "tool", "generic"]
+                      "enum": [
+                        "sensor",
+                        "model",
+                        "network",
+                        "pipeline",
+                        "storage",
+                        "alert",
+                        "policy",
+                        "tool",
+                        "generic"
+                      ]
                     },
-                    "state": { "enum": ["healthy", "degraded", "failed", "ok", "success", "active", "warning", "warn", "slow", "error", "critical", "down", "unavailable", "blocked"], "description": "Alias: status." },
+                    "state": {
+                      "enum": [
+                        "healthy",
+                        "degraded",
+                        "awaiting",
+                        "blocked",
+                        "failed",
+                        "ok",
+                        "success",
+                        "active",
+                        "warning",
+                        "warn",
+                        "slow",
+                        "waiting",
+                        "holding",
+                        "pending",
+                        "held",
+                        "error",
+                        "critical",
+                        "down",
+                        "unavailable"
+                      ],
+                      "description": "How the goal fares with the group: its traffic flows (healthy), some is slowed (degraded), or agents are held there (awaiting, blocked, failed). Alias: status."
+                    },
                     "status": { "type": "string", "description": "Alias of state; same values." },
-                    "agents": { "type": ["number", "string"] },
+                    "agents": { "type": ["number", "string"], "description": "Agents that depend on this group." },
+                    "held": {
+                      "type": ["number", "string"],
+                      "description": "Agents of the goal held on this group, printed after its name (TOOL 27). A count with no state reads as blocked."
+                    },
+                    "calls": {
+                      "type": ["number", "string"],
+                      "description": "Calls a minute the goal makes to it: more calls, more sparks to its diamond and more light on its links. Default 1000."
+                    },
                     "detail": { "type": "string" }
                   }
                 }
@@ -171,9 +327,17 @@
             ]
           },
           "position": {
-            "description": "Board position, each axis 0–1 (clamped). An [x, y] pair, an {x, y} object, or x / y on the goal itself. Applies only when every goal has one; otherwise goals are laid out automatically.",
+            "description": "Board position, x and y 0–1 (clamped) across a 1280 × 620 design space, with an optional depth z (a share of the width, −1–1, further away when positive) and radius r (a share of the width; default sized by agents). An [x, y] pair, an {x, y, z, r} object, or x / y on the goal itself. Applies only when every goal has one; otherwise goals are laid out automatically.",
             "oneOf": [
-              { "type": "object", "properties": { "x": { "type": ["number", "string"] }, "y": { "type": ["number", "string"] } } },
+              {
+                "type": "object",
+                "properties": {
+                  "x": { "type": ["number", "string"] },
+                  "y": { "type": ["number", "string"] },
+                  "z": { "type": ["number", "string"] },
+                  "r": { "type": ["number", "string"] }
+                }
+              },
               { "type": "array", "items": { "type": ["number", "string"] }, "minItems": 2, "maxItems": 2 }
             ]
           },
@@ -184,7 +348,7 @@
       },
       "link": {
         "type": "object",
-        "description": "source / target, or their aliases from / to; a link naming neither end is dropped.",
+        "description": "source / target, or their aliases from / to; a link naming neither end is dropped. A goal-to-goal link runs through a resource group the two goals share, when they share one.",
         "properties": {
           "id": { "type": "string" },
           "source": { "type": ["string", "number"] },
@@ -193,11 +357,30 @@
           "to": { "type": ["string", "number"], "description": "Alias of target." },
           "strands": {
             "type": ["number", "string"],
-            "description": "Lines in a goal-to-goal bundle, 1–16. Default 6 between two goals, one per agent link. Aliases: weight, value."
+            "description": "Folded links between the same two goals. Aliases: weight, value."
           },
           "weight": { "type": ["number", "string"], "description": "Alias of strands." },
           "value": { "type": ["number", "string"], "description": "Alias of strands." },
-          "status": { "enum": ["active", "degraded", "unavailable", "down", "broken", "disconnected", "failed", "offline", "error", "blocked", "exception", "warning", "slow", "partial", "unstable"], "description": "down/broken/failed/offline… read as unavailable; warning/slow/partial… as degraded." },
+          "status": {
+            "enum": [
+              "active",
+              "degraded",
+              "unavailable",
+              "down",
+              "broken",
+              "disconnected",
+              "failed",
+              "offline",
+              "error",
+              "blocked",
+              "exception",
+              "warning",
+              "slow",
+              "partial",
+              "unstable"
+            ],
+            "description": "down/broken/failed/offline… read as unavailable; warning/slow/partial… as degraded."
+          },
           "exception": { "type": "boolean", "description": "Tint an otherwise active link." },
           "label": { "type": "string" },
           "reason": { "type": "string", "description": "What is disconnected." },

@@ -1,10 +1,8 @@
 export {
   Ui9000GoalsPerimeterChart,
   registerGoalsPerimeterChart,
-  type GoalOpenDetail,
 } from './element/ui9000-goals-perimeter.js';
 export {
-  fitBoard,
   formatHealth,
   formatMultiplier,
   goalSummary,
@@ -24,6 +22,7 @@ export {
   type GoalHealth,
   type GoalInput,
   type GoalPlacement,
+  type HoldState,
   type GoalsPerimeterModel,
   type GoalsPerimeterPayload,
   type LinkInput,
@@ -32,9 +31,9 @@ export {
   type ResourceIcon,
 } from './lib/index.js';
 export {
-  COMPACT_SCALE,
   renderGoalsPerimeter,
   type GoalsPerimeterController,
   type GoalsPerimeterHandlers,
 } from './render/index.js';
+export { DEFAULT_CAMERA, type SceneDims, type StageCamera } from './lib/index.js';
 export { default as goalsPerimeterChartMetadata } from './metadata.json';

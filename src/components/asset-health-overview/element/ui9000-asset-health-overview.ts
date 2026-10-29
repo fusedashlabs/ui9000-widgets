@@ -136,6 +136,8 @@ export class Ui9000AssetHealthOverview extends Ui9000ChartElement {
   private _mode: Mode = 'light';
   /** Where the arena rests, so a redraw keeps it as it was turned. */
   private _camera: StageCamera = { ...DEFAULT_CAMERA };
+  /** The section picked out, kept across a redraw as the camera is. */
+  private _picked: string | null = null;
   private _controller: AssetHealthController | null = null;
   private _resizeObserver?: ResizeObserver;
   private _raf = 0;
@@ -244,7 +246,10 @@ export class Ui9000AssetHealthOverview extends Ui9000ChartElement {
     const root = this.chartRoot();
     const canvas = this.canvas();
     if (!root || !canvas) return;
-    if (this._controller) this._camera = this._controller.camera();
+    if (this._controller) {
+      this._camera = this._controller.camera();
+      this._picked = this._controller.picked();
+    }
     this._controller?.destroy();
     this._controller = null;
     if (this._model.empty) {
@@ -269,6 +274,7 @@ export class Ui9000AssetHealthOverview extends Ui9000ChartElement {
       plan: this.flat,
       problemsOnly: this.problemsOnly,
       camera: this._camera,
+      picked: this._picked,
       sceneLayer: this.sceneLayer(),
       handlers: this.handlers(),
     });

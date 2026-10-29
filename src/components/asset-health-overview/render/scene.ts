@@ -57,6 +57,8 @@ export interface RenderAssetHealthOptions {
   /** Only what is held stands out: the agents at work all but go out, and the clean sections step back. */
   problemsOnly?: boolean;
   camera?: StageCamera;
+  /** The section picked out, by id, so a redraw keeps it; let go when the new model has no such section. */
+  picked?: string | null;
   /** Off: no drift, no intro, the picture painted only when something changes. Defaults to the reader's preference. */
   motion?: boolean;
   /** Where the agents' picture is drawn: a layer behind the plot that may reach past it. */
@@ -71,6 +73,8 @@ export interface AssetHealthController {
   /** Back to the resting angle, at 100% and unpanned. */
   resetCamera: () => void;
   camera: () => StageCamera;
+  /** The section picked out, by id, or null. */
+  picked: () => string | null;
   /** Stops every loop and listener, and lets go of the picture's GPU memory. */
   destroy: () => void;
 }
@@ -165,7 +169,7 @@ export function renderAssetHealth(container: HTMLElement, options: RenderAssetHe
   let drift = { yaw: 0, pitch: 0 };
   let hovered: string | null = null;
   let pointed: string | null = null;
-  let picked: string | null = null;
+  let picked: string | null = options.picked && sectorOf.has(options.picked) ? options.picked : null;
   let tipKey: string | null = null;
   let destroyed = false;
   let dirty = true;
@@ -766,6 +770,7 @@ export function renderAssetHealth(container: HTMLElement, options: RenderAssetHe
       onDoubleClick();
     },
     camera: () => ({ ...target }),
+    picked: () => picked,
     destroy() {
       destroyed = true;
       cancelAnimationFrame(raf);

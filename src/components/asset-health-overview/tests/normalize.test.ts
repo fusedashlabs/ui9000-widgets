@@ -79,6 +79,62 @@ describe('normalizeAssetHealth', () => {
     expect(db.hold).toBe('blocked');
   });
 
+  it('seats the goal’s held agents even where no category names their hold', () => {
+    const { goal, sections } = normalizeAssetHealth({
+      goal: { total: 60, blocked: 10, failed: 4 },
+      categories: [
+        { name: 'Apps', total: 6, calls: 300 },
+        { name: 'Databases', total: 3, calls: 100, problems: [{ name: 'crm-prod', sev: 'slowed' }] },
+        { name: 'Tools', total: 2, held: 3, hold: 'failed' },
+      ],
+    });
+    const db = sections.find((s) => s.name === 'Databases')!;
+    const tools = sections.find((s) => s.name === 'Tools')!;
+
+    // the section in trouble that holds nobody takes the blocked; the one failing takes the failed nobody claimed
+    expect([db.hold, db.crew.held]).toEqual(['blocked', 10]);
+    expect([tools.hold, tools.crew.held]).toEqual(['failed', 4]);
+    expect(sections.find((s) => s.name === 'Apps')!.hold).toBeNull();
+    expect(goal).toMatchObject({ total: 60, blocked: 10, failed: 4, held: 14 });
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0) + goal.idle).toBe(goal.total);
+  });
+
+  it('seats the working agents by assets where the open categories send no calls', () => {
+    const { goal, sections } = normalizeAssetHealth({
+      goal: { total: 40 },
+      categories: [
+        { name: 'Apps', total: 4, crew: 10, calls: 500 },
+        { name: 'Models', total: 3 },
+        { name: 'Queues', total: 1 },
+      ],
+    });
+
+    expect(sections.map((s) => s.crew.working)).toEqual([10, 23, 7]);
+    expect(goal.total).toBe(40);
+  });
+
+  it('seats what categories past the twelfth would have claimed in the ones drawn', () => {
+    const categories = Array.from({ length: 14 }, (_, i) => ({ name: `C${i}`, total: 2, crew: 5 }));
+    const { goal, sections } = normalizeAssetHealth({ goal: { total: 70 }, categories });
+
+    expect(sections).toHaveLength(12);
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0)).toBe(70);
+    expect(goal.total).toBe(70);
+  });
+
+  it('counts the goal as seated where its categories claim more than it says', () => {
+    const { goal, sections } = normalizeAssetHealth({
+      goal: { total: 10, idle: 2 },
+      categories: [
+        { name: 'Apps', crew: 9 },
+        { name: 'Tools', crew: 6 },
+      ],
+    });
+
+    expect(goal).toMatchObject({ working: 15, idle: 2, total: 17 });
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0) + goal.idle).toBe(goal.total);
+  });
+
   it('maps free-text severities', () => {
     const { sections } = normalizeAssetHealth({
       goal: { total: 5 },

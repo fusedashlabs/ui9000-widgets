@@ -268,44 +268,70 @@ function goalFromRows(rows: Record<string, unknown>[]): Record<string, unknown> 
   return { total: cell(row, AGENT_TOTAL_KEYS), awaiting: cell(row, AWAITING_KEYS), blocked: cell(row, BLOCKED_KEYS), failed: cell(row, FAILED_AGENT_KEYS) };
 }
 
+/** A set of categories' weights: their calls, or their assets where none of them is sent calls. */
+function weightsOf(drafts: Draft[]): number[] {
+  const byCalls = drafts.some((d) => (d.section.calls ?? 0) > 0);
+  return drafts.map((d) => (byCalls ? (d.section.calls ?? 0) : d.section.assets));
+}
+
+/** Where the goal's agents in `state` that no category claims go: the one with most trouble that holds nobody yet. */
+function freeToHold(drafts: Draft[], state: HoldState): Draft | undefined {
+  const free = drafts.filter((d) => !d.section.hold && d.held === undefined);
+  // one whose crew is ours to seat first, then by its troubles, its calls and its assets
+  const rank = (d: Draft) => [d.crew === undefined ? 1 : 0, d.section.troubles.length, d.section.calls ?? 0, d.section.assets];
+  const best = free.sort((a, b) => {
+    const [x, y] = [rank(a), rank(b)];
+    const k = x.findIndex((v, i) => v !== y[i]);
+    return k < 0 ? 0 : y[k]! - x[k]!;
+  })[0];
+  if (best) best.section.hold = state;
+  return best;
+}
+
 /**
  * Seats the goal's agents in its sections. What the payload says is kept;
  * what it leaves out is shared out from the goal's own counts, so every agent
  * of the goal has a place and a section's rows are as many as its label says:
  *
  *   held     a section's own, else its problems' agents, else the goal's
- *            agents in that state shared among the sections it holds
+ *            agents in that state shared among the sections it holds; when
+ *            those all say their own, the rest join them, and with none in
+ *            that state they go to a section that holds nobody yet
  *   working  a section's crew less its held, else the goal's working agents
- *            shared out by calls (by assets when no calls are sent)
+ *            shared out by calls (by assets when none is sent); when every
+ *            section says its crew, the rest join them in the same way
+ *
+ * The goal comes back counted as seated, so the title reads what is drawn
+ * even where the payload's categories and goal disagree.
  */
-function seat(drafts: Draft[], goal: AssetHealthGoal): AssetHealthSection[] {
-  // the goal's held agents nobody has claimed go to the sections that hold in that state
+function seat(drafts: Draft[], goal: AssetHealthGoal): { goal: AssetHealthGoal; sections: AssetHealthSection[] } {
   for (const state of HOLD_STATES) {
     const claimed = drafts.reduce((sum, d) => sum + (d.section.hold === state ? (d.held ?? 0) : 0), 0);
-    const open = drafts.filter((d) => d.section.hold === state && d.held === undefined);
     const left = Math.max(0, goal[state] - claimed);
+    if (!left) continue;
+    let open = drafts.filter((d) => d.section.hold === state && d.held === undefined);
+    if (!open.length) open = drafts.filter((d) => d.section.hold === state);
+    if (!open.length) open = [freeToHold(drafts, state)].filter((d): d is Draft => !!d);
     const parts = apportion(open.map((d) => Math.max(1, d.section.troubles.filter((t) => t.state === state).length)), left);
-    open.forEach((d, i) => (d.held = parts[i]));
+    open.forEach((d, i) => (d.held = (d.held ?? 0) + parts[i]!));
   }
 
   // an agent at work is counted with the category it is calling: the goal's agents spread as its calls do
-  const weights = drafts.map((d) => d.section.calls ?? 0);
-  const byCalls = weights.some((w) => w > 0);
-  const weightOf = (d: Draft) => (byCalls ? (d.section.calls ?? 0) : d.section.assets);
-  const free = drafts.filter((d) => d.crew === undefined);
   const claimedAtWork = drafts.reduce((sum, d) => sum + (d.crew !== undefined ? Math.max(0, d.crew - (d.held ?? 0)) : 0), 0);
-  const shared = apportion(free.map(weightOf), Math.max(0, goal.working + goal.overBudget - claimedAtWork));
+  const free = drafts.filter((d) => d.crew === undefined);
+  const joined = free.length ? free : drafts;
+  const shared = apportion(weightsOf(joined), Math.max(0, goal.working + goal.overBudget - claimedAtWork));
   // those past their budget are among them, shared out the same way where a category does not say
   const unsaid = drafts.filter((d) => d.overBudget === undefined);
   const claimedOver = drafts.reduce((sum, d) => sum + (d.overBudget ?? 0), 0);
-  const over = apportion(unsaid.map(weightOf), Math.max(0, goal.overBudget - claimedOver));
-  const calls = weights.reduce((a, b) => a + b, 0);
+  const over = apportion(weightsOf(unsaid), Math.max(0, goal.overBudget - claimedOver));
+  const calls = drafts.reduce((sum, d) => sum + (d.section.calls ?? 0), 0);
 
-  return drafts.map((d) => {
+  const sections = drafts.map((d) => {
     const s = d.section;
-    const held = d.section.hold ? (d.held ?? 0) : 0;
-    const crew = d.crew !== undefined ? d.crew : shared[free.indexOf(d)]! + held;
-    const atWork = Math.max(0, crew - held);
+    const held = s.hold ? (d.held ?? 0) : 0;
+    const atWork = (d.crew !== undefined ? Math.max(0, d.crew - held) : 0) + (shared[joined.indexOf(d)] ?? 0);
+    const crew = atWork + held;
     const overBudget = Math.min(d.overBudget ?? over[unsaid.indexOf(d)]!, atWork);
     s.crew = { working: atWork - overBudget, overBudget, held };
     s.share = calls ? (s.calls ?? 0) / calls : 0;
@@ -323,6 +349,13 @@ function seat(drafts: Draft[], goal: AssetHealthGoal): AssetHealthSection[] {
     s.health = held > 0 ? 'held' : s.slowed > 0.004 || s.troubles.length > 0 ? 'degraded' : 'clean';
     return s;
   });
+
+  const heldIn = (state: HoldState) => sections.reduce((sum, s) => sum + (s.hold === state ? s.crew.held : 0), 0);
+  const seated = { awaiting: heldIn('awaiting'), blocked: heldIn('blocked'), failed: heldIn('failed') };
+  const working = sections.reduce((sum, s) => sum + s.crew.working, 0);
+  const overBudget = sections.reduce((sum, s) => sum + s.crew.overBudget, 0);
+  const held = seated.awaiting + seated.blocked + seated.failed + overBudget;
+  return { goal: { ...goal, ...seated, working, overBudget, held, total: working + held + goal.idle }, sections };
 }
 
 function emptyModel(title = ''): AssetHealthModel {
@@ -354,5 +387,5 @@ export function normalizeAssetHealth(raw: unknown): AssetHealthModel {
   const goal = normalizeGoal(goalSource, title);
   if (goal.total <= 0) return emptyModel(title);
 
-  return { title: title || goal.name, goal, sections: seat(drafts, goal), empty: false };
+  return { title: title || goal.name, ...seat(drafts, goal), empty: false };
 }

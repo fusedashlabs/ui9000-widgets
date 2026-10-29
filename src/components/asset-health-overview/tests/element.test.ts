@@ -93,6 +93,29 @@ describe('ui9000-asset-health-overview', () => {
     el.remove();
   });
 
+  it('keeps the picked section through a new snapshot or theme, and lets it go once the section is gone', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const root = el.shadowRoot!;
+    const head = () => root.querySelector<HTMLButtonElement>('.ah-label-head[data-pick="RG-SYS"]');
+
+    head()!.click();
+    await new Promise((r) => setTimeout(r, 60));
+    el.setAttribute('data', JSON.stringify({ ...goalRings, goal: { ...goalRings.goal, idle: 30 } }));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()!.getAttribute('aria-pressed')).toBe('true');
+    el.setAttribute('theme', 'light');
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()!.getAttribute('aria-pressed')).toBe('true');
+
+    el.setAttribute('data', JSON.stringify({ ...goalRings, categories: goalRings.categories.filter((c) => c.id !== 'RG-SYS') }));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()).toBeNull();
+    el.setAttribute('data', JSON.stringify(goalRings));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()!.getAttribute('aria-pressed')).toBe('false');
+    el.remove();
+  });
+
   it('zooms on the wheel, pans on a shift-drag, and double-click sets it back', async () => {
     const el = await mount(goalRings, { theme: 'dark' });
     const stage = el.shadowRoot!.querySelector<HTMLElement>('.ah-stage')!;

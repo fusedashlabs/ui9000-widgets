@@ -2,7 +2,7 @@
   "id": "asset-health-overview",
   "tag": "ui9000-asset-health-overview",
   "title": "Asset Health Overview",
-  "description": "Goal health as a tilted bowl: agents on a stepped core with one state ring per step, assets tiled in category sectors, the last 24h as the outer wall when the payload sends error slots (one panel per 15 minutes, red = errors) and problems as beams with a callout and detail card. Drag to orbit, click a tile or header to isolate a category. D3 SVG in Lit, no Redux.",
+  "description": "One goal opened as an arena (the Agent operations goal rings): its agents as dots seated in the section of the asset category their work is with, the held ones in front against the category's gate (white where calls get through, coloured for the share held up); behind the gate one cell per asset, problems lit with a beam; behind that the category's last 24 hours as a wall of bars when `day` is sent; the goal's progress as a ring in the middle. A label beside the arena reads each section. Drag to turn, scroll to zoom, shift-drag to pan, double-click to reset, click a section to pick it out. WebGL agents with a canvas fallback; SVG instruments in Lit.",
   "chartTypeKeys": ["assetHealthOverview"],
   "stack": "lit",
   "lazyImport": "@ui9000/widgets/lazy/asset-health-overview",
@@ -22,37 +22,46 @@
         "type": "object",
         "properties": {
           "chartType": { "const": "assetHealthOverview" },
+          "title": { "type": "string", "description": "Widget title. Defaults to name, then the goal's name." },
           "name": { "type": "string" },
           "goal": {
             "type": "object",
             "description": "Agent counts are drawn as given and never recomputed. Alias: agents.",
             "properties": {
               "id": { "type": "string" },
+              "code": { "type": "string", "description": "Shown under the title, e.g. G-007. Defaults to id." },
               "name": { "type": "string" },
-              "total": { "type": ["number", "string"], "description": "Agents working on the goal." },
-              "awaiting": { "type": ["number", "string"], "description": "Agents waiting for input." },
+              "total": { "type": ["number", "string"], "description": "Agents on the goal. Defaults to the states' sum." },
+              "working": { "type": ["number", "string"], "description": "Agents at work, not counting those over budget. Defaults to total less held and idle." },
+              "idle": { "type": ["number", "string"], "description": "Seated on the bench round the hub." },
+              "awaiting": { "type": ["number", "string"], "description": "Agents waiting on a person or a slow dependency." },
               "blocked": { "type": ["number", "string"] },
               "failed": { "type": ["number", "string"] },
-              "burn": { "type": ["number", "string"], "description": "Optional; unused for drawing unless the host also sends a wall." }
+              "overBudget": { "type": ["number", "string"], "description": "Agents at work past 80% of their token budget." },
+              "progress": { "type": ["number", "string"], "description": "Progress to target: 0.41, 41 or \"41%\". Omitted, the hub ring stays unlit and shows the agent total." },
+              "burn": { "type": ["number", "string"], "description": "Burn against baseline, shown in the hub's tip." },
+              "status": { "type": "string", "description": "on track, at risk or blocked (and aliases). Omitted, no status is shown." }
             },
             "required": ["total"]
           },
           "agents": { "$ref": "#/properties/data/properties/goal" },
           "categories": {
             "type": "array",
-            "description": "One sector per category, up to 12. Alias: data (WidgetItem rows).",
+            "description": "One arena section per category, up to 12. Alias: data (WidgetItem rows).",
             "items": {
               "type": "object",
               "properties": {
                 "id": { "type": "string" },
                 "name": { "type": "string" },
                 "category": { "type": "string" },
-                "total": { "type": ["number", "string"], "description": "Assets in the category. Defaults to healthy + degraded + failing." },
-                "healthy": { "type": ["number", "string"] },
+                "unit": { "type": "string", "description": "What its assets are called, plural: systems of record. Default assets." },
+                "unitOne": { "type": "string", "description": "The same, singular. Default asset." },
+                "total": { "type": ["number", "string"], "description": "Assets the goal works with here: one cell each. Defaults to healthy + degraded + failing, else what is listed." },
+                "healthy": { "type": ["number", "string"], "description": "The category's health overall, for its tip." },
                 "degraded": { "type": ["number", "string"] },
-                "failing": { "type": ["number", "string"], "description": "Failing assets. Alias: failed_assets. Not bare failed (that is agents)." },
+                "failing": { "type": ["number", "string"], "description": "Alias: failed_assets. Not bare failed (on a WidgetItem row that is the goal's failed agents)." },
                 "failed_assets": { "type": ["number", "string"] },
-                "items": { "type": "array", "items": { "type": ["string", "number"] }, "description": "Names of healthy assets." },
+                "items": { "type": "array", "items": { "type": ["string", "number"] }, "description": "Names of its assets, in cell order; assets in trouble may be among them." },
                 "problems": {
                   "type": "array",
                   "items": {
@@ -61,60 +70,69 @@
                       "name": { "type": "string" },
                       "type": { "type": "string" },
                       "why": { "type": "string" },
+                      "where": { "type": "string", "description": "Alias: loc." },
                       "loc": { "type": "string" },
-                      "sev": { "type": "string", "description": "impaired (default) or degraded. Free text containing degrad / warn / slow / elevat / caution also maps to degraded; anything else is impaired." }
+                      "state": { "type": "string", "description": "blocked, failed, awaiting or slowed. Alias: sev. Free text maps: degrad / warn / slow / throttl / elevat → slowed; wait / pending → awaiting; impaired / error / down → failed." },
+                      "sev": { "type": "string" },
+                      "agents": { "type": ["number", "string"], "description": "Agents of the goal it holds." },
+                      "since": { "type": ["number", "string"], "description": "Minutes since it began." },
+                      "rule": { "type": "string" }
                     },
                     "required": ["name"]
                   }
                 },
-                "agents": { "type": ["number", "string"], "description": "WidgetItem: agent total may sit on a category row." },
-                "awaiting": { "type": ["number", "string"] },
-                "blocked": { "type": ["number", "string"] },
-                "failed": { "type": ["number", "string"], "description": "WidgetItem: failed agents on this row — not failing assets." }
+                "crew": { "type": ["number", "string"], "description": "The goal's agents whose work is with this category, the held among them. Defaults to the goal's working agents shared out by calls (else by assets)." },
+                "held": { "type": ["number", "string"], "description": "Agents held here. Defaults to its problems' agents, else the goal's agents in that state shared among the sections holding in it." },
+                "hold": { "type": "string", "description": "awaiting, blocked or failed. Defaults to the state of the problems holding most agents." },
+                "overBudget": { "type": ["number", "string"], "description": "Agents at work here past their budget. Defaults to the goal's, shared out like the working ones." },
+                "calls": { "type": ["number", "string"], "description": "Calls a minute the goal makes to it. Alias: cpm." },
+                "traffic": {
+                  "type": "object",
+                  "description": "Shares of the traffic (fractions or counts) for the gate: flowing, throttled, awaiting, blocked, failed.",
+                  "properties": {
+                    "flowing": { "type": ["number", "string"] },
+                    "throttled": { "type": ["number", "string"] },
+                    "awaiting": { "type": ["number", "string"] },
+                    "blocked": { "type": ["number", "string"] },
+                    "failed": { "type": ["number", "string"] }
+                  }
+                },
+                "heldUp": { "type": ["number", "string"], "description": "Share of the traffic that does not get through, when no traffic mix is sent." },
+                "rules": { "type": "array", "items": { "type": "string" } },
+                "day": {
+                  "type": "array",
+                  "description": "The goal's last 24 hours with the category, oldest first, in equal stretches (any number; 96 quarter-hours is typical). Omitted, the wall stands empty — nothing is invented.",
+                  "items": {
+                    "oneOf": [
+                      { "type": "number", "description": "Calls in the stretch." },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "calls": { "type": ["number", "string"], "description": "Alias: requests." },
+                          "away": { "type": ["number", "string"], "description": "Share held up, 0–1. Alias: heldUp." }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "agents": { "type": ["number", "string"], "description": "WidgetItem: the goal's agent total may sit on a category row." },
+                "awaiting": { "type": ["number", "string"], "description": "WidgetItem: the goal's awaiting agents." },
+                "blocked": { "type": ["number", "string"], "description": "WidgetItem: the goal's blocked agents." },
+                "failed": { "type": ["number", "string"], "description": "WidgetItem: the goal's failed agents — not failing assets." }
               }
             }
           },
           "data": {
             "type": "array",
-            "description": "WidgetItem category rows. Same item shape as categories; agent columns may sit on any row.",
+            "description": "WidgetItem category rows. Same item shape as categories; the goal's agent columns may sit on a row.",
             "items": { "$ref": "#/properties/data/properties/categories/items" }
-          },
-          "wall": {
-            "type": "array",
-            "description": "Explicit 24h wall (96 quarter-hours). Omit or [] when there are no recent errors — nothing is invented. Alias: errors.",
-            "items": {
-              "type": "object",
-              "properties": {
-                "slot": { "type": ["number", "string"], "description": "Quarter-hour index; clamped to 0–95 by normalize." },
-                "err": { "type": ["boolean", "string", "number"] },
-                "error": { "type": ["boolean", "string", "number"], "description": "Alias of err." },
-                "hasError": { "type": ["boolean", "string", "number"], "description": "Alias of err." },
-                "hgt": { "type": ["number", "string"] },
-                "height": { "type": ["number", "string"], "description": "Alias of hgt." },
-                "reqs": { "type": ["number", "string"] },
-                "requests": { "type": ["number", "string"], "description": "Alias of reqs." },
-                "nErr": { "type": ["number", "string"] },
-                "errors": { "type": ["number", "string"], "description": "Alias of nErr." },
-                "src": {
-                  "type": "object",
-                  "properties": {
-                    "name": { "type": "string" },
-                    "type": { "type": "string" },
-                    "why": { "type": "string" },
-                    "loc": { "type": "string" },
-                    "sev": { "type": "string", "description": "Same free-text mapping as problems[].sev." },
-                    "catName": { "type": "string" }
-                  }
-                },
-                "source": { "$ref": "#/properties/data/properties/wall/items/properties/src", "description": "Alias of src." }
-              }
-            }
-          },
-          "errors": { "$ref": "#/properties/data/properties/wall" }
+          }
         }
       },
-      "flat": { "type": "boolean", "description": "Top-down view without orbit or height." },
-      "problemsOnly": { "type": "boolean", "description": "Dim healthy tiles so only problems stand out." },
+      "flat": { "type": "boolean", "description": "Plan view: seen from straight overhead, without turning." },
+      "problemsOnly": { "type": "boolean", "description": "Only problems stand out: agents at work all but go out, and sections where traffic flows step back." },
+      "showLegend": { "type": "boolean", "description": "The legend button at the bottom left. Default true." },
+      "showTooltip": { "type": "boolean", "description": "Tips on every mark. Default true." },
       "theme": {
         "type": "string",
         "enum": ["light", "dark", ""],

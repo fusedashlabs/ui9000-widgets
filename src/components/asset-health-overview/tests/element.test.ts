@@ -1,168 +1,164 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
-class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-}
-globalThis.ResizeObserver = ResizeObserverStub as typeof ResizeObserver;
+import goalRings from '../../../stories/fixtures/asset-health.goal-rings.json';
+import type { Ui9000AssetHealthOverview } from '../index.js';
 
-import '../index.js';
-import { DARK_PALETTE, LIGHT_PALETTE } from '../lib/palette.js';
-import figma from '../../../stories/fixtures/asset-health.figma.json';
+beforeAll(async () => {
+  class ResizeObserverStub {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  }
+  globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
+  // jsdom draws no canvas: the arena's instruments and labels are what it can test
+  HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext;
+  await import('../index.js');
+}, 60_000);
 
-async function mount(data: unknown, theme = ''): Promise<HTMLElement> {
+async function mount(data: unknown, attrs: Record<string, string> = {}): Promise<Ui9000AssetHealthOverview> {
   const el = document.createElement('ui9000-asset-health-overview');
-  if (theme) el.setAttribute('theme', theme);
+  for (const [name, value] of Object.entries(attrs)) el.setAttribute(name, value);
   el.setAttribute('data', JSON.stringify(data));
   document.body.appendChild(el);
-  await (el as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
-  await (el as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
+  await el.updateComplete;
+  // the element draws on the next frame
+  await new Promise((r) => setTimeout(r, 50));
   return el;
 }
 
-describe('ui9000-asset-health-overview', () => {
-  it('renders the agent core and category headers from the Figma fixture', async () => {
-    const el = await mount(figma, 'dark');
+const textOf = (root: Element | ShadowRoot, selector: string) => [...root.querySelectorAll(selector)].map((n) => n.textContent?.replace(/\s+/g, ' ').trim() ?? '');
 
-    const svg = el.shadowRoot?.querySelector('svg.scene');
-    expect(svg).toBeTruthy();
-    const texts = [...(el.shadowRoot?.querySelectorAll('text') ?? [])].map((n) => n.textContent);
-    expect(texts).toContain('1,204');
-    expect(texts).toContain('AGENTS');
-    expect(texts).toContain('APPLICATIONS');
-    expect(texts).toContain('DATABASES');
-    expect(texts.some((t) => t?.includes('1 with problems'))).toBe(true);
-    expect(texts.some((t) => t?.includes('all healthy'))).toBe(true);
-    expect(texts).toContain('healthy asset');
+describe('ui9000-asset-health-overview', () => {
+  it('titles the goal and reads it in the line under the title', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const root = el.shadowRoot!;
+
+    expect(root.querySelector('.widget-header')?.textContent).toContain('Onboarding Velocity');
+    const reading = textOf(root, '.ah-reading-line')[0];
+    expect(reading).toContain('G-007');
+    expect(reading).toContain('Blocked');
+    expect(reading).toContain('842 agents');
+    expect(reading).toContain('175 held');
+    el.remove();
+  });
+
+  it('draws the hub, a section for each category and a label beside each', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const root = el.shadowRoot!;
+
+    expect(root.querySelector('svg.ah-overlay [data-tip="hub"]')).toBeTruthy();
+    expect(textOf(root, 'svg.ah-overlay .ah-figure')).toEqual(['41%']);
+    const sections = new Set([...root.querySelectorAll('svg.ah-overlay [data-section]')].map((n) => n.getAttribute('data-section')));
+    expect([...sections].sort()).toEqual(['RG-APP', 'RG-HUMAN', 'RG-MODEL', 'RG-SYS', 'RG-TOOL']);
+
+    const heads = textOf(root, '.ah-label-title');
+    expect(heads).toContain('SYSTEM 94 blocked');
+    expect(heads).toContain('APP Slowed');
+    expect(heads).toContain('TOOL 27 failed');
+    expect(textOf(root, '.ah-label-count')).toContain('9 systems of record');
+    // one beam a trouble, in the arena
+    expect(root.querySelectorAll('svg.ah-overlay [data-trouble]').length).toBe(6);
+    el.remove();
+  });
+
+  it('keeps its labels to their heads on a card-sized stage', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    // jsdom lays nothing out: the stage is the default card, too narrow for whole labels
+    expect(el.shadowRoot!.querySelectorAll('.ah-label-line').length).toBeGreaterThan(0);
+    expect(el.shadowRoot!.querySelectorAll('.ah-readout').length).toBe(0);
     el.remove();
   });
 
   it('follows the theme attribute and reports it as data-mode', async () => {
-    const dark = await mount(figma, 'dark');
+    const dark = await mount(goalRings, { theme: 'dark' });
+    const light = await mount(goalRings, { theme: 'light' });
     expect(dark.getAttribute('data-mode')).toBe('dark');
-
-    const light = await mount(figma, 'light');
     expect(light.getAttribute('data-mode')).toBe('light');
-
-    const bare = await mount(figma);
-    expect(bare.getAttribute('data-mode')).toBe('light');
-
-    for (const host of [dark, light, bare]) host.remove();
-  });
-
-  it('paints dark and light ink from the stock palettes', async () => {
-    const dark = await mount(figma, 'dark');
-    const light = await mount(figma, 'light');
-
-    const agentFill = (host: HTMLElement) =>
-      [...(host.shadowRoot?.querySelectorAll('text') ?? [])]
-        .find((n) => n.textContent === 'AGENTS')
-        ?.getAttribute('fill');
-
-    expect(agentFill(dark)).toBe(DARK_PALETTE.muted);
-    expect(agentFill(light)).toBe(LIGHT_PALETTE.muted);
-    expect(agentFill(dark)).not.toBe(agentFill(light));
-    expect(dark.style.getPropertyValue('--aho-stage').trim()).toBe(DARK_PALETTE.stage);
-    expect(light.style.getPropertyValue('--aho-stage').trim()).toBe(LIGHT_PALETTE.stage);
-
     dark.remove();
     light.remove();
   });
 
-  it('hides problem callouts when every category is healthy', async () => {
-    const healthy = {
-      ...figma,
-      goal: { ...figma.goal, blocked: 0, failed: 0, awaiting: 0 },
-      categories: figma.categories.map((c) => ({ ...c, problems: [] })),
-      wall: [],
-    };
-    const el = await mount(healthy, 'dark');
+  it('picks a section out on click, and lets it go on a second', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const root = el.shadowRoot!;
+    const head = () => root.querySelector<HTMLButtonElement>('.ah-label-head[data-pick="RG-SYS"]')!;
 
-    const texts = [...(el.shadowRoot?.querySelectorAll('text') ?? [])].map((n) => n.textContent);
-    expect(texts.every((t) => !t?.includes('with problems'))).toBe(true);
-    expect(texts.some((t) => t?.includes('crm-prod'))).toBe(false);
+    head().click();
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head().getAttribute('aria-pressed')).toBe('true');
+    head().click();
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head().getAttribute('aria-pressed')).toBe('false');
     el.remove();
   });
 
-  it('isolates a category when its header is clicked, and restores on a second click', async () => {
-    const el = await mount(figma, 'dark');
-    const groups = () => [...(el.shadowRoot?.querySelectorAll('svg g') ?? [])];
-    const byTitle = (title: string) =>
-      groups().find((g) => g.querySelector('title')?.textContent === title);
-    const tileOpacity = (titleStart: string) =>
-      groups()
-        .find((g) => g.querySelector('title')?.textContent?.startsWith(titleStart))
-        ?.getAttribute('opacity');
+  it('keeps the picked section through a new snapshot or theme, and lets it go once the section is gone', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const root = el.shadowRoot!;
+    const head = () => root.querySelector<HTMLButtonElement>('.ah-label-head[data-pick="RG-SYS"]');
 
-    byTitle('Databases\nClick to show only this category')?.dispatchEvent(
-      new MouseEvent('click', { bubbles: true }),
-    );
-    expect(tileOpacity('Salesforce')).toBe('0.16');
-    expect(tileOpacity('orders-db')).toBe('1');
+    head()!.click();
+    await new Promise((r) => setTimeout(r, 60));
+    el.setAttribute('data', JSON.stringify({ ...goalRings, goal: { ...goalRings.goal, idle: 30 } }));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()!.getAttribute('aria-pressed')).toBe('true');
+    el.setAttribute('theme', 'light');
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()!.getAttribute('aria-pressed')).toBe('true');
 
-    byTitle('Databases\nClick to show only this category')?.dispatchEvent(
-      new MouseEvent('click', { bubbles: true }),
-    );
-    expect(tileOpacity('Salesforce')).toBe('1');
+    el.setAttribute('data', JSON.stringify({ ...goalRings, categories: goalRings.categories.filter((c) => c.id !== 'RG-SYS') }));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()).toBeNull();
+    el.setAttribute('data', JSON.stringify(goalRings));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(head()!.getAttribute('aria-pressed')).toBe('false');
     el.remove();
   });
 
-  it('opens the problem card on a beam click and fires show-agents / open-rule', async () => {
-    const el = await mount(figma, 'dark');
-    const texts = () => [...(el.shadowRoot?.querySelectorAll('text') ?? [])].map((n) => n.textContent);
-    const groupWithText = (label: string) =>
-      [...(el.shadowRoot?.querySelectorAll('text') ?? [])]
-        .find((t) => t.textContent === label)
-        ?.closest('g');
-    const openPin = () =>
-      groupWithText('crm-prod · writes blocked by R-047')?.dispatchEvent(
-        new MouseEvent('click', { bubbles: true }),
-      );
+  it('zooms on the wheel, pans on a shift-drag, and double-click sets it back', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const stage = el.shadowRoot!.querySelector<HTMLElement>('.ah-stage')!;
+    const settle = () => new Promise((r) => setTimeout(r, 400));
 
-    openPin();
-    expect(texts()).toContain('Show agents');
-    expect(texts()).toContain('Open in Rules');
+    stage.dispatchEvent(new WheelEvent('wheel', { deltaY: -80, bubbles: true, cancelable: true }));
+    await settle();
+    expect(el.camera.zoom).toBeGreaterThan(1);
+    for (let i = 0; i < 40; i++) stage.dispatchEvent(new WheelEvent('wheel', { deltaY: 80, bubbles: true, cancelable: true }));
+    await settle();
+    // never further out than half size
+    expect(el.camera.zoom).toBeCloseTo(0.5, 2);
 
-    let shown: { categoryId?: string; problem?: { name?: string } } | undefined;
-    el.addEventListener('show-agents', (event) => {
-      shown = (event as CustomEvent).detail;
-    });
-    groupWithText('Show agents')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    expect(shown?.categoryId).toBe('db');
-    expect(shown?.problem?.name).toBe('crm-prod');
-    expect(texts()).not.toContain('Open in Rules');
-
-    openPin();
-    let ruled: { problem?: { name?: string } } | undefined;
-    el.addEventListener('open-rule', (event) => {
-      ruled = (event as CustomEvent).detail;
-    });
-    groupWithText('Open in Rules')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    expect(ruled?.problem?.name).toBe('crm-prod');
-    el.remove();
-  });
-
-  it('repaints with a new orbit after a drag', async () => {
-    const el = await mount(figma, 'dark');
-    const svg = el.shadowRoot?.querySelector('svg.scene') as SVGSVGElement;
-    const before = svg.innerHTML;
+    // jsdom has no PointerEvent: a mouse event under the pointer event's name stands in
     const pointer = (type: string, x: number, y: number) =>
-      new MouseEvent(type, { bubbles: true, button: 0, clientX: x, clientY: y });
-    svg.dispatchEvent(pointer('pointerdown', 100, 100));
-    svg.dispatchEvent(pointer('pointermove', 240, 140));
-    await new Promise((resolve) => setTimeout(resolve, 60));
-    svg.dispatchEvent(pointer('pointerup', 240, 140));
-    expect(svg.innerHTML).not.toBe(before);
+      stage.dispatchEvent(new MouseEvent(type, { button: 0, clientX: x, clientY: y, shiftKey: true, bubbles: true }));
+    const turned = el.camera;
+    pointer('pointerdown', 100, 100);
+    pointer('pointermove', 140, 120);
+    pointer('pointerup', 140, 120);
+    expect(el.camera.panX - turned.panX).toBe(40);
+    expect(el.camera.panY - turned.panY).toBe(20);
+    expect(el.camera.yaw).toBe(turned.yaw);
+
+    stage.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    expect(el.camera).toEqual({ yaw: -0.34, pitch: 0.26, zoom: 1, panX: 0, panY: 0 });
     el.remove();
   });
 
-  it('shows empty state without data', async () => {
-    const el = document.createElement('ui9000-asset-health-overview');
-    document.body.appendChild(el);
-    await (el as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
-    expect(el.shadowRoot?.querySelector('.empty')?.textContent).toContain('No asset health data');
+  it('opens the legend from its button', async () => {
+    const el = await mount(goalRings, { theme: 'dark' });
+    const root = el.shadowRoot!;
+    root.querySelector<HTMLButtonElement>('.ah-legend-button')!.click();
+    await el.updateComplete;
+    expect(root.querySelector('.ah-legend h2')?.textContent).toBe('Reading the goal');
+    expect(root.querySelectorAll('.ah-legend-row').length).toBe(13);
+    el.remove();
+  });
+
+  it('says so when there is nothing to draw', async () => {
+    const el = await mount({ categories: [] });
+    expect(el.shadowRoot!.querySelector('.empty')).toBeTruthy();
+    expect(el.shadowRoot!.querySelector('.ah-stage')).toBeNull();
     el.remove();
   });
 });

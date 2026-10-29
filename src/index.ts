@@ -895,15 +895,14 @@ export {
 
 export {
   normalizeAssetHealth,
-  normalizeWall,
   formatAssetHealthCount,
-  WALL_SLOTS,
-  type AssetHealthCategory,
+  type AssetHealthCategoryInput,
   type AssetHealthGoal,
   type AssetHealthModel,
   type AssetHealthPayload,
-  type AssetHealthProblem,
-  type AssetHealthWallSlot,
+  type AssetHealthProblemInput,
+  type AssetHealthSection,
+  type AssetHealthTrouble,
   assetHealthOverviewMetadata,
 } from './components/asset-health-overview/index.js';
 

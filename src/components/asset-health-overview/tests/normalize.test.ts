@@ -1,225 +1,203 @@
 import { describe, expect, it } from 'vitest';
 
-import figma from '../../../stories/fixtures/asset-health.figma.json';
-import { buildScene } from '../lib/scene.js';
-import { normalizeAssetHealth, normalizeWall, WALL_SLOTS } from '../lib/index.js';
+import goalRings from '../../../stories/fixtures/asset-health.goal-rings.json';
+import { apportion, arenaField, arenaSectors, crewSize, normalizeAssetHealth, resampleDay } from '../lib/index.js';
 
 describe('normalizeAssetHealth', () => {
-  it('reads the Figma sample: agent total and category totals stay in sync', () => {
-    const model = normalizeAssetHealth(figma);
+  it('reads the goal and its categories from the goal-rings fixture', () => {
+    const model = normalizeAssetHealth(goalRings);
+
     expect(model.empty).toBe(false);
-    expect(model.goal.total).toBe(1204);
-    expect(model.goal.blocked).toBe(84);
-    expect(model.categories).toHaveLength(6);
-    expect(model.categories.map((c) => c.name)).toEqual([
-      'Applications',
-      'Databases',
-      'Devices',
-      'AI models',
-      'People',
-      'Tools',
+    expect(model.title).toBe('Onboarding Velocity');
+    expect(model.goal).toMatchObject({ code: 'G-007', total: 842, working: 645, idle: 22, held: 175, progress: 0.41, burn: 4.2 });
+    expect(model.goal.status).toEqual({ label: 'Blocked', tone: 'blocked' });
+    expect(model.sections.map((s) => s.name)).toEqual(['SYSTEM', 'APP', 'TOOL', 'HUMAN', 'MODEL']);
+  });
+
+  it('seats every agent of the goal: the held at their gates, the rest spread by calls', () => {
+    const { goal, sections } = normalizeAssetHealth(goalRings);
+    const sys = sections.find((s) => s.id === 'RG-SYS')!;
+
+    expect(sys.hold).toBe('blocked');
+    expect(sys.crew.held).toBe(94);
+    expect(sys.health).toBe('held');
+    // as the reference apportions the goal's working and over-budget agents by calls a minute
+    expect(sections.map((s) => s.crew.working)).toEqual(apportion([5400, 3300, 1800, 14, 6200], 645));
+    expect(sections.map((s) => s.crew.overBudget)).toEqual(apportion([5400, 3300, 1800, 14, 6200], 21));
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0) + goal.idle).toBe(goal.total);
+  });
+
+  it('reads a section’s gate from its traffic, and what holds nobody as slowed', () => {
+    const { sections } = normalizeAssetHealth(goalRings);
+    const human = sections.find((s) => s.id === 'RG-HUMAN')!;
+    const app = sections.find((s) => s.id === 'RG-APP')!;
+
+    expect(human.mix).toEqual([
+      { state: 'flowing', share: 0.4 },
+      { state: 'awaiting', share: 0.6 },
     ]);
-    expect(model.categories.map((c) => c.total)).toEqual([12, 9, 219, 6, 5, 24]);
-    expect(model.categories.find((c) => c.id === 'db')?.problems[0]?.name).toBe('crm-prod');
-    expect(model.categories.find((c) => c.id === 'ai')?.problems[0]?.sev).toBe('degraded');
-    expect(model.wall).toHaveLength(WALL_SLOTS);
-    expect(model.wall.filter((s) => s.err)).toHaveLength(4);
-    const scene = buildScene(model);
-    expect(scene.wall).toHaveLength(WALL_SLOTS);
-    expect(scene.wall.some((s) => s.err)).toBe(true);
+    expect(human.health).toBe('degraded');
+    expect(human.crew.held).toBe(0);
+    expect(app.troubles).toEqual([expect.objectContaining({ asset: 'Okta', state: 'slowed', agents: 0 })]);
   });
 
-  it('accepts agents as an alias for goal', () => {
-    const model = normalizeAssetHealth({
-      agents: { total: 10, awaiting: 1, blocked: 0, failed: 0 },
-      categories: [{ name: 'Tools', total: 2, items: ['a', 'b'], problems: [] }],
-    });
-    expect(model.goal.total).toBe(10);
-    expect(model.empty).toBe(false);
-    expect(model.wall).toEqual([]);
+  it('puts named assets on their cells in the order sent, troubles among them', () => {
+    const { sections } = normalizeAssetHealth(goalRings);
+    const sys = sections.find((s) => s.id === 'RG-SYS')!;
+
+    expect(sys.assets).toBe(9);
+    expect(sys.named.map((n) => n.tick)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(sys.troubles.map((t) => [t.asset, t.tick])).toEqual([
+      ['crm-prod', 1],
+      ['hr-records', 6],
+    ]);
   });
 
-  it('accepts WidgetItem data rows with agent columns on a category row', () => {
+  it('keeps the 24-hour day as sent, and invents none', () => {
+    const model = normalizeAssetHealth(goalRings);
+    expect(model.sections.every((s) => s.day.length === 96)).toBe(true);
+
+    const bare = normalizeAssetHealth({ goal: { total: 10 }, categories: [{ name: 'Tools', total: 3 }] });
+    expect(bare.sections[0]!.day).toEqual([]);
+  });
+
+  it('reads WidgetItem rows, with the goal’s columns on a row', () => {
     const model = normalizeAssetHealth({
       chartType: 'assetHealthOverview',
-      name: 'Onboarding Velocity',
+      name: 'Onboarding',
       data: [
-        {
-          category: 'Applications',
-          total: 12,
-          healthy: 12,
-          agents: 1204,
-          awaiting: 19,
-          blocked: 84,
-          failed: 2,
-        },
-        { category: 'Databases', healthy: 8, failing: 1 },
-        { category: 'Tools', healthy: 20, degraded: 2, failing: 2 },
+        { category: 'Applications', total: 12, agents: 100, blocked: 10, calls: 300 },
+        { category: 'Databases', total: 4, calls: 100, problems: [{ name: 'crm-prod', sev: 'blocked' }] },
       ],
     });
+
     expect(model.empty).toBe(false);
-    expect(model.goal).toMatchObject({
-      name: 'Onboarding Velocity',
-      total: 1204,
-      awaiting: 19,
-      blocked: 84,
-      failed: 2,
-    });
-    expect(model.categories.map((c) => c.name)).toEqual(['Applications', 'Databases', 'Tools']);
-    // Agent `failed` must not bleed into category failing / total.
-    expect(model.categories[0]).toMatchObject({
-      total: 12,
-      healthy: 12,
-      failing: 0,
-      degraded: 0,
-      problems: [],
-    });
-    expect(model.categories[1]).toMatchObject({
-      total: 9,
-      healthy: 8,
-      failing: 1,
-      degraded: 0,
-      problems: [],
-    });
-    expect(model.wall).toEqual([]);
+    expect(model.goal).toMatchObject({ total: 100, blocked: 10, working: 90, name: 'Onboarding' });
+    const db = model.sections.find((s) => s.name === 'Databases')!;
+    // the goal's blocked agents nobody claims go to the section whose problem blocks them
+    expect(db.crew.held).toBe(10);
+    expect(db.hold).toBe('blocked');
   });
 
-  it('keeps healthy / degraded / failing counts without inventing items or problems', () => {
-    const model = normalizeAssetHealth({
-      agents: { total: 100 },
-      categories: [{ name: 'Databases', healthy: 7, degraded: 1, failing: 1 }],
+  it('seats the goal’s held agents even where no category names their hold', () => {
+    const { goal, sections } = normalizeAssetHealth({
+      goal: { total: 60, blocked: 10, failed: 4 },
+      categories: [
+        { name: 'Apps', total: 6, calls: 300 },
+        { name: 'Databases', total: 3, calls: 100, problems: [{ name: 'crm-prod', sev: 'slowed' }] },
+        { name: 'Tools', total: 2, held: 3, hold: 'failed' },
+      ],
     });
-    expect(model.categories[0]).toMatchObject({
-      name: 'Databases',
-      total: 9,
-      healthy: 7,
-      degraded: 1,
-      failing: 1,
-      items: [],
-      problems: [],
-    });
-    const scene = buildScene(model);
-    const tones = scene.tiles.filter((t) => t.cat === model.categories[0]!.id).map((t) => t.tone);
-    expect(tones.filter((t) => t === 'crit').length).toBeGreaterThanOrEqual(1);
-    expect(tones.filter((t) => t === 'warn').length).toBeGreaterThanOrEqual(1);
-    expect(tones.filter((t) => t === 'ok').length).toBeGreaterThanOrEqual(1);
+    const db = sections.find((s) => s.name === 'Databases')!;
+    const tools = sections.find((s) => s.name === 'Tools')!;
+
+    // the section in trouble that holds nobody takes the blocked; the one failing takes the failed nobody claimed
+    expect([db.hold, db.crew.held]).toEqual(['blocked', 10]);
+    expect([tools.hold, tools.crew.held]).toEqual(['failed', 4]);
+    expect(sections.find((s) => s.name === 'Apps')!.hold).toBeNull();
+    expect(goal).toMatchObject({ total: 60, blocked: 10, failed: 4, held: 14 });
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0) + goal.idle).toBe(goal.total);
   });
 
-  it('tints leftover failing counts after named problems (no extra beams)', () => {
-    const model = normalizeAssetHealth({
-      agents: { total: 50 },
+  it('seats the working agents by assets where the open categories send no calls', () => {
+    const { goal, sections } = normalizeAssetHealth({
+      goal: { total: 40 },
+      categories: [
+        { name: 'Apps', total: 4, crew: 10, calls: 500 },
+        { name: 'Models', total: 3 },
+        { name: 'Queues', total: 1 },
+      ],
+    });
+
+    expect(sections.map((s) => s.crew.working)).toEqual([10, 23, 7]);
+    expect(goal.total).toBe(40);
+  });
+
+  it('seats what categories past the twelfth would have claimed in the ones drawn', () => {
+    const categories = Array.from({ length: 14 }, (_, i) => ({ name: `C${i}`, total: 2, crew: 5 }));
+    const { goal, sections } = normalizeAssetHealth({ goal: { total: 70 }, categories });
+
+    expect(sections).toHaveLength(12);
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0)).toBe(70);
+    expect(goal.total).toBe(70);
+  });
+
+  it('counts the goal as seated where its categories claim more than it says', () => {
+    const { goal, sections } = normalizeAssetHealth({
+      goal: { total: 10, idle: 2 },
+      categories: [
+        { name: 'Apps', crew: 9 },
+        { name: 'Tools', crew: 6 },
+      ],
+    });
+
+    expect(goal).toMatchObject({ working: 15, idle: 2, total: 17 });
+    expect(sections.reduce((sum, s) => sum + crewSize(s), 0) + goal.idle).toBe(goal.total);
+  });
+
+  it('maps free-text severities', () => {
+    const { sections } = normalizeAssetHealth({
+      goal: { total: 5 },
       categories: [
         {
-          name: 'Databases',
-          healthy: 3,
-          failing: 3,
+          name: 'Mixed',
           problems: [
-            {
-              name: 'crm-prod',
-              type: 'DATABASE',
-              why: 'writes blocked',
-              loc: 'eu-west-1',
-              sev: 'impaired',
-            },
+            { name: 'a', sev: 'warning' },
+            { name: 'b', sev: 'impaired' },
+            { name: 'c', sev: 'waiting on approval' },
           ],
         },
       ],
     });
-    const scene = buildScene(model);
-    const tiles = scene.tiles.filter((t) => t.cat === model.categories[0]!.id);
-    expect(tiles.filter((t) => t.problem)).toHaveLength(1);
-    expect(tiles.filter((t) => t.tone === 'crit').length).toBeGreaterThanOrEqual(3);
-    expect(scene.pins).toHaveLength(1);
+    expect(sections[0]!.troubles.map((t) => t.state)).toEqual(['slowed', 'failed', 'awaiting']);
   });
 
-  it('labels unnamed tiles by tone, and filler tiles never claim to be healthy', () => {
-    const model = normalizeAssetHealth({
-      agents: { total: 50 },
-      categories: [{ name: 'Databases', healthy: 1, degraded: 1, failing: 1 }],
-    });
-    const tiles = buildScene(model).tiles.filter((t) => t.cat === model.categories[0]!.id);
-    const byTone = (tone: string) => tiles.find((t) => t.tone === tone);
-    expect(byTone('crit')?.tip).toContain('Failing');
-    expect(byTone('warn')?.tip).toContain('Degraded');
-    expect(byTone('ok')?.tip).toContain('healthy');
-    expect(byTone('neutral')).toBeTruthy();
-    expect(byTone('neutral')?.tip).not.toContain('healthy');
-    expect(byTone('neutral')?.tip).not.toContain('Failing');
-  });
-
-  it('omits the error wall when the payload does not send one', () => {
-    const model = normalizeAssetHealth({
-      goal: { total: 1204, awaiting: 0, blocked: 84, failed: 2 },
-      categories: figma.categories.map((c) => ({ ...c, problems: [] })),
-    });
-    expect(model.wall).toEqual([]);
-    expect(buildScene(model).wall).toEqual([]);
-  });
-
-  it('draws an explicit wall only when at least one slot has an error', () => {
-    const model = normalizeAssetHealth({
-      agents: { total: 10 },
-      categories: [{ name: 'Tools', total: 2, healthy: 2 }],
-      wall: [
-        { slot: 3, err: true, reqs: 8, nErr: 2 },
-        { slot: 10, err: false, reqs: 4 },
-      ],
-    });
-    expect(model.wall).toHaveLength(WALL_SLOTS);
-    expect(model.wall[3]).toMatchObject({ err: true, reqs: 8, nErr: 2 });
-    expect(model.wall[10]).toMatchObject({ err: false, reqs: 4 });
-    expect(model.wall[0]).toMatchObject({ err: false, reqs: 0 });
-  });
-
-  it('is empty without agents or without categories', () => {
+  it('is empty without categories or agents', () => {
     expect(normalizeAssetHealth(null).empty).toBe(true);
-    expect(normalizeAssetHealth({ agents: { total: 10 } }).empty).toBe(true);
-    expect(normalizeAssetHealth({ categories: [{ name: 'Tools', total: 1 }] }).empty).toBe(true);
+    expect(normalizeAssetHealth({ goal: { total: 10 } }).empty).toBe(true);
+    expect(normalizeAssetHealth({ categories: [{ name: 'Tools' }] }).empty).toBe(true);
   });
 });
 
-describe('normalizeWall', () => {
-  it('reads the height / requests / errors / source aliases declared in the schema', () => {
-    const wall = normalizeWall([
-      {
-        slot: 3,
-        err: true,
-        height: 44,
-        requests: 9,
-        errors: 2,
-        source: {
-          name: 'crm-prod',
-          type: 'DATABASE',
-          why: 'writes blocked',
-          loc: 'eu-west-1',
-          sev: 'warning',
-          catName: 'Databases',
-        },
-      },
-    ]);
-    expect(wall[3]).toMatchObject({
-      err: true,
-      hgt: 44,
-      reqs: 9,
-      nErr: 2,
-      src: { name: 'crm-prod', sev: 'degraded', catName: 'Databases' },
-    });
+describe('the arena', () => {
+  it('seats as many agents as the goal has, the held in their state', () => {
+    const { goal, sections } = normalizeAssetHealth(goalRings);
+    const sectors = arenaSectors(sections);
+    const { field, crews } = arenaField(goal, sectors);
+    const cloud = field.clouds[0]!;
+    const size = ([from, to]: [number, number]) => to - from;
+
+    expect(size(cloud.ranges.blocked)).toBe(94);
+    expect(size(cloud.ranges.failed)).toBe(27);
+    expect(size(cloud.ranges.awaiting)).toBe(33);
+    expect(size(cloud.ranges.overBudget)).toBe(21);
+    expect(size(cloud.ranges.idle)).toBe(22);
+    expect(cloud.position.length / 3).toBe(goal.total);
+    expect(Object.keys(crews).sort()).toEqual(sections.map((s) => s.id).sort());
   });
 
-  it('reads the error / hasError aliases of the err flag declared in the schema', () => {
-    const wall = normalizeWall([
-      { slot: 4, error: true },
-      { slot: 5, hasError: 1 },
-      { slot: 6, hasError: 0 },
-    ]);
-    expect(wall[4]?.err).toBe(true);
-    expect(wall[5]?.err).toBe(true);
-    expect(wall[6]?.err).toBe(false);
+  it('gives every section room, the widest to the most agents', () => {
+    const { sections } = normalizeAssetHealth(goalRings);
+    const sectors = arenaSectors(sections);
+    const spans = sectors.map((s) => s.a1 - s.a0);
+
+    expect(spans.every((span) => span >= 0.3)).toBe(true);
+    // SYSTEM's 94 held count with its crew: the widest section
+    expect(sectors[0]!.section.id).toBe('RG-SYS');
+    expect(spans[0]).toBe(Math.max(...spans));
   });
 
-  it('returns empty for missing, empty, or all-clear slots', () => {
-    expect(normalizeWall(undefined)).toEqual([]);
-    expect(normalizeWall([])).toEqual([]);
-    expect(normalizeWall([{ slot: 1, err: false }])).toEqual([]);
+  it('cuts a sent day to fewer stretches without losing calls', () => {
+    const day = [
+      { calls: 10, away: 0 },
+      { calls: 30, away: 0.5 },
+      { calls: 20, away: 0 },
+      { calls: 20, away: 0 },
+    ];
+    expect(resampleDay(day, 2)).toEqual([
+      { calls: 40, away: 15 / 40 },
+      { calls: 40, away: 0 },
+    ]);
+    expect(resampleDay(day, 8)).toEqual(day);
   });
 });

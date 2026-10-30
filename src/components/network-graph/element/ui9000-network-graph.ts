@@ -311,7 +311,11 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
                             ? (e: MouseEvent) => onAxisLabelHover?.(String(range.start), e)
                             : undefined}
                           @mouseleave=${this.showTooltip ? onAxisLabelLeave : undefined}
-                          >${formatLegendValue(range.start, 2)}</span
+                          >${formatLegendValue(
+                            range.start,
+                            !!this._model?.nodes.length &&
+                              this._model.nodes.every((node) => Number.isInteger(node.value)),
+                          )}</span
                         >`,
                       )}
                     </div>

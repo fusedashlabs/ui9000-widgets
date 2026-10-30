@@ -8,22 +8,28 @@ export function formatLinkValue(value: number | undefined): string {
   return n.toString();
 }
 
-/** Client node label value row. */
+const NODE_NUMBER_FORMAT = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+const NODE_INTEGER_FORMAT = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+
+/** Node values are counts or measures, not money: a plain number, at most two decimals. */
 export function formatNodeValue(value: number | undefined): string {
-  return typeof value === 'number' ? `$${value.toFixed(2)}` : '';
+  return typeof value === 'number' && Number.isFinite(value)
+    ? NODE_NUMBER_FORMAT.format(value)
+    : '';
 }
 
-/** Client `Legends.formatValue` — abbreviated bucket boundary. */
-export function formatLegendValue(value: number, toFixed = 0): string {
+/** Legend bucket boundary: a plain number, compact only from 10,000. */
+export function formatLegendValue(value: number, integersOnly = false): string {
   if (!Number.isFinite(value)) return '0';
-  if (Math.abs(value) < 1000) return value.toFixed(toFixed);
-
-  const abbreviations = ['B', 'M', 'K'];
-  for (let i = 0; i < abbreviations.length; i++) {
-    const unit = Math.pow(1000, abbreviations.length - i);
-    if (Math.abs(value) >= unit) {
-      return `${(value / unit).toFixed(1)} ${abbreviations[i]}`;
+  if (Math.abs(value) >= 10_000) {
+    const units: Array<[number, string]> = [
+      [1e9, 'B'],
+      [1e6, 'M'],
+      [1e3, 'K'],
+    ];
+    for (const [unit, suffix] of units) {
+      if (Math.abs(value) >= unit) return `${Number((value / unit).toFixed(1))} ${suffix}`;
     }
   }
-  return value.toFixed(toFixed);
+  return (integersOnly ? NODE_INTEGER_FORMAT : NODE_NUMBER_FORMAT).format(value);
 }

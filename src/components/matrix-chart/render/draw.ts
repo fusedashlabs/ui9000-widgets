@@ -14,6 +14,7 @@ import {
 } from '../../../utils/fuse-palette.js';
 import { FD, fdColors } from '../../../utils/fusedash-visual.js';
 import type { MatrixCell, MatrixModel } from '../lib/index.js';
+import { matrixYLabelMaxChars } from '../lib/y-labels.js';
 
 const NO_DATA_PATTERN_ID = 'ui9000-matrix-no-data';
 
@@ -284,7 +285,7 @@ function renderTopAxis(
   return sin * extent + chrome;
 }
 
-/** Client AxisLeft: labels sit in the left gutter, truncated to 9 characters. */
+/** Client AxisLeft: labels sit in the left gutter, truncated to what fits it. */
 function renderYAxis(
   group: Selection<SVGGElement, unknown, null, undefined>,
   yDomain: string[],
@@ -305,7 +306,7 @@ function renderYAxis(
       .attr('text-anchor', 'start')
       .style('dominant-baseline', 'middle');
     decorateManualAxisLabel(text, category, {
-      maxLength: FD.matrixYLabelMaxChars,
+      maxLength: matrixYLabelMaxChars(gutter, FD.axisLabelSize),
       ...axisLabels,
     });
   }

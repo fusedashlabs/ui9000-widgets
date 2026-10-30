@@ -181,7 +181,7 @@ describe('renderMatrixChart', () => {
     });
 
     const label = plot.querySelector('.y-axis text')!;
-    expect(label.textContent).toBe('Cauliflow...');
+    expect(label.textContent).toBe('Cauliflo...');
     label.dispatchEvent(new MouseEvent('mouseenter'));
     expect(hovered).toEqual(['Cauliflower White Spring']);
   });

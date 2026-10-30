@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import fusedashFixture from '../../../stories/fixtures/matrix.fusedash.json';
 import { normalizeMatrixData, sortAxisDomain } from '../lib/index.js';
-import { horizontalLabelAngle, matrixColorRanges, matrixLayout } from '../render/draw.js';
+import { matrixColorRanges } from '../render/draw.js';
 
 describe('normalizeMatrixData', () => {
   it('accepts MatrixCell[]', () => {
@@ -136,58 +136,57 @@ describe('DEFAULT_MATRIX fixture', () => {
   it('keeps the FuseDash mock sparse inside the full axis domains', () => {
     expect(model.categoryKey).toBe('MD_Status');
     expect(model.valueKey).toBe('quantity kS');
-    expect(model.xDomain).toHaveLength(94);
+    // 'Blocky ' and 'Blocky' are one column.
+    expect(model.xDomain).toHaveLength(93);
     expect(model.yDomain).toHaveLength(50);
-    expect(model.cells).toHaveLength(fusedashFixture.data.length);
-    expect(model.cells.length).toBeLessThan(94 * 50);
+    expect(model.cells.length).toBeLessThanOrEqual(fusedashFixture.data.length);
+    expect(model.cells.length).toBeLessThan(93 * 50);
     expect(model.rawValues).toHaveLength(fusedashFixture.data.length);
   });
 
-  it('builds a seven-band sequential ramp from the real values only', () => {
+  it('builds a seven-step legend from the largest value', () => {
     const ranges = matrixColorRanges(model);
     expect(ranges).toHaveLength(7);
-    expect(ranges[0].color).toBe('#D6D3FF');
-    expect(ranges[6].color).toBe('#3C33B5');
+    expect(ranges[0].color).toBe('color-mix(in srgb, #0098E6 15%, transparent)');
+    expect(ranges[6].color).toBe('color-mix(in srgb, #0098E6 100%, transparent)');
     expect(ranges[6].end).toBe(Math.max(...model.rawValues));
   });
-
-  it('pins the header and overflows once the rows exceed the row limit', () => {
-    const layout = matrixLayout(model, 400, { top: 20, bottom: 30 });
-    expect(layout.separateTopAxis).toBe(true);
-    // 50 rows never shrink below the 16px floor
-    expect(layout.rowsHeight).toBe(50 * 16);
-    expect(layout.needsScroll).toBe(true);
-  });
 });
 
-describe('matrixLayout', () => {
-  it('keeps the header inline and fills the viewport for few rows', () => {
-    const model = normalizeMatrixData([
-      { x: 'A', y: 'one', value: 1 },
-      { x: 'B', y: 'two', value: 2 },
+describe('categories that differ only in spaces', () => {
+  const widget = (aggregationFunction?: string) => ({
+    data: [
+      { seed: 'OP ', segment: 'Red', revenue: 10 },
+      { seed: 'OP', segment: 'Red  ', revenue: 30 },
+      { seed: 'F1', segment: 'Red', revenue: 5 },
+    ],
+    xAxe: ['seed'],
+    yAxe: ['revenue'],
+    groupBy: ['segment'],
+    uniqueValues: { seed: ['OP', 'F1'], segment: ['Red'] },
+    aggregationFunction,
+  });
+
+  it('are one column and one row', () => {
+    const model = normalizeMatrixData(widget());
+    expect(model.xDomain).toEqual(['F1', 'OP']);
+    expect(model.yDomain).toEqual(['Red']);
+  });
+
+  it('add up by default', () => {
+    expect(normalizeMatrixData(widget()).cells).toEqual([
+      { x: 'OP', y: 'Red', value: 40 },
+      { x: 'F1', y: 'Red', value: 5 },
     ]);
-    const layout = matrixLayout(model, 300, { top: 20, bottom: 30 });
-    expect(layout.separateTopAxis).toBe(false);
-    expect(layout.topAxisHeight).toBe(42);
-    expect(layout.needsScroll).toBe(false);
-    expect(layout.contentHeight).toBeLessThanOrEqual(300);
-  });
-});
-
-describe('horizontalLabelAngle', () => {
-  it('leaves labels flat when they fit their band', () => {
-    expect(horizontalLabelAngle(40, 80, 11)).toBe(0);
   });
 
-  it('goes vertical when the band is narrower than the line height', () => {
-    expect(horizontalLabelAngle(60, 10, 11)).toBe(-90);
-  });
-
-  it('tilts in 5-degree steps in between', () => {
-    const angle = horizontalLabelAngle(60, 40, 11);
-    expect(angle).toBeLessThan(0);
-    expect(angle).toBeGreaterThan(-90);
-    expect(Math.abs(angle % 5)).toBe(0);
+  it.each([
+    ['min', 10],
+    ['max', 30],
+    ['avg', 20],
+    ['sum', 40],
+  ])('combine the way the widget aggregates: %s', (aggregation, value) => {
+    expect(normalizeMatrixData(widget(aggregation)).cells[0].value).toBe(value);
   });
 });
 

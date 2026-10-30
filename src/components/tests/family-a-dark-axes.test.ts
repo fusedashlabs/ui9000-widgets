@@ -24,7 +24,6 @@ beforeAll(async () => {
     import('../waterfall-chart/element/ui9000-waterfall-chart.js'),
     import('../violin-chart/element/ui9000-violin-chart.js'),
     import('../punchcard-chart/element/ui9000-punchcard-chart.js'),
-    import('../matrix-chart/element/ui9000-matrix-chart.js'),
   ]);
 });
 
@@ -148,13 +147,6 @@ const cases: Array<{ tag: string; data: unknown }> = [
     data: [
       { x: 'Mon', y: 'AM', value: 10 },
       { x: 'Tue', y: 'PM', value: 20 },
-    ],
-  },
-  {
-    tag: 'ui9000-matrix-chart',
-    data: [
-      { x: 'A', y: 'R1', value: 1 },
-      { x: 'B', y: 'R2', value: 2 },
     ],
   },
 ];

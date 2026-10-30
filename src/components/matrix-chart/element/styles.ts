@@ -17,28 +17,40 @@ export const matrixStyles = css`
     display: flex;
     flex-direction: column;
   }
-  .chart-top-axis {
-    flex-shrink: 0;
-    width: 100%;
-    overflow: hidden;
-  }
   .chart-scroll {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
+    min-width: 0;
+    overflow: auto;
     position: relative;
+  }
+  .heatmap-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--ui9000-color-surface, #ffffff);
+  }
+  .heatmap-reveal {
+    animation: heatmap-reveal 320ms ease-out both;
+  }
+  @keyframes heatmap-reveal {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .heatmap-reveal {
+      animation: none;
+    }
   }
   .chart-root {
     width: 100%;
     min-height: inherit;
-  }
-  .chart-root svg .matrix-cell {
-    cursor: default;
-  }
-  .chart-root[data-hoverable] svg .matrix-cell:hover {
-    stroke: var(--ui9000-color-text, #111827);
-    stroke-width: 1.5px;
   }
   .palette-legend {
     display: flex;

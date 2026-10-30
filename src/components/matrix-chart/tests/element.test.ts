@@ -120,12 +120,12 @@ describe('ui9000-matrix-chart', () => {
   it('show-tooltip toggles the hover tooltip', async () => {
     const hover = (el: Shadowed) =>
       el.shadowRoot
-        .querySelector('rect.matrix-cell')!
-        .dispatchEvent(new MouseEvent('mouseenter'));
+        .querySelector('rect.heatmap-overlay')!
+        .dispatchEvent(new MouseEvent('mousemove'));
     const portal = () => document.querySelector('[data-ui9000-chart-tooltip]');
 
     const on = await mount();
-    expect(on.shadowRoot.querySelector('.chart-root')?.hasAttribute('data-hoverable')).toBe(true);
+    expect(on.shadowRoot.querySelector('rect.heatmap-hover')).not.toBeNull();
     hover(on);
     await on.updateComplete;
     expect(portal()?.classList.contains('is-open')).toBe(true);
@@ -133,7 +133,7 @@ describe('ui9000-matrix-chart', () => {
     expect(portal()?.classList.contains('is-open')).not.toBe(true);
 
     const off = await mount(GRID, { showTooltip: false });
-    expect(off.shadowRoot.querySelector('.chart-root')?.hasAttribute('data-hoverable')).toBe(false);
+    expect(off.shadowRoot.querySelector('rect.heatmap-hover')).toBeNull();
     hover(off);
     await off.updateComplete;
     expect(portal()?.classList.contains('is-open')).not.toBe(true);
@@ -155,10 +155,11 @@ describe('ui9000-matrix-chart', () => {
         revenue: 1500 + i,
       })),
     });
+    expect(el.shadowRoot.querySelector('.heatmap-header')).not.toBeNull();
 
     el.shadowRoot
-      .querySelector('rect.matrix-cell')!
-      .dispatchEvent(new MouseEvent('mouseenter'));
+      .querySelector('rect.heatmap-overlay')!
+      .dispatchEvent(new MouseEvent('mousemove'));
     await el.updateComplete;
 
     const tooltip = document.querySelector('[data-ui9000-chart-tooltip]')!;
@@ -167,5 +168,37 @@ describe('ui9000-matrix-chart', () => {
     expect(tooltip.textContent).toContain('€1,5');
 
     el.remove();
+  });
+
+  it('shows the row total when the pointer is on a row name', async () => {
+    const el = await mount();
+    el.shadowRoot.querySelector('g.heatmap-row')!.dispatchEvent(new MouseEvent('mouseenter'));
+    await el.updateComplete;
+    const tooltip = document.querySelector('[data-ui9000-chart-tooltip]')!;
+    expect(tooltip.textContent).toContain('Row 0');
+    expect(tooltip.textContent).toContain('Total');
+    el.remove();
+  });
+
+  it('reveals the columns only on the first draw', async () => {
+    const el = await mount();
+    const root = el.shadowRoot;
+    expect(root.querySelectorAll('.heatmap-reveal').length).toBeGreaterThan(0);
+
+    sizeShadow(el, 800, 500);
+    for (const cb of observed) cb();
+    await flush();
+    expect(root.querySelectorAll('.heatmap-reveal')).toHaveLength(0);
+    el.remove();
+  });
+
+  it('gives each chart its own gradients', async () => {
+    const first = await mount();
+    const second = await mount();
+    const id = (el: Shadowed) => el.shadowRoot.querySelector('defs > *')?.id;
+    expect(id(first)).toBeTruthy();
+    expect(id(first)).not.toBe(id(second));
+    first.remove();
+    second.remove();
   });
 });

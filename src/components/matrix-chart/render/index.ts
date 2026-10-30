@@ -1,7 +1,16 @@
 export {
   matrixColorRanges,
-  matrixLayout,
+  matrixView,
   renderMatrixChart,
-  type MatrixLayout,
+  type MatrixView,
   type RenderMatrixOptions,
 } from './draw.js';
+export {
+  heatmapGridLayout,
+  renderHeatmapGrid,
+  type HeatmapCellInfo,
+  type HeatmapColumnInfo,
+  type HeatmapGridLayout,
+  type HeatmapGridOptions,
+  type HeatmapRowInfo,
+} from './heatmap-grid.js';

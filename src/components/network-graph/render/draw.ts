@@ -70,13 +70,15 @@ const DRAG_SLOP = 5;
 
 export interface RenderNetworkGraphOptions {
   model: NetworkGraphModel;
-  /** Nodes shown by the legend window; null shows them all. */
+  /** Nodes shown by the legend window and the timeline; null shows them all. */
   visibleIds: Set<string> | null;
+  /** Links shown by the timeline; null shows every link between shown nodes. */
+  visibleLinkIds?: Set<string> | null;
   themeMode?: 'light' | 'dark';
   fontFamily?: string;
   activeNodeId?: string | null;
-  /** The wheel zooms only with Ctrl / Cmd, so a plain wheel scrolls what is around the graph. */
-  wheelZoomNeedsKey?: boolean;
+  /** A plain wheel zooms; otherwise it needs Ctrl / Cmd and a plain wheel scrolls the page. */
+  wheelZoom?: boolean;
   measure?: MeasureText;
   onSelect?: (id: string | null) => void;
   /** Click on the "+" of the selected node. */
@@ -91,7 +93,7 @@ interface GraphState {
   refresh: () => void;
   setActive: (id: string | null) => void;
   setColors: (colors: GraphThemeColors) => void;
-  setVisible: (ids: Set<string> | null) => void;
+  setVisible: (ids: Set<string> | null, linkIds?: Set<string> | null) => void;
   dispose: () => void;
 }
 
@@ -273,14 +275,15 @@ export function stopNetworkGraph(container: HTMLElement): void {
   GRAPHS.delete(container);
 }
 
-/** Applies the legend window in place: no node moves unless the laid-out graph changes. */
+/** Applies the legend window and the timeline in place: no node moves unless the laid-out graph changes. */
 export function updateNetworkGraphVisibility(
   container: HTMLElement,
   visibleIds: Set<string> | null,
+  visibleLinkIds?: Set<string> | null,
 ): boolean {
   const state = GRAPHS.get(container);
   if (!state) return false;
-  state.setVisible(visibleIds);
+  state.setVisible(visibleIds, visibleLinkIds);
   return true;
 }
 
@@ -325,7 +328,7 @@ export function renderNetworkGraph(
   options: RenderNetworkGraphOptions,
 ): void {
   const { model, visibleIds, themeMode = 'light', fontFamily, onSelect, onOpenFocus } = options;
-  const { wheelZoomNeedsKey = false } = options;
+  const { visibleLinkIds = null, wheelZoom = false } = options;
 
   stopNetworkGraph(container);
   container.replaceChildren();
@@ -445,8 +448,8 @@ export function renderNetworkGraph(
   const zoomBehavior = zoom<SVGSVGElement, unknown>()
     .scaleExtent([MIN_ZOOM, MAX_ZOOM])
     .filter((event) => {
-      // Left alone, a plain wheel scrolls what is around the graph.
-      if (event.type === 'wheel' && wheelZoomNeedsKey && !event.ctrlKey && !event.metaKey) {
+      // Chat-safe: left alone, a plain wheel scrolls the transcript.
+      if (event.type === 'wheel' && !wheelZoom && !event.ctrlKey && !event.metaKey) {
         return false;
       }
       return !(event.target as SVGElement).closest?.('g.node');
@@ -668,7 +671,7 @@ export function renderNetworkGraph(
   drawGraphDecor(decor, centerX, centerY, layoutRadius, `graph-decor-fade-${nextDecorId}`);
 
   let signature = simulationSignature(byId.keys(), links);
-  const setVisible = (ids: Set<string> | null): void => {
+  const setVisible = (ids: Set<string> | null, linkIds: Set<string> | null = null): void => {
     const shownNodes = ids ?? new Set(byId.keys());
     for (const [id, element] of nodeElements) {
       const visible = shownNodes.has(id);
@@ -681,7 +684,8 @@ export function renderNetworkGraph(
     for (const link of links) {
       const show =
         shownNodes.has(endpoint(link.source as string | SimNode)) &&
-        shownNodes.has(endpoint(link.target as string | SimNode));
+        shownNodes.has(endpoint(link.target as string | SimNode)) &&
+        (!linkIds || linkIds.has(link.id));
       const line = lineElements.get(link.id);
       if (line) line.style.opacity = show ? '1' : '0';
       if (show) shownLinks.push(link);
@@ -695,7 +699,7 @@ export function renderNetworkGraph(
     applyPull(shownLinks);
     simulation.alpha(0.3).restart();
   };
-  setVisible(visibleIds);
+  setVisible(visibleIds, visibleLinkIds);
 
   simulation
     .on('tick', renderPositions)

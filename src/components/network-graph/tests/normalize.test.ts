@@ -93,6 +93,49 @@ describe('normalizeNetworkGraphData', () => {
     expect(model.nodes[0].id).toBe(`n${MAX_NETWORK_NODES + 39}`);
   });
 
+  it('keeps what the panels draw, in data[0] and on a bare graph', () => {
+    const graph = {
+      nodes: [
+        {
+          id: 'a',
+          date: '2026-01-05',
+          topics: ['Trade', 3],
+          events: ['Summit'],
+          role: 'Analyst',
+          bio: 'Text',
+          metrics: [{ label: 'Share', value: 4 }],
+          eventsLabel: 'Meetings',
+          linksLabel: 'Partners',
+        },
+        { id: 'b' },
+      ],
+      links: [{ id: 'l', source: 'a', target: 'b', value: 1, date: '2026-02-02' }],
+      topics: [{ name: 'Trade', value: 1 }],
+      ranking: [{ name: 'a', value: 1 }],
+      labels: { linkValue: 'votes' },
+    };
+
+    for (const model of [
+      normalizeNetworkGraphData(graph),
+      normalizeNetworkGraphData({ data: [graph] }),
+    ]) {
+      expect(model.topics).toEqual(graph.topics);
+      expect(model.ranking).toEqual(graph.ranking);
+      expect(model.labels).toEqual(graph.labels);
+      expect(model.links[0].date).toBe('2026-02-02');
+      expect(model.nodes[0]).toMatchObject({
+        date: '2026-01-05',
+        topics: ['Trade'],
+        events: ['Summit'],
+        role: 'Analyst',
+        bio: 'Text',
+        metrics: [{ label: 'Share', value: 4 }],
+        eventsLabel: 'Meetings',
+        linksLabel: 'Partners',
+      });
+    }
+  });
+
   it('returns an empty model for invalid payloads', () => {
     expect(normalizeNetworkGraphData(null).nodes).toEqual([]);
     expect(normalizeNetworkGraphData({}).nodes).toEqual([]);

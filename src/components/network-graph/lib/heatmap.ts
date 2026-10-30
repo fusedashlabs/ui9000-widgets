@@ -11,7 +11,9 @@ export interface NetworkHeatmapData {
 }
 
 /** The graph as a node × node matrix. Links are undirected here: A → B and B → A add up. */
-export function buildNetworkHeatmap(model: NetworkGraphModel): NetworkHeatmapData {
+export function buildNetworkHeatmap(
+  model: Pick<NetworkGraphModel, 'nodes' | 'links'>,
+): NetworkHeatmapData {
   const ids = new Set(model.nodes.map((node) => node.id));
   const values = new Map<string, number>();
   const totals = new Map<string, number>();

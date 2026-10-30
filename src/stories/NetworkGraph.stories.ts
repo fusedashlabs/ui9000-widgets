@@ -3,12 +3,17 @@ import type { Meta, StoryObj } from '@storybook/web-components';
 
 import '../components/network-graph/index.js';
 import fusedashFixture from './fixtures/network-graph.fusedash.json';
+import panelsFixture from './fixtures/network-graph.panels.json';
 
 type NetworkGraphArgs = {
   data: unknown;
   showHeader: boolean;
   showLegend: boolean;
   showTooltip: boolean;
+  wheelZoom: boolean;
+  plainBackground: boolean;
+  message: string;
+  width: string;
 };
 
 const meta: Meta<NetworkGraphArgs> = {
@@ -19,7 +24,7 @@ const meta: Meta<NetworkGraphArgs> = {
     docs: {
       description: {
         component:
-          'FuseDash `networkGraphChart` — d3-force layout. Click a node to focus its links, drag to reposition, drag the background to pan, ctrl/cmd + wheel to zoom, and use the legend handles to filter by node size.',
+          'FuseDash `networkGraphChart` — d3-force layout on a dashed circle, with a Heatmap view. Click a node to see its connections, use its "+" for the focus view, drag to reposition, drag the background to pan, ctrl/cmd + wheel to zoom (`wheel-zoom` for a plain wheel), and use the legend handles to filter by node size. Data with `topics`, `ranking`, `labels` and dates adds the topic list, the details column and the timeline.',
       },
     },
   },
@@ -28,15 +33,22 @@ const meta: Meta<NetworkGraphArgs> = {
     showHeader: true,
     showLegend: true,
     showTooltip: true,
+    wheelZoom: false,
+    plainBackground: false,
+    message: '',
+    width: '100%',
   },
   render: (args) => html`
-    <div style="width:100%;height:560px;background:#fff;">
+    <div style="width:${args.width};height:640px;background:var(--ui9000-color-surface, #fff);">
       <ui9000-network-graph
         style="display:block;width:100%;height:100%;"
         data=${JSON.stringify(args.data)}
         ?show-header=${args.showHeader}
         ?show-legend=${args.showLegend}
         ?show-tooltip=${args.showTooltip}
+        ?wheel-zoom=${args.wheelZoom}
+        ?plain-background=${args.plainBackground}
+        .message=${args.message}
       ></ui9000-network-graph>
     </div>
   `,
@@ -72,6 +84,21 @@ export const ChatGraph: Story = {
       ],
     },
   },
+};
+
+/** Topics, ranking, dates and metrics: the panels around the graph. */
+export const Panels: Story = {
+  args: { data: panelsFixture },
+};
+
+/** Below 900 px the details go under the graph, folded. */
+export const PanelsCompact: Story = {
+  args: { data: panelsFixture, width: '640px' },
+};
+
+/** The chat: a plain wheel scrolls the transcript, on the chat's own background. */
+export const InChat: Story = {
+  args: { data: panelsFixture, width: '520px', plainBackground: true },
 };
 
 export const NoLegend: Story = {

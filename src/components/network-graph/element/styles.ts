@@ -20,9 +20,6 @@ export const networkGraphStyles = css`
     background: var(--graph-background);
     overflow: hidden;
   }
-  .network-stage[hidden] {
-    display: none;
-  }
   .view-toggle {
     position: absolute;
     top: 12px;
@@ -34,6 +31,9 @@ export const networkGraphStyles = css`
     border-radius: 999px;
     background: var(--toggle-track);
     box-shadow: var(--toggle-shadow);
+  }
+  .view-toggle[hidden] {
+    display: none;
   }
   .view-button {
     border: 0;
@@ -259,12 +259,12 @@ export const networkGraphStyles = css`
   /* Overlay — same layout as map-chart bubble legend. */
   .graph-legend {
     position: absolute;
-    right: 5px;
-    bottom: 5px;
+    right: 16px;
+    bottom: 16px;
     z-index: 10;
     width: max-content;
-    min-width: 360px;
-    max-width: calc(100% - 20px);
+    min-width: 200px;
+    max-width: calc(100% - 32px);
     max-height: 50%;
     display: flex;
     flex-direction: column;
@@ -279,6 +279,11 @@ export const networkGraphStyles = css`
       0 4px 8px 2px #141c2c0f;
     user-select: none;
     pointer-events: auto;
+  }
+  /* Narrow widget, folded: a smaller legend leaves more of the graph in view. */
+  .graph-legend[data-compact] {
+    min-width: 0;
+    width: 168px;
   }
   .legend-panel-header {
     display: flex;
@@ -328,16 +333,38 @@ export const networkGraphStyles = css`
     width: 100%;
   }
   .legend-layer {
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--ui9000-color-border, #e5e7eb);
+    padding: 0 12px 8px;
     width: 100%;
     box-sizing: border-box;
   }
-  .legend-layer:last-child {
-    border-bottom: none;
+  .legend-caption {
+    margin: 0;
+    padding: 8px 12px 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ui9000-color-text-muted, #6c7584);
   }
-  .legend-details {
-    margin-top: 8px;
+  .legend-types {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+  }
+  .legend-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+  }
+  .legend-type-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .legend-type-name {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ui9000-color-text, #111827);
   }
   .legend-scale {
     display: flex;
@@ -352,7 +379,8 @@ export const networkGraphStyles = css`
   .legend-colors {
     display: flex;
     position: relative;
-    width: 100%;
+    width: 280px;
+    max-width: 100%;
   }
   .legend-colors[data-qualitative]::after {
     content: '';
@@ -422,14 +450,15 @@ export const networkGraphStyles = css`
   }
   .legend-values {
     display: flex;
-    width: 100%;
+    width: 280px;
+    max-width: 100%;
     padding-top: 6px;
   }
   .legend-value {
     flex: 1;
     min-width: 0;
     padding-right: 5px;
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 400;
     line-height: 16px;
     text-align: center;

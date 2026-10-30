@@ -6,9 +6,13 @@ import type {
   NetworkGraphFusePayload,
   NetworkGraphInput,
   NetworkGraphModel,
+  NetworkLabels,
   NetworkLink,
   NetworkLinkKind,
   NetworkNode,
+  NetworkTopic,
+  RankingEntry,
+  TopicMetric,
 } from './types.js';
 
 /**
@@ -55,7 +59,19 @@ function toNode(raw: unknown): NetworkNode | null {
     type: raw.type == null ? '' : String(raw.type),
     color: optionalString(raw.color),
     img: optionalString(raw.img),
+    topics: stringList(raw.topics),
+    date: optionalString(raw.date),
+    events: stringList(raw.events),
+    role: optionalString(raw.role),
+    metrics: Array.isArray(raw.metrics) ? (raw.metrics as TopicMetric[]) : undefined,
+    bio: optionalString(raw.bio),
+    eventsLabel: optionalString(raw.eventsLabel),
+    linksLabel: optionalString(raw.linksLabel),
   };
+}
+
+function stringList(value: unknown): string[] | undefined {
+  return Array.isArray(value) ? value.filter((item) => typeof item === 'string') : undefined;
 }
 
 function toLinkKind(raw: unknown): NetworkLinkKind {
@@ -101,6 +117,7 @@ function collectLinks(raw: unknown[], known: Set<string>): NetworkLink[] {
       target,
       value: finiteNumber(entry.value) ?? 0,
       type: toLinkKind(entry.type),
+      date: optionalString(entry.date),
     });
   });
 
@@ -127,6 +144,15 @@ function paintNodeGroups(nodes: NetworkNode[]): void {
     }
     node.color = NETWORK_GROUP_PALETTE[index % NETWORK_GROUP_PALETTE.length];
   }
+}
+
+/** Topics, ranking and words of the panels: on the graph itself or in `data[0]`. */
+function extrasOf(source: Record<string, unknown>): Partial<NetworkGraphModel> {
+  return {
+    ...(Array.isArray(source.topics) ? { topics: source.topics as NetworkTopic[] } : {}),
+    ...(Array.isArray(source.ranking) ? { ranking: source.ranking as RankingEntry[] } : {}),
+    ...(isRecord(source.labels) ? { labels: source.labels as NetworkLabels } : {}),
+  };
 }
 
 function buildModel(rawNodes: unknown[], rawLinks: unknown[]): NetworkGraphModel {
@@ -166,10 +192,13 @@ function buildModel(rawNodes: unknown[], rawLinks: unknown[]): NetworkGraphModel
 function normalizeFuse(payload: NetworkGraphFusePayload): NetworkGraphModel {
   const first = Array.isArray(payload.data) ? payload.data[0] : undefined;
   if (!isRecord(first)) return emptyModel();
-  return buildModel(
-    Array.isArray(first.nodes) ? first.nodes : [],
-    Array.isArray(first.links) ? first.links : [],
-  );
+  return {
+    ...buildModel(
+      Array.isArray(first.nodes) ? first.nodes : [],
+      Array.isArray(first.links) ? first.links : [],
+    ),
+    ...extrasOf(first),
+  };
 }
 
 /** Normalize FuseDash widget or chat payloads into a force-graph model. */
@@ -181,10 +210,13 @@ export function normalizeNetworkGraphData(
   if (Array.isArray(input)) return buildModel([], input);
 
   if (isRecord(input) && (Array.isArray(input.nodes) || Array.isArray(input.links))) {
-    return buildModel(
-      Array.isArray(input.nodes) ? input.nodes : [],
-      Array.isArray(input.links) ? input.links : [],
-    );
+    return {
+      ...buildModel(
+        Array.isArray(input.nodes) ? input.nodes : [],
+        Array.isArray(input.links) ? input.links : [],
+      ),
+      ...extrasOf(input),
+    };
   }
 
   if (isRecord(input) && Array.isArray(input.data)) {

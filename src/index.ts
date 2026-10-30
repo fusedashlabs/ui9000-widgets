@@ -714,10 +714,15 @@ export {
   stopNetworkGraph,
   visibleNodeIds,
   legendRanges,
+  type MetricPoint,
   type NetworkGraphModel,
+  type NetworkLabels,
   type NetworkLink,
   type NetworkNode,
   type NetworkRange,
+  type NetworkTopic,
+  type RankingEntry,
+  type TopicMetric,
   networkGraphMetadata,
 } from './components/network-graph/index.js';
 

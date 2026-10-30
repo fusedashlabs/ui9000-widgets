@@ -11,14 +11,114 @@ export const networkGraphStyles = css`
     font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
   }
-  .chart-root {
+  .network-stage {
+    position: relative;
     flex: 1;
     min-height: 0;
     width: 100%;
     border-radius: 12px;
-    background: var(--ui9000-color-surface-muted, #f9faff);
+    background: var(--graph-background);
+    overflow: hidden;
+  }
+  .network-stage[hidden] {
+    display: none;
+  }
+  .view-toggle {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    border-radius: 999px;
+    background: var(--toggle-track);
+    box-shadow: var(--toggle-shadow);
+  }
+  .view-button {
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--toggle-text);
+    background: transparent;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+  .view-button[data-active] {
+    color: var(--toggle-text-active);
+    background: var(--toggle-thumb);
+  }
+  .view-button:focus-visible {
+    outline: 2px solid #0098e6;
+    outline-offset: 1px;
+  }
+  .heatmap-pane {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px 0;
+    box-sizing: border-box;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--ui9000-color-surface, #ffffff);
+  }
+  .heatmap-pane[hidden] {
+    display: none;
+  }
+  .heatmap-root {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    overflow: auto;
+    position: relative;
+  }
+  .heatmap-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 72px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--ui9000-color-surface, #ffffff));
+  }
+  .heatmap-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--ui9000-color-surface, #ffffff);
+  }
+  .heatmap-reveal {
+    animation: heatmap-reveal 320ms ease-out both;
+  }
+  @keyframes heatmap-reveal {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .heatmap-reveal {
+      animation: none;
+    }
+  }
+  .chart-root {
+    position: absolute;
+    inset: 0;
     overflow: hidden;
     touch-action: pan-y;
+  }
+  .chart-root[data-covered] {
+    visibility: hidden;
   }
   .empty {
     display: grid;

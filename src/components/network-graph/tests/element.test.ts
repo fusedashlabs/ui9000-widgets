@@ -56,22 +56,59 @@ async function mount(
 }
 
 describe('ui9000-network-graph', () => {
-  it('repaints an unknown category when the page style id changes', async () => {
+  it('paints node types from the group palette in order of appearance', async () => {
     const el = await mount({
-      nodes: [{ id: 'a', label: 'A', type: 'investment_bank', value: 1 }],
+      nodes: [
+        { id: 'a', label: 'A', type: 'investment_bank', value: 1 },
+        { id: 'b', label: 'B', type: 'fund', value: 2 },
+      ],
       links: [],
     });
-    const fill = () =>
-      el.shadowRoot.querySelector('.node-background')?.getAttribute('fill')?.toLowerCase();
+    const fills = [...el.shadowRoot.querySelectorAll('.node-background')].map((node) =>
+      node.getAttribute('fill')?.toLowerCase(),
+    );
+    expect(fills).toEqual(['#a0f1e3', '#6fcf97']);
+    el.remove();
+  });
 
-    expect(fill()).toBe('#473dd9');
+  it('switches to the heatmap and back without rebuilding the graph', async () => {
+    const el = await mount();
+    const root = el.shadowRoot;
+    const graph = root.querySelector('.chart-root svg');
+    const button = (label: string) =>
+      [...root.querySelectorAll<HTMLButtonElement>('.view-button')].find(
+        (item) => item.textContent?.trim() === label,
+      )!;
 
-    el.style.setProperty('--ui9000-style-id', 'palette1');
-    document.dispatchEvent(new Event('ui9000-theme'));
-    await flush();
+    expect(button('Network').getAttribute('aria-selected')).toBe('true');
+    expect(root.querySelector('.heatmap-root svg')).toBeNull();
+
+    button('Heatmap').click();
     await el.updateComplete;
+    await flush();
+    expect(button('Heatmap').getAttribute('aria-selected')).toBe('true');
+    expect(root.querySelector('.heatmap-root g.heatmap-row')).not.toBeNull();
+    expect(root.querySelector('.graph-legend')).toBeNull();
+    expect(root.querySelector('.heatmap-header')?.textContent).toContain('Link values');
 
-    expect(fill()).toBe('#2039b4');
+    button('Network').click();
+    await el.updateComplete;
+    await flush();
+    expect(root.querySelector('.heatmap-pane')?.hasAttribute('hidden')).toBe(true);
+    expect(root.querySelector('.chart-root svg')).toBe(graph);
+    el.remove();
+  });
+
+  it('keeps the row picked in the heatmap selected', async () => {
+    const el = await mount();
+    const root = el.shadowRoot;
+    root.querySelectorAll<HTMLButtonElement>('.view-button')[1].click();
+    await el.updateComplete;
+    await flush();
+
+    root.querySelector('.heatmap-root g.heatmap-row')!.dispatchEvent(new MouseEvent('click'));
+    await flush();
+    expect(root.querySelector('rect.heatmap-selected-row')).not.toBeNull();
     el.remove();
   });
 
@@ -80,7 +117,7 @@ describe('ui9000-network-graph', () => {
     const root = el.shadowRoot;
 
     expect(root.querySelector('.empty')?.textContent).toMatch(/Network graph requires/);
-    expect(root.querySelector('.chart-root')?.hasAttribute('hidden')).toBe(true);
+    expect(root.querySelector('.network-stage')?.hasAttribute('hidden')).toBe(true);
     expect(root.querySelector('.chart-root svg')).toBeNull();
     expect(root.querySelector('.graph-legend')).toBeNull();
 

@@ -3,11 +3,17 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { readThemeFromElement } from '../../../context/widget-context.js';
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
+import type { ChartTooltipContent } from '../../../element/chart-tooltip-portal.js';
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
+import { renderHeatmapGrid } from '../../matrix-chart/render/heatmap-grid.js';
 import {
+  buildNetworkHeatmap,
   FULL_RANGE,
   formatLegendValue,
+  formatNodeValue,
+  GRAPH_CONTROL_COLORS,
+  GRAPH_THEME_COLORS,
   legendRanges,
   normalizeNetworkGraphData,
   rangeTrackOffset,
@@ -33,6 +39,22 @@ import { dsText } from '../../../element/ds-text.js';
 const LEGEND_BUBBLE_SIZES = [10, 15, 20, 25, 30, 35, 40];
 const MUTED_LEGEND_FILL = '#6C758429';
 
+type NetworkView = 'network' | 'heatmap';
+
+const VIEWS: Array<{ value: NetworkView; label: string }> = [
+  { value: 'network', label: 'Network' },
+  { value: 'heatmap', label: 'Heatmap' },
+];
+
+/** Room kept between the view toggle and the heatmap texts next to it. */
+const TOGGLE_GAP = 6;
+/** Padding of the heatmap pane, and the room under rows that fill it. */
+const HEATMAP_PADDING_TOP = 8;
+const HEATMAP_PADDING_X = 12;
+const HEATMAP_BOTTOM_ROOM = 104;
+
+let nextChartId = 0;
+
 @customElement('ui9000-network-graph')
 export class Ui9000NetworkGraph extends Ui9000ChartElement {
   static override styles = [networkGraphStyles, chartShellStyles];
@@ -55,9 +77,16 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   @state()
   private _legendOpen = true;
 
+  @state()
+  private _view: NetworkView = 'network';
+
   /** Non-reactive: selection is owned by the draw layer, redrawing would reset it. */
   private _activeNodeId: string | null = null;
 
+  /** The drawn graph no longer matches its data, theme or selection. */
+  private _graphStale = true;
+  private _heatmapRevealed = false;
+  private readonly _chartId = `ui9000-network-${(nextChartId += 1)}`;
   private _model: NetworkGraphModel | null = null;
   private _modelMode: 'light' | 'dark' | null = null;
   private _modelStyle: string | null = null;
@@ -88,6 +117,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
 
   override updated(changed: PropertyValues): void {
     if (changed.has('dataJson')) {
+      this._graphStale = true;
       // New buckets: the old slider window and selection no longer mean anything.
       this._range = { ...FULL_RANGE };
       this._activeNodeId = null;
@@ -117,6 +147,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   }
 
   protected override onThemeChange(): void {
+    this._graphStale = true;
     this.scheduleDraw();
   }
 
@@ -134,6 +165,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     this._resizeRaf = requestAnimationFrame(() => {
       const root = this.chartRoot();
       if (!root) return;
+      if (this._view === 'heatmap') this.draw();
       if (!resizeNetworkGraph(root, root.clientWidth, root.clientHeight)) this.draw();
     });
   }
@@ -157,6 +189,86 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     return this._model;
   }
 
+  private heatmapRoot(): HTMLElement | null {
+    return (this.shadowRoot?.querySelector('.heatmap-root') as HTMLElement | null) ?? null;
+  }
+
+  private setView(view: NetworkView): void {
+    if (view === this._view) return;
+    this._view = view;
+    this.closeAllTooltips();
+    this.scheduleDraw();
+  }
+
+  private drawHeatmap(root: HTMLElement, model: NetworkGraphModel): void {
+    const { ids, labels, colors, values } = buildNetworkHeatmap(model);
+    const toggle = this.shadowRoot?.querySelector('.view-toggle') as HTMLElement | null;
+    const labelOf = (id: string): string => labels[ids.indexOf(id)] ?? id;
+    let tip: ChartTooltipContent | null = null;
+    const showTip = (event: MouseEvent, content: ChartTooltipContent): void => {
+      if (!this.showTooltip) return;
+      tip = content;
+      this.openTooltip(event, content);
+    };
+    const showTotal = (event: MouseEvent, id: string, total: number): void =>
+      showTip(event, {
+        rows: [
+          { label: 'Node', value: labelOf(id) },
+          { label: 'Total', value: formatNodeValue(total) },
+        ],
+      });
+
+    renderHeatmapGrid(root, {
+      rows: ids,
+      columns: ids,
+      rowLabels: labels,
+      columnLabels: labels,
+      rowColors: colors,
+      values,
+      width: root.clientWidth || 400,
+      height: root.clientHeight || 300,
+      idPrefix: this._chartId,
+      themeMode: this.themeMode(),
+      fontFamily: readThemeFromElement(this).fontFamily,
+      hoverable: this.showTooltip,
+      title: 'Link values',
+      // Each linked pair has two cells, one on each side of the diagonal.
+      subtitle: `${ids.length} nodes · ${values.size / 2} links`,
+      rowTotalsTitle: 'Total',
+      columnTotalsTitle: 'Total',
+      fillHeight: true,
+      fillBottomRoom: HEATMAP_BOTTOM_ROOM,
+      cornerInset: toggle
+        ? {
+            width: toggle.offsetLeft - HEATMAP_PADDING_X + toggle.offsetWidth + TOGGLE_GAP,
+            height: toggle.offsetTop - HEATMAP_PADDING_TOP + toggle.offsetHeight + TOGGLE_GAP,
+          }
+        : undefined,
+      reveal: !this._heatmapRevealed,
+      selectedRow: this._activeNodeId,
+      onRowClick: (row) => {
+        this._activeNodeId = this._activeNodeId === row ? null : row;
+        this._graphStale = true;
+        this.scheduleDraw();
+      },
+      onCellEnter: (event, { row, column, value }) =>
+        showTip(event, {
+          rows: [
+            { label: 'From', value: labelOf(row) },
+            { label: 'To', value: labelOf(column) },
+            { label: 'Value', value: formatNodeValue(value) },
+          ],
+        }),
+      onRowEnter: (event, { row, total }) => showTotal(event, row, total),
+      onColumnEnter: (event, { column, total }) => showTotal(event, column, total),
+      onPointerMove: (event) => {
+        if (tip) this.openTooltip(event, tip);
+      },
+      onPointerLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
+    });
+    this._heatmapRevealed = true;
+  }
+
   private draw(): void {
     const root = this.chartRoot();
     if (!root) return;
@@ -168,8 +280,19 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     if (this._empty) {
       stopNetworkGraph(root);
       root.replaceChildren();
+      this.heatmapRoot()?.replaceChildren();
       return;
     }
+
+    if (this._view === 'heatmap') {
+      const heatmap = this.heatmapRoot();
+      if (heatmap) this.drawHeatmap(heatmap, model);
+      if (root.childElementCount) return;
+    } else if (root.childElementCount && !this._graphStale) {
+      // Coming back from the heatmap: the settled layout is still there.
+      return;
+    }
+    this._graphStale = false;
 
     renderNetworkGraph(root, {
       model,
@@ -328,13 +451,55 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     `;
   }
 
+  private stageStyle(): string {
+    const mode = this.themeMode();
+    const controls = GRAPH_CONTROL_COLORS[mode];
+    return [
+      `--graph-background:${GRAPH_THEME_COLORS[mode].background}`,
+      `--toggle-track:${controls.track}`,
+      `--toggle-thumb:${controls.thumb}`,
+      `--toggle-text:${controls.text}`,
+      `--toggle-text-active:${controls.textActive}`,
+      `--toggle-shadow:${controls.shadow}`,
+    ].join(';');
+  }
+
+  private renderViewToggle() {
+    return html`<div class="view-toggle" role="tablist" aria-label="Chart view">
+      ${VIEWS.map(
+        ({ value, label }) => html`<button
+          type="button"
+          role="tab"
+          class="view-button"
+          aria-selected=${this._view === value}
+          ?data-active=${this._view === value}
+          @click=${() => this.setView(value)}
+        >
+          ${label}
+        </button>`,
+      )}
+    </div>`;
+  }
+
   override render() {
+    const isHeatmap = this._view === 'heatmap';
     return html`
       <div class="widget-shell" part="shell">
         ${this.renderShellHeader(this.headerTitle())}
         <div class="widget-body">
-          <div class="chart-root" part="chart" ?hidden=${this._empty}></div>
-          ${this.renderLegend()}
+          <div
+            class="network-stage"
+            ?hidden=${this._empty}
+            style=${this.stageStyle()}
+          >
+            ${this.renderViewToggle()}
+            <div class="chart-root" part="chart" ?data-covered=${isHeatmap}></div>
+            <div class="heatmap-pane" ?hidden=${!isHeatmap}>
+              <div class="heatmap-root" part="heatmap"></div>
+              <div class="heatmap-fade"></div>
+            </div>
+          </div>
+          ${isHeatmap ? nothing : this.renderLegend()}
           ${this._empty
             ? html`<div class="empty" part="empty">${dsText('Network graph requires a nodes and links payload.', { size: 'md' })}</div>`
             : nothing}

@@ -12,6 +12,8 @@ import {
   scaleLinkWidthByMax,
   visibleNodeIds,
 } from '../lib/domain.js';
+import { heatmapCellKey } from '../../matrix-chart/lib/heatmap-layout.js';
+import { buildNetworkHeatmap } from '../lib/heatmap.js';
 import { formatLegendValue, formatLinkValue, formatNodeValue } from '../lib/format.js';
 import { normalizeNetworkGraphData } from '../lib/normalize.js';
 import type { NetworkGraphInput } from '../lib/types.js';
@@ -101,6 +103,31 @@ describe('networkForces', () => {
     expect(small.collide).toBeGreaterThanOrEqual(68);
     expect(large.linkDistance).toBeLessThanOrEqual(100);
     expect(small.linkDistance).toBeGreaterThanOrEqual(20);
+  });
+});
+
+describe('buildNetworkHeatmap', () => {
+  const model = normalizeNetworkGraphData({
+    nodes: [
+      { id: 'a', label: 'Alpha' },
+      { id: 'b', label: 'Beta' },
+      { id: 'c', label: 'Gamma' },
+    ],
+    links: [
+      { source: 'a', target: 'b', value: 2 },
+      { source: 'b', target: 'a', value: 3 },
+      { source: 'b', target: 'c', value: 1 },
+    ],
+  });
+
+  it('adds up both directions of a pair in both cells', () => {
+    const { values } = buildNetworkHeatmap(model);
+    expect(values.get(heatmapCellKey('a', 'b'))).toBe(5);
+    expect(values.get(heatmapCellKey('b', 'a'))).toBe(5);
+  });
+
+  it('puts the most connected nodes first', () => {
+    expect(buildNetworkHeatmap(model).ids).toEqual(['b', 'a', 'c']);
   });
 });
 

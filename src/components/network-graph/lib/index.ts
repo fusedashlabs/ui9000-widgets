@@ -53,3 +53,12 @@ export {
   sliderIndexFromPointer,
   thumbTrackPercent,
 } from './legend.js';
+export { buildNetworkHeatmap, type NetworkHeatmapData } from './heatmap.js';
+export {
+  GRAPH_ACCENT,
+  GRAPH_CONTROL_COLORS,
+  GRAPH_THEME_COLORS,
+  NETWORK_GROUP_PALETTE,
+  type GraphControlColors,
+  type GraphThemeColors,
+} from './theme.js';

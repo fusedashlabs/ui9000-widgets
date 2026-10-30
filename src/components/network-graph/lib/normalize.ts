@@ -1,7 +1,6 @@
+import { NETWORK_GROUP_PALETTE } from './theme.js';
 import { generateBreakPoints } from '../../../utils/breakpoints.js';
-import { pickQualitativePalette } from '../../../utils/fuse-palette.js';
 
-import { NODE_TYPE_COLORS } from './domain.js';
 
 import type {
   NetworkGraphFusePayload,
@@ -113,24 +112,20 @@ function collectLinks(raw: unknown[], known: Set<string>): NetworkLink[] {
 }
 
 /**
- * `NODE_TYPE_COLORS` only covers the categories the client ships. Anything else
- * (the default mock's `investment_bank`, `asset_management`, …) would collapse
- * onto one slate fill, so unknown categories draw from the qualitative palette
- * in first-seen order instead.
+ * Group colours of the network design, in order of first appearance. A node's
+ * own colour wins; nodes without a type share the first colour.
  */
-function paintUnknownTypes(nodes: NetworkNode[]): void {
-  const unknown: string[] = [];
-  for (const node of nodes) {
-    if (!node.type || NODE_TYPE_COLORS[node.type] || unknown.includes(node.type)) continue;
-    unknown.push(node.type);
-  }
-  if (!unknown.length) return;
-
-  const palette = pickQualitativePalette(0, unknown.length);
+function paintNodeGroups(nodes: NetworkNode[]): void {
+  const groups: string[] = [];
   for (const node of nodes) {
     if (node.color) continue;
-    const index = unknown.indexOf(node.type);
-    if (index >= 0) node.color = palette[index % palette.length];
+    const type = node.type.trim();
+    let index = groups.indexOf(type);
+    if (index < 0) {
+      groups.push(type);
+      index = groups.length - 1;
+    }
+    node.color = NETWORK_GROUP_PALETTE[index % NETWORK_GROUP_PALETTE.length];
   }
 }
 
@@ -152,7 +147,7 @@ function buildModel(rawNodes: unknown[], rawLinks: unknown[]): NetworkGraphModel
 
   if (!nodes.length) return emptyModel();
 
-  paintUnknownTypes(nodes);
+  paintNodeGroups(nodes);
 
   const links = collectLinks(rawLinks, new Set(nodes.map((n) => n.id)));
   const values = nodes

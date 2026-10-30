@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { useSeriesMode } from '../../../utils/fuse-palette.js';
 
 import {
   MAX_NETWORK_NODES,
@@ -40,22 +39,22 @@ describe('normalizeNetworkGraphData', () => {
     expect(model.links[0].type).toBe('primary');
   });
 
-  it('lifts an unknown category in dark and keeps an explicit brand purple', () => {
-    const lifted = useSeriesMode('dark', () =>
-      normalizeNetworkGraphData({
-        nodes: [{ id: 'a', type: 'investment_bank' }],
-        links: [],
-      }),
-    );
-    expect(lifted.nodes[0].color).toBe('#584FDC');
-
-    const explicit = useSeriesMode('dark', () =>
-      normalizeNetworkGraphData({
-        nodes: [{ id: 'a', type: 'investment_bank', color: '#473DD9' }],
-        links: [],
-      }),
-    );
-    expect(explicit.nodes[0].color).toBe('#473DD9');
+  it('gives each type the next group colour and keeps an explicit one', () => {
+    const { nodes } = normalizeNetworkGraphData({
+      nodes: [
+        { id: 'a', type: 'investment_bank' },
+        { id: 'b', type: 'fund' },
+        { id: 'c', type: 'investment_bank' },
+        { id: 'd', type: 'fund', color: '#473DD9' },
+      ],
+      links: [],
+    });
+    expect(nodes.map((node) => node.color)).toEqual([
+      '#A0F1E3',
+      '#6FCF97',
+      '#A0F1E3',
+      '#473DD9',
+    ]);
   });
 
   it('derives nodes from a links-only payload', () => {

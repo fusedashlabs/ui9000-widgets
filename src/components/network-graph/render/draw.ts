@@ -52,13 +52,13 @@ import { getNodeArea, getNodeFootprint, getNodeLabelLayout, type Footprint } fro
 import type { SimNode } from '../lib/layout-types.js';
 import {
   DEFAULT_NODE_COLOR,
-  GRAPH_ACCENT,
-  GRAPH_THEME_COLORS,
+  graphThemeColors,
   NODE_SIZES,
   nodeRadius as bucketRadius,
   type GraphThemeColors,
   type NetworkGraphModel,
   type NetworkLink,
+  type NetworkNode,
 } from '../lib/index.js';
 import { drawGraphDecor } from './decor.js';
 
@@ -92,7 +92,7 @@ interface GraphState {
   nodeElements: Map<string, SVGGElement>;
   refresh: () => void;
   setActive: (id: string | null) => void;
-  setColors: (colors: GraphThemeColors) => void;
+  setColors: (colors: GraphThemeColors, nodes: NetworkNode[]) => void;
   setVisible: (ids: Set<string> | null, linkIds?: Set<string> | null) => void;
   dispose: () => void;
 }
@@ -158,7 +158,7 @@ function createNodeElements(group: NodeGroup, node: SimNode, radius: number): vo
     .attr('class', 'node-plus')
     .attr('transform', `translate(${offset}, ${-offset})`)
     .style('opacity', 0);
-  plus.append('circle').attr('r', PLUS_BADGE_RADIUS).attr('fill', GRAPH_ACCENT);
+  plus.append('circle').attr('class', 'node-plus-badge').attr('r', PLUS_BADGE_RADIUS);
   plus
     .append('path')
     .attr('d', 'M-5 0 H5 M0 -5 V5')
@@ -246,6 +246,7 @@ function applyNodeState(
     .attr('stroke', colors.selectedRing)
     .attr('stroke-opacity', isActive ? 1 : 0.6)
     .style('opacity', isActive || isHovered ? 1 : 0);
+  group.select('.node-plus-badge').attr('fill', colors.accent);
   group
     .select('.node-plus')
     .style('opacity', isActive ? 1 : 0)
@@ -264,11 +265,6 @@ function applyNodeState(
 
 const endpoint = (end: string | SimNode): string => (typeof end === 'object' ? end.id : end);
 
-function simulationSignature(nodeIds: Iterable<string>, links: SimLink[]): string {
-  const nodes = Array.from(nodeIds).sort();
-  const linkIds = links.map((link) => link.id).sort();
-  return `${nodes.join('\u0001')}\u0002${linkIds.join('\u0001')}`;
-}
 
 export function stopNetworkGraph(container: HTMLElement): void {
   GRAPHS.get(container)?.dispose();
@@ -300,10 +296,15 @@ export function setNetworkGraphActive(container: HTMLElement, id: string | null)
   return true;
 }
 
-export function setNetworkGraphColors(container: HTMLElement, mode: 'light' | 'dark'): boolean {
+/** Theme or page style changed: repaints in place. `nodes` carry the new node colours. */
+export function setNetworkGraphColors(
+  container: HTMLElement,
+  mode: 'light' | 'dark',
+  nodes: NetworkNode[],
+): boolean {
   const state = GRAPHS.get(container);
   if (!state) return false;
-  state.setColors(GRAPH_THEME_COLORS[mode]);
+  state.setColors(graphThemeColors(mode), nodes);
   return true;
 }
 
@@ -338,7 +339,7 @@ export function renderNetworkGraph(
   const height = CANVAS_HEIGHT;
   const centerX = width / 2;
   const centerY = height / 2;
-  let colors = GRAPH_THEME_COLORS[themeMode];
+  let colors = graphThemeColors(themeMode);
   let activeId = options.activeNodeId ?? null;
   let hoveredId: string | null = null;
   let dragging = false;
@@ -670,7 +671,6 @@ export function renderNetworkGraph(
   nextDecorId += 1;
   drawGraphDecor(decor, centerX, centerY, layoutRadius, `graph-decor-fade-${nextDecorId}`);
 
-  let signature = simulationSignature(byId.keys(), links);
   const setVisible = (ids: Set<string> | null, linkIds: Set<string> | null = null): void => {
     const shownNodes = ids ?? new Set(byId.keys());
     for (const [id, element] of nodeElements) {
@@ -690,14 +690,9 @@ export function renderNetworkGraph(
       if (line) line.style.opacity = show ? '1' : '0';
       if (show) shownLinks.push(link);
     }
-    // Hidden links stay in the layout unless the shown graph really changed;
-    // restarting for nothing made every node drift on each step.
-    const next = simulationSignature(shownNodes, shownLinks);
-    if (next === signature) return;
-    signature = next;
+    // A paint change only: the layout holds. The next drag pulls on the shown links.
     (simulation.force('link') as ForceLink<SimNode, SimLink>).links(shownLinks);
     applyPull(shownLinks);
-    simulation.alpha(0.3).restart();
   };
   setVisible(visibleIds, visibleLinkIds);
 
@@ -745,8 +740,12 @@ export function renderNetworkGraph(
     nodeElements,
     refresh,
     setActive,
-    setColors: (next) => {
+    setColors: (next, painted) => {
       colors = next;
+      for (const { id, color } of painted) {
+        const node = byId.get(id);
+        if (node) node.color = color;
+      }
       refresh();
     },
     setVisible,

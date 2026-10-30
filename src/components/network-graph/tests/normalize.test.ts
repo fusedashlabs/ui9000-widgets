@@ -39,21 +39,21 @@ describe('normalizeNetworkGraphData', () => {
     expect(model.links[0].type).toBe('primary');
   });
 
-  it('gives each type the next group colour and keeps an explicit one', () => {
+  it('gives each type the next page colour and keeps an explicit one', () => {
     const { nodes } = normalizeNetworkGraphData({
       nodes: [
         { id: 'a', type: 'investment_bank' },
         { id: 'b', type: 'fund' },
         { id: 'c', type: 'investment_bank' },
-        { id: 'd', type: 'fund', color: '#473DD9' },
+        { id: 'd', type: 'fund', color: '#123456' },
       ],
       links: [],
     });
     expect(nodes.map((node) => node.color)).toEqual([
-      '#A0F1E3',
-      '#6FCF97',
-      '#A0F1E3',
       '#473DD9',
+      '#36C4A5',
+      '#473DD9',
+      '#123456',
     ]);
   });
 

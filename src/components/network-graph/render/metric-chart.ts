@@ -2,7 +2,8 @@ import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, line } from 'd3-shape';
 
-import { GRAPH_PANEL_COLORS, MONTHS, type PeriodPoint } from '../lib/index.js';
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
+import { graphChartColors, MONTHS, type PeriodPoint } from '../lib/index.js';
 
 const CHART_HEIGHT = 170;
 const CHART_PAD = { top: 8, right: 4, bottom: 44, left: 26 };
@@ -27,7 +28,7 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
   container.replaceChildren();
   if (series.length < 2 || !width) return;
 
-  const colors = GRAPH_PANEL_COLORS[themeMode];
+  const colors = graphChartColors(themeMode);
   const plotWidth = width - CHART_PAD.left - CHART_PAD.right;
   const plotHeight = height - CHART_PAD.top - CHART_PAD.bottom;
   const start = series[0].time;
@@ -61,12 +62,12 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
   gradient
     .append('stop')
     .attr('offset', 0)
-    .attr('stop-color', colors.chartLine)
+    .attr('stop-color', colors.line)
     .attr('stop-opacity', 0.45);
   gradient
     .append('stop')
     .attr('offset', 1)
-    .attr('stop-color', colors.chartLine)
+    .attr('stop-color', colors.line)
     .attr('stop-opacity', 0.05);
 
   for (let tick = 0; tick <= max; tick += 10) {
@@ -76,14 +77,14 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
       .attr('x2', CHART_PAD.left + plotWidth)
       .attr('y1', y(tick))
       .attr('y2', y(tick))
-      .attr('stroke', colors.line);
+      .attr('stroke', colors.grid);
     svg
       .append('text')
       .attr('x', 0)
       .attr('y', y(tick))
       .attr('dominant-baseline', 'central')
-      .attr('font-size', 11)
-      .attr('fill', colors.muted)
+      .attr('font-size', CHART_TYPE.axis)
+      .attr('fill', colors.text)
       .text(String(tick).padStart(2, '0'));
   }
 
@@ -107,7 +108,7 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
         .y((point) => y(point.value))(series),
     )
     .attr('fill', 'none')
-    .attr('stroke', colors.chartLine)
+    .attr('stroke', colors.line)
     .attr('stroke-width', 1.5);
 
   for (const point of series) {
@@ -117,8 +118,8 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
       .attr('cx', x(point.time))
       .attr('cy', y(point.value))
       .attr('r', 3)
-      .attr('fill', colors.bar)
-      .attr('stroke', colors.chartLine)
+      .attr('fill', colors.point)
+      .attr('stroke', colors.line)
       .attr('stroke-width', 1.2);
   }
 
@@ -132,8 +133,8 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
       .attr('x', x(month))
       .attr('y', height - CHART_PAD.bottom + 16)
       .attr('text-anchor', 'middle')
-      .attr('font-size', 11)
-      .attr('fill', colors.muted)
+      .attr('font-size', CHART_TYPE.axis)
+      .attr('fill', colors.text)
       .text(MONTHS[date.getUTCMonth()]);
     month = Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1);
   }
@@ -144,23 +145,23 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
     .attr('x', CHART_PAD.left + plotWidth / 2)
     .attr('y', height - 6)
     .attr('text-anchor', 'middle')
-    .attr('font-size', 11)
-    .attr('fill', colors.muted)
+    .attr('font-size', CHART_TYPE.axis)
+    .attr('fill', colors.text)
     .text(new Date(end).getUTCFullYear());
 
   const hoverLine = svg
     .append('line')
     .attr('y1', CHART_PAD.top)
     .attr('y2', height - CHART_PAD.bottom)
-    .attr('stroke', colors.muted)
+    .attr('stroke', colors.text)
     .attr('stroke-dasharray', '2 3')
     .attr('pointer-events', 'none')
     .style('visibility', 'hidden');
   const hoverDot = svg
     .append('circle')
     .attr('r', 5)
-    .attr('fill', colors.chartLine)
-    .attr('stroke', colors.bar)
+    .attr('fill', colors.line)
+    .attr('stroke', colors.point)
     .attr('stroke-width', 2)
     .attr('pointer-events', 'none')
     .style('visibility', 'hidden');

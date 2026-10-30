@@ -206,11 +206,6 @@
         "default": false,
         "description": "A plain wheel zooms. Off, it needs ctrl/cmd and a plain wheel scrolls the page; keep it off in the chat."
       },
-      "plain-background": {
-        "type": "boolean",
-        "default": false,
-        "description": "The background of the other widgets instead of the network design's."
-      },
       "message": {
         "type": "string",
         "description": "Shown over the stage, for the host to say why there is no graph."

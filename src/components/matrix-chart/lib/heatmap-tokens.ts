@@ -1,3 +1,10 @@
+import {
+  pickQualitativePalette,
+  seriesInk,
+  sequentialColors,
+} from '../../../utils/fuse-palette.js';
+import { fdColors, hexWithAlpha } from '../../../utils/fusedash-visual.js';
+
 /** Colours of the heatmap: the matrix chart and the heatmap view of the network graph. */
 export interface HeatmapTokens {
   cell: string;
@@ -25,65 +32,44 @@ export interface HeatmapTokens {
   cornerIconOpacity: number;
 }
 
-export const HEATMAP_LIGHT_TOKENS: HeatmapTokens = {
-  cell: '#0098E6',
-  emptyCell: 'rgba(0, 153, 255, 0.02)',
-  negativeCell: '#DFE1E4',
-  gridLine: 'rgba(46, 56, 77, 0.18)',
-  hoverCell: '#000000',
-  rowTotal: '#C093FA',
-  columnTotal: '#A0F1E3',
-  header: '#F1F4F7',
-  labelFrom: '#FFFFFF',
-  labelTo: '#F1F4F7',
-  bar: '#8CD1F4',
-  text: '#21262E',
-  headerText: '#21262E',
-  totalsText: '#21262E',
-  title: '#21262E',
-  caption: '#21262E',
-  subtitle: '#5F6877',
-  dotRing: 'rgba(33, 38, 46, 0.35)',
-  columnTotalsMax: 1,
-  rowTotalsMax: 1,
-  cornerIconOpacity: 1,
-};
-
-export const HEATMAP_DARK_TOKENS: HeatmapTokens = {
-  cell: '#0098E6',
-  emptyCell: 'rgba(0, 153, 255, 0.03)',
-  negativeCell: '#DADAE1',
-  gridLine: 'rgba(36, 45, 61, 0.5)',
-  hoverCell: '#000000',
-  rowTotal: '#C093FA',
-  columnTotal: '#A0F1E3',
-  header: 'rgba(28, 36, 50, 0.5)',
-  labelFrom: 'rgba(28, 36, 50, 0.5)',
-  labelTo: '#1C2432',
-  bar: '#0098E6',
-  text: '#FFFFFF',
-  headerText: 'rgba(255, 255, 255, 0.6)',
-  totalsText: 'rgba(255, 255, 255, 0.87)',
-  title: '#FFFFFF',
-  caption: '#F0F0F1',
-  subtitle: '#9D9FA1',
-  dotRing: 'transparent',
-  columnTotalsMax: 0.76,
-  rowTotalsMax: 0.92,
-  cornerIconOpacity: 0.5,
-};
+const DARK_CELL_STEP = 3;
+const SURFACE = 'var(--ui9000-color-surface, #ffffff)';
+const SURFACE_MUTED = 'var(--ui9000-color-surface-muted, #f3f4f6)';
 
 /** Dots in front of the row names when the caller gives no row colours. */
-export const HEATMAP_ROW_DOT_COLORS = [
-  '#EB5757',
-  '#6FCF97',
-  '#FB865C',
-  '#A0F1E3',
-  '#FF5977',
-  '#F6DE55',
-  '#C093F9',
-];
+export function heatmapRowDotColors(): string[] {
+  return pickQualitativePalette(0, 12);
+}
 
+/** Call inside `withSeriesMode`: cells and totals follow the page style. */
 export function heatmapTokens(mode: 'light' | 'dark'): HeatmapTokens {
-  return mode === 'dark' ? HEATMAP_DARK_TOKENS : HEATMAP_LIGHT_TOKENS;
+  const fd = fdColors(mode);
+  const dark = mode === 'dark';
+  // The deepest step of the ramp sinks into a dark surface.
+  const ramp = sequentialColors();
+  const cell = seriesInk(ramp[dark ? DARK_CELL_STEP : ramp.length - 1], mode);
+  const [rowTotal, columnTotal] = pickQualitativePalette(0, 2);
+  return {
+    cell,
+    emptyCell: hexWithAlpha(cell, dark ? 3 : 2),
+    negativeCell: SURFACE_MUTED,
+    gridLine: hexWithAlpha(fd.gridStroke, dark ? 50 : 40),
+    hoverCell: fd.networkLabelText,
+    rowTotal,
+    columnTotal,
+    header: SURFACE_MUTED,
+    labelFrom: SURFACE,
+    labelTo: SURFACE_MUTED,
+    bar: hexWithAlpha(cell, 45),
+    text: fd.networkLabelText,
+    headerText: fd.axisLabelFill,
+    totalsText: 'auto',
+    title: fd.networkLabelText,
+    caption: fd.networkLabelText,
+    subtitle: fd.axisLabelFill,
+    dotRing: 'transparent',
+    columnTotalsMax: dark ? 0.76 : 1,
+    rowTotalsMax: dark ? 0.92 : 1,
+    cornerIconOpacity: dark ? 0.5 : 1,
+  };
 }

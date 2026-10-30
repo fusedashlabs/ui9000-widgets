@@ -10,7 +10,7 @@
 | `components/FocusView.tsx` | `render/focus-view.ts`, `renderFocusHeader` in `element/panels.ts` |
 | `components/panels/MetricChart.tsx` | `render/metric-chart.ts` |
 | `components/panels/*` (topics, timeline, sidebar, node card) | Lit templates in `element/panels.ts`, CSS in `element/panel-styles.ts` |
-| `components/NetworkPanels.styles.ts` colours | `lib/theme.ts` (`GRAPH_PANEL_COLORS`, `GRAPH_FOCUS_COLORS`) |
+| `components/NetworkPanels.styles.ts` | `element/panel-styles.ts`: `--ui9000-*` tokens and the design-system type scale, not the client's hexes |
 | `utils/{graphUtils,nodeUtils,linkUtils,filterUtils}.ts` | `lib/domain.ts`, `lib/fit.ts` |
 | `utils/{timeline,topics,nodeDetails,series,initials,formatMetric}.ts` | `lib/timeline.ts`, `lib/topics.ts` |
 | `components/ProjectDatasetNetwork.tsx`, `DatasetPicker.tsx` | Stay in the host: it fills the `data-control` slot and sets `message` |
@@ -38,7 +38,6 @@ from which the nodes are derived. Caps: `MAX_NETWORK_NODES` 250, `MAX_NETWORK_LI
 | Attribute / slot | Purpose |
 |------------------|---------|
 | `wheel-zoom` | A plain wheel zooms. Set it on dashboards, never in the chat |
-| `plain-background` | The background of the other widgets instead of the design's |
 | `message` | Text over the stage while the host has no graph to give |
 | `slot="data-control"` | Host control in the top row, between the view toggle and the zoom buttons; left out when there is no room |
 
@@ -67,10 +66,11 @@ Each panel appears only when the data has what it shows. The full shape is in
 
 - Nodes fill a dashed circle on a fixed canvas that the SVG view box scales to the widget
 - Node radius from quantile breakpoints over node values (`NODE_SIZES`, 7 buckets)
-- Small nodes are rings, larger ones filled; group colours follow `NETWORK_GROUP_PALETTE`
+- Small nodes are rings, larger ones filled; node types take the page palette in order of first appearance
 - Every node is named under its circle; names do not overlap each other or other nodes
 - A selected node dims the rest, gets a "+" badge and lists its connections beside the graph
 - Legend: half-bubble buckets over a tinted track, two-thumb size filter, folded on open
+- Node names are drawn on the scaled canvas, so their on-screen size follows the widget; they are the one text outside the type scale
 
 ## Layout: fixed canvas
 
@@ -89,9 +89,10 @@ applied in place through the controller returned by `renderNetworkGraph`:
 |-------------|------|------|
 | Hover / select | `setNetworkGraphActive()` → `refresh()` | attribute writes |
 | Legend size filter, timeline | `updateNetworkGraphVisibility()` → `setVisible()` | opacity + `pointer-events` |
+| Heatmap row, focus item | `setHeatmapSelectedRow()`, `setFocusViewSelection()` | attribute writes |
 | Container resize | `resizeNetworkGraph()` | none: the view box scales |
 | Drag / zoom | `d3-drag` / `d3-zoom` | simulation `alphaTarget` |
-| Heatmap, focus view | drawn over the graph, which stays laid out underneath | their own draw |
+| Heatmap, focus view | drawn over the graph, which stays laid out underneath | their own draw, once |
 
 Filtered-out nodes and links **stay in the simulation** — hiding them is a paint
 change only, so the layout holds steady and the camera does not jump (client
@@ -99,8 +100,7 @@ parity). A resize re-frames the settled layout and never re-runs the force ticks
 
 `_activeNodeId`, `_range`, `_date` and the other panel state are `@state` because
 the panels re-render with them; `chartPropsChanged()` keeps them out of the redraw
-path. The heatmap, the focus view and the metric charts redraw only when what they
-show changes.
+path. A new date redraws the heatmap, whose rows change with it.
 
 ## Chat-safe zoom
 

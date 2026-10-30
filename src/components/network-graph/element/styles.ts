@@ -10,6 +10,30 @@ export const networkGraphStyles = css`
     color: var(--ui9000-color-text, #111827);
     font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
+    --panel-card: var(--ui9000-color-surface, #ffffff);
+    --panel-sidebar: var(--ui9000-color-surface-muted, #f3f4f6);
+    --panel-text: var(--ui9000-color-text, #111827);
+    --panel-muted: var(--ui9000-color-text-muted, #6c7584);
+    --panel-line: var(--ui9000-color-border, #e5e7eb);
+    --panel-grid: var(--ui9000-color-grid, #afb3bb);
+    --panel-tab: color-mix(in srgb, var(--panel-text) 6%, transparent);
+    --panel-button: var(--panel-line);
+    --panel-legend-fill: color-mix(in srgb, var(--panel-muted) 16%, transparent);
+    --panel-dock: color-mix(in srgb, var(--panel-sidebar) 75%, transparent);
+    --panel-card-shadow: 0 2px 4px 0 #141c2c0f, 0 4px 8px 2px #141c2c0f;
+    --panel-topic-shadow: 0 2px 4px 0 #141c2c0f;
+    --toggle-track: var(--panel-sidebar);
+    --toggle-thumb: var(--panel-card);
+    --toggle-text: var(--panel-muted);
+    --toggle-text-active: var(--panel-text);
+    --toggle-shadow: var(--panel-card-shadow);
+    --control-button: var(--panel-card);
+    --control-button-hover: var(--panel-sidebar);
+    --control-icon: var(--panel-text);
+    --control-title: var(--panel-muted);
+    --item-title: var(--panel-text);
+    --item-sub: var(--panel-muted);
+    --item-hover: var(--panel-tab);
   }
   .network-stage {
     position: relative;
@@ -17,7 +41,7 @@ export const networkGraphStyles = css`
     min-height: 0;
     width: 100%;
     border-radius: 12px;
-    background: var(--graph-background);
+    background: var(--panel-card);
     overflow: hidden;
   }
   .view-toggle {
@@ -39,8 +63,8 @@ export const networkGraphStyles = css`
     border: 0;
     border-radius: 999px;
     padding: 10px 16px;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-family: inherit;
     cursor: pointer;
     color: var(--toggle-text);
@@ -54,7 +78,7 @@ export const networkGraphStyles = css`
     background: var(--toggle-thumb);
   }
   .view-button:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: 1px;
   }
   .zoom-controls {
@@ -82,7 +106,7 @@ export const networkGraphStyles = css`
     background: var(--control-button-hover);
   }
   .zoom-button:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: 1px;
   }
   .fan-overlay {
@@ -109,8 +133,8 @@ export const networkGraphStyles = css`
   }
   .connections-title {
     margin: 0 0 0 26px;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     color: var(--control-title);
   }
   .connections-list {
@@ -141,7 +165,7 @@ export const networkGraphStyles = css`
     background: var(--item-hover);
   }
   .connection-button:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: -2px;
   }
   .connection-text {
@@ -153,7 +177,7 @@ export const networkGraphStyles = css`
     height: 8px;
     margin: 5px 3px 0;
     border-radius: 50%;
-    background: #0098e6;
+    background: var(--graph-accent);
   }
   .connection-dot::before {
     content: '';
@@ -162,7 +186,7 @@ export const networkGraphStyles = css`
     top: 50%;
     width: var(--ring);
     height: var(--ring);
-    border: 5px solid rgba(0, 152, 230, 0.2);
+    border: 5px solid color-mix(in srgb, var(--graph-accent) 20%, transparent);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
@@ -171,15 +195,15 @@ export const networkGraphStyles = css`
   .connection-name {
     display: block;
     overflow-wrap: anywhere;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--item-title);
     position: relative;
   }
   .connection-sub {
     display: block;
-    font-size: 11px;
-    line-height: 14px;
+    font-size: var(--ui9000-font-size-subtitle);
+    line-height: var(--ui9000-line-height-subtitle);
     color: var(--item-sub);
   }
   .heatmap-pane {
@@ -253,7 +277,8 @@ export const networkGraphStyles = css`
     padding: 8px;
     text-align: center;
     color: var(--ui9000-color-text-muted, #6b7280);
-    font-size: 0.875rem;
+    font-size: var(--ui9000-font-size-empty);
+    line-height: var(--ui9000-line-height-empty);
   }
 
   /* Overlay — same layout as map-chart bubble legend. */
@@ -274,9 +299,7 @@ export const networkGraphStyles = css`
     background: var(--ui9000-color-surface, #ffffff);
     border: 1px solid var(--ui9000-color-border, #e5e7eb);
     border-radius: 8px;
-    box-shadow:
-      0 2px 4px 0 #141c2c0f,
-      0 4px 8px 2px #141c2c0f;
+    box-shadow: var(--panel-card-shadow);
     user-select: none;
     pointer-events: auto;
   }
@@ -305,9 +328,9 @@ export const networkGraphStyles = css`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-subtitle);
     font-weight: 400;
-    line-height: 12px;
+    line-height: var(--ui9000-line-height-subtitle);
     letter-spacing: 0.88px;
     text-transform: uppercase;
     color: var(--ui9000-color-text, #111827);
@@ -340,8 +363,8 @@ export const networkGraphStyles = css`
   .legend-caption {
     margin: 0;
     padding: 8px 12px 0;
-    font-size: 12px;
-    line-height: 16px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--ui9000-color-text-muted, #6c7584);
   }
   .legend-types {
@@ -362,8 +385,8 @@ export const networkGraphStyles = css`
     border-radius: 50%;
   }
   .legend-type-name {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--ui9000-color-text, #111827);
   }
   .legend-scale {
@@ -390,7 +413,7 @@ export const networkGraphStyles = css`
     top: calc(50% + 1px);
     height: 1px;
     transform: translateY(-50%);
-    border-top: 1px dashed #8f95a0;
+    border-top: 1px dashed var(--panel-muted);
     z-index: 10;
     pointer-events: none;
   }
@@ -404,7 +427,7 @@ export const networkGraphStyles = css`
     flex: 1;
     min-width: 0;
     height: 12px;
-    background-color: var(--bucket-fill, #6c758429);
+    background-color: var(--panel-legend-fill);
   }
   .legend-bucket[data-qualitative] {
     border-right: 1px solid var(--ui9000-color-border, #e5e7eb);
@@ -436,13 +459,13 @@ export const networkGraphStyles = css`
   .legend-bucket[data-bubble]::before {
     width: var(--bubble-size, 12px);
     height: var(--bubble-size, 12px);
-    background-color: #6c758429;
+    background-color: var(--panel-legend-fill);
   }
   .legend-bucket[data-bubble]::after {
     display: none;
     width: var(--inner-size, 0px);
     height: var(--inner-size, 0px);
-    border: 1px solid var(--ui9000-color-border, #8f95a0);
+    border: 1px solid var(--panel-line);
     background: transparent;
   }
   .legend-bucket[data-bubble][data-inner]::after {
@@ -458,9 +481,9 @@ export const networkGraphStyles = css`
     flex: 1;
     min-width: 0;
     padding-right: 5px;
-    font-size: 9px;
+    font-size: var(--ui9000-font-size-subtitle);
     font-weight: 400;
-    line-height: 16px;
+    line-height: var(--ui9000-line-height-subtitle);
     text-align: center;
     color: var(--ui9000-color-text-muted, #6c7584);
     user-select: none;

@@ -1,3 +1,5 @@
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
+
 // Heatmap design values, in px at 1x. Every box (label, total, cell) paints its
 // own 1px inner border, so two neighbours read as a 2px line.
 export const CELL_PITCH = 32;
@@ -10,8 +12,8 @@ export const MIN_HEADER_HEIGHT = 40;
 /** Rows shrink down to this so that a few of them fit a low widget. */
 export const MIN_FIT_ROW_PITCH = 22;
 export const TOTALS_SIZE = CELL_PITCH;
-export const FONT_SIZE = 11;
-export const LINE_HEIGHT = 12;
+export const FONT_SIZE = CHART_TYPE.axis;
+export const LINE_HEIGHT = CHART_TYPE.axisLine;
 export const MAX_LABEL_LINES = 2;
 export const LABEL_PADDING_LEFT = 13;
 export const LABEL_PADDING_RIGHT = 10;

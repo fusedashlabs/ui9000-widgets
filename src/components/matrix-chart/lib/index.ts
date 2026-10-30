@@ -21,8 +21,6 @@ export {
   type MeasureText,
 } from './heatmap-layout.js';
 export {
-  HEATMAP_DARK_TOKENS,
-  HEATMAP_LIGHT_TOKENS,
   heatmapTokens,
   type HeatmapTokens,
 } from './heatmap-tokens.js';

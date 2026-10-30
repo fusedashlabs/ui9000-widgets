@@ -7,7 +7,7 @@ import type { ChartTooltipContent } from '../../../element/chart-tooltip-portal.
 import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import { createTextMeasure } from '../../matrix-chart/lib/heatmap-layout.js';
-import { renderHeatmapGrid } from '../../matrix-chart/render/heatmap-grid.js';
+import { renderHeatmapGrid, setHeatmapSelectedRow } from '../../matrix-chart/render/heatmap-grid.js';
 import {
   buildNetworkHeatmap,
   CONNECTION_RING_MAX,
@@ -24,11 +24,7 @@ import {
   getNetworkTopics,
   getNodeTopics,
   getPeriodSeries,
-  GRAPH_ACCENT,
-  GRAPH_CONTROL_COLORS,
-  GRAPH_FOCUS_COLORS,
-  GRAPH_PANEL_COLORS,
-  GRAPH_THEME_COLORS,
+  graphThemeColors,
   legendRanges,
   nodeColor,
   normalizeNetworkGraphData,
@@ -36,6 +32,7 @@ import {
   slideThumb,
   sliderIndexFromPointer,
   thumbTrackPercent,
+  trendColors,
   visibleNodeIds,
   type NetworkGraphInput,
   type NetworkGraphModel,
@@ -56,7 +53,7 @@ import {
   updateNetworkGraphVisibility,
   zoomNetworkGraph,
 } from '../render/draw.js';
-import { renderFocusView } from '../render/focus-view.js';
+import { renderFocusView, setFocusViewSelection } from '../render/focus-view.js';
 import { renderMetricChart } from '../render/metric-chart.js';
 import { networkPanelStyles } from './panel-styles.js';
 import {
@@ -76,7 +73,6 @@ import { dsText } from '../../../element/ds-text.js';
 
 /** Same diameters as map `DEFAULT_BUBBLES_RADIUS` (7 size steps). */
 const LEGEND_BUBBLE_SIZES = [10, 15, 20, 25, 30, 35, 40];
-const MUTED_LEGEND_FILL = '#6C758429';
 
 type NetworkView = 'network' | 'heatmap';
 
@@ -138,8 +134,6 @@ interface MetricChartSpec {
 }
 
 const upperFirst = (text: string): string => (text ? text[0].toUpperCase() + text.slice(1) : text);
-const toCssName = (name: string): string =>
-  name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
 let nextChartId = 0;
 
@@ -229,10 +223,6 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   /** A plain wheel zooms. Off by default: in the chat it scrolls the transcript. */
   @property({ type: Boolean, attribute: 'wheel-zoom' })
   wheelZoom = false;
-
-  /** The background of the other widgets (the chat) instead of the network design's. */
-  @property({ type: Boolean, attribute: 'plain-background' })
-  plainBackground = false;
 
   /** Shown over the stage, for the host to say why there is no graph. */
   @property({ type: String })
@@ -390,7 +380,8 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     this._activeNodeId = id;
     const root = this.chartRoot();
     if (root) setNetworkGraphActive(root, id);
-    if (this._view === 'heatmap') this.scheduleDraw();
+    const heatmap = this.heatmapRoot();
+    if (heatmap) setHeatmapSelectedRow(heatmap, id);
   }
 
   /**
@@ -409,7 +400,9 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
 
   protected override onThemeChange(): void {
     const root = this.chartRoot();
-    if (root) setNetworkGraphColors(root, this.themeMode());
+    if (root) {
+      this.withSeriesMode(() => setNetworkGraphColors(root, this.themeMode(), this.model().nodes));
+    }
     this.requestUpdate();
     if (this._view === 'heatmap') this.scheduleDraw();
   }
@@ -612,7 +605,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
 
     if (this._view === 'heatmap') {
       const heatmap = this.heatmapRoot();
-      if (heatmap) this.drawHeatmap(heatmap, model);
+      if (heatmap) this.withSeriesMode(() => this.drawHeatmap(heatmap, model));
       if (root.childElementCount) return;
     } else if (root.childElementCount && !this._graphStale) {
       // Coming back from the heatmap: the settled layout is still there.
@@ -621,19 +614,21 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     this._graphStale = false;
 
     const { visibleIds, visibleLinkIds } = this.shownGraph();
-    renderNetworkGraph(root, {
-      model,
-      visibleIds,
-      visibleLinkIds,
-      themeMode: this.themeMode(),
-      fontFamily: readThemeFromElement(this).fontFamily,
-      activeNodeId: this._activeNodeId,
-      wheelZoom: this.wheelZoom,
-      onSelect: (id) => {
-        this._activeNodeId = id;
-      },
-      onOpenFocus: (id) => this.openFocus(id),
-    });
+    this.withSeriesMode(() =>
+      renderNetworkGraph(root, {
+        model,
+        visibleIds,
+        visibleLinkIds,
+        themeMode: this.themeMode(),
+        fontFamily: readThemeFromElement(this).fontFamily,
+        activeNodeId: this._activeNodeId,
+        wheelZoom: this.wheelZoom,
+        onSelect: (id) => {
+          this._activeNodeId = id;
+        },
+        onOpenFocus: (id) => this.openFocus(id),
+      }),
+    );
   }
 
   private drawFocus(): void {
@@ -645,14 +640,14 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     const mode = this.themeMode();
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
-    const key = [node.id, this._detailId, width, height, mode, nodes.length, links.length].join('|');
-    if (canvas.dataset.drawn === key) return;
+    const key = [node.id, width, height, mode, this.styleId(), nodes.length, links.length].join('|');
+    if (canvas.dataset.drawn === key) {
+      setFocusViewSelection(canvas, this._detailId);
+      return;
+    }
     canvas.dataset.drawn = key;
-    // Drawing replaces the items: keyboard focus goes back to the same one.
-    const items = (): SVGGElement[] => [...canvas.querySelectorAll<SVGGElement>('.focus-item')];
-    const focused = items().indexOf(this.shadowRoot?.activeElement as SVGGElement);
     const { onAxisLabelHover, onAxisLabelLeave } = this.axisLabelHandlers();
-    renderFocusView(canvas, {
+    this.withSeriesMode(() => renderFocusView(canvas, {
       node,
       nodes,
       links,
@@ -671,8 +666,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       onClose: () => this.closeFocus(),
       onLabelHover: this.showTooltip ? onAxisLabelHover : undefined,
       onLabelLeave: this.showTooltip ? onAxisLabelLeave : undefined,
-    });
-    if (focused >= 0) items()[focused]?.focus({ preventScroll: true });
+    }));
   }
 
   private readonly metricChart: MetricChartSlot = (key, series, metric, height) => {
@@ -699,11 +693,12 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
         width,
         height,
         mode,
+        this.styleId(),
         series.map((point) => `${point.time}:${point.value}`).join(),
       ].join('|');
       if (box.dataset.drawn === key) return;
       box.dataset.drawn = key;
-      renderMetricChart(box, {
+      this.withSeriesMode(() => renderMetricChart(box, {
         series,
         width,
         height,
@@ -719,7 +714,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
           });
         },
         onPointLeave: () => this.closeTooltip(),
-      });
+      }));
     });
   }
 
@@ -854,7 +849,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
                             ?data-inner=${inner > 0}
                             ?data-qualitative=${true}
                             ?data-muted=${muted}
-                            style="background:${MUTED_LEGEND_FILL};--bubble-size:${bubble}px;--inner-size:${inner}px"
+                            style="--bubble-size:${bubble}px;--inner-size:${inner}px"
                           ></span>`;
                         })}
                       </div>
@@ -896,33 +891,12 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     `;
   }
 
+  /** Series and status colours; the rest of the panels reads the `--ui9000-*` tokens. */
   private stageStyle(): string {
     const mode = this.themeMode();
-    const controls = GRAPH_CONTROL_COLORS[mode];
-    const panels = Object.entries(GRAPH_PANEL_COLORS[mode]).map(
-      ([name, value]) => `--panel-${toCssName(name)}:${value}`,
-    );
-    return [
-      ...panels,
-      `--focus-background:${GRAPH_FOCUS_COLORS[mode].background}`,
-      `--graph-background:${
-        this.plainBackground
-          ? 'var(--ui9000-color-surface, #ffffff)'
-          : GRAPH_THEME_COLORS[mode].background
-      }`,
-      `--toggle-track:${controls.track}`,
-      `--toggle-thumb:${controls.thumb}`,
-      `--toggle-text:${controls.text}`,
-      `--toggle-text-active:${controls.textActive}`,
-      `--toggle-shadow:${controls.shadow}`,
-      `--control-button:${controls.button}`,
-      `--control-button-hover:${controls.buttonHover}`,
-      `--control-icon:${controls.buttonIcon}`,
-      `--control-title:${controls.title}`,
-      `--item-title:${controls.itemTitle}`,
-      `--item-sub:${controls.itemSub}`,
-      `--item-hover:${controls.itemHover}`,
-    ].join(';');
+    const { up, down } = trendColors(mode);
+    const { accent } = this.withSeriesMode(() => graphThemeColors(mode));
+    return `--graph-accent:${accent};--panel-up:${up};--panel-down:${down}`;
   }
 
   private renderZoomControls() {
@@ -956,7 +930,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
             class="fan-path"
             data-target=${node.id}
             fill="none"
-            stroke=${GRAPH_ACCENT}
+            stroke="var(--graph-accent)"
             stroke-opacity="0.7"
             stroke-width="1.5"
             stroke-dasharray="0.5 4"

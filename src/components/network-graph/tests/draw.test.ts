@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import networkFixture from '../../../stories/fixtures/network-graph.fusedash.json';
-import { GRAPH_THEME_COLORS } from '../lib/theme.js';
+import { graphThemeColors } from '../lib/theme.js';
 import {
   normalizeNetworkGraphData,
   visibleNodeIds,
@@ -118,7 +118,7 @@ describe('selection', () => {
   it('dims what is not related to the selected node', () => {
     const container = draw();
     setNetworkGraphActive(container, ids[0]);
-    const colors = GRAPH_THEME_COLORS.light;
+    const colors = graphThemeColors('light');
     const opacities = Array.from(
       container.querySelectorAll<SVGGElement>('.node-visual'),
     ).map((node) => node.style.opacity);
@@ -141,10 +141,10 @@ describe('selection', () => {
   it('repaints for a theme without moving a node', () => {
     const container = draw();
     const before = transforms(container);
-    setNetworkGraphColors(container, 'dark');
+    setNetworkGraphColors(container, 'dark', []);
     expect(transforms(container)).toEqual(before);
     expect(container.querySelector('.node-halo')?.getAttribute('fill')).toBe(
-      GRAPH_THEME_COLORS.dark.nodeHalo,
+      graphThemeColors('dark').nodeHalo,
     );
   });
 });

@@ -21,8 +21,6 @@ export {
   hasNaturalOrder,
   heatmapCellKey,
   heatmapTokens,
-  HEATMAP_DARK_TOKENS,
-  HEATMAP_LIGHT_TOKENS,
   type HeatmapTokens,
   formatCategoryLabel,
   formatMatrixValue,

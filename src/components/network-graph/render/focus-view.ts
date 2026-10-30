@@ -1,11 +1,13 @@
 import { select, type Selection } from 'd3-selection';
 
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
+
 import {
   measureTextWidth,
   wrapLabel,
   type MeasureText,
 } from '../../matrix-chart/lib/heatmap-layout.js';
-import { GRAPH_ACCENT, GRAPH_FOCUS_COLORS, type NetworkLink, type NetworkNode } from '../lib/index.js';
+import { graphFocusColors, type NetworkLink, type NetworkNode } from '../lib/index.js';
 
 // Sizes in px, from the design.
 const MAX_ITEMS = 18;
@@ -15,10 +17,10 @@ const CENTER_RING = 5;
 const HALO_RADIUS = 95;
 const ITEM_DOT = 5;
 const LABEL_GAP = 10;
-const LABEL_FONT = 13;
+const LABEL_FONT = CHART_TYPE.label;
 const LABEL_WIDTH = 150;
-const CENTER_FONT = 14;
-const CENTER_LINE = 17;
+const CENTER_FONT = CHART_TYPE.heading;
+const CENTER_LINE = CHART_TYPE.headingLine;
 const SIDE_ROOM = 180;
 const TICK = 11;
 const ANCHOR_DOT = 2.5;
@@ -53,6 +55,15 @@ export interface RenderFocusViewOptions {
   onLabelLeave?: () => void;
 }
 
+const SELECTIONS = new WeakMap<HTMLElement, (id: string | null) => void>();
+
+/** Picks a linked node in place: the view stays, with keyboard focus where it was. */
+export function setFocusViewSelection(container: HTMLElement, id: string | null): boolean {
+  const paint = SELECTIONS.get(container);
+  paint?.(id);
+  return !!paint;
+}
+
 export function arcAngles(count: number): number[] {
   return count === 1
     ? [0]
@@ -79,10 +90,12 @@ function tick(x: number, y: number, horizontal: boolean): string {
  * and its linked nodes on a right arc, each joined to it by a curve.
  */
 export function renderFocusView(container: HTMLElement, options: RenderFocusViewOptions): void {
-  const { node, nodes, links, width, height, selectedId, onSelect, onOpen, onClose } = options;
+  const { node, nodes, links, width, height, onSelect, onOpen, onClose } = options;
   const { themeMode = 'light', onLabelHover, onLabelLeave } = options;
   const measure = options.measure ?? measureTextWidth;
-  const colors = GRAPH_FOCUS_COLORS[themeMode];
+  const colors = graphFocusColors(themeMode);
+  const accent = colors.accent;
+  let selectedId = options.selectedId;
 
   container.replaceChildren();
   if (!width || !height) return;
@@ -116,14 +129,14 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
   const right: Item[] = neighbours.map((item, index) => ({
     id: item.id,
     label: item.label,
-    color: item.color ?? GRAPH_ACCENT,
+    color: item.color ?? accent,
     ...place(arcAngles(neighbours.length)[index], 1),
   }));
   const events = (node.events ?? []).slice(0, MAX_ITEMS);
   const left: Item[] = events.map((label, index) => ({
     id: `event-${index}`,
     label,
-    color: GRAPH_ACCENT,
+    color: accent,
     ...place(arcAngles(events.length)[index], -1),
   }));
 
@@ -174,7 +187,7 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
       .attr('x', x)
       .attr('y', cy - radius - 34)
       .attr('text-anchor', 'middle')
-      .attr('font-size', 14)
+      .attr('font-size', CHART_TYPE.label)
       .attr('fill', colors.title)
       .text(`${text}:`);
   };
@@ -205,7 +218,7 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
   const paintCurve = (id: string, active: boolean): void => {
     curveById
       .get(id)
-      ?.attr('stroke', active ? GRAPH_ACCENT : colors.curve)
+      ?.attr('stroke', active ? accent : colors.curve)
       .attr('stroke-width', active ? 2 : 1);
   };
   const paintText = (id: string, active: boolean): void => {
@@ -229,8 +242,9 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
     paintCurve(item.id, item.id === selectedId);
   }
 
+  const itemGroups = new Map<string, Selection<SVGGElement, unknown, null, undefined>>();
   const drawItem = (item: Item, side: 1 | -1, isEvent: boolean): void => {
-    const selected = !isEvent && selectedId === item.id;
+    const isSelected = (): boolean => !isEvent && selectedId === item.id;
     const group = svg.append('g').attr('class', isEvent ? 'focus-event' : 'focus-item');
     // The dot, the gap and the label all take the pointer.
     group
@@ -249,7 +263,7 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
         .attr('cx', item.x)
         .attr('cy', item.y)
         .attr('r', ITEM_DOT - 1)
-        .attr('fill', GRAPH_ACCENT);
+        .attr('fill', accent);
     } else {
       group
         .append('circle')
@@ -276,7 +290,7 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
       .attr('font-size', LABEL_FONT)
       .text(shown) as unknown as Selection<SVGTextElement, unknown, null, undefined>;
     textById.set(item.id, text);
-    paintText(item.id, selected);
+    paintText(item.id, isSelected());
 
     const enter = (event?: MouseEvent): void => {
       paintText(item.id, true);
@@ -284,8 +298,8 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
       if (event && shown !== item.label) onLabelHover?.(item.label, event);
     };
     const leave = (): void => {
-      paintText(item.id, selected);
-      if (!isEvent) paintCurve(item.id, selected);
+      paintText(item.id, isSelected());
+      if (!isEvent) paintCurve(item.id, isSelected());
       onLabelLeave?.();
     };
     group.on('mouseenter', (event: MouseEvent) => enter(event)).on('mouseleave', leave);
@@ -295,12 +309,11 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
       return;
     }
     // A click picks a linked node; a click on the picked one opens its own view.
-    const pick = (): void => (selected ? onOpen(item.id) : onSelect(item.id));
+    const pick = (): void => (isSelected() ? onOpen(item.id) : onSelect(item.id));
+    itemGroups.set(item.id, group as unknown as Selection<SVGGElement, unknown, null, undefined>);
     group
       .attr('role', 'button')
       .attr('tabindex', 0)
-      .attr('aria-pressed', String(selected))
-      .attr('aria-label', selected ? `Open ${item.label}` : `Select ${item.label}`)
       .style('cursor', 'pointer')
       .style('outline', 'none')
       .on('focus', () => enter())
@@ -339,7 +352,7 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
     .attr('cx', cx)
     .attr('cy', cy)
     .attr('r', CENTER_RADIUS)
-    .attr('fill', GRAPH_ACCENT)
+    .attr('fill', accent)
     .attr('stroke', colors.canvas)
     .attr('stroke-width', CENTER_RING);
   const name = center
@@ -359,28 +372,53 @@ export function renderFocusView(container: HTMLElement, options: RenderFocusView
   });
 
   // Where the curves meet the centre and the linked nodes.
-  const picked = right.find((item) => item.id === selectedId) ?? null;
-  const anchor = (x: number, y: number, r: number, active: boolean, fill: string): void => {
+  const anchorDot = (x: number, y: number): Selection<SVGCircleElement, unknown, null, undefined> =>
     svg
       .append('circle')
       .attr('cx', x)
       .attr('cy', y)
-      .attr('r', r)
-      .attr('fill', active ? '#FFFFFF' : fill)
-      .attr('stroke', active ? GRAPH_ACCENT : 'none')
-      .attr('stroke-width', active ? 2 : 0)
-      .attr('pointer-events', 'none');
+      .attr('pointer-events', 'none') as unknown as Selection<
+      SVGCircleElement,
+      unknown,
+      null,
+      undefined
+    >;
+  const paintAnchor = (
+    dot: Selection<SVGCircleElement, unknown, null, undefined>,
+    radius: number,
+    active: boolean,
+    fill: string,
+  ): void => {
+    dot
+      .attr('r', radius)
+      .attr('fill', active ? colors.canvas : fill)
+      .attr('stroke', active ? accent : 'none')
+      .attr('stroke-width', active ? 2 : 0);
   };
-  if (left.length) anchor(cx - CENTER_RADIUS, cy, ANCHOR_DOT, false, colors.curve);
-  if (right.length) anchor(cx + CENTER_RADIUS, cy, ANCHOR_DOT, !!picked, colors.curve);
-  for (const item of right) {
-    const isPicked = item.id === picked?.id;
-    anchor(
-      item.x - ANCHOR_OFFSET,
-      item.y,
-      isPicked ? ANCHOR_DOT + 1 : ANCHOR_DOT - 0.5,
-      isPicked,
-      colors.anchor,
-    );
-  }
+  if (left.length) paintAnchor(anchorDot(cx - CENTER_RADIUS, cy), ANCHOR_DOT, false, colors.curve);
+  const centerAnchor = right.length ? anchorDot(cx + CENTER_RADIUS, cy) : null;
+  const itemAnchors = new Map(right.map((item) => [item.id, anchorDot(item.x - ANCHOR_OFFSET, item.y)]));
+
+  const paintSelection = (id: string | null): void => {
+    selectedId = id;
+    const hasPick = right.some((item) => item.id === id);
+    if (centerAnchor) paintAnchor(centerAnchor, ANCHOR_DOT, hasPick, colors.curve);
+    for (const item of right) {
+      const picked = item.id === id;
+      paintCurve(item.id, picked);
+      paintText(item.id, picked);
+      paintAnchor(
+        itemAnchors.get(item.id) as Selection<SVGCircleElement, unknown, null, undefined>,
+        picked ? ANCHOR_DOT + 1 : ANCHOR_DOT - 0.5,
+        picked,
+        colors.anchor,
+      );
+      itemGroups
+        .get(item.id)
+        ?.attr('aria-pressed', String(picked))
+        .attr('aria-label', picked ? `Open ${item.label}` : `Select ${item.label}`);
+    }
+  };
+  paintSelection(selectedId);
+  SELECTIONS.set(container, paintSelection);
 }

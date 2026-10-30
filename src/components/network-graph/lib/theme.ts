@@ -1,7 +1,16 @@
-/** Colours of the network graph on the canvas of one page theme. */
+import { lightTheme } from '@fuselab-creative/design-system';
+
+import { fdColors, hexWithAlpha, seriesColor } from '../../../utils/fusedash-visual.js';
+
+type Mode = 'light' | 'dark';
+
+/** SVG paints the host's surface directly; other ink comes from `fdColors`. */
+const SURFACE = 'var(--ui9000-color-surface, #ffffff)';
+
+/** Colours of the network graph for one page theme and style. */
 export interface GraphThemeColors {
-  /** Canvas background (CSS). */
-  background: string;
+  /** First series colour of the page style: selection and the focus view. */
+  accent: string;
   link: string;
   /** Links of the selected node. */
   linkActive: string;
@@ -36,188 +45,89 @@ export interface GraphThemeColors {
   nodeEdgeWidth: number;
 }
 
-/** Toggle, zoom buttons and connections list of the Network + Heatmap design. */
-export interface GraphControlColors {
-  track: string;
-  thumb: string;
-  text: string;
-  textActive: string;
-  button: string;
-  buttonHover: string;
-  buttonIcon: string;
-  title: string;
-  itemTitle: string;
-  itemSub: string;
-  itemHover: string;
-  shadow: string;
+/** Call inside `withSeriesMode`, so the accent follows the page style. */
+export function graphThemeColors(mode: Mode): GraphThemeColors {
+  const fd = fdColors(mode);
+  const dark = mode === 'dark';
+  const accent = seriesColor(0, undefined, mode);
+  return {
+    accent,
+    link: hexWithAlpha(fd.axisLabelFill, 40),
+    linkActive: fd.networkLabelText,
+    linkDimmed: hexWithAlpha(fd.axisLabelFill, 12),
+    nodeHalo: SURFACE,
+    ringFill: SURFACE,
+    label: fd.networkLabelText,
+    labelMuted: fd.axisLabelFill,
+    labelMid: fd.axisLabelFill,
+    labelStrong: fd.networkLabelText,
+    labelActive: accent,
+    selectedRing: fd.networkLabelText,
+    focusHalo: hexWithAlpha(fd.axisLabelFill, 12),
+    dimmedOpacity: dark ? 0.35 : 0.3,
+    nodeRestOpacity: dark ? 0.85 : 0.9,
+    decor: hexWithAlpha(fd.gridStroke, dark ? 60 : 40),
+    smallNodeRestOpacity: dark ? 0.75 : 0.9,
+    nodeEdgeDarker: dark ? 0 : 1,
+    nodeEdgeWidth: dark ? 0 : 1.5,
+  };
 }
 
-export const GRAPH_ACCENT = '#0098E6';
-
-/** Group colours of the network design, given to node types in order of first appearance. */
-export const NETWORK_GROUP_PALETTE = [
-  '#A0F1E3',
-  '#6FCF97',
-  '#C093F9',
-  '#EB5757',
-  '#F5C02A',
-  '#FF5977',
-  '#FB865C',
-];
-
-export const GRAPH_THEME_COLORS: Record<'light' | 'dark', GraphThemeColors> = {
-  dark: {
-    background: 'linear-gradient(135deg, #141924 0%, #1C2230 50%, #21293A 100%)',
-    link: 'rgba(203, 209, 224, 0.22)',
-    linkActive: 'rgba(255, 255, 255, 0.9)',
-    linkDimmed: 'rgba(203, 209, 224, 0.08)',
-    nodeHalo: '#1C2230',
-    ringFill: '#1C2230',
-    label: 'rgba(255, 255, 255, 0.75)',
-    labelMuted: 'rgba(255, 255, 255, 0.3)',
-    labelMid: 'rgba(255, 255, 255, 0.55)',
-    labelStrong: '#FFFFFF',
-    labelActive: '#0098E6',
-    selectedRing: '#FFFFFF',
-    focusHalo: 'rgba(255, 255, 255, 0.05)',
-    dimmedOpacity: 0.35,
-    nodeRestOpacity: 0.55,
-    decor: 'rgba(140, 152, 180, 0.28)',
-    smallNodeRestOpacity: 0.4,
-    nodeEdgeDarker: 0,
-    nodeEdgeWidth: 0,
-  },
-  light: {
-    background: 'linear-gradient(135deg, #FBFBFE 0%, #F1F2F8 100%)',
-    link: 'rgba(46, 33, 86, 0.3)',
-    linkActive: 'rgba(46, 33, 86, 0.85)',
-    linkDimmed: 'rgba(46, 33, 86, 0.07)',
-    nodeHalo: '#F7F7FB',
-    ringFill: '#FFFFFF',
-    label: 'rgba(33, 38, 46, 0.85)',
-    labelMuted: 'rgba(33, 38, 46, 0.62)',
-    labelMid: 'rgba(33, 38, 46, 0.78)',
-    labelStrong: '#21262E',
-    labelActive: '#0077B6',
-    selectedRing: '#2E2156',
-    focusHalo: 'rgba(46, 33, 86, 0.06)',
-    dimmedOpacity: 0.3,
-    // The pale group colours need more strength on a light canvas.
-    nodeRestOpacity: 0.9,
-    decor: 'rgba(46, 33, 86, 0.18)',
-    smallNodeRestOpacity: 0.9,
-    nodeEdgeDarker: 1,
-    nodeEdgeWidth: 1.5,
-  },
-};
-
-export const GRAPH_CONTROL_COLORS: Record<'light' | 'dark', GraphControlColors> = {
-  dark: {
-    track: '#242D3F',
-    thumb: '#333B4C',
-    text: '#A7ABB2',
-    textActive: '#FFFFFF',
-    button: '#262E40',
-    buttonHover: '#323B50',
-    buttonIcon: '#FFFFFF',
-    title: '#A5A8AE',
-    itemTitle: '#F1F1F2',
-    itemSub: '#95979E',
-    itemHover: 'rgba(255, 255, 255, 0.06)',
-    shadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
-  },
-  light: {
-    track: '#ECEAF5',
-    thumb: '#FFFFFF',
-    text: '#5F6877',
-    textActive: '#2E2156',
-    button: '#FFFFFF',
-    buttonHover: '#F1EFF8',
-    buttonIcon: '#2E2156',
-    title: '#5F6877',
-    itemTitle: '#21262E',
-    itemSub: '#5F6877',
-    itemHover: 'rgba(46, 33, 86, 0.06)',
-    shadow: '0 4px 16px rgba(46, 33, 86, 0.12)',
-  },
-};
-
-/** Trends by Topics, timeline, sidebar and node card of the Network + Heatmap design. */
-export const GRAPH_PANEL_COLORS = {
-  dark: {
-    card: '#1C2332',
-    cardShadow: '0 8px 24px rgba(0, 0, 0, 0.45)',
-    topicShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
-    text: '#FFFFFF',
-    muted: '#8A8F99',
-    faint: '#5F6877',
-    up: '#9BF61C',
-    down: '#E84938',
-    line: 'rgba(255, 255, 255, 0.08)',
-    tickMajor: '#33363F',
-    tickMinor: '#242731',
-    bar: '#161923',
-    yearBox: '#11141E',
-    barEdge: '#1B212F',
-    cardSelected: '#242D3F',
-    sidebar: '#171C28',
-    dock: 'rgba(23, 28, 40, 0.75)',
-    button: 'rgba(255, 255, 255, 0.12)',
-    bubble: '#262E40',
-    tab: 'rgba(255, 255, 255, 0.06)',
-    chartLine: '#3ED1C3',
-  },
-  light: {
-    card: '#FFFFFF',
-    cardShadow: '0 4px 16px rgba(46, 33, 86, 0.14)',
-    topicShadow: '0 1px 4px rgba(46, 33, 86, 0.12)',
-    text: '#21262E',
-    muted: '#5F6877',
-    faint: '#8A8F99',
-    up: '#2F7D0E',
-    down: '#C9362A',
-    line: 'rgba(46, 33, 86, 0.1)',
-    tickMajor: 'rgba(46, 33, 86, 0.22)',
-    tickMinor: 'rgba(46, 33, 86, 0.1)',
-    bar: '#F4F3FA',
-    yearBox: '#ECEAF5',
-    barEdge: 'rgba(46, 33, 86, 0.1)',
-    cardSelected: '#F1EFF8',
-    sidebar: '#F7F6FC',
-    dock: 'rgba(247, 246, 252, 0.75)',
-    button: 'rgba(46, 33, 86, 0.18)',
-    bubble: '#FFFFFF',
-    tab: 'rgba(46, 33, 86, 0.06)',
-    chartLine: '#0F9C8F',
-  },
-} as const;
+/** Colours of the metric charts. */
+export function graphChartColors(mode: Mode): {
+  line: string;
+  point: string;
+  grid: string;
+  text: string;
+} {
+  const fd = fdColors(mode);
+  return {
+    line: seriesColor(0, undefined, mode),
+    point: SURFACE,
+    grid: hexWithAlpha(fd.gridStroke, 40),
+    text: fd.axisLabelFill,
+  };
+}
 
 /** Colours of the focus view. */
-export const GRAPH_FOCUS_COLORS = {
-  dark: {
-    background: 'linear-gradient(135deg, #141924 0%, #1C2230 50%, #21293A 100%)',
-    canvas: '#1C2230',
-    curve: 'rgba(203, 209, 224, 0.38)',
-    dotted: 'rgba(203, 209, 224, 0.32)',
-    halo: 'rgba(255, 255, 255, 0.035)',
-    haloStroke: 'rgba(255, 255, 255, 0.07)',
-    ring: 'rgba(255, 255, 255, 0.1)',
-    anchor: '#C6CAD1',
-    title: '#A5A8AE',
-    label: '#C6CAD1',
-    labelStrong: '#FFFFFF',
-  },
-  light: {
-    background: 'linear-gradient(135deg, #FBFBFE 0%, #F1F2F8 100%)',
-    canvas: '#F7F7FB',
-    curve: 'rgba(46, 33, 86, 0.3)',
-    dotted: 'rgba(46, 33, 86, 0.28)',
-    halo: 'rgba(46, 33, 86, 0.04)',
-    haloStroke: 'rgba(46, 33, 86, 0.08)',
-    ring: 'rgba(46, 33, 86, 0.12)',
-    anchor: '#5F6877',
-    title: '#5F6877',
-    label: '#3A4150',
-    labelStrong: '#21262E',
-  },
-} as const;
+export function graphFocusColors(mode: Mode): {
+  accent: string;
+  canvas: string;
+  curve: string;
+  dotted: string;
+  halo: string;
+  haloStroke: string;
+  ring: string;
+  anchor: string;
+  title: string;
+  label: string;
+  labelStrong: string;
+} {
+  const fd = fdColors(mode);
+  return {
+    accent: seriesColor(0, undefined, mode),
+    canvas: SURFACE,
+    curve: hexWithAlpha(fd.axisLabelFill, 40),
+    dotted: hexWithAlpha(fd.axisLabelFill, 32),
+    halo: hexWithAlpha(fd.axisLabelFill, 8),
+    haloStroke: hexWithAlpha(fd.gridStroke, 30),
+    ring: hexWithAlpha(fd.gridStroke, 50),
+    anchor: fd.axisLabelFill,
+    title: fd.axisLabelFill,
+    label: fd.axisLabelFill,
+    labelStrong: fd.networkLabelText,
+  };
+}
+
+/** The design system ships these colours but leaves them out of its types. */
+type SystemColors = Record<
+  'success' | 'error',
+  { text: { default: string; inverted: string } }
+>;
+
+/** Rise and fall of a trend, from the design system's status colours. */
+export function trendColors(mode: Mode): { up: string; down: string } {
+  const { success, error } = (lightTheme.colors as unknown as { system: SystemColors }).system;
+  const shade = mode === 'dark' ? 'inverted' : 'default';
+  return { up: success.text[shade], down: error.text[shade] };
+}

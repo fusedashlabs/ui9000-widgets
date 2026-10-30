@@ -60,13 +60,10 @@ export {
 } from './legend.js';
 export { buildNetworkHeatmap, type NetworkHeatmapData } from './heatmap.js';
 export {
-  GRAPH_ACCENT,
-  GRAPH_CONTROL_COLORS,
-  GRAPH_FOCUS_COLORS,
-  GRAPH_PANEL_COLORS,
-  GRAPH_THEME_COLORS,
-  NETWORK_GROUP_PALETTE,
-  type GraphControlColors,
+  graphChartColors,
+  graphFocusColors,
+  graphThemeColors,
+  trendColors,
   type GraphThemeColors,
 } from './theme.js';
 export { getNodeConnections } from './fit.js';

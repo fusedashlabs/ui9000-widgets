@@ -1,4 +1,4 @@
-import { NETWORK_GROUP_PALETTE } from './theme.js';
+import { pickQualitativePalette } from '../../../utils/fuse-palette.js';
 import { generateBreakPoints } from '../../../utils/breakpoints.js';
 
 
@@ -129,10 +129,11 @@ function collectLinks(raw: unknown[], known: Set<string>): NetworkLink[] {
 }
 
 /**
- * Group colours of the network design, in order of first appearance. A node's
- * own colour wins; nodes without a type share the first colour.
+ * Node types take the page palette in order of first appearance. A node's own
+ * colour wins; nodes without a type share the first colour.
  */
 function paintNodeGroups(nodes: NetworkNode[]): void {
+  const palette = pickQualitativePalette(0, new Set(nodes.map((node) => node.type.trim())).size);
   const groups: string[] = [];
   for (const node of nodes) {
     if (node.color) continue;
@@ -142,7 +143,7 @@ function paintNodeGroups(nodes: NetworkNode[]): void {
       groups.push(type);
       index = groups.length - 1;
     }
-    node.color = NETWORK_GROUP_PALETTE[index % NETWORK_GROUP_PALETTE.length];
+    node.color = palette[index % palette.length];
   }
 }
 

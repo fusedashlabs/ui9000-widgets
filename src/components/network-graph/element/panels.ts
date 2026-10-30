@@ -1,5 +1,7 @@
 import { html, nothing, svg, type TemplateResult } from 'lit';
 
+import '../../select/element/ui9000-select.js';
+
 import {
   changeDecimals,
   formatChange,
@@ -12,7 +14,6 @@ import {
   getScaleShare,
   nearestDate,
   yearOf,
-  GRAPH_ACCENT,
   type NetworkLabels,
   type NetworkNode,
   type NetworkTopic,
@@ -76,7 +77,7 @@ export function trendIndicator(
 }
 
 const topicRing = (color: string | undefined): TemplateResult =>
-  html`<span class="topic-ring" style="border-color:${color ?? GRAPH_ACCENT}"></span>`;
+  html`<span class="topic-ring" style="border-color:${color ?? 'var(--graph-accent)'}"></span>`;
 
 export interface TrendsOptions {
   topics: NetworkTopic[];
@@ -470,19 +471,17 @@ export function renderTopicSidebar(options: TopicSidebarOptions): TemplateResult
     ${topic && metrics.length
       ? html`<h3 class="sidebar-title">${topic.name}</h3>
           ${showPeriod
-            ? html`<label class="period-row">
-                Period
-                <select
-                  .value=${String(period)}
-                  @change=${(event: Event) =>
-                    onPeriod(Number((event.target as HTMLSelectElement).value))}
-                >
-                  ${PERIODS.map(
-                    ({ months, label }) =>
-                      html`<option value=${months} ?selected=${months === period}>${label}</option>`,
+            ? html`<ui9000-select
+                class="period-select"
+                label="Period"
+                name="period"
+                data=${JSON.stringify({ options: PERIODS.map(({ label }) => label) })}
+                .value=${PERIODS.find(({ months }) => months === period)?.label ?? ''}
+                @ui9000-change=${(event: CustomEvent<{ value: string }>) =>
+                  onPeriod(
+                    PERIODS.find(({ label }) => label === event.detail.value)?.months ?? period,
                   )}
-                </select>
-              </label>`
+              ></ui9000-select>`
             : nothing}
           <div class="metric-tabs" role="tablist" aria-label="Metrics">
             ${metrics.slice(0, 3).map((item, index) => {
@@ -886,6 +885,8 @@ export function renderCompactDetails(options: CompactDetailsOptions): TemplateRe
   </section>`;
 }
 
+const ALL_TOPICS = 'All topics';
+
 export interface FocusHeaderOptions {
   node: NetworkNode;
   topicNames: string[];
@@ -914,18 +915,18 @@ export function renderFocusHeader(options: FocusHeaderOptions): TemplateResult {
     </button>
     <h2 class="focus-title" title=${node.label}>${node.label}</h2>
     ${topicNames.length
-      ? html`<label class="topic-picker">
-          ${topicLabel ?? 'Topic'}
-          <select
-            .value=${topicName ?? ''}
-            @change=${(event: Event) => onTopicChange((event.target as HTMLSelectElement).value)}
-          >
-            ${topicName ? nothing : html`<option value="" selected>All topics</option>`}
-            ${topicNames.map(
-              (name) => html`<option value=${name} ?selected=${name === topicName}>${name}</option>`,
-            )}
-          </select>
-        </label>`
+      ? html`<ui9000-select
+          class="topic-picker"
+          label=${topicLabel ?? 'Topic'}
+          name="topic"
+          data=${JSON.stringify({
+            options: topicName ? topicNames : [ALL_TOPICS, ...topicNames],
+          })}
+          .value=${topicName ?? ALL_TOPICS}
+          @ui9000-change=${(event: CustomEvent<{ value: string }>) => {
+            if (event.detail.value !== ALL_TOPICS) onTopicChange(event.detail.value);
+          }}
+        ></ui9000-select>`
       : nothing}
   </div>`;
 }

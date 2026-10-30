@@ -81,7 +81,7 @@ describe('renderMatrixChart', () => {
       { x: 'B', y: 'one', value: -2 },
     ]);
     const cells = [...container.querySelectorAll('rect.matrix-cell')];
-    const negative = cells.find((cell) => cell.getAttribute('fill') !== '#0098E6')!;
+    const negative = cells.find((cell) => cell.getAttribute('fill') !== heatmapTokens('light').cell)!;
     expect(negative.getAttribute('fill')).toBe(heatmapTokens('light').negativeCell);
     expect(negative.getAttribute('fill-opacity')).toBe('1');
   });
@@ -153,9 +153,13 @@ describe('renderMatrixChart', () => {
     expect(header.getAttribute('fill')).toBe(heatmapTokens('dark').header);
   });
 
-  it('keeps the same legend colour in both themes', () => {
-    const model = normalizeMatrixData(CELLS);
-    expect(matrixColorRanges(model, 'dark')[0].color).toBe(matrixColorRanges(model)[0].color);
+  it('paints the legend in the colour of the cells in each theme', () => {
+    const model = normalizeMatrixData([{ x: 'A', y: 'one', value: 5 }]);
+    for (const mode of ['light', 'dark'] as const) {
+      const [range] = matrixColorRanges(model, mode);
+      expect(range.color).toContain(heatmapTokens(mode).cell);
+    }
+    expect(heatmapTokens('dark').cell).not.toBe(heatmapTokens('light').cell);
   });
 });
 

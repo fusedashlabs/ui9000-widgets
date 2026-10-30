@@ -134,7 +134,7 @@ describe('family C dark ink', () => {
     expect(node).not.toBeNull();
     node!.querySelector('.node-drag-area')!.dispatchEvent(new MouseEvent('mouseenter'));
     const title = node!.querySelector('.node-label-title');
-    expect(title?.getAttribute('fill')).toBe('#FFFFFF');
+    expect(title?.getAttribute('fill')?.toLowerCase()).toBe('#eff0f1');
     el.remove();
   });
 

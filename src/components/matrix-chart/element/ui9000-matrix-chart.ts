@@ -114,7 +114,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
 
     // Skip redraws whose inputs are unchanged: a redraw resets the scroll and
     // settling after a resize would cost a pass for nothing.
-    const signature = [width, height, themeMode, this.inKpi, this.showTooltip].join('|');
+    const signature = [width, height, themeMode, this.styleId(), this.inKpi, this.showTooltip].join('|');
     if (this._drawnSignature === signature && this._drawnModel === model) return;
     this._drawnSignature = signature;
     this._drawnModel = model;
@@ -123,7 +123,8 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
     const reveal = !this._revealed;
     this._revealed = true;
 
-    renderMatrixChart(root, {
+    this.withSeriesMode(() =>
+      renderMatrixChart(root, {
       model,
       width,
       height,
@@ -143,7 +144,8 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
           }
         : undefined,
       onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
-    });
+    }),
+    );
   }
 
   /**
@@ -181,7 +183,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
   /** FuseDash `ChartLegend legendType="palette"` — Low → High swatch ramp. */
   private renderPaletteLegend(model: MatrixModel) {
     if (!this.showLegend) return nothing;
-    const ranges = matrixColorRanges(model, this.themeMode());
+    const ranges = this.withSeriesMode(() => matrixColorRanges(model, this.themeMode()));
     if (!ranges.length) return nothing;
     return html`
       <div class="palette-legend" part="legend">

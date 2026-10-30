@@ -147,8 +147,9 @@ describe('DEFAULT_MATRIX fixture', () => {
   it('builds a seven-step legend from the largest value', () => {
     const ranges = matrixColorRanges(model);
     expect(ranges).toHaveLength(7);
-    expect(ranges[0].color).toBe('color-mix(in srgb, #0098E6 15%, transparent)');
-    expect(ranges[6].color).toBe('color-mix(in srgb, #0098E6 100%, transparent)');
+    // The strongest colour of SequentialColors1 in the default page style.
+    expect(ranges[0].color).toBe('color-mix(in srgb, #3C33B5 15%, transparent)');
+    expect(ranges[6].color).toBe('color-mix(in srgb, #3C33B5 100%, transparent)');
     expect(ranges[6].end).toBe(Math.max(...model.rawValues));
   });
 });

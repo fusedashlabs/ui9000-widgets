@@ -54,7 +54,7 @@ export const networkPanelStyles = css`
   .view-all:focus-visible,
   .compact-header:focus-visible,
   .timeline-track:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: 1px;
   }
   .data-control {
@@ -77,8 +77,8 @@ export const networkPanelStyles = css`
     place-items: center;
     padding: 24px;
     text-align: center;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     color: var(--panel-muted);
     pointer-events: none;
   }
@@ -101,8 +101,8 @@ export const networkPanelStyles = css`
     min-width: 0;
     padding: 10px 14px;
     border-radius: 12px;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     text-align: left;
     color: var(--panel-text);
   }
@@ -170,8 +170,8 @@ export const networkPanelStyles = css`
     padding: 4px 6px;
     margin: -4px -6px;
     border-radius: 8px;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--panel-text);
   }
   .trends-selected {
@@ -187,8 +187,8 @@ export const networkPanelStyles = css`
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     font-weight: 600;
     color: var(--panel-text);
     background: var(--panel-card);
@@ -199,7 +199,7 @@ export const networkPanelStyles = css`
     display: flex;
     flex: 0 1 320px;
     min-width: 0;
-    border-right: 1px solid var(--panel-bar-edge);
+    border-right: 1px solid var(--panel-line);
   }
   .trends-inline[data-compact] {
     flex-basis: 220px;
@@ -224,8 +224,8 @@ export const networkPanelStyles = css`
     display: flex;
     flex-direction: column;
     min-width: 0;
-    font-size: 11px;
-    line-height: 13px;
+    font-size: var(--ui9000-font-size-subtitle);
+    line-height: var(--ui9000-line-height-subtitle);
     color: var(--panel-muted);
   }
   .trends-inline-topic {
@@ -233,8 +233,8 @@ export const networkPanelStyles = css`
     align-items: center;
     gap: 8px;
     min-width: 0;
-    font-size: 13px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     font-weight: 600;
     color: var(--panel-text);
   }
@@ -343,8 +343,8 @@ export const networkPanelStyles = css`
     transition: border-color 0.2s ease;
   }
   .topic-card[data-selected] {
-    background: var(--panel-card-selected);
-    border-color: #0098e6;
+    background: var(--panel-sidebar);
+    border-color: var(--graph-accent);
   }
   .topic-ring {
     flex: none;
@@ -359,13 +359,13 @@ export const networkPanelStyles = css`
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 13px;
-    line-height: 17px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--panel-text);
   }
   .topic-value {
-    font-size: 13px;
-    line-height: 17px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--panel-text);
     font-variant-numeric: tabular-nums;
   }
@@ -374,8 +374,8 @@ export const networkPanelStyles = css`
     align-items: center;
     gap: 4px;
     min-width: 56px;
-    font-size: 13px;
-    line-height: 17px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
     color: var(--panel-down);
@@ -391,8 +391,8 @@ export const networkPanelStyles = css`
     align-items: stretch;
     height: 57px;
     margin-top: 36px;
-    background: var(--panel-bar);
-    border-top: 1px solid var(--panel-bar-edge);
+    background: var(--panel-sidebar);
+    border-top: 1px solid var(--panel-line);
     user-select: none;
   }
   .timeline-bar[data-compact] {
@@ -408,7 +408,7 @@ export const networkPanelStyles = css`
     width: 138px;
     box-sizing: border-box;
     padding: 0 12px 0 22px;
-    background: var(--panel-year-box);
+    background: var(--panel-sidebar);
   }
   .timeline-bar[data-compact] .year-box {
     gap: 8px;
@@ -418,13 +418,13 @@ export const networkPanelStyles = css`
   .year-text {
     display: flex;
     flex-direction: column;
-    font-size: 11px;
-    line-height: 13px;
+    font-size: var(--ui9000-font-size-subtitle);
+    line-height: var(--ui9000-line-height-subtitle);
     color: var(--panel-muted);
   }
   .year-text strong {
-    font-size: 15px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 600;
     color: var(--panel-text);
   }
@@ -495,9 +495,9 @@ export const networkPanelStyles = css`
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    font-size: 12px;
-    line-height: 16px;
-    color: var(--panel-faint);
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
+    color: var(--panel-muted);
     pointer-events: none;
   }
   .timeline-thumb {
@@ -505,7 +505,7 @@ export const networkPanelStyles = css`
     top: 0;
     bottom: 0;
     width: 0;
-    border-left: 1px solid #0098e6;
+    border-left: 1px solid var(--graph-accent);
     pointer-events: none;
   }
   .timeline-knob {
@@ -515,7 +515,7 @@ export const networkPanelStyles = css`
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #0098e6;
+    background: var(--graph-accent);
     transform: translate(-50%, -50%);
     display: grid;
     place-items: center;
@@ -528,11 +528,11 @@ export const networkPanelStyles = css`
     padding: 4px 10px;
     border-radius: 999px;
     white-space: nowrap;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     font-weight: 600;
     color: var(--panel-text);
-    background: var(--panel-bubble);
+    background: var(--panel-card);
     box-shadow: var(--panel-card-shadow);
   }
 
@@ -554,34 +554,21 @@ export const networkPanelStyles = css`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 15px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 600;
     color: var(--panel-text);
   }
   .metric-note {
     margin: 0;
-    font-size: 12px;
-    line-height: 16px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--panel-muted);
   }
-  .period-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--panel-muted);
-  }
-  .period-row select {
-    appearance: none;
-    border: 0;
-    padding: 0 16px 0 0;
-    font: inherit;
-    color: var(--panel-text);
-    background: transparent
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0h8L4 5z' fill='%238A8F99'/%3E%3C/svg%3E")
-      no-repeat right center;
-    cursor: pointer;
+  .period-select {
+    display: block;
+    height: auto;
+    flex: none;
   }
   .metric-tabs {
     display: grid;
@@ -606,8 +593,8 @@ export const networkPanelStyles = css`
     align-items: baseline;
     column-gap: 4px;
     white-space: nowrap;
-    font-size: 17px;
-    line-height: 22px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 600;
     color: var(--panel-text);
   }
@@ -617,8 +604,8 @@ export const networkPanelStyles = css`
   }
   .metric-label {
     overflow-wrap: break-word;
-    font-size: 13px;
-    line-height: 16px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     color: var(--panel-muted);
   }
   .metric-tab[data-active] .metric-label {
@@ -632,11 +619,11 @@ export const networkPanelStyles = css`
   .ranking-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: var(--ui9000-font-size-label);
   }
   .ranking-table th {
     padding: 0 0 10px;
-    font-size: 11px;
+    font-size: var(--ui9000-font-size-subtitle);
     font-weight: 400;
     text-align: left;
     color: var(--panel-muted);
@@ -650,7 +637,7 @@ export const networkPanelStyles = css`
   }
   .ranking-table td:first-child {
     width: 28px;
-    color: var(--panel-faint);
+    color: var(--panel-muted);
   }
   .ranking-table th:nth-child(3),
   .ranking-table td:nth-child(3),
@@ -688,8 +675,8 @@ export const networkPanelStyles = css`
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    font-size: 10px;
-    font-weight: 500;
+    font-size: var(--ui9000-font-size-subtitle);
+    font-weight: 600;
     color: var(--panel-muted);
     background: var(--panel-tab);
     box-shadow: inset 0 0 0 1px var(--panel-line);
@@ -697,7 +684,7 @@ export const networkPanelStyles = css`
   .avatar[data-large] {
     width: 40px;
     height: 40px;
-    font-size: 15px;
+    font-size: var(--ui9000-font-size-heading);
   }
   .card-name {
     display: flex;
@@ -708,14 +695,14 @@ export const networkPanelStyles = css`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 18px;
-    line-height: 24px;
-    font-weight: 500;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
+    font-weight: 600;
     color: var(--panel-text);
   }
   .card-name span {
-    font-size: 15px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     color: var(--panel-muted);
   }
   .card-tabs {
@@ -727,14 +714,14 @@ export const networkPanelStyles = css`
   }
   .card-tab {
     padding: 8px 0 6px;
-    font-size: 16px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     color: var(--panel-muted);
     border-bottom: 2px solid transparent;
   }
   .card-tab[data-active] {
-    color: #0098e6;
-    border-bottom-color: #0098e6;
+    color: var(--graph-accent);
+    border-bottom-color: var(--graph-accent);
   }
   .card-body {
     display: flex;
@@ -764,15 +751,15 @@ export const networkPanelStyles = css`
     align-items: baseline;
     column-gap: 6px;
     white-space: nowrap;
-    font-size: 18px;
-    line-height: 22px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 600;
     color: var(--panel-text);
   }
   .card-tile-label {
     overflow-wrap: break-word;
-    font-size: 15px;
-    line-height: 19px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     color: var(--panel-muted);
   }
   .card-tile[data-active] .card-tile-label {
@@ -780,8 +767,8 @@ export const networkPanelStyles = css`
   }
   .card-bio {
     margin: 0;
-    font-size: 15px;
-    line-height: 22px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     color: var(--panel-text);
     white-space: pre-line;
   }
@@ -808,8 +795,8 @@ export const networkPanelStyles = css`
     min-height: 48px;
     padding: 0 20px;
     border-bottom: 1px solid var(--panel-line);
-    font-size: 17px;
-    line-height: 24px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 600;
     white-space: nowrap;
     color: var(--panel-text);
@@ -820,7 +807,7 @@ export const networkPanelStyles = css`
   }
   .card-section-title em {
     font-style: normal;
-    color: #0098e6;
+    color: var(--graph-accent);
   }
   .view-all {
     flex-shrink: 0;
@@ -828,21 +815,21 @@ export const networkPanelStyles = css`
     align-items: center;
     gap: 4px;
     border-radius: 4px;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 400;
-    color: #0098e6;
+    color: var(--graph-accent);
   }
   .card-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 16px;
+    font-size: var(--ui9000-font-size-heading);
   }
   .card-table th {
     height: 36px;
     padding: 0 8px 0 0;
-    font-size: 13px;
-    line-height: 16px;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
     font-weight: 400;
     text-align: left;
     vertical-align: bottom;
@@ -859,7 +846,7 @@ export const networkPanelStyles = css`
   .card-table td:first-child {
     width: 36px;
     padding-left: 20px;
-    color: var(--panel-faint);
+    color: var(--panel-muted);
   }
   .card-table th:last-child,
   .card-table td:last-child {
@@ -875,14 +862,14 @@ export const networkPanelStyles = css`
     cursor: pointer;
   }
   .card-row[data-active] {
-    background: var(--panel-bar);
-    box-shadow: inset 3px 0 0 #0098e6;
+    background: var(--panel-sidebar);
+    box-shadow: inset 3px 0 0 var(--graph-accent);
   }
   .card-row:hover {
     background: var(--panel-tab);
   }
   .card-row:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: -2px;
   }
   .card-cell-name {
@@ -909,11 +896,11 @@ export const networkPanelStyles = css`
     flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
-    background: var(--focus-background);
+    background: var(--panel-card);
     animation: focus-appear 260ms ease-out both;
   }
   .focus-overlay:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: -2px;
   }
   .focus-overlay:focus:not(:focus-visible) {
@@ -955,10 +942,10 @@ export const networkPanelStyles = css`
     border-radius: 50%;
     cursor: pointer;
     color: #ffffff;
-    background: #0098e6;
+    background: var(--graph-accent);
   }
   .focus-back:focus-visible {
-    outline: 2px solid #0098e6;
+    outline: 2px solid var(--graph-accent);
     outline-offset: 2px;
   }
   .focus-title {
@@ -968,42 +955,19 @@ export const networkPanelStyles = css`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 20px;
-    line-height: 26px;
+    font-size: var(--ui9000-font-size-heading);
+    line-height: var(--ui9000-line-height-heading);
     font-weight: 400;
     color: var(--panel-text);
   }
   .topic-picker {
-    flex-shrink: 0;
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 2px;
-    min-width: 220px;
+    display: block;
+    flex: none;
+    width: 220px;
+    height: auto;
     padding: 0 24px;
     box-sizing: border-box;
     border-left: 1px solid var(--panel-line);
-    font-size: 13px;
-    line-height: 16px;
-    color: var(--panel-muted);
-  }
-  .topic-picker select {
-    appearance: none;
-    border: 0;
-    padding: 0 28px 0 0;
-    font: inherit;
-    font-size: 16px;
-    line-height: 22px;
-    color: var(--panel-text);
-    background: transparent
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%238A8F99' stroke-width='1.5'/%3E%3C/svg%3E")
-      no-repeat right center;
-    cursor: pointer;
-  }
-  .topic-picker select:focus-visible {
-    outline: 2px solid #0098e6;
-    outline-offset: 2px;
   }
   .focus-canvas {
     position: relative;

@@ -1,3 +1,4 @@
+import { CHART_TYPE } from '../../../utils/chart-theme.js';
 import {
   CELL_PITCH,
   FONT_SIZE,
@@ -27,7 +28,7 @@ import {
   type MeasureText,
 } from '../lib/heatmap-layout.js';
 import {
-  HEATMAP_ROW_DOT_COLORS,
+  heatmapRowDotColors,
   heatmapTokens,
   type HeatmapTokens,
 } from '../lib/heatmap-tokens.js';
@@ -35,12 +36,12 @@ import {
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const ROW_DOT_RADIUS = 4;
 const HOVER_CELL_STROKE_WIDTH = 1.5;
-const TITLE_FONT_SIZE = 16;
-const SUBTITLE_FONT_SIZE = 12;
+const TITLE_FONT_SIZE = CHART_TYPE.heading;
+const SUBTITLE_FONT_SIZE = CHART_TYPE.subtitle;
 const TITLE_GAP = 4;
 const TITLE_BOTTOM_PADDING = 10;
 const TITLE_SIDE_ROOM = 8;
-const CORNER_TITLE_FONT_SIZE = 11;
+const CORNER_TITLE_FONT_SIZE = CHART_TYPE.subtitle;
 const CORNER_TITLE_PADDING_BOTTOM = 14;
 /** Delay between two columns of the reveal. */
 export const REVEAL_COLUMN_DELAY_MS = 18;
@@ -286,6 +287,15 @@ function totalsCornerIcon(parent: Element, x: number, y: number, tokens: Heatmap
   svgEl(group, 'path', { d: 'M6 8 L8 6 V8 Z', fill: tokens.rowTotal });
 }
 
+const SELECTIONS = new WeakMap<HTMLElement, (row: string | null) => void>();
+
+/** Moves the selected row in place: the grid and its scroll stay. */
+export function setHeatmapSelectedRow(container: HTMLElement, row: string | null): boolean {
+  const paint = SELECTIONS.get(container);
+  paint?.(row);
+  return !!paint;
+}
+
 function linearGradient(
   defs: Element,
   id: string,
@@ -337,8 +347,10 @@ export function renderHeatmapGrid(container: HTMLElement, options: HeatmapGridOp
     onPointerLeave,
   } = options;
   const measure = options.measure ?? measureTextWidth;
+  const rowDots = heatmapRowDotColors();
 
   container.replaceChildren();
+  SELECTIONS.delete(container);
   if (options.width <= 0 || !rows.length || !columns.length) return;
 
   const layout = heatmapGridLayout(options);
@@ -618,7 +630,7 @@ export function renderHeatmapGrid(container: HTMLElement, options: HeatmapGridOp
         cx: 0,
         cy: y + rowPitch / 2,
         r: ROW_DOT_RADIUS,
-        fill: rowColors?.[rowIndex] ?? HEATMAP_ROW_DOT_COLORS[rowIndex % HEATMAP_ROW_DOT_COLORS.length],
+        fill: rowColors?.[rowIndex] ?? rowDots[rowIndex % rowDots.length],
         stroke: tokens.dotRing,
         'stroke-width': 1,
       });
@@ -692,20 +704,23 @@ export function renderHeatmapGrid(container: HTMLElement, options: HeatmapGridOp
     });
   });
 
-  const selectedIndex = selectedRow == null ? -1 : rows.indexOf(selectedRow);
-  if (selectedIndex >= 0) {
-    svgEl(body, 'rect', {
-      class: 'heatmap-selected-row',
-      x: 1,
-      y: selectedIndex * rowPitch + 1,
-      width: chartWidth - 2,
-      height: rowPitch - 2,
-      fill: 'none',
-      stroke: tokens.cell,
-      'stroke-width': 2,
-      'pointer-events': 'none',
-    });
-  }
+  const selection = svgEl(body, 'rect', {
+    class: 'heatmap-selected-row',
+    x: 1,
+    width: chartWidth - 2,
+    height: rowPitch - 2,
+    fill: 'none',
+    stroke: tokens.cell,
+    'stroke-width': 2,
+    'pointer-events': 'none',
+  });
+  const paintSelection = (row: string | null): void => {
+    const index = row == null ? -1 : rows.indexOf(row);
+    selection.setAttribute('visibility', index < 0 ? 'hidden' : 'visible');
+    selection.setAttribute('y', String(Math.max(index, 0) * rowPitch + 1));
+  };
+  paintSelection(selectedRow);
+  SELECTIONS.set(container, paintSelection);
 
   const hover = hoverable
     ? svgEl(body, 'rect', {

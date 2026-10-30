@@ -11,7 +11,6 @@ type NetworkGraphArgs = {
   showLegend: boolean;
   showTooltip: boolean;
   wheelZoom: boolean;
-  plainBackground: boolean;
   message: string;
   width: string;
 };
@@ -34,7 +33,6 @@ const meta: Meta<NetworkGraphArgs> = {
     showLegend: true,
     showTooltip: true,
     wheelZoom: false,
-    plainBackground: false,
     message: '',
     width: '100%',
   },
@@ -47,7 +45,6 @@ const meta: Meta<NetworkGraphArgs> = {
         ?show-legend=${args.showLegend}
         ?show-tooltip=${args.showTooltip}
         ?wheel-zoom=${args.wheelZoom}
-        ?plain-background=${args.plainBackground}
         .message=${args.message}
       ></ui9000-network-graph>
     </div>
@@ -96,9 +93,9 @@ export const PanelsCompact: Story = {
   args: { data: panelsFixture, width: '640px' },
 };
 
-/** The chat: a plain wheel scrolls the transcript, on the chat's own background. */
+/** The width of the chat. */
 export const InChat: Story = {
-  args: { data: panelsFixture, width: '520px', plainBackground: true },
+  args: { data: panelsFixture, width: '520px' },
 };
 
 export const NoLegend: Story = {

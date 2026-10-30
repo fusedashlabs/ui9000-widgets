@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 
+import { applyWidgetContext, notifyHostTheme } from '../../../context/index.js';
 import networkFixture from '../../../stories/fixtures/network-graph.fusedash.json';
 import panelsFixture from '../../../stories/fixtures/network-graph.panels.json';
 
@@ -56,6 +57,18 @@ async function mount(
   await flush();
   await el.updateComplete;
   return el;
+}
+
+/** Waits for the simulation to stop moving what `read` reports. */
+async function settled(read: () => unknown): Promise<void> {
+  let last = '';
+  for (let step = 0; step < 120; step += 1) {
+    const now = JSON.stringify(read());
+    if (now === last) return;
+    last = now;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  throw new Error('the graph did not settle');
 }
 
 async function openLegend(el: Shadowed): Promise<void> {
@@ -228,9 +241,13 @@ describe('ui9000-network-graph', () => {
       el.remove();
     });
 
-    it('walks the dates without rebuilding the graph', async () => {
+    it('walks the dates without moving the graph', { timeout: 15000 }, async () => {
       const el = await mount(panelsFixture);
       const svg = el.shadowRoot.querySelector('.chart-root svg');
+      const places = (): (string | null)[] =>
+        [...el.shadowRoot.querySelectorAll('g.node')].map((node) => node.getAttribute('transform'));
+      await settled(places);
+      const before = places();
       const shown = (): number =>
         [...el.shadowRoot.querySelectorAll<SVGGElement>('g.node')].filter(
           (node) => node.style.opacity !== '0',
@@ -242,6 +259,8 @@ describe('ui9000-network-graph', () => {
       expect(text(el, '.timeline-bubble')).toBe('Jul, 6');
       expect(shown()).toBe(11);
       expect(el.shadowRoot.querySelector('.chart-root svg')).toBe(svg);
+      await new Promise((r) => setTimeout(r, 300));
+      expect(places()).toEqual(before);
 
       el.remove();
     });
@@ -310,10 +329,10 @@ describe('ui9000-network-graph', () => {
       item.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       await el.updateComplete;
 
-      const active = el.shadowRoot.activeElement as SVGGElement;
-      expect(active).not.toBe(item);
-      expect(active.getAttribute('aria-pressed')).toBe('true');
-      active.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      expect(el.shadowRoot.querySelector('.focus-item')).toBe(item);
+      expect(el.shadowRoot.activeElement).toBe(item);
+      expect(item.getAttribute('aria-pressed')).toBe('true');
+      item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       await el.updateComplete;
       expect(el.shadowRoot.querySelector('.focus-overlay')).toBeNull();
 
@@ -332,6 +351,70 @@ describe('ui9000-network-graph', () => {
       await click(el, '[aria-label="Previous date"]');
 
       expect(el.shadowRoot.querySelector('.focus-overlay')).toBeNull();
+
+      el.remove();
+    });
+
+    it('moves the selected heatmap row without redrawing the grid', async () => {
+      const el = await mount(panelsFixture);
+      const toggle = el.shadowRoot.querySelectorAll('.view-button')[1] as HTMLElement;
+      const heatmap = el.shadowRoot.querySelector('.heatmap-root') as HTMLElement;
+      Object.defineProperty(heatmap, 'clientWidth', { value: 700, configurable: true });
+      Object.defineProperty(heatmap, 'clientHeight', { value: 480, configurable: true });
+      toggle.click();
+      await flush();
+      const svg = heatmap.querySelector('svg');
+      const row = heatmap.querySelector('.heatmap-row-bar') as SVGElement;
+      expect(svg).not.toBeNull();
+
+      row.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await flush();
+
+      expect(heatmap.querySelector('svg')).toBe(svg);
+      expect(heatmap.querySelector('.heatmap-selected-row')?.getAttribute('visibility')).toBe(
+        'visible',
+      );
+
+      el.remove();
+    });
+
+    it('follows the page style in node colours and the accent', async () => {
+      const el = await mount(panelsFixture);
+      const fills = (): (string | null | undefined)[] =>
+        [...el.shadowRoot.querySelectorAll('g.node .node-background')].map((node) =>
+          node.getAttribute('stroke'),
+        );
+      const before = fills();
+      const accent = (el.shadowRoot.querySelector('.network-layout') as HTMLElement).style.getPropertyValue('--graph-accent');
+
+      applyWidgetContext(el, { mode: 'light', styleId: 'palette1' });
+      notifyHostTheme();
+      await flush();
+      await el.updateComplete;
+
+      expect(fills()).not.toEqual(before);
+      expect(
+        (el.shadowRoot.querySelector('.network-layout') as HTMLElement).style.getPropertyValue('--graph-accent'),
+      ).not.toBe(accent);
+
+      el.remove();
+    });
+
+    it('changes the period through ui9000-select', async () => {
+      const el = await mount(panelsFixture);
+      const picker = el.shadowRoot.querySelector('.period-select') as HTMLElement & {
+        updateComplete: Promise<unknown>;
+      };
+      await picker.updateComplete;
+      const select = picker.shadowRoot?.querySelector('select') as HTMLSelectElement;
+      expect(select.value).toBe('Last 6 months');
+
+      select.value = 'Last 3 months';
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      await el.updateComplete;
+      await picker.updateComplete;
+
+      expect(picker.shadowRoot?.querySelector('select')?.value).toBe('Last 3 months');
 
       el.remove();
     });

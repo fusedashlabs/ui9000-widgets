@@ -26,24 +26,28 @@ export const LEGEND_OPACITY_STEPS = [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1];
 
 export type MeasureText = (text: string, fontSize: number) => number;
 
-let measureContext: CanvasRenderingContext2D | null | undefined;
-
-/** Text width in the chart font; a character estimate where there is no canvas. */
-export const measureTextWidth: MeasureText = (text, fontSize) => {
-  if (measureContext === undefined) {
-    try {
-      measureContext =
-        typeof document === 'undefined'
-          ? null
-          : document.createElement('canvas').getContext('2d');
-    } catch {
-      measureContext = null;
+/** Measures text in `fontFamily`; a character estimate where there is no canvas. */
+export function createTextMeasure(fontFamily: string): MeasureText {
+  let context: CanvasRenderingContext2D | null | undefined;
+  return (text, fontSize) => {
+    if (context === undefined) {
+      try {
+        context =
+          typeof document === 'undefined'
+            ? null
+            : document.createElement('canvas').getContext('2d');
+      } catch {
+        context = null;
+      }
     }
-  }
-  if (!measureContext) return text.length * fontSize * 0.55;
-  measureContext.font = `${fontSize}px Inter, sans-serif`;
-  return measureContext.measureText(text).width;
-};
+    if (!context) return text.length * fontSize * 0.55;
+    context.font = `${fontSize}px ${fontFamily}`;
+    return context.measureText(text).width;
+  };
+}
+
+/** Text width in the chart font. */
+export const measureTextWidth: MeasureText = createTextMeasure('Inter, sans-serif');
 
 /** Key of one cell in the `values` map of a heatmap. */
 export function heatmapCellKey(row: string, column: string): string {

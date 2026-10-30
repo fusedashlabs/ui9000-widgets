@@ -7,7 +7,6 @@ export {
   resizeNetworkGraph,
   stopNetworkGraph,
   updateNetworkGraphVisibility,
-  type NetworkGraphController,
   type RenderNetworkGraphOptions,
 } from './render/index.js';
 export {

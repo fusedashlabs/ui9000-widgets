@@ -62,3 +62,5 @@ export {
   type GraphControlColors,
   type GraphThemeColors,
 } from './theme.js';
+export { getNodeConnections } from './fit.js';
+export { CONNECTION_RING_MAX, CONNECTION_RING_MIN } from './graph-constants.js';

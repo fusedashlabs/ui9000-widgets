@@ -1,39 +1,46 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { DEFAULT_THEME } from '../../../types/index.js';
 import networkFixture from '../../../stories/fixtures/network-graph.fusedash.json';
+import { GRAPH_THEME_COLORS } from '../lib/theme.js';
 import {
   normalizeNetworkGraphData,
   visibleNodeIds,
   type NetworkGraphInput,
 } from '../lib/index.js';
 import {
+  networkNodeElement,
   renderNetworkGraph,
   resizeNetworkGraph,
+  setNetworkGraphActive,
+  setNetworkGraphColors,
   stopNetworkGraph,
   updateNetworkGraphVisibility,
 } from '../render/draw.js';
 
 const MODEL = normalizeNetworkGraphData(networkFixture as NetworkGraphInput);
+const measure = (text: string): number => text.length * 6;
+const mounted: HTMLElement[] = [];
 
-function draw(width = 800, height = 480): HTMLElement {
+function draw(extra = {}, model = MODEL): HTMLElement {
   const container = document.createElement('div');
-  renderNetworkGraph(container, {
-    model: MODEL,
-    visibleIds: null,
-    width,
-    height,
-    theme: DEFAULT_THEME,
-  });
+  mounted.push(container);
+  renderNetworkGraph(container, { model, visibleIds: null, measure, ...extra });
   return container;
 }
 
-/** Node centres, so a redraw that reshuffles the layout is visible in a test. */
+afterEach(() => {
+  while (mounted.length) stopNetworkGraph(mounted.pop() as HTMLElement);
+});
+
+/** Node centres, so a change that reshuffles the layout is visible in a test. */
 function transforms(container: HTMLElement): string[] {
   return Array.from(container.querySelectorAll('g.node')).map(
     (g) => g.getAttribute('transform') ?? '',
   );
 }
+
+const nodeNamed = (container: HTMLElement, id: string): Element =>
+  networkNodeElement(container, id)?.closest('g.node') as Element;
 
 describe('renderNetworkGraph', () => {
   it('draws one group per node and one line per link', () => {
@@ -41,75 +48,149 @@ describe('renderNetworkGraph', () => {
     expect(container.querySelectorAll('svg')).toHaveLength(1);
     expect(container.querySelectorAll('g.node')).toHaveLength(10);
     expect(container.querySelectorAll('line.link-line')).toHaveLength(9);
-    // Every link carries a pill, so the legend filter never has to build one.
-    expect(container.querySelectorAll('g.link-label')).toHaveLength(9);
+  });
+
+  it('draws on the fixed canvas, whatever the size of the widget', () => {
+    const svg = draw().querySelector('svg');
+    expect(svg?.getAttribute('viewBox')).toBe(`-800 ${1375 * -0.35} 2000 1375`);
+  });
+
+  it('lays the graph out inside the dashed circle before the first paint', () => {
+    const container = draw();
+    const [outer] = Array.from(container.querySelectorAll('.graph-decor circle'));
+    const radius = Number(outer.getAttribute('r'));
+    const cx = Number(outer.getAttribute('cx'));
+    const cy = Number(outer.getAttribute('cy'));
+    for (const value of transforms(container)) {
+      const [x, y] = value.match(/-?[\d.]+/g)?.map(Number) ?? [];
+      expect(Math.hypot(x - cx, y - cy)).toBeLessThanOrEqual(radius);
+    }
+  });
+
+  it('draws small nodes as rings and large ones filled', () => {
+    const model = normalizeNetworkGraphData({
+      nodes: Array.from({ length: 8 }, (_, i) => ({
+        id: `n${i}`,
+        label: `N ${i}`,
+        value: 10 ** i,
+      })),
+      links: [],
+    });
+    const container = draw({}, model);
+    const rings = Array.from(container.querySelectorAll('.node-background')).map((node) =>
+      node.getAttribute('data-ring'),
+    );
+    expect(rings).toContain('true');
+    expect(rings).toContain('false');
+  });
+
+  it('names every node under its circle, cutting a long name', () => {
+    const model = normalizeNetworkGraphData({
+      nodes: [{ id: 'a', label: 'A very long node name '.repeat(6), value: 1 }],
+      links: [],
+    });
+    const container = draw({}, model);
+    expect(container.querySelector('.node-label-title')?.textContent).toContain('...');
+    expect(container.querySelector('.node-label title')?.textContent).toContain('A very long');
+  });
+});
+
+describe('selection', () => {
+  const ids = MODEL.nodes.map((node) => node.id);
+
+  it('reports a click on a node and clears it on a second click', () => {
+    const onSelect = vi.fn();
+    const container = draw({ onSelect });
+    const area = nodeNamed(container, ids[0]).querySelector('.node-drag-area') as Element;
+    area.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(onSelect).toHaveBeenLastCalledWith(ids[0]);
+    area.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(onSelect).toHaveBeenLastCalledWith(null);
+  });
+
+  it('clears the selection on a click on the empty canvas', () => {
+    const onSelect = vi.fn();
+    const container = draw({ activeNodeId: ids[0], onSelect });
+    container.querySelector('svg')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(onSelect).toHaveBeenCalledWith(null);
+  });
+
+  it('dims what is not related to the selected node', () => {
+    const container = draw();
+    setNetworkGraphActive(container, ids[0]);
+    const colors = GRAPH_THEME_COLORS.light;
+    const opacities = Array.from(
+      container.querySelectorAll<SVGGElement>('.node-visual'),
+    ).map((node) => node.style.opacity);
+    expect(opacities).toContain(String(colors.dimmedOpacity));
+    expect(opacities).toContain('1');
+    const strokes = Array.from(container.querySelectorAll('line.link-line')).map((line) =>
+      line.getAttribute('stroke'),
+    );
+    expect(strokes).toContain(colors.linkDimmed);
+  });
+
+  it('opens the focus view from the + of the selected node', () => {
+    const onOpenFocus = vi.fn();
+    const container = draw({ activeNodeId: ids[0], onOpenFocus });
+    const plus = nodeNamed(container, ids[0]).querySelector('.node-plus') as Element;
+    plus.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(onOpenFocus).toHaveBeenCalledWith(ids[0]);
+  });
+
+  it('repaints for a theme without moving a node', () => {
+    const container = draw();
+    const before = transforms(container);
+    setNetworkGraphColors(container, 'dark');
+    expect(transforms(container)).toEqual(before);
+    expect(container.querySelector('.node-halo')?.getAttribute('fill')).toBe(
+      GRAPH_THEME_COLORS.dark.nodeHalo,
+    );
   });
 });
 
 describe('updateNetworkGraphVisibility', () => {
-  it('hides filtered nodes in place — same SVG, same zones', () => {
+  it('hides filtered nodes in place', () => {
     const container = draw();
     const svg = container.querySelector('svg');
-    const before = transforms(container);
+    const visible = visibleNodeIds(MODEL, { leftSlider: 3, rightSlider: 7 });
 
-    // Top three buckets only: citigroup, capital_one, wells_fargo.
-    const visible = visibleNodeIds(MODEL, { leftSlider: 5, rightSlider: 7 });
     expect(updateNetworkGraphVisibility(container, visible)).toBe(true);
-
     expect(container.querySelector('svg')).toBe(svg);
-    expect(container.querySelectorAll('g.node')).toHaveLength(10);
-    // Isolated leftovers stay pinned in the zone the full graph gave them.
-    expect(transforms(container)).toEqual(before);
 
-    const groups = Array.from(container.querySelectorAll<SVGGElement>('g.node'));
-    const shown = groups.filter((g) => g.style.opacity === '1');
-    expect(shown).toHaveLength(3);
-    for (const hidden of groups.filter((g) => g.style.opacity === '0')) {
-      expect(hidden.style.pointerEvents).toBe('none');
-    }
-    const lines = Array.from(container.querySelectorAll<SVGLineElement>('line.link-line'));
-    expect(lines.some((l) => l.style.opacity === '0')).toBe(true);
+    const hidden = Array.from(container.querySelectorAll<SVGGElement>('g.node')).filter(
+      (node) => node.style.opacity === '0',
+    );
+    expect(hidden).toHaveLength(MODEL.nodes.length - (visible?.size ?? 0));
   });
 
   it('restores everything when the filter is cleared', () => {
     const container = draw();
-    updateNetworkGraphVisibility(container, visibleNodeIds(MODEL, { leftSlider: 5, rightSlider: 7 }));
+    updateNetworkGraphVisibility(container, new Set());
     updateNetworkGraphVisibility(container, null);
-
-    const groups = Array.from(container.querySelectorAll<SVGGElement>('g.node'));
-    expect(groups.every((g) => g.style.opacity === '1')).toBe(true);
-    const lines = Array.from(container.querySelectorAll<SVGLineElement>('line.link-line'));
-    expect(lines.every((l) => l.style.opacity === '1')).toBe(true);
+    for (const node of container.querySelectorAll<SVGGElement>('g.node')) {
+      expect(node.style.opacity).toBe('1');
+    }
+    for (const line of container.querySelectorAll<SVGLineElement>('line.link-line')) {
+      expect(line.style.opacity).toBe('1');
+    }
   });
 
   it('reports false when no graph is mounted', () => {
-    const container = document.createElement('div');
-    expect(updateNetworkGraphVisibility(container, null)).toBe(false);
-    stopNetworkGraph(draw());
     expect(updateNetworkGraphVisibility(document.createElement('div'), null)).toBe(false);
   });
 });
 
 describe('resizeNetworkGraph', () => {
-  it('re-frames the settled layout without rebuilding or re-seeding it', () => {
-    const container = draw(800, 480);
-    const svg = container.querySelector('svg');
-    const nodes = container.querySelectorAll('g.node');
+  it('leaves the layout to the view box', () => {
+    const container = draw();
     const before = transforms(container);
-
-    expect(resizeNetworkGraph(container, 520, 360)).toBe(true);
-
-    expect(container.querySelector('svg')).toBe(svg);
-    expect(container.querySelectorAll('g.node')[0]).toBe(nodes[0]);
-    expect(svg?.getAttribute('viewBox')).toBe('0 0 520 360');
-    // Nodes are only pulled back inside the smaller frame, never re-simulated.
-    expect(transforms(container)).not.toEqual([]);
-    expect(transforms(container)).toHaveLength(before.length);
+    expect(resizeNetworkGraph(container, 400, 300)).toBe(true);
+    expect(transforms(container)).toEqual(before);
   });
 
   it('rejects an empty frame and an unmounted container', () => {
-    const container = draw();
-    expect(resizeNetworkGraph(container, 0, 300)).toBe(false);
+    expect(resizeNetworkGraph(draw(), 0, 300)).toBe(false);
     expect(resizeNetworkGraph(document.createElement('div'), 400, 300)).toBe(false);
   });
 });

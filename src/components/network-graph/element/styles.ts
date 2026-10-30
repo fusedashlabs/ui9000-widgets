@@ -57,6 +57,131 @@ export const networkGraphStyles = css`
     outline: 2px solid #0098e6;
     outline-offset: 1px;
   }
+  .zoom-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+    display: flex;
+    gap: 4px;
+  }
+  .zoom-button {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    background: var(--control-button);
+    color: var(--control-icon);
+    box-shadow: var(--toggle-shadow);
+    transition: background 0.2s ease;
+  }
+  .zoom-button:hover {
+    background: var(--control-button-hover);
+  }
+  .zoom-button:focus-visible {
+    outline: 2px solid #0098e6;
+    outline-offset: 1px;
+  }
+  .fan-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .connections-panel {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    z-index: 2;
+    width: 250px;
+    max-height: calc(100% - 128px);
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    pointer-events: none;
+  }
+  .connections-title {
+    margin: 0 0 0 26px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--control-title);
+  }
+  .connections-list {
+    list-style: none;
+    margin: -40px 0 -40px -40px;
+    padding: 40px 0 40px 40px;
+    overflow-y: auto;
+    pointer-events: auto;
+  }
+  .connection-item {
+    margin: 0;
+  }
+  .connection-button {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    align-items: start;
+    gap: 12px;
+    padding: 2px 4px 2px 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .connection-button:hover {
+    background: var(--item-hover);
+  }
+  .connection-button:focus-visible {
+    outline: 2px solid #0098e6;
+    outline-offset: -2px;
+  }
+  .connection-text {
+    min-width: 0;
+  }
+  .connection-dot {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    margin: 5px 3px 0;
+    border-radius: 50%;
+    background: #0098e6;
+  }
+  .connection-dot::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--ring);
+    height: var(--ring);
+    border: 5px solid rgba(0, 152, 230, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+  .connection-name {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--item-title);
+    position: relative;
+  }
+  .connection-sub {
+    display: block;
+    font-size: 11px;
+    line-height: 14px;
+    color: var(--item-sub);
+  }
   .heatmap-pane {
     position: absolute;
     inset: 0;

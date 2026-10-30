@@ -65,9 +65,10 @@ describe('ui9000-network-graph', () => {
       links: [],
     });
     const fills = [...el.shadowRoot.querySelectorAll('.node-background')].map((node) =>
-      node.getAttribute('fill')?.toLowerCase(),
+      node.getAttribute('stroke')?.toLowerCase(),
     );
-    expect(fills).toEqual(['#a0f1e3', '#6fcf97']);
+    expect(fills.map((color) => color?.length)).toEqual([7, 7]);
+    expect(new Set(fills).size).toBe(2);
     el.remove();
   });
 

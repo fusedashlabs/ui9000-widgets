@@ -1,8 +1,11 @@
 export {
+  networkNodeElement,
   renderNetworkGraph,
   resizeNetworkGraph,
+  setNetworkGraphActive,
+  setNetworkGraphColors,
+  zoomNetworkGraph,
   stopNetworkGraph,
   updateNetworkGraphVisibility,
-  type NetworkGraphController,
   type RenderNetworkGraphOptions,
 } from './draw.js';

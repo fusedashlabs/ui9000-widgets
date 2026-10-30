@@ -1,4 +1,4 @@
-import { html, nothing, type PropertyValues } from 'lit';
+import { html, nothing, svg, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { readThemeFromElement } from '../../../context/widget-context.js';
@@ -9,11 +9,15 @@ import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import { renderHeatmapGrid } from '../../matrix-chart/render/heatmap-grid.js';
 import {
   buildNetworkHeatmap,
+  CONNECTION_RING_MAX,
+  CONNECTION_RING_MIN,
   FULL_RANGE,
   formatLegendValue,
   formatNodeValue,
+  GRAPH_ACCENT,
   GRAPH_CONTROL_COLORS,
   GRAPH_THEME_COLORS,
+  getNodeConnections,
   legendRanges,
   normalizeNetworkGraphData,
   rangeTrackOffset,
@@ -27,10 +31,14 @@ import {
   type NetworkRange,
 } from '../lib/index.js';
 import {
+  networkNodeElement,
   renderNetworkGraph,
   resizeNetworkGraph,
+  setNetworkGraphActive,
+  setNetworkGraphColors,
   stopNetworkGraph,
   updateNetworkGraphVisibility,
+  zoomNetworkGraph,
 } from '../render/draw.js';
 import { networkGraphStyles } from './styles.js';
 import { dsText } from '../../../element/ds-text.js';
@@ -48,6 +56,7 @@ const VIEWS: Array<{ value: NetworkView; label: string }> = [
 
 /** Room kept between the view toggle and the heatmap texts next to it. */
 const TOGGLE_GAP = 6;
+const ZOOM_STEP = 1.4;
 /** Padding of the heatmap pane, and the room under rows that fill it. */
 const HEATMAP_PADDING_TOP = 8;
 const HEATMAP_PADDING_X = 12;
@@ -80,8 +89,19 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   @state()
   private _view: NetworkView = 'network';
 
-  /** Non-reactive: selection is owned by the draw layer, redrawing would reset it. */
+  /** Selected node, shared by the graph, the heatmap and the connections panel. */
+  @state()
   private _activeNodeId: string | null = null;
+
+  /** Zoom with Ctrl / Cmd only, so a plain wheel scrolls the page: the chat feed. */
+  @property({ type: Boolean, attribute: 'wheel-zoom-needs-key' })
+  wheelZoomNeedsKey = false;
+
+  /** The background of the other widgets (the chat) instead of the network design's. */
+  @property({ type: Boolean, attribute: 'plain-background' })
+  plainBackground = false;
+
+  private _fanRaf = 0;
 
   /** The drawn graph no longer matches its data, theme or selection. */
   private _graphStale = true;
@@ -109,6 +129,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     this._resizeObserver?.disconnect();
     cancelAnimationFrame(this._raf);
     cancelAnimationFrame(this._resizeRaf);
+    cancelAnimationFrame(this._fanRaf);
     this.stopLegendDrag();
     const root = this.chartRoot();
     if (root) stopNetworkGraph(root);
@@ -130,6 +151,47 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       this.closeAllTooltips();
     }
     if (this.shouldRedraw(changed)) this.scheduleDraw();
+    if (changed.has('_activeNodeId') || changed.has('_view')) this.followConnections();
+  }
+
+  /** Dotted curves from the selected node to the panel follow it while it moves. */
+  private followConnections(): void {
+    cancelAnimationFrame(this._fanRaf);
+    if (!this._activeNodeId || this._view !== 'network') return;
+    const draw = (): void => {
+      this.drawFan();
+      this._fanRaf = requestAnimationFrame(draw);
+    };
+    this._fanRaf = requestAnimationFrame(draw);
+  }
+
+  private drawFan(): void {
+    const root = this.chartRoot();
+    const stage = this.shadowRoot?.querySelector('.network-stage');
+    const id = this._activeNodeId;
+    if (!root || !stage || !id) return;
+    const nodeElement = networkNodeElement(root, id);
+    if (!nodeElement) return;
+    const base = stage.getBoundingClientRect();
+    const box = nodeElement.getBoundingClientRect();
+    const x0 = box.right - base.left;
+    const y0 = box.top + box.height / 2 - base.top;
+    this.shadowRoot?.querySelectorAll<SVGPathElement>('.fan-path').forEach((path) => {
+      const dot = this.shadowRoot?.querySelector(`[data-dot="${path.dataset.target}"]`);
+      if (!dot) return;
+      const target = dot.getBoundingClientRect();
+      const x1 = target.left + target.width / 2 - base.left;
+      const y1 = target.top + target.height / 2 - base.top;
+      const bend = Math.max((x1 - x0) * 0.55, 24);
+      path.setAttribute('d', `M${x0} ${y0} C${x0 + bend} ${y0} ${x1 - bend} ${y1} ${x1} ${y1}`);
+    });
+  }
+
+  private selectNode(id: string | null): void {
+    this._activeNodeId = id;
+    const root = this.chartRoot();
+    if (root) setNetworkGraphActive(root, id);
+    if (this._view === 'heatmap') this.scheduleDraw();
   }
 
   /**
@@ -147,8 +209,10 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   }
 
   protected override onThemeChange(): void {
-    this._graphStale = true;
-    this.scheduleDraw();
+    const root = this.chartRoot();
+    if (root) setNetworkGraphColors(root, this.themeMode());
+    this.requestUpdate();
+    if (this._view === 'heatmap') this.scheduleDraw();
   }
 
   private scheduleDraw(): void {
@@ -165,8 +229,9 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     this._resizeRaf = requestAnimationFrame(() => {
       const root = this.chartRoot();
       if (!root) return;
-      if (this._view === 'heatmap') this.draw();
-      if (!resizeNetworkGraph(root, root.clientWidth, root.clientHeight)) this.draw();
+      if (this._view === 'heatmap' || !resizeNetworkGraph(root, root.clientWidth, root.clientHeight)) {
+        this.draw();
+      }
     });
   }
 
@@ -246,11 +311,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
         : undefined,
       reveal: !this._heatmapRevealed,
       selectedRow: this._activeNodeId,
-      onRowClick: (row) => {
-        this._activeNodeId = this._activeNodeId === row ? null : row;
-        this._graphStale = true;
-        this.scheduleDraw();
-      },
+      onRowClick: (row) => this.selectNode(this._activeNodeId === row ? null : row),
       onCellEnter: (event, { row, column, value }) =>
         showTip(event, {
           rows: [
@@ -297,11 +358,10 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     renderNetworkGraph(root, {
       model,
       visibleIds: visibleNodeIds(model, this._range),
-      width: root.clientWidth,
-      height: root.clientHeight,
-      theme: readThemeFromElement(this),
       themeMode: this.themeMode(),
+      fontFamily: readThemeFromElement(this).fontFamily,
       activeNodeId: this._activeNodeId,
+      wheelZoomNeedsKey: this.wheelZoomNeedsKey,
       onSelect: (id) => {
         this._activeNodeId = id;
       },
@@ -455,13 +515,94 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     const mode = this.themeMode();
     const controls = GRAPH_CONTROL_COLORS[mode];
     return [
-      `--graph-background:${GRAPH_THEME_COLORS[mode].background}`,
+      `--graph-background:${
+        this.plainBackground
+          ? 'var(--ui9000-color-surface, #ffffff)'
+          : GRAPH_THEME_COLORS[mode].background
+      }`,
       `--toggle-track:${controls.track}`,
       `--toggle-thumb:${controls.thumb}`,
       `--toggle-text:${controls.text}`,
       `--toggle-text-active:${controls.textActive}`,
       `--toggle-shadow:${controls.shadow}`,
+      `--control-button:${controls.button}`,
+      `--control-button-hover:${controls.buttonHover}`,
+      `--control-icon:${controls.buttonIcon}`,
+      `--control-title:${controls.title}`,
+      `--item-title:${controls.itemTitle}`,
+      `--item-sub:${controls.itemSub}`,
+      `--item-hover:${controls.itemHover}`,
     ].join(';');
+  }
+
+  private renderZoomControls() {
+    const zoomBy = (factor: number): void => {
+      const root = this.chartRoot();
+      if (root) zoomNetworkGraph(root, factor);
+    };
+    return html`<div class="zoom-controls">
+      <button type="button" class="zoom-button" aria-label="Zoom in" @click=${() => zoomBy(ZOOM_STEP)}>
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button type="button" class="zoom-button" aria-label="Zoom out" @click=${() => zoomBy(1 / ZOOM_STEP)}>
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <path d="M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>`;
+  }
+
+  /** Neighbours of the selected node, strongest link first. */
+  private renderConnections() {
+    const id = this._activeNodeId;
+    if (!id || !this._model) return nothing;
+    const { nodes, links } = this._model;
+    const byId = new Map(nodes.map((node) => [node.id, node]));
+    if (!byId.has(id)) return nothing;
+    const connections = [...getNodeConnections(id, links)]
+      .flatMap(([nodeId, weight]) => {
+        const node = byId.get(nodeId);
+        return node ? [{ node, weight }] : [];
+      })
+      .sort((a, b) => b.weight - a.weight);
+    const maxWeight = connections[0]?.weight ?? 0;
+    return html`<svg class="fan-overlay" aria-hidden="true">
+        ${connections.map(
+          ({ node }) => svg`<path
+            class="fan-path"
+            data-target=${node.id}
+            fill="none"
+            stroke=${GRAPH_ACCENT}
+            stroke-opacity="0.7"
+            stroke-width="1.5"
+            stroke-dasharray="0.5 4"
+            stroke-linecap="round"
+          />`,
+        )}
+      </svg>
+      <aside class="connections-panel" aria-label="Connections">
+        <p class="connections-title">Connections:</p>
+        <ul class="connections-list">
+          ${connections.map(({ node, weight }) => {
+            const share = maxWeight ? weight / maxWeight : 0;
+            const ring =
+              CONNECTION_RING_MIN + (CONNECTION_RING_MAX - CONNECTION_RING_MIN) * Math.sqrt(share);
+            return html`<li class="connection-item">
+              <button type="button" class="connection-button" @click=${() => this.selectNode(node.id)}>
+                <span class="connection-dot" data-dot=${node.id} style="--ring:${ring * 2}px"></span>
+                <span class="connection-text">
+                  <span class="connection-name">${node.label}</span>
+                  <span class="connection-sub">
+                    ${formatNodeValue(weight)} ${weight === 1 ? 'connection' : 'connections'}
+                  </span>
+                </span>
+              </button>
+            </li>`;
+          })}
+        </ul>
+      </aside>`;
   }
 
   private renderViewToggle() {
@@ -494,6 +635,8 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
           >
             ${this.renderViewToggle()}
             <div class="chart-root" part="chart" ?data-covered=${isHeatmap}></div>
+            ${isHeatmap ? nothing : this.renderZoomControls()}
+            ${isHeatmap ? nothing : this.renderConnections()}
             <div class="heatmap-pane" ?hidden=${!isHeatmap}>
               <div class="heatmap-root" part="heatmap"></div>
               <div class="heatmap-fade"></div>

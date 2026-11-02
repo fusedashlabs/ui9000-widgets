@@ -618,12 +618,13 @@ export function renderHeatmapGrid(container: HTMLElement, options: HeatmapGridOp
       });
       gridBox(group, 0, y, labelWidth, rowPitch, tokens.gridLine);
       const barWidth = Math.round(labelWidth * LABEL_BAR_MAX_SHARE * totalShare);
+      // Inside the box's border, so neighbouring bars stay apart.
       svgEl(group, 'rect', {
         class: 'heatmap-row-bar',
         x: labelWidth - barWidth,
-        y,
+        y: y + 1,
         width: barWidth,
-        height: rowPitch,
+        height: Math.max(rowPitch - 2, 0),
         fill: `url(#${idPrefix}-bar)`,
       });
       svgEl(group, 'circle', {

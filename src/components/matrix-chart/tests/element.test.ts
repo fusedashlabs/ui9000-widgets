@@ -1,5 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 
+import { applyWidgetContext, notifyHostTheme } from '../../../context/index.js';
+
 let observed: (() => void)[] = [];
 
 beforeAll(async () => {
@@ -115,6 +117,21 @@ describe('ui9000-matrix-chart', () => {
     const hidden = await mount(GRID, { showLegend: false });
     expect(hidden.shadowRoot.querySelector('.palette-legend')).toBeNull();
     hidden.remove();
+  });
+
+  it('repaints the legend when the page style changes', async () => {
+    const el = await mount();
+    const swatch = (): string =>
+      (el.shadowRoot.querySelector('.palette-swatch') as HTMLElement).style.background;
+    const before = swatch();
+
+    applyWidgetContext(el, { mode: 'light', styleId: 'palette5' });
+    notifyHostTheme();
+    await flush();
+    await el.updateComplete;
+
+    expect(swatch()).not.toBe(before);
+    el.remove();
   });
 
   it('show-tooltip toggles the hover tooltip', async () => {

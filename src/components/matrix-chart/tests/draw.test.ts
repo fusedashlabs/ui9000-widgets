@@ -105,6 +105,15 @@ describe('renderMatrixChart', () => {
     expect(smaller / largest).toBeCloseTo(5 / 8, 1);
   });
 
+  it('keeps the row bars inside the row borders', () => {
+    const container = plot();
+    draw(container);
+    const bars = [...container.querySelectorAll('rect.heatmap-row-bar')];
+    const top = (bar: Element): number => Number(bar.getAttribute('y'));
+    const bottom = (bar: Element): number => top(bar) + Number(bar.getAttribute('height'));
+    expect(top(bars[1]) - bottom(bars[0])).toBe(2);
+  });
+
   it('reports the cell under the pointer once and clears on leave', () => {
     const container = plot();
     const onCellHover = vi.fn();

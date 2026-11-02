@@ -90,7 +90,9 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
     return this._model;
   }
 
+  /** The legend is Lit chrome and the grid is SVG: both take the new colours. */
   protected override onThemeChange(): void {
+    this.requestUpdate();
     this.scheduleDraw();
   }
 

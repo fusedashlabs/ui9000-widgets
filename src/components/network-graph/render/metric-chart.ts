@@ -7,6 +7,8 @@ import { graphChartColors, MONTHS, type PeriodPoint } from '../lib/index.js';
 
 const CHART_HEIGHT = 170;
 const CHART_PAD = { top: 8, right: 4, bottom: 44, left: 26 };
+/** Least room between two value labels; a low chart labels every 20 instead of every 10. */
+const MIN_TICK_GAP = 16;
 
 export interface RenderMetricChartOptions {
   series: PeriodPoint[];
@@ -21,6 +23,12 @@ export interface RenderMetricChartOptions {
   onPointLeave?: () => void;
 }
 
+/** Value step of the labels: a multiple of 10 that leaves `MIN_TICK_GAP` between them. */
+export function tickStep(max: number, plotHeight: number): number {
+  if (plotHeight <= 0) return 10;
+  return Math.max(10, Math.ceil((max * MIN_TICK_GAP) / plotHeight / 10) * 10);
+}
+
 /** Line and area of one metric over time, with month and year labels. */
 export function renderMetricChart(container: HTMLElement, options: RenderMetricChartOptions): void {
   const { series, width, height = CHART_HEIGHT, idPrefix, label } = options;
@@ -33,7 +41,9 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
   const plotHeight = height - CHART_PAD.top - CHART_PAD.bottom;
   const start = series[0].time;
   const end = series[series.length - 1].time;
-  const max = Math.max(10, Math.ceil(Math.max(...series.map((point) => point.value)) / 10) * 10);
+  const top = Math.max(...series.map((point) => point.value));
+  const step = tickStep(Math.max(10, Math.ceil(top / 10) * 10), plotHeight);
+  const max = Math.max(step, Math.ceil(top / step) * step);
   const x = scaleLinear()
     .domain([start, end === start ? start + 1 : end])
     .range([CHART_PAD.left, CHART_PAD.left + plotWidth]);
@@ -70,7 +80,7 @@ export function renderMetricChart(container: HTMLElement, options: RenderMetricC
     .attr('stop-color', colors.line)
     .attr('stop-opacity', 0.05);
 
-  for (let tick = 0; tick <= max; tick += 10) {
+  for (let tick = 0; tick <= max; tick += step) {
     svg
       .append('line')
       .attr('x1', CHART_PAD.left)

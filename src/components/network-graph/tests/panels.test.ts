@@ -21,6 +21,7 @@ import {
 } from '../lib/index.js';
 import { normalizeNetworkGraphData } from '../lib/normalize.js';
 import { arcAngles } from '../render/focus-view.js';
+import { tickStep } from '../render/metric-chart.js';
 import { topicsCrowdLegend } from '../element/panels.js';
 
 const graph = normalizeNetworkGraphData({
@@ -218,5 +219,14 @@ describe('topicsCrowdLegend', () => {
   it('does not move anything before both are measured', () => {
     expect(topicsCrowdLegend(300, 0, 168)).toBe(false);
     expect(topicsCrowdLegend(0, 240, 168)).toBe(false);
+  });
+});
+
+describe('tickStep', () => {
+  it('labels every 10 while there is room and every 20 on a low chart', () => {
+    // A 170 px chart has 118 px to plot, a 144 px one 92 px.
+    expect(tickStep(60, 118)).toBe(10);
+    expect(tickStep(60, 92)).toBe(20);
+    expect(tickStep(60, 0)).toBe(10);
   });
 });

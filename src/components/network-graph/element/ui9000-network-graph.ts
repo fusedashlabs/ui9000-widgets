@@ -108,6 +108,9 @@ const ZOOM_ROOM = 96;
 const DATA_CONTROL_MIN_WIDTH = 160;
 const TRENDS_MOTION_MS = 280;
 const METRIC_CHART_HEIGHT = 170;
+/** In the folded details of a narrow widget a chart fits the open part: its padding aside, and no lower than this. */
+const FOLDED_CHART_ROOM = 40;
+const MIN_FOLDED_CHART_HEIGHT = 120;
 const DEFAULT_PERIOD = 6;
 const CLOSED_LISTS: Record<CardList, boolean> = {
   topics: false,
@@ -734,7 +737,12 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     this.shadowRoot?.querySelectorAll<HTMLElement>('.metric-chart').forEach((box) => {
       const spec = this._charts.get(box.dataset.chart ?? '');
       if (!spec) return;
-      const { series, height, label, unit } = spec;
+      const { series, label, unit } = spec;
+      const fold = box.closest<HTMLElement>('.compact-body');
+      const height = fold
+        ? Math.max(MIN_FOLDED_CHART_HEIGHT, Math.min(spec.height, fold.clientHeight - FOLDED_CHART_ROOM))
+        : spec.height;
+      box.style.height = `${height}px`;
       const width = box.clientWidth;
       const key = [
         label,

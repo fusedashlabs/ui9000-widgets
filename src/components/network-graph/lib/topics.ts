@@ -105,7 +105,11 @@ export function getPeriodSeries(series: MetricPoint[], months: number): PeriodPo
     .sort((a, b) => a.time - b.time);
   if (!points.length) return [];
   const last = new Date(points[points.length - 1].time);
-  const from = Date.UTC(last.getUTCFullYear(), last.getUTCMonth() - months, last.getUTCDate());
+  // The same day `months` back, or the last day of a shorter month (Aug 31 -> Feb 28).
+  const year = last.getUTCFullYear();
+  const month = last.getUTCMonth() - months;
+  const monthEnd = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const from = Date.UTC(year, month, Math.min(last.getUTCDate(), monthEnd));
   return points.filter((point) => point.time >= from);
 }
 

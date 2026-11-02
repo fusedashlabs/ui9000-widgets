@@ -79,6 +79,8 @@ export interface RenderNetworkGraphOptions {
   activeNodeId?: string | null;
   /** A plain wheel zooms; otherwise it needs Ctrl / Cmd and a plain wheel scrolls the page. */
   wheelZoom?: boolean;
+  /** Nodes moved on screen (a layout step, a drag, a zoom or a pan). */
+  onMove?: () => void;
   measure?: MeasureText;
   onSelect?: (id: string | null) => void;
   /** Click on the "+" of the selected node. */
@@ -94,6 +96,7 @@ interface GraphState {
   setActive: (id: string | null) => void;
   setColors: (colors: GraphThemeColors, nodes: NetworkNode[]) => void;
   setVisible: (ids: Set<string> | null, linkIds?: Set<string> | null) => void;
+  setWheelZoom: (on: boolean) => void;
   dispose: () => void;
 }
 
@@ -308,6 +311,28 @@ export function setNetworkGraphColors(
   return true;
 }
 
+/** Turns plain-wheel zoom on or off without drawing the graph again. */
+export function setNetworkGraphWheelZoom(container: HTMLElement, on: boolean): boolean {
+  const state = GRAPHS.get(container);
+  if (!state) return false;
+  state.setWheelZoom(on);
+  return true;
+}
+
+/**
+ * Which pointer and wheel events pan or zoom the canvas. A plain wheel
+ * scrolls the page unless `wheelZoom`; only the main button pans (ctrl+click
+ * is a right click on macOS); a press on a node drags the node instead.
+ */
+export function allowZoomEvent(
+  event: { type: string; ctrlKey?: boolean; metaKey?: boolean; button?: number; target?: EventTarget | null },
+  wheelZoom: boolean,
+): boolean {
+  if (event.type === 'wheel') return wheelZoom || !!event.ctrlKey || !!event.metaKey;
+  if ((event.button ?? 0) !== 0 || event.ctrlKey) return false;
+  return !(event.target as Element | null)?.closest?.('g.node');
+}
+
 /** Zooms around the centre of the canvas; `factor` > 1 zooms in. */
 export function zoomNetworkGraph(container: HTMLElement, factor: number): void {
   const state = GRAPHS.get(container);
@@ -329,7 +354,8 @@ export function renderNetworkGraph(
   options: RenderNetworkGraphOptions,
 ): void {
   const { model, visibleIds, themeMode = 'light', fontFamily, onSelect, onOpenFocus } = options;
-  const { visibleLinkIds = null, wheelZoom = false } = options;
+  const { visibleLinkIds = null, onMove } = options;
+  let wheelZoom = options.wheelZoom ?? false;
 
   stopNetworkGraph(container);
   container.replaceChildren();
@@ -448,14 +474,11 @@ export function renderNetworkGraph(
 
   const zoomBehavior = zoom<SVGSVGElement, unknown>()
     .scaleExtent([MIN_ZOOM, MAX_ZOOM])
-    .filter((event) => {
-      // Chat-safe: left alone, a plain wheel scrolls the transcript.
-      if (event.type === 'wheel' && !wheelZoom && !event.ctrlKey && !event.metaKey) {
-        return false;
-      }
-      return !(event.target as SVGElement).closest?.('g.node');
-    })
-    .on('zoom', (event) => root.attr('transform', event.transform));
+    .filter((event) => allowZoomEvent(event, wheelZoom))
+    .on('zoom', (event) => {
+      root.attr('transform', event.transform);
+      onMove?.();
+    });
   svgSelection.call(zoomBehavior);
   // A click on the empty canvas clears the selection.
   svgSelection.on('click', (event: MouseEvent) => {
@@ -601,6 +624,7 @@ export function renderNetworkGraph(
         .get(node.id)
         ?.setAttribute('transform', `translate(${node.x ?? centerX}, ${node.y ?? centerY})`);
     }
+    onMove?.();
   };
 
   // Nodes the dragged one pushed in the last tick glide back instead of jumping.
@@ -693,6 +717,10 @@ export function renderNetworkGraph(
     // A paint change only: the layout holds. The next drag pulls on the shown links.
     (simulation.force('link') as ForceLink<SimNode, SimLink>).links(shownLinks);
     applyPull(shownLinks);
+    // A hidden node does not stay selected or hovered.
+    if (hoveredId && !shownNodes.has(hoveredId)) hoveredId = null;
+    if (activeId && !shownNodes.has(activeId)) pick(null);
+    else refresh();
   };
   setVisible(visibleIds, visibleLinkIds);
 
@@ -749,6 +777,9 @@ export function renderNetworkGraph(
       refresh();
     },
     setVisible,
+    setWheelZoom: (on) => {
+      wheelZoom = on;
+    },
     dispose: () => {
       fonts?.removeEventListener?.('loadingdone', onFontsLoaded);
       simulation.stop();

@@ -8,6 +8,7 @@ import {
   type NetworkGraphInput,
 } from '../lib/index.js';
 import {
+  allowZoomEvent,
   networkNodeElement,
   renderNetworkGraph,
   resizeNetworkGraph,
@@ -108,6 +109,18 @@ describe('selection', () => {
     expect(onSelect).toHaveBeenLastCalledWith(null);
   });
 
+  it('drops the selection when the timeline or the legend hides the node', () => {
+    const onSelect = vi.fn();
+    const container = draw({ onSelect });
+    setNetworkGraphActive(container, ids[0]);
+    updateNetworkGraphVisibility(container, new Set(ids.slice(1)));
+    expect(onSelect).toHaveBeenLastCalledWith(null);
+    const opacities = Array.from(container.querySelectorAll<SVGGElement>('.node-visual')).map(
+      (node) => node.style.opacity,
+    );
+    expect(opacities.every((opacity) => opacity === '1')).toBe(true);
+  });
+
   it('clears the selection on a click on the empty canvas', () => {
     const onSelect = vi.fn();
     const container = draw({ activeNodeId: ids[0], onSelect });
@@ -192,5 +205,35 @@ describe('resizeNetworkGraph', () => {
   it('rejects an empty frame and an unmounted container', () => {
     expect(resizeNetworkGraph(draw(), 0, 300)).toBe(false);
     expect(resizeNetworkGraph(document.createElement('div'), 400, 300)).toBe(false);
+  });
+});
+
+describe('allowZoomEvent', () => {
+  const canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const node = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  node.setAttribute('class', 'node');
+  const inNode = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  node.append(inNode);
+  canvas.append(node);
+
+  it('keeps a plain wheel for the page unless wheel zoom is on', () => {
+    expect(allowZoomEvent({ type: 'wheel' }, false)).toBe(false);
+    expect(allowZoomEvent({ type: 'wheel', ctrlKey: true }, false)).toBe(true);
+    expect(allowZoomEvent({ type: 'wheel', metaKey: true }, false)).toBe(true);
+    expect(allowZoomEvent({ type: 'wheel' }, true)).toBe(true);
+  });
+
+  it('pans with the main button only', () => {
+    expect(allowZoomEvent({ type: 'mousedown', button: 0, target: canvas }, false)).toBe(true);
+    expect(allowZoomEvent({ type: 'mousedown', button: 1, target: canvas }, false)).toBe(false);
+    expect(allowZoomEvent({ type: 'mousedown', button: 2, target: canvas }, false)).toBe(false);
+    // ctrl+click is a right click on macOS.
+    expect(allowZoomEvent({ type: 'mousedown', button: 0, ctrlKey: true, target: canvas }, false)).toBe(
+      false,
+    );
+  });
+
+  it('leaves a press on a node to the node drag', () => {
+    expect(allowZoomEvent({ type: 'mousedown', button: 0, target: inNode }, false)).toBe(false);
   });
 });

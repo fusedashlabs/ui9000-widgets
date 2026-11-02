@@ -197,6 +197,16 @@ describe('ui9000-matrix-chart', () => {
     el.remove();
   });
 
+  it('shows the full column name when the pointer is on a column name', async () => {
+    const el = await mount();
+    el.shadowRoot.querySelector('g.heatmap-column')!.dispatchEvent(new MouseEvent('mouseenter'));
+    await el.updateComplete;
+    const tooltip = document.querySelector('[data-ui9000-chart-tooltip]')!;
+    expect(tooltip.textContent).toContain('Column A');
+    expect(tooltip.textContent).toContain('Total');
+    el.remove();
+  });
+
   it('reveals the columns only on the first draw', async () => {
     const el = await mount();
     const root = el.shadowRoot;

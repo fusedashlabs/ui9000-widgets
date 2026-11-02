@@ -33,6 +33,8 @@ export interface RenderMatrixOptions {
   measure?: MeasureText;
   onCellHover?: (payload: { cell: MatrixCell; event: MouseEvent }) => void;
   onRowHover?: (payload: { row: string; total: number; event: MouseEvent }) => void;
+  /** Pointer on a column name: its full name, which the header may cut. */
+  onColumnHover?: (payload: { column: string; total: number; event: MouseEvent }) => void;
   onPointerMove?: (event: MouseEvent) => void;
   onCellLeave?: () => void;
 }
@@ -69,7 +71,7 @@ export function matrixColorRanges(
 
 /** FuseDash MatrixChart: the heatmap of a matrix model. */
 export function renderMatrixChart(container: HTMLElement, options: RenderMatrixOptions): void {
-  const { model, width, height, onCellHover, onRowHover, onCellLeave } = options;
+  const { model, width, height, onCellHover, onRowHover, onColumnHover, onCellLeave } = options;
   if (!model.cells.length) {
     container.replaceChildren();
     return;
@@ -97,6 +99,9 @@ export function renderMatrixChart(container: HTMLElement, options: RenderMatrixO
       : undefined,
     onRowEnter: onRowHover
       ? (event, { row, total }) => onRowHover({ row, total, event })
+      : undefined,
+    onColumnEnter: onColumnHover
+      ? (event, { column, total }) => onColumnHover({ column, total, event })
       : undefined,
     onPointerMove: options.onPointerMove,
     onPointerLeave: onCellLeave,

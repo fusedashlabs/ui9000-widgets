@@ -2,6 +2,7 @@ export {
   networkNodeElement,
   renderNetworkGraph,
   resizeNetworkGraph,
+  setNetworkGraphWheelZoom,
   setNetworkGraphActive,
   setNetworkGraphColors,
   zoomNetworkGraph,

@@ -49,6 +49,7 @@ import {
   resizeNetworkGraph,
   setNetworkGraphActive,
   setNetworkGraphColors,
+  setNetworkGraphWheelZoom,
   stopNetworkGraph,
   updateNetworkGraphVisibility,
   zoomNetworkGraph,
@@ -249,6 +250,8 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
 
   /** The drawn graph no longer matches its data, theme or selection. */
   private _graphStale = true;
+  /** Font the graph's names were measured in; another one lays them out again. */
+  private _drawnFont: string | undefined;
   private _heatmapRevealed = false;
   private readonly _chartId = `ui9000-network-${(nextChartId += 1)}`;
   private _model: NetworkGraphModel | null = null;
@@ -309,8 +312,11 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     if (this.hasUpdated && (changed.has('_trendsOpen') || changed.has('_topicName'))) {
       this.clipTopicsWhileMoving();
     }
-    // A node the timeline or the legend hides closes its focus view.
+    // A node the timeline or the legend hides closes its focus view and is no longer selected.
     const shown = this.shownGraph();
+    if (this._activeNodeId && !shown.nodes.some((node) => node.id === this._activeNodeId)) {
+      this._activeNodeId = null;
+    }
     if (this._focusId && !shown.nodes.some((node) => node.id === this._focusId)) {
       this._focusId = null;
       this._detailId = null;
@@ -331,9 +337,12 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       this.closeAllTooltips();
     }
     if (this.shouldRedraw(changed)) this.scheduleDraw();
-    if (changed.has('_activeNodeId') || changed.has('_view') || changed.has('_focusId')) {
-      this.followConnections();
+    if (changed.has('wheelZoom')) {
+      const root = this.chartRoot();
+      if (root) setNetworkGraphWheelZoom(root, this.wheelZoom);
     }
+    // The panel may have moved: the curves follow once, not on every frame.
+    this.scheduleFan();
     if (changed.has('_focusId') && this._focusId) {
       // Keyboard focus moves into the view, so Escape closes it at once.
       this.shadowRoot?.querySelector<HTMLElement>('.focus-overlay')?.focus({ preventScroll: true });
@@ -394,15 +403,11 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     }, TRENDS_MOTION_MS + 40);
   }
 
-  /** Dotted curves from the selected node to the panel follow it while it moves. */
-  private followConnections(): void {
+  /** Dotted curves from the selected node to the panel: drawn when something moved, at most once a frame. */
+  private scheduleFan(): void {
     cancelAnimationFrame(this._fanRaf);
     if (!this._activeNodeId || this._view !== 'network' || this._focusId) return;
-    const draw = (): void => {
-      this.drawFan();
-      this._fanRaf = requestAnimationFrame(draw);
-    };
-    this._fanRaf = requestAnimationFrame(draw);
+    this._fanRaf = requestAnimationFrame(() => this.drawFan());
   }
 
   private drawFan(): void {
@@ -455,7 +460,12 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       this.withSeriesMode(() => setNetworkGraphColors(root, this.themeMode(), this.model().nodes));
     }
     this.requestUpdate();
-    if (this._view === 'heatmap') this.scheduleDraw();
+    if (root?.childElementCount && readThemeFromElement(this).fontFamily !== this._drawnFont) {
+      this._graphStale = true;
+      this.scheduleDraw();
+    } else if (this._view === 'heatmap') {
+      this.scheduleDraw();
+    }
   }
 
   private scheduleDraw(): void {
@@ -478,6 +488,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       }
       this.drawFocus();
       this.drawMetricCharts();
+      this.scheduleFan();
     });
   }
 
@@ -663,6 +674,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       return;
     }
     this._graphStale = false;
+    this._drawnFont = readThemeFromElement(this).fontFamily;
 
     const { visibleIds, visibleLinkIds } = this.shownGraph();
     this.withSeriesMode(() =>
@@ -678,6 +690,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
           this._activeNodeId = id;
         },
         onOpenFocus: (id) => this.openFocus(id),
+        onMove: () => this.scheduleFan(),
       }),
     );
   }
@@ -996,7 +1009,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       </svg>
       <aside class="connections-panel" aria-label="Connections">
         <p class="connections-title">Connections:</p>
-        <ul class="connections-list">
+        <ul class="connections-list" @scroll=${() => this.scheduleFan()}>
           ${connections.map(({ node, weight }) => {
             const share = maxWeight ? weight / maxWeight : 0;
             const ring =

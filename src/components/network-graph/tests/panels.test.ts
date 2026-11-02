@@ -21,7 +21,7 @@ import {
 } from '../lib/index.js';
 import { normalizeNetworkGraphData } from '../lib/normalize.js';
 import { arcAngles } from '../render/focus-view.js';
-import { tickStep } from '../render/metric-chart.js';
+import { valueAxis } from '../render/metric-chart.js';
 import { topicsCrowdLegend } from '../element/panels.js';
 
 const graph = normalizeNetworkGraphData({
@@ -222,11 +222,58 @@ describe('topicsCrowdLegend', () => {
   });
 });
 
-describe('tickStep', () => {
+describe('valueAxis', () => {
   it('labels every 10 while there is room and every 20 on a low chart', () => {
     // A 170 px chart has 118 px to plot, a 144 px one 92 px.
-    expect(tickStep(60, 118)).toBe(10);
-    expect(tickStep(60, 92)).toBe(20);
-    expect(tickStep(60, 0)).toBe(10);
+    expect(valueAxis([20, 60], 118).ticks).toEqual([0, 10, 20, 30, 40, 50, 60]);
+    expect(valueAxis([20, 60], 92).ticks).toEqual([0, 20, 40, 60]);
+    expect(valueAxis([20, 60], 118).format(0)).toBe('00');
+  });
+
+  it('reaches below zero for negative values', () => {
+    const axis = valueAxis([-5, 3, -2], 118);
+    expect(axis.domain[0]).toBeLessThanOrEqual(-5);
+    expect(axis.domain[1]).toBeGreaterThanOrEqual(3);
+    expect(axis.ticks).toContain(0);
+  });
+
+  it('keeps small fractions readable', () => {
+    const axis = valueAxis([0.21, 0.35], 118);
+    expect(axis.domain[1]).toBeLessThan(1);
+    expect(axis.ticks.length).toBeGreaterThan(2);
+    // One precision for every label of the axis.
+    expect(axis.format(0.2)).toBe('0.20');
+  });
+});
+
+describe('node types', () => {
+  it('group the same way for colours, the legend and the topics', () => {
+    const model = normalizeNetworkGraphData({
+      nodes: [
+        { id: 'a', type: 'Bank' },
+        { id: 'b', type: 'Bank ' },
+      ],
+      links: [{ source: 'a', target: 'b', value: 1 }],
+    });
+    expect(model.nodes[0].type).toBe(model.nodes[1].type);
+    expect(model.nodes[0].color).toBe(model.nodes[1].color);
+    expect(getNetworkTopics(model).map((topic) => topic.name)).toEqual(['Bank']);
+  });
+});
+
+describe('getPeriodSeries at a month end', () => {
+  const monthly = (dates: string[]) => dates.map((date, index) => ({ date, value: index }));
+
+  it('starts on the last day of a shorter month', () => {
+    const series = getPeriodSeries(
+      monthly(['2026-02-27', '2026-02-28', '2026-03-31', '2026-08-31']),
+      6,
+    );
+    expect(series.map((point) => point.date)).toEqual(['2026-02-28', '2026-03-31', '2026-08-31']);
+  });
+
+  it('keeps the same day when the month has it', () => {
+    const series = getPeriodSeries(monthly(['2026-01-30', '2026-01-31', '2026-07-31']), 6);
+    expect(series.map((point) => point.date)).toEqual(['2026-01-31', '2026-07-31']);
   });
 });

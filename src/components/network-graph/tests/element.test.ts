@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { applyWidgetContext, notifyHostTheme } from '../../../context/index.js';
 import networkFixture from '../../../stories/fixtures/network-graph.fusedash.json';
@@ -441,6 +441,80 @@ describe('ui9000-network-graph', () => {
       await el.updateComplete;
       expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
 
+      el.remove();
+    });
+
+    it('drops the selection of a node the timeline hides', async () => {
+      const el = await mount(panelsFixture);
+      const last = [...el.shadowRoot.querySelectorAll('g.node')].find((node) =>
+        node.textContent?.includes('Insurers'),
+      ) as SVGGElement;
+      last.querySelector('.node-drag-area')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.connections-panel')).not.toBeNull();
+
+      await click(el, '[aria-label="Previous date"]');
+
+      expect(el.shadowRoot.querySelector('.connections-panel')).toBeNull();
+      const opacities = [...el.shadowRoot.querySelectorAll<SVGGElement>('.node-visual')].map(
+        (node) => node.style.opacity,
+      );
+      expect(opacities.every((opacity) => opacity === '1')).toBe(true);
+
+      el.remove();
+    });
+
+    it('draws the connection curves only when something moves', { timeout: 20000 }, async () => {
+      const el = await mount(panelsFixture);
+      const places = (): (string | null)[] =>
+        [...el.shadowRoot.querySelectorAll('g.node')].map((node) => node.getAttribute('transform'));
+      await settled(places);
+      el.shadowRoot
+        .querySelector('g.node .node-drag-area')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      await flush();
+      expect(el.shadowRoot.querySelector('.connections-panel')).not.toBeNull();
+
+      const frames = vi.spyOn(window, 'requestAnimationFrame');
+      await new Promise((r) => setTimeout(r, 300));
+      expect(frames).not.toHaveBeenCalled();
+      frames.mockRestore();
+
+      el.remove();
+    });
+
+    it('turns plain-wheel zoom on after the graph is drawn', async () => {
+      const el = await mount(panelsFixture);
+      const svg = el.shadowRoot.querySelector('.chart-root svg') as SVGSVGElement;
+      const layer = (): string | null | undefined =>
+        [...svg.children].find((child) => child.getAttribute('transform')?.includes('scale'))
+          ?.getAttribute('transform');
+      const wheel = (): void => {
+        svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -120, bubbles: true, cancelable: true }));
+      };
+      const before = layer();
+      wheel();
+      expect(layer()).toBe(before);
+
+      (el as Shadowed).wheelZoom = true;
+      await el.updateComplete;
+      wheel();
+
+      expect(layer()).not.toBe(before);
+      expect(el.shadowRoot.querySelector('.chart-root svg')).toBe(svg);
+      el.remove();
+    });
+
+    it('lays the names out again when the theme brings another font', async () => {
+      const el = await mount(panelsFixture);
+      const svg = el.shadowRoot.querySelector('.chart-root svg');
+      applyWidgetContext(el, { mode: 'dark', theme: { fontFamily: 'Georgia, serif' } });
+      notifyHostTheme();
+      await flush();
+      await el.updateComplete;
+      await flush();
+      expect(el.shadowRoot.querySelector('.chart-root svg')).not.toBe(svg);
       el.remove();
     });
 

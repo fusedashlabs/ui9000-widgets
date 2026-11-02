@@ -56,7 +56,8 @@ function toNode(raw: unknown): NetworkNode | null {
     id,
     label: optionalString(raw.label) ?? id,
     value: finiteNumber(raw.value),
-    type: raw.type == null ? '' : String(raw.type),
+    // Trimmed once here, so colours, the legend and the topics group the same way.
+    type: raw.type == null ? '' : String(raw.type).trim(),
     color: optionalString(raw.color),
     img: optionalString(raw.img),
     topics: stringList(raw.topics),
@@ -130,14 +131,14 @@ function collectLinks(raw: unknown[], known: Set<string>): NetworkLink[] {
 
 /**
  * Node types take the page palette in order of first appearance. A node's own
- * colour wins; nodes without a type share the first colour.
+ * colour wins; nodes without a type are one group of their own, in turn.
  */
 function paintNodeGroups(nodes: NetworkNode[]): void {
-  const palette = pickQualitativePalette(0, new Set(nodes.map((node) => node.type.trim())).size);
+  const palette = pickQualitativePalette(0, new Set(nodes.map((node) => node.type)).size);
   const groups: string[] = [];
   for (const node of nodes) {
     if (node.color) continue;
-    const type = node.type.trim();
+    const type = node.type;
     let index = groups.indexOf(type);
     if (index < 0) {
       groups.push(type);

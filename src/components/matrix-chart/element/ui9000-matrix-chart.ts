@@ -145,6 +145,22 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
             this.openTooltip(event, this.tooltipContent(model, { x: '', y: row, value: total }, 'Total'));
           }
         : undefined,
+      onColumnHover: this.showTooltip
+        ? ({ column, total, event }) => {
+            this.openTooltip(event, {
+              title: formatCategoryLabel(column),
+              rows: [
+                {
+                  label: 'Total',
+                  value: formatValueWithUnit(
+                    formatMatrixValue(total),
+                    model.axisDetails?.[model.valueKey],
+                  ),
+                },
+              ],
+            });
+          }
+        : undefined,
       onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
     }),
     );

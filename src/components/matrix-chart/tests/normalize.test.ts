@@ -189,6 +189,32 @@ describe('categories that differ only in spaces', () => {
   ])('combine the way the widget aggregates: %s', (aggregation, value) => {
     expect(normalizeMatrixData(widget(aggregation)).cells[0].value).toBe(value);
   });
+
+  it('keep categories that differ inside the name apart', () => {
+    const model = normalizeMatrixData({
+      data: [
+        { seed: 'A', segment: 'New York', revenue: 1 },
+        { seed: 'A', segment: 'NewYork', revenue: 2 },
+        { seed: 'A', segment: 'Red  wine', revenue: 3 },
+        { seed: 'A', segment: 'Red wine', revenue: 4 },
+      ],
+      xAxe: ['seed'],
+      yAxe: ['revenue'],
+      groupBy: ['segment'],
+    });
+    expect([...model.yDomain].sort()).toEqual(['New York', 'NewYork', 'Red  wine'].sort());
+    expect(model.cells.find((cell) => cell.y === 'Red  wine')?.value).toBe(7);
+  });
+
+  it.each(['median', 'distinct', 'first', 'last'])(
+    'are not merged when %s cannot be rebuilt from its parts',
+    (aggregation) => {
+      const model = normalizeMatrixData(widget(aggregation));
+      expect(model.xDomain).toHaveLength(3);
+      expect(model.yDomain).toHaveLength(2);
+      expect(model.cells.map((cell) => cell.value).sort((a, b) => a - b)).toEqual([5, 10, 30]);
+    },
+  );
 });
 
 describe('sortAxisDomain', () => {

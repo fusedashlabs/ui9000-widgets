@@ -50,6 +50,7 @@ const CHART_ENTRIES = [
   'components/goals-perimeter/index.js',
   'components/reasoning-orchestration-graph/index.js',
   'components/asset-health-overview/index.js',
+  'components/goals-insights/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
   'components/inspector/index.js',

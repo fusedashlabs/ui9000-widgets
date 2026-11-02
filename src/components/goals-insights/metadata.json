@@ -1,0 +1,132 @@
+{
+  "id": "goals-insights",
+  "tag": "ui9000-goals-insights",
+  "title": "Goals & Insights",
+  "description": "The evidence behind one goal, drawn as a column (the Agent operations Goals & insights page). The goal stands over the apex, its agents in a glass sphere and its confidence lit on the ring round it; under it a ring every two hours, now at the top and 66 hours back in the tail. Each claim its agents filed is a diamond on the ring of the hour it was filed: empty in ink when it supports the goal, grey on a single source, a yellow dot when disputed, solid orange when it argues against the goal; larger with more evidence records, nearer the axis the more it moves the goal, and round the column by subject. Up to two goals it shares evidence with stand either side with their priority, confidence and claims; claims with three or more sources run up to the goal they were filed under, and the connected goals' other claims stand faintly in the column. The line under the title reads the goal's code, status, agents and held, with the claims' colour key on the right. It turns slowly on its own; drag to turn it and open or close its rings, scroll to zoom, double-click to reset, click a claim or a connected goal to pick it out. WebGL light under SVG instruments in Lit; the SVG keeps its own glass where WebGL 2 is missing.",
+  "chartTypeKeys": ["goalsInsights", "goalInsights", "insights", "evidenceColumn"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/goals-insights",
+  "entry": "@ui9000/widgets/goals-insights",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "zoom", "resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "enum": ["goalsInsights", "goalInsights", "insights", "evidenceColumn"] },
+          "title": { "type": "string", "description": "Widget title. Defaults to name, then the goal's name." },
+          "name": { "type": "string" },
+          "goal": {
+            "type": "object",
+            "description": "The goal over the apex. Agent counts are drawn as given and never recomputed. Alias: mainGoal.",
+            "properties": {
+              "id": { "type": ["string", "number"], "description": "Claims name their goal by it. Defaults to code, then name." },
+              "code": { "type": "string", "description": "Shown under the title and in its callout, e.g. G-014. Defaults to id." },
+              "name": { "type": "string" },
+              "title": { "type": "string", "description": "Alias of name." },
+              "label": { "type": "string", "description": "Alias of name." },
+              "status": { "type": "string", "description": "on track, at risk or blocked (and aliases: healthy, ok, good, degraded, warning, warn, risk, off track, critical, failed). Omitted, no status is shown." },
+              "confidence": { "type": ["number", "string"], "description": "How likely the goal is to hold given its evidence: 0.81, 81 or \"81%\". Lit on its ring; omitted, the ring stays unlit. Alias: progress." },
+              "progress": { "type": ["number", "string"] },
+              "priority": { "type": "string", "description": "HIGH, MED, LOW… Shown in a connected goal's callout." },
+              "total": { "type": ["number", "string"], "description": "Agents on the goal. Defaults to the states' sum. Alias: agents." },
+              "agents": { "type": ["number", "string"] },
+              "working": { "type": ["number", "string"], "description": "Agents at work, not counting those over budget. Defaults to total less held and idle." },
+              "idle": { "type": ["number", "string"] },
+              "awaiting": { "type": ["number", "string"], "description": "Agents waiting on a person or a slow dependency. Alias: waiting." },
+              "waiting": { "type": ["number", "string"] },
+              "blocked": { "type": ["number", "string"] },
+              "failed": { "type": ["number", "string"] },
+              "overBudget": { "type": ["number", "string"], "description": "Agents at work past 80% of their token budget. Alias: over_budget." },
+              "over_budget": { "type": ["number", "string"] }
+            },
+            "anyOf": [{ "required": ["id"] }, { "required": ["code"] }, { "required": ["name"] }, { "required": ["title"] }, { "required": ["label"] }]
+          },
+          "mainGoal": { "$ref": "#/properties/data/properties/goal" },
+          "connected": {
+            "type": "array",
+            "description": "Goals it shares evidence with. The two that share the most claims with it are drawn, the first on the left. Omitted, the goals its claims name stand beside it under their ids. Aliases: connectedGoals, partners, goals.",
+            "items": { "$ref": "#/properties/data/properties/goal" }
+          },
+          "connectedGoals": { "$ref": "#/properties/data/properties/connected" },
+          "partners": { "$ref": "#/properties/data/properties/connected" },
+          "goals": { "$ref": "#/properties/data/properties/connected" },
+          "claims": {
+            "type": "array",
+            "description": "Claims filed under the goal or a connected goal. The column holds the goal's own and those that bear on it, then, faintly, the connected goals' other claims — up to 120, the goal's own first, then the newest. Aliases: insights, evidence.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": ["string", "number"] },
+                "goal": { "type": ["string", "number"], "description": "The id of the goal it was filed under. Defaults to the main goal." },
+                "also": {
+                  "description": "Ids of other goals it bears on: a list, or a comma-separated string. A connected goal's claim that bears on the main goal counts as the main goal's evidence.",
+                  "oneOf": [{ "type": "array", "items": { "type": ["string", "number"] } }, { "type": "string" }]
+                },
+                "claim": { "type": "string", "description": "The claim as written. Aliases: text, title, label." },
+                "text": { "type": "string" },
+                "title": { "type": "string" },
+                "label": { "type": "string" },
+                "theme": { "type": "string", "description": "What it is about: claims on one subject turn together round the column. Aliases: topic, subject." },
+                "topic": { "type": "string" },
+                "subject": { "type": "string" },
+                "age": { "type": ["number", "string"], "description": "Hours since it was filed: the ring it sits on. Older than 66 hours, it settles on the last ring. Aliases: ageHours, hoursAgo, hours." },
+                "ageHours": { "type": ["number", "string"] },
+                "hoursAgo": { "type": ["number", "string"] },
+                "hours": { "type": ["number", "string"] },
+                "polarity": { "type": "string", "description": "confirming or contradicting. Free text with contra, against, refut, negat or oppos reads as contradicting. Alias: stance." },
+                "stance": { "type": "string" },
+                "state": {
+                  "type": "string",
+                  "description": "new, open, corroborated, accepted or disputed (conflict reads as disputed). Omitted, read from its sources: 8 or more accepted, 2 or more corroborated, else new in its first day and open after."
+                },
+                "type": { "enum": ["gap", "observation", "correlation", "anomaly", "recommendation"], "description": "A gap or an anomaly against the goal moves it more than an observation, when weight is omitted." },
+                "sources": { "type": ["number", "string"], "description": "Independent sources behind it, 1–99. Under 2, a supporting claim is single-source. Three or more run it up to its goal." },
+                "records": { "type": ["number", "string"], "description": "Evidence records behind it: the larger its diamond, and the denser the dust in the rings. Defaults from its sources." },
+                "weight": { "type": ["number", "string"], "description": "How much it moves its goal's confidence, 0–1 (or a percent): the nearer the axis and the bolder its line. Defaults from its polarity, type and sources." },
+                "agent": { "type": "string", "description": "The agent that filed it, for its tip." },
+                "asset": { "type": "string", "description": "The kind of asset it is about (camera, system, model…): written beside it zoomed in, and claims about one kind filed within six hours of each other are joined. Aliases: assetKind, kind." },
+                "assetKind": { "type": "string" },
+                "kind": { "type": "string" }
+              },
+              "allOf": [
+                {
+                  "anyOf": [
+                    { "required": ["claim"] },
+                    { "required": ["text"] },
+                    { "required": ["title"] },
+                    { "required": ["label"] },
+                    { "required": ["theme"] },
+                    { "required": ["topic"] },
+                    { "required": ["subject"] }
+                  ]
+                },
+                { "anyOf": [{ "required": ["age"] }, { "required": ["ageHours"] }, { "required": ["hoursAgo"] }, { "required": ["hours"] }] }
+              ]
+            }
+          },
+          "insights": { "$ref": "#/properties/data/properties/claims" },
+          "evidence": { "$ref": "#/properties/data/properties/claims" }
+        }
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "flat": { "type": "boolean", "default": false, "description": "Every ring laid flat, without turning." },
+      "problems-only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Only problems stand out: the claims that argue against the goal or are disputed; the rest, and their lines, all but go out."
+      },
+      "show-legend": { "type": "boolean", "default": true, "description": "Shows the legend button at the bottom left." },
+      "show-tooltip": { "type": "boolean", "default": true }
+    }
+  }
+}

@@ -206,6 +206,7 @@ import {
   registerAssetHealthOverview,
   Ui9000AssetHealthOverview,
 } from './components/asset-health-overview/index.js';
+import { registerGoalsInsights, Ui9000GoalsInsights } from './components/goals-insights/index.js';
 import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
@@ -357,6 +358,8 @@ export {
   registerReasoningOrchestrationGraph,
   Ui9000AssetHealthOverview,
   registerAssetHealthOverview,
+  Ui9000GoalsInsights,
+  registerGoalsInsights,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -437,6 +440,7 @@ export function registerAllCharts(): void {
   registerGoalsPerimeterChart();
   registerReasoningOrchestrationGraph();
   registerAssetHealthOverview();
+  registerGoalsInsights();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -905,6 +909,15 @@ export {
   type AssetHealthTrouble,
   assetHealthOverviewMetadata,
 } from './components/asset-health-overview/index.js';
+
+export {
+  normalizeGoalsInsights,
+  type ClaimInput as GoalsInsightsClaimInput,
+  type GoalInput as GoalsInsightsGoalInput,
+  type GoalsInsightsModel,
+  type GoalsInsightsPayload,
+  goalsInsightsMetadata,
+} from './components/goals-insights/index.js';
 
 export {
   normalizeCustomWidget,

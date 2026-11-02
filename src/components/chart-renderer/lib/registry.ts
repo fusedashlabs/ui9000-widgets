@@ -18,6 +18,7 @@ import componentAssetMeta from '../../component-asset-card/metadata.json';
 import goalsPerimeterMeta from '../../goals-perimeter/metadata.json';
 import reasoningOrchestrationMeta from '../../reasoning-orchestration-graph/metadata.json';
 import assetHealthMeta from '../../asset-health-overview/metadata.json';
+import goalBurstMeta from '../../goal-burst/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
 import mapChartMeta from '../../map-chart/metadata.json';
@@ -81,6 +82,7 @@ const METADATA: ChartMetadataLike[] = [
   goalsPerimeterMeta,
   reasoningOrchestrationMeta,
   assetHealthMeta,
+  goalBurstMeta,
   lineMeta,
   lollipopMeta,
   mapChartMeta,

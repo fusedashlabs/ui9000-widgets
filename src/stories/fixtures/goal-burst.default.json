@@ -1,0 +1,234 @@
+{
+  "chartType": "goalBurst",
+  "goal": {
+    "id": "G-007",
+    "name": "Onboarding Velocity",
+    "total": 842,
+    "working": 645,
+    "idle": 22,
+    "awaiting": 33,
+    "blocked": 94,
+    "failed": 27,
+    "overBudget": 21,
+    "progress": 0.41,
+    "burn": 4.2,
+    "status": "blocked"
+  },
+  "resourceGroupTotal": 21,
+  "categories": [
+    {
+      "id": "RG-SYS",
+      "name": "SYSTEM",
+      "kind": "system",
+      "unit": "systems of record",
+      "unitOne": "system of record",
+      "total": 9,
+      "healthy": 1246,
+      "degraded": 34,
+      "failing": 4,
+      "hold": "blocked",
+      "calls": 5400,
+      "traffic": {
+        "flowing": 0.62,
+        "awaiting": 0.07,
+        "blocked": 0.31
+      },
+      "rules": [
+        "R-047",
+        "R-088"
+      ],
+      "items": [
+        "workday",
+        "crm-prod",
+        "billing-db",
+        "identity-store",
+        "payroll-db",
+        "audit-log",
+        "hr-records",
+        "asset-ledger",
+        "contracts-db"
+      ],
+      "problems": [
+        {
+          "name": "crm-prod",
+          "type": "DATABASE",
+          "where": "eu-west-1 → us-east-1",
+          "why": "writes need a credential grant",
+          "state": "blocked",
+          "agents": 84,
+          "since": 14,
+          "rule": "R-047"
+        },
+        {
+          "name": "hr-records",
+          "type": "DATABASE",
+          "where": "eu-west-1",
+          "why": "bulk writes held · data residency",
+          "state": "blocked",
+          "agents": 10,
+          "since": 127,
+          "rule": "R-047"
+        }
+      ],
+      "bytes": 12800000,
+      "sharedWith": 2
+    },
+    {
+      "id": "RG-APP",
+      "name": "APP",
+      "kind": "app",
+      "unit": "apps",
+      "unitOne": "app",
+      "total": 12,
+      "healthy": 8931,
+      "degraded": 9,
+      "failing": 0,
+      "calls": 3300,
+      "traffic": {
+        "flowing": 0.88,
+        "throttled": 0.12
+      },
+      "items": [
+        "Jira",
+        "ServiceNow",
+        "Okta",
+        "DocuSign",
+        "Email",
+        "Slack",
+        "Salesforce",
+        "Confluence",
+        "Zendesk",
+        "Google Drive",
+        "Zoom",
+        "Notion"
+      ],
+      "problems": [
+        {
+          "name": "Okta",
+          "type": "APP",
+          "where": "eu-west-1",
+          "why": "rate-limited · writes throttled",
+          "state": "slowed"
+        }
+      ],
+      "bytes": 2400000,
+      "sharedWith": 0
+    },
+    {
+      "id": "RG-TOOL",
+      "name": "TOOL",
+      "kind": "tool",
+      "unit": "tools",
+      "unitOne": "tool",
+      "total": 24,
+      "healthy": 4570,
+      "degraded": 38,
+      "failing": 4,
+      "hold": "failed",
+      "calls": 1800,
+      "traffic": {
+        "flowing": 0.74,
+        "failed": 0.26
+      },
+      "items": [
+        "OCR engine",
+        "browser runner",
+        "code sandbox",
+        "PDF converter",
+        "email sender",
+        "spreadsheet tool",
+        "translator",
+        "web scraper"
+      ],
+      "problems": [
+        {
+          "name": "browser runner",
+          "type": "TOOL",
+          "where": "platform cluster b",
+          "why": "crash-loops on cold start",
+          "state": "failed",
+          "agents": 27,
+          "since": 51
+        }
+      ],
+      "bytes": 940000,
+      "sharedWith": 2
+    },
+    {
+      "id": "RG-HUMAN",
+      "name": "HUMAN",
+      "kind": "human",
+      "unit": "people",
+      "unitOne": "person",
+      "total": 5,
+      "healthy": 41,
+      "degraded": 0,
+      "failing": 0,
+      "calls": 14,
+      "traffic": {
+        "flowing": 0.4,
+        "awaiting": 0.6
+      },
+      "rules": [
+        "R-047"
+      ],
+      "items": [
+        "HR reviewer",
+        "Security on-call",
+        "Finance approver",
+        "IT service desk",
+        "Hiring manager"
+      ],
+      "problems": [
+        {
+          "name": "Security on-call",
+          "type": "PERSON",
+          "where": "on-call rota",
+          "why": "owes the R-047 credential grant",
+          "state": "slowed",
+          "rule": "R-047"
+        }
+      ],
+      "bytes": 9000,
+      "sharedWith": 1
+    },
+    {
+      "id": "RG-MODEL",
+      "name": "MODEL",
+      "kind": "model",
+      "unit": "models",
+      "unitOne": "model",
+      "total": 6,
+      "healthy": 22,
+      "degraded": 2,
+      "failing": 0,
+      "hold": "awaiting",
+      "calls": 6200,
+      "traffic": {
+        "flowing": 0.95,
+        "awaiting": 0.05
+      },
+      "items": [
+        "haiku v3.1",
+        "sonnet v4.2",
+        "embedder v2",
+        "reranker v1",
+        "vision v1.4",
+        "guard v2"
+      ],
+      "problems": [
+        {
+          "name": "sonnet v4.2",
+          "type": "AI MODEL",
+          "where": "model gateway · us-west-2",
+          "why": "p95 2.1s against 1.2s",
+          "state": "awaiting",
+          "agents": 33,
+          "since": 28
+        }
+      ],
+      "bytes": 1500000,
+      "sharedWith": 5
+    }
+  ]
+}

@@ -48,6 +48,7 @@ export function heatmapTokens(mode: 'light' | 'dark'): HeatmapTokens {
   // The deepest step of the ramp sinks into a dark surface.
   const ramp = sequentialColors();
   const cell = seriesInk(ramp[dark ? DARK_CELL_STEP : ramp.length - 1], mode);
+  // The page's two-colour set: rows take the first, columns the second.
   const [rowTotal, columnTotal] = pickQualitativePalette(0, 2);
   return {
     cell,

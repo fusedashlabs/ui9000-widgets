@@ -12,6 +12,7 @@
 
 ### Added
 
+- Page style `palette5` with the colours of the Network + Heatmap design: its group colours, blues and the shared neutrals. Hosts select it with `styleId: 'palette5'` (`--ui9000-style-id`) once the client offers it as a page style.
 - **select** dispatches `ui9000-change` with `name` and `value` when the choice changes.
 
 ### Changed

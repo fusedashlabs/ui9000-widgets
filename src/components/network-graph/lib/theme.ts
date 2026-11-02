@@ -1,6 +1,7 @@
 import { lightTheme } from '@fuselab-creative/design-system';
 
-import { fdColors, hexWithAlpha, seriesColor } from '../../../utils/fusedash-visual.js';
+import { seriesInk, sequentialColors } from '../../../utils/fuse-palette.js';
+import { fdColors, hexWithAlpha } from '../../../utils/fusedash-visual.js';
 
 type Mode = 'light' | 'dark';
 
@@ -9,7 +10,7 @@ const SURFACE = 'var(--ui9000-color-surface, #ffffff)';
 
 /** Colours of the network graph for one page theme and style. */
 export interface GraphThemeColors {
-  /** First series colour of the page style: selection and the focus view. */
+  /** Deepest colour of the page style's ramp: selection and the focus view. */
   accent: string;
   link: string;
   /** Links of the selected node. */
@@ -45,11 +46,20 @@ export interface GraphThemeColors {
   nodeEdgeWidth: number;
 }
 
+/**
+ * Selection and focus colour: the deepest step of the page's sequential ramp
+ * (one step lighter in dark), so every page style has a strong one.
+ */
+function accentColor(mode: Mode): string {
+  const ramp = sequentialColors();
+  return seriesInk(ramp[ramp.length - (mode === 'dark' ? 2 : 1)], mode);
+}
+
 /** Call inside `withSeriesMode`, so the accent follows the page style. */
 export function graphThemeColors(mode: Mode): GraphThemeColors {
   const fd = fdColors(mode);
   const dark = mode === 'dark';
-  const accent = seriesColor(0, undefined, mode);
+  const accent = accentColor(mode);
   return {
     accent,
     link: hexWithAlpha(fd.axisLabelFill, 40),
@@ -82,7 +92,7 @@ export function graphChartColors(mode: Mode): {
 } {
   const fd = fdColors(mode);
   return {
-    line: seriesColor(0, undefined, mode),
+    line: accentColor(mode),
     point: SURFACE,
     grid: hexWithAlpha(fd.gridStroke, 40),
     text: fd.axisLabelFill,
@@ -105,7 +115,7 @@ export function graphFocusColors(mode: Mode): {
 } {
   const fd = fdColors(mode);
   return {
-    accent: seriesColor(0, undefined, mode),
+    accent: accentColor(mode),
     canvas: SURFACE,
     curve: hexWithAlpha(fd.axisLabelFill, 40),
     dotted: hexWithAlpha(fd.axisLabelFill, 32),

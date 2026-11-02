@@ -180,6 +180,10 @@
       "types": "./dist/components/goals-perimeter/index.d.ts",
       "import": "./dist/components/goals-perimeter/index.js"
     },
+    "./bipartite-graph": {
+      "types": "./dist/components/bipartite-graph/index.d.ts",
+      "import": "./dist/components/bipartite-graph/index.js"
+    },
     "./reasoning-orchestration-graph": {
       "types": "./dist/components/reasoning-orchestration-graph/index.d.ts",
       "import": "./dist/components/reasoning-orchestration-graph/index.js"
@@ -359,6 +363,10 @@
     "./lazy/goals-perimeter": {
       "types": "./dist/lazy/goals-perimeter.d.ts",
       "import": "./dist/lazy/goals-perimeter.js"
+    },
+    "./lazy/bipartite-graph": {
+      "types": "./dist/lazy/bipartite-graph.d.ts",
+      "import": "./dist/lazy/bipartite-graph.js"
     },
     "./lazy/reasoning-orchestration-graph": {
       "types": "./dist/lazy/reasoning-orchestration-graph.d.ts",

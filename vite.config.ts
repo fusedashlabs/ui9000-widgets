@@ -142,6 +142,10 @@ const entries = {
     __dirname,
     'src/components/goals-perimeter/index.ts',
   ),
+  'components/bipartite-graph/index': resolve(
+    __dirname,
+    'src/components/bipartite-graph/index.ts',
+  ),
   'components/reasoning-orchestration-graph/index': resolve(
     __dirname,
     'src/components/reasoning-orchestration-graph/index.ts',
@@ -220,6 +224,7 @@ const entries = {
   'lazy/power-path-card': resolve(__dirname, 'src/lazy/power-path-card.ts'),
   'lazy/component-asset-card': resolve(__dirname, 'src/lazy/component-asset-card.ts'),
   'lazy/goals-perimeter': resolve(__dirname, 'src/lazy/goals-perimeter.ts'),
+  'lazy/bipartite-graph': resolve(__dirname, 'src/lazy/bipartite-graph.ts'),
   'lazy/reasoning-orchestration-graph': resolve(
     __dirname,
     'src/lazy/reasoning-orchestration-graph.ts',

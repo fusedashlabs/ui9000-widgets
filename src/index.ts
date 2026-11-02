@@ -198,6 +198,7 @@ import {
   registerGoalsPerimeterChart,
   Ui9000GoalsPerimeterChart,
 } from './components/goals-perimeter/index.js';
+import { registerBipartiteGraph, Ui9000BipartiteGraph } from './components/bipartite-graph/index.js';
 import {
   registerReasoningOrchestrationGraph,
   Ui9000ReasoningOrchestrationGraph,
@@ -353,6 +354,8 @@ export {
   registerComponentAssetCard,
   Ui9000GoalsPerimeterChart,
   registerGoalsPerimeterChart,
+  Ui9000BipartiteGraph,
+  registerBipartiteGraph,
   Ui9000ReasoningOrchestrationGraph,
   registerReasoningOrchestrationGraph,
   Ui9000AssetHealthOverview,
@@ -435,6 +438,7 @@ export function registerAllCharts(): void {
   registerPowerPathCard();
   registerComponentAssetCard();
   registerGoalsPerimeterChart();
+  registerBipartiteGraph();
   registerReasoningOrchestrationGraph();
   registerAssetHealthOverview();
   registerGiniImpurityEntropyChart();
@@ -880,6 +884,14 @@ export {
   type PerimeterGoal,
   goalsPerimeterChartMetadata,
 } from './components/goals-perimeter/index.js';
+
+export {
+  normalizeBipartiteGraph,
+  type BipartiteGraphModel,
+  type BipartiteGraphPayload,
+  type BipartiteResource,
+  bipartiteGraphMetadata,
+} from './components/bipartite-graph/index.js';
 
 export {
   normalizeReasoningOrchestration,

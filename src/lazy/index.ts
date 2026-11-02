@@ -37,6 +37,7 @@ export type ChartKind =
   | 'power-path-card'
   | 'component-asset-card'
   | 'goals-perimeter'
+  | 'bipartite-graph'
   | 'reasoning-orchestration-graph'
   | 'asset-health-overview'
   | 'gini-impurity-entropy-chart'
@@ -218,6 +219,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'goals-perimeter': async () => {
     const mod = await import('../components/goals-perimeter/index.js');
     return { register: mod.registerGoalsPerimeterChart };
+  },
+  'bipartite-graph': async () => {
+    const mod = await import('../components/bipartite-graph/index.js');
+    return { register: mod.registerBipartiteGraph };
   },
   'reasoning-orchestration-graph': async () => {
     const mod = await import('../components/reasoning-orchestration-graph/index.js');
@@ -460,6 +465,10 @@ export async function loadComponentAssetCard(): Promise<LazyChartModule> {
 
 export async function loadGoalsPerimeterChart(): Promise<LazyChartModule> {
   return loadChart('goals-perimeter');
+}
+
+export async function loadBipartiteGraph(): Promise<LazyChartModule> {
+  return loadChart('bipartite-graph');
 }
 
 export async function loadReasoningOrchestrationGraph(): Promise<LazyChartModule> {

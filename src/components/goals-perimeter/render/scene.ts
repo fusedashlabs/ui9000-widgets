@@ -1012,7 +1012,7 @@ export function renderGoalsPerimeter(container: HTMLElement, options: RenderGoal
  * status, its name, and a readout — agents, progress, burn against baseline,
  * agents held. Compact, the readout shows as one line under the pointer.
  */
-function calloutMarkup(goal: PerimeterGoal): string {
+export function calloutMarkup(goal: PerimeterGoal): string {
   const esc = (text: string) => text.replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
   const held = goal.impure;
   const burn = goal.multiplier !== null ? formatMultiplier(goal.multiplier) : '';

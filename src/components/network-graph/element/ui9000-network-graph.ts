@@ -62,10 +62,13 @@ import {
   renderFocusHeader,
   renderNodeDetails,
   renderTimeline,
+  renderMenuPicker,
   renderTopicSidebar,
   renderTrends,
+  topicsCrowdLegend,
   type CardList,
   type CardTab,
+  type MenuPickerSlot,
   type MetricChartSlot,
 } from './panels.js';
 import { networkGraphStyles } from './styles.js';
@@ -93,8 +96,6 @@ const TOTALS_TITLE = 'Total';
 
 /** Narrower widgets show the details column under the graph, folded. */
 const COMPACT_WIDTH = 900;
-/** Narrower still, the folded topics go above the legend. */
-const STACKED_WIDTH = 400;
 /** From this width the topics sit in the timeline row, in front of the year. */
 const DOCKED_TRENDS_WIDTH = 560;
 /** The topic list of the timeline row leaves this much of the graph's top free. */
@@ -179,6 +180,14 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   @state()
   private _trendsMoving = false;
 
+  /** The topic list sits above the legend: the two do not fit side by side. */
+  @state()
+  private _trendsRaised = false;
+
+  /** Picker whose list is open: the period or the focus view's topic. */
+  @state()
+  private _openPicker: string | null = null;
+
   /** Focus view of a node (the "+" of the selected node). */
   @state()
   private _focusId: string | null = null;
@@ -229,6 +238,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
   message = '';
 
   private _fanRaf = 0;
+  private _fitRaf = 0;
   private _trendsTimer = 0;
   private _cardNodeId: string | null = null;
   private _shown: ShownGraph | null = null;
@@ -269,6 +279,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     cancelAnimationFrame(this._raf);
     cancelAnimationFrame(this._resizeRaf);
     cancelAnimationFrame(this._fanRaf);
+    cancelAnimationFrame(this._fitRaf);
     window.clearTimeout(this._trendsTimer);
     document.removeEventListener('click', this._onDocumentClick);
     this.stopLegendDrag();
@@ -326,13 +337,50 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
     }
     this.drawFocus();
     this.drawMetricCharts();
+    cancelAnimationFrame(this._fitRaf);
+    this._fitRaf = requestAnimationFrame(() => this.fitTopics());
+  }
+
+  /** Measured after the paint: the widths of the topic list and the legend change with their content. */
+  private fitTopics(): void {
+    const root = this.shadowRoot;
+    const raised = topicsCrowdLegend(
+      root?.querySelector<HTMLElement>('.network-stage')?.clientWidth ?? 0,
+      root?.querySelector<HTMLElement>('.trends-dock')?.offsetWidth ?? 0,
+      root?.querySelector<HTMLElement>('.graph-legend')?.offsetWidth ?? 0,
+    );
+    if (raised !== this._trendsRaised) this._trendsRaised = raised;
   }
 
   private readonly _onDocumentClick = (event: MouseEvent): void => {
+    const path = event.composedPath();
+    if (this._openPicker) {
+      const picker = this.shadowRoot?.querySelector(`[data-picker="${this._openPicker}"]`);
+      if (!picker || !path.includes(picker)) this._openPicker = null;
+    }
     if (!this._trendsOpen) return;
     const inline = this.shadowRoot?.querySelector('.trends-inline');
-    if (inline && !event.composedPath().includes(inline)) this._trendsOpen = false;
+    if (inline && !path.includes(inline)) this._trendsOpen = false;
   };
+
+  private readonly menuPicker: MenuPickerSlot = (id, label, value, options, onPick) =>
+    renderMenuPicker({
+      id,
+      label,
+      value,
+      options,
+      open: this._openPicker === id,
+      onToggle: () => {
+        this._openPicker = this._openPicker === id ? null : id;
+      },
+      onPick: (picked) => {
+        this._openPicker = null;
+        onPick(picked);
+      },
+      onClose: () => {
+        this._openPicker = null;
+      },
+    });
 
   /** Set before the paint, so the first frame of the move is clipped too. */
   private clipTopicsWhileMoving(): void {
@@ -993,7 +1041,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
       title: labels?.topics,
       changeHint: labels?.topicChange,
       compact,
-      raised: compact && this._layoutWidth < STACKED_WIDTH,
+      raised: this._trendsRaised,
       docked,
       listMaxHeight: docked
         ? Math.max(DOCKED_LIST_MIN_HEIGHT, this._stageHeight - DOCKED_LIST_TOP_ROOM)
@@ -1077,6 +1125,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
         ascending: this._ascending,
         series: getPeriodSeries(metric?.series ?? [], this._period),
         chart: this.metricChart,
+        picker: this.menuPicker,
         onPeriod: (months) => {
           this._period = months;
         },
@@ -1119,6 +1168,7 @@ export class Ui9000NetworkGraph extends Ui9000ChartElement {
         topicNames: topics.map((topic) => topic.name),
         topicName: this._topicName,
         topicLabel: model.labels?.topic,
+        picker: this.menuPicker,
         onClose: () => this.closeFocus(),
         onTopicChange: (name) => {
           this._topicName = name;

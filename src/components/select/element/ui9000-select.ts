@@ -1,7 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { dispatchUi9000Change } from '../../../element/dispatch-ui9000.js';
 import { surfaceStyles } from '../../../element/surface-styles.js';
 import { parseLabelledField } from '../../../lib/labelled-control.js';
 
@@ -32,7 +31,6 @@ export class Ui9000Select extends LitElement {
           .value=${field.value}
           @change=${(e: Event) => {
             this.value = (e.target as HTMLSelectElement).value;
-            dispatchUi9000Change(this, { name: field.name, value: this.value });
           }}
         >
           ${options.map((opt) => html`<option value=${opt} ?selected=${opt === field.value}>${opt}</option>`)}

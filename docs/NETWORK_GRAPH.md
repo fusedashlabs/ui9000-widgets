@@ -60,7 +60,7 @@ Each panel appears only when the data has what it shows. The full shape is in
 | 900 px and up | Details in a column beside the graph |
 | below 900 px | Details under the graph, folded to one line; the topic list folds to its header |
 | below 560 px | Topic list over the graph instead of in the timeline row |
-| below 400 px | Topic list above the legend |
+| topic list and legend too wide together | Topic list above the legend |
 
 ## Visual parity (plot)
 

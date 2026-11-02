@@ -21,6 +21,7 @@ import {
 } from '../lib/index.js';
 import { normalizeNetworkGraphData } from '../lib/normalize.js';
 import { arcAngles } from '../render/focus-view.js';
+import { topicsCrowdLegend } from '../element/panels.js';
 
 const graph = normalizeNetworkGraphData({
   nodes: [
@@ -204,5 +205,18 @@ describe('arcAngles', () => {
   it('centres one item and spreads the rest over the arc', () => {
     expect(arcAngles(1)).toEqual([0]);
     expect(arcAngles(3)).toEqual([-76, 0, 76]);
+  });
+});
+
+describe('topicsCrowdLegend', () => {
+  it('keeps the topic list beside the legend while both fit', () => {
+    // 12 + 240 + 12 + 168 + 16 = 448
+    expect(topicsCrowdLegend(448, 240, 168)).toBe(false);
+    expect(topicsCrowdLegend(447, 240, 168)).toBe(true);
+  });
+
+  it('does not move anything before both are measured', () => {
+    expect(topicsCrowdLegend(300, 0, 168)).toBe(false);
+    expect(topicsCrowdLegend(0, 240, 168)).toBe(false);
   });
 });

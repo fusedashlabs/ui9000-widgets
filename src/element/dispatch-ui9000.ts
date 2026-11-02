@@ -20,12 +20,3 @@ export function dispatchUi9000Submit(
     new CustomEvent('ui9000-submit', { detail, bubbles: true, composed: true }),
   );
 }
-
-export function dispatchUi9000Change(
-  host: EventTarget,
-  detail: { name: string; value: string },
-): void {
-  host.dispatchEvent(
-    new CustomEvent('ui9000-change', { detail, bubbles: true, composed: true }),
-  );
-}

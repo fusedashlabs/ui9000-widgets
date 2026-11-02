@@ -565,10 +565,69 @@ export const networkPanelStyles = css`
     line-height: var(--ui9000-line-height-label);
     color: var(--panel-muted);
   }
-  .period-select {
-    display: block;
-    height: auto;
+  .period-row {
+    display: flex;
+  }
+  .picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .picker-label {
     flex: none;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
+    color: var(--panel-muted);
+  }
+  .picker .picker-btn {
+    width: auto;
+    max-width: 100%;
+    gap: 6px;
+    padding: 0 10px;
+    font-family: inherit;
+    font-size: var(--ui9000-font-size-label);
+    line-height: var(--ui9000-line-height-label);
+  }
+  .picker-btn > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .picker .picker-btn .picker-chevron {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    transition: transform 0.2s ease;
+  }
+  .picker-chevron[data-open] {
+    transform: rotate(180deg);
+  }
+  .picker .picker-menu {
+    left: 0;
+    right: auto;
+    z-index: 6;
+    min-width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  /* At the right edge of the focus bar the list opens leftwards. */
+  .topic-picker .picker .picker-menu {
+    left: auto;
+    right: 0;
+  }
+  .picker-menu .menu-item {
+    white-space: nowrap;
+  }
+  .picker-menu .menu-item[aria-selected='true'] {
+    font-weight: 600;
+    background: var(--panel-tab);
+  }
+  .picker-menu .menu-item:hover,
+  .picker-menu .menu-item:focus-visible {
+    background: var(--panel-tab);
+    outline: none;
   }
   .metric-tabs {
     display: grid;
@@ -922,6 +981,8 @@ export const networkPanelStyles = css`
     }
   }
   .focus-header {
+    position: relative;
+    z-index: 2;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -961,10 +1022,11 @@ export const networkPanelStyles = css`
     color: var(--panel-text);
   }
   .topic-picker {
-    display: block;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
     flex: none;
-    width: 220px;
-    height: auto;
+    max-width: 50%;
     padding: 0 24px;
     box-sizing: border-box;
     border-left: 1px solid var(--panel-line);

@@ -400,21 +400,46 @@ describe('ui9000-network-graph', () => {
       el.remove();
     });
 
-    it('changes the period through ui9000-select', async () => {
+    it('picks the period from the chart-menu list', async () => {
       const el = await mount(panelsFixture);
-      const picker = el.shadowRoot.querySelector('.period-select') as HTMLElement & {
-        updateComplete: Promise<unknown>;
-      };
-      await picker.updateComplete;
-      const select = picker.shadowRoot?.querySelector('select') as HTMLSelectElement;
-      expect(select.value).toBe('Last 6 months');
+      const button = (): HTMLButtonElement =>
+        el.shadowRoot.querySelector('[data-picker="period"] .picker-btn') as HTMLButtonElement;
+      expect(button().textContent).toContain('Last 6 months');
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
 
-      select.value = 'Last 3 months';
-      select.dispatchEvent(new Event('change', { bubbles: true }));
+      button().click();
       await el.updateComplete;
-      await picker.updateComplete;
+      const options = [...el.shadowRoot.querySelectorAll('.picker-menu [role="option"]')];
+      expect(options.map((option) => option.textContent?.trim())).toEqual([
+        'Last 3 months',
+        'Last 6 months',
+        'Last 12 months',
+      ]);
+      expect(button().getAttribute('aria-expanded')).toBe('true');
 
-      expect(picker.shadowRoot?.querySelector('select')?.value).toBe('Last 3 months');
+      (options[0] as HTMLButtonElement).click();
+      await el.updateComplete;
+
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
+      expect(button().textContent).toContain('Last 3 months');
+
+      el.remove();
+    });
+
+    it('closes the picker on Escape and on a click elsewhere', async () => {
+      const el = await mount(panelsFixture);
+      const button = el.shadowRoot.querySelector('[data-picker="period"] .picker-btn') as HTMLElement;
+      button.click();
+      await el.updateComplete;
+      button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
+
+      button.click();
+      await el.updateComplete;
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
 
       el.remove();
     });

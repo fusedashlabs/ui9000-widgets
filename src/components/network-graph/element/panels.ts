@@ -1,6 +1,5 @@
 import { html, nothing, svg, type TemplateResult } from 'lit';
 
-import '../../select/element/ui9000-select.js';
 
 import {
   changeDecimals,
@@ -26,6 +25,89 @@ import {
 type Content = TemplateResult | typeof nothing;
 
 /** Draws the metric of a panel; the element fills the box it returns. */
+/** A picker in the style of the chart menu; the element keeps which one is open. */
+export type MenuPickerSlot = (
+  id: string,
+  label: string,
+  value: string,
+  options: Array<{ value: string; label: string }>,
+  onPick: (value: string) => void,
+) => TemplateResult;
+
+export interface MenuPickerOptions {
+  id: string;
+  label: string;
+  value: string;
+  options: Array<{ value: string; label: string }>;
+  open: boolean;
+  onToggle: () => void;
+  onPick: (value: string) => void;
+  onClose: () => void;
+}
+
+/** Label and a button that opens a list, drawn with the chart menu's `menu-*` styles. */
+export function renderMenuPicker(options: MenuPickerOptions): TemplateResult {
+  const { id, label, value, open, onToggle, onPick, onClose } = options;
+  const current = options.options.find((option) => option.value === value)?.label ?? value;
+  return html`<div
+    class="picker"
+    data-picker=${id}
+    @keydown=${(event: KeyboardEvent) => {
+      if (event.key === 'Escape' && open) {
+        event.stopPropagation();
+        onClose();
+      }
+    }}
+  >
+    <span class="picker-label" id=${`${id}-label`}>${label}</span>
+    <div class="menu-anchor">
+      <button
+        type="button"
+        class="menu-btn picker-btn"
+        aria-haspopup="listbox"
+        aria-expanded=${open}
+        aria-labelledby=${`${id}-label ${id}-value`}
+        @click=${onToggle}
+      >
+        <span id=${`${id}-value`}>${current}</span>
+        <svg class="picker-chevron" ?data-open=${open} viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+      </button>
+      ${open
+        ? html`<div class="menu-dropdown picker-menu" role="listbox" aria-labelledby=${`${id}-label`}>
+            ${options.options.map(
+              (option) => html`<button
+                type="button"
+                role="option"
+                class="menu-item"
+                aria-selected=${option.value === value}
+                @click=${() => onPick(option.value)}
+              >
+                ${option.label}
+              </button>`,
+            )}
+          </div>`
+        : nothing}
+    </div>
+  </div>`;
+}
+
+// Bottom corners of the stage: the topic list on the left, the legend on the right.
+const TRENDS_LEFT = 12;
+const LEGEND_RIGHT = 16;
+const BESIDE_GAP = 12;
+
+/** The topic list goes above the legend only when the two do not fit side by side. */
+export function topicsCrowdLegend(
+  stageWidth: number,
+  topicsWidth: number,
+  legendWidth: number,
+): boolean {
+  if (!stageWidth || !topicsWidth || !legendWidth) return false;
+  return TRENDS_LEFT + topicsWidth + BESIDE_GAP + legendWidth + LEGEND_RIGHT > stageWidth;
+}
+
 export type MetricChartSlot = (
   key: string,
   series: PeriodPoint[],
@@ -452,6 +534,7 @@ export interface TopicSidebarOptions {
   ascending: boolean;
   series: PeriodPoint[];
   chart: MetricChartSlot;
+  picker: MenuPickerSlot;
   onPeriod: (months: number) => void;
   onMetric: (index: number) => void;
   onSort: () => void;
@@ -459,7 +542,7 @@ export interface TopicSidebarOptions {
 
 /** Right column: the selected topic's metrics and the ranking. */
 export function renderTopicSidebar(options: TopicSidebarOptions): TemplateResult {
-  const { topic, ranking, labels, period, metricIndex, ascending, series, chart } = options;
+  const { topic, ranking, labels, period, metricIndex, ascending, series, chart, picker } = options;
   const { onPeriod, onMetric, onSort } = options;
   const metrics = topic?.metrics ?? [];
   const metric = metrics[Math.min(metricIndex, metrics.length - 1)];
@@ -471,17 +554,15 @@ export function renderTopicSidebar(options: TopicSidebarOptions): TemplateResult
     ${topic && metrics.length
       ? html`<h3 class="sidebar-title">${topic.name}</h3>
           ${showPeriod
-            ? html`<ui9000-select
-                class="period-select"
-                label="Period"
-                name="period"
-                data=${JSON.stringify({ options: PERIODS.map(({ label }) => label) })}
-                .value=${PERIODS.find(({ months }) => months === period)?.label ?? ''}
-                @ui9000-change=${(event: CustomEvent<{ value: string }>) =>
-                  onPeriod(
-                    PERIODS.find(({ label }) => label === event.detail.value)?.months ?? period,
-                  )}
-              ></ui9000-select>`
+            ? html`<div class="period-row">
+                ${picker(
+                  'period',
+                  'Period',
+                  String(period),
+                  PERIODS.map(({ months, label }) => ({ value: String(months), label })),
+                  (value) => onPeriod(Number(value)),
+                )}
+              </div>`
             : nothing}
           <div class="metric-tabs" role="tablist" aria-label="Metrics">
             ${metrics.slice(0, 3).map((item, index) => {
@@ -893,13 +974,14 @@ export interface FocusHeaderOptions {
   topicName: string | null;
   /** What a topic is in the data ("Issue"); names the picker. */
   topicLabel?: string;
+  picker: MenuPickerSlot;
   onClose: () => void;
   onTopicChange: (name: string) => void;
 }
 
 /** Bar of the focus view: back, the node's name and the topic picker. */
 export function renderFocusHeader(options: FocusHeaderOptions): TemplateResult {
-  const { node, topicNames, topicName, topicLabel, onClose, onTopicChange } = options;
+  const { node, topicNames, topicName, topicLabel, picker, onClose, onTopicChange } = options;
   return html`<div class="focus-header">
     <button type="button" class="focus-back" aria-label="Back to the network" @click=${onClose}>
       <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -915,18 +997,20 @@ export function renderFocusHeader(options: FocusHeaderOptions): TemplateResult {
     </button>
     <h2 class="focus-title" title=${node.label}>${node.label}</h2>
     ${topicNames.length
-      ? html`<ui9000-select
-          class="topic-picker"
-          label=${topicLabel ?? 'Topic'}
-          name="topic"
-          data=${JSON.stringify({
-            options: topicName ? topicNames : [ALL_TOPICS, ...topicNames],
-          })}
-          .value=${topicName ?? ALL_TOPICS}
-          @ui9000-change=${(event: CustomEvent<{ value: string }>) => {
-            if (event.detail.value !== ALL_TOPICS) onTopicChange(event.detail.value);
-          }}
-        ></ui9000-select>`
+      ? html`<div class="topic-picker">
+          ${picker(
+            'topic',
+            topicLabel ?? 'Topic',
+            topicName ?? ALL_TOPICS,
+            (topicName ? topicNames : [ALL_TOPICS, ...topicNames]).map((name) => ({
+              value: name,
+              label: name,
+            })),
+            (name) => {
+              if (name !== ALL_TOPICS) onTopicChange(name);
+            },
+          )}
+        </div>`
       : nothing}
   </div>`;
 }

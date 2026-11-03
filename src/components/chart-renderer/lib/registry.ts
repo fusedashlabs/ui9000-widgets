@@ -18,7 +18,9 @@ import componentAssetMeta from '../../component-asset-card/metadata.json';
 import goalsPerimeterMeta from '../../goals-perimeter/metadata.json';
 import bipartiteGraphMeta from '../../bipartite-graph/metadata.json';
 import reasoningOrchestrationMeta from '../../reasoning-orchestration-graph/metadata.json';
+import goalsDependencyGraphMeta from '../../goals-dependency-graph/metadata.json';
 import assetHealthMeta from '../../asset-health-overview/metadata.json';
+import goalsInsightsMeta from '../../goals-insights/metadata.json';
 import lineMeta from '../../line-chart/metadata.json';
 import lollipopMeta from '../../lollipop/metadata.json';
 import mapChartMeta from '../../map-chart/metadata.json';
@@ -82,7 +84,9 @@ const METADATA: ChartMetadataLike[] = [
   goalsPerimeterMeta,
   bipartiteGraphMeta,
   reasoningOrchestrationMeta,
+  goalsDependencyGraphMeta,
   assetHealthMeta,
+  goalsInsightsMeta,
   lineMeta,
   lollipopMeta,
   mapChartMeta,

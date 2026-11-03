@@ -204,9 +204,14 @@ import {
   Ui9000ReasoningOrchestrationGraph,
 } from './components/reasoning-orchestration-graph/index.js';
 import {
+  registerGoalsDependencyGraph,
+  Ui9000GoalsDependencyGraph,
+} from './components/goals-dependency-graph/index.js';
+import {
   registerAssetHealthOverview,
   Ui9000AssetHealthOverview,
 } from './components/asset-health-overview/index.js';
+import { registerGoalsInsights, Ui9000GoalsInsights } from './components/goals-insights/index.js';
 import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
@@ -358,8 +363,12 @@ export {
   registerBipartiteGraph,
   Ui9000ReasoningOrchestrationGraph,
   registerReasoningOrchestrationGraph,
+  Ui9000GoalsDependencyGraph,
+  registerGoalsDependencyGraph,
   Ui9000AssetHealthOverview,
   registerAssetHealthOverview,
+  Ui9000GoalsInsights,
+  registerGoalsInsights,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -440,7 +449,9 @@ export function registerAllCharts(): void {
   registerGoalsPerimeterChart();
   registerBipartiteGraph();
   registerReasoningOrchestrationGraph();
+  registerGoalsDependencyGraph();
   registerAssetHealthOverview();
+  registerGoalsInsights();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -906,6 +917,16 @@ export {
 } from './components/reasoning-orchestration-graph/index.js';
 
 export {
+  normalizeGoalsDependencyGraph,
+  type GoalsDependencyGraphModel,
+  type GoalsDependencyGraphPayload,
+  type GraphEdge as GoalsDependencyGraphEdge,
+  type GraphGoal as GoalsDependencyGraphGoal,
+  type GraphResource as GoalsDependencyGraphResource,
+  goalsDependencyGraphMetadata,
+} from './components/goals-dependency-graph/index.js';
+
+export {
   normalizeAssetHealth,
   formatAssetHealthCount,
   type AssetHealthCategoryInput,
@@ -917,6 +938,15 @@ export {
   type AssetHealthTrouble,
   assetHealthOverviewMetadata,
 } from './components/asset-health-overview/index.js';
+
+export {
+  normalizeGoalsInsights,
+  type ClaimInput as GoalsInsightsClaimInput,
+  type GoalInput as GoalsInsightsGoalInput,
+  type GoalsInsightsModel,
+  type GoalsInsightsPayload,
+  goalsInsightsMetadata,
+} from './components/goals-insights/index.js';
 
 export {
   normalizeCustomWidget,

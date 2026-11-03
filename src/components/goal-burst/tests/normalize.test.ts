@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import defaultFixture from '../../../stories/fixtures/goal-burst.default.json';
 import { assetCount, PIVOT_X } from '../../asset-health-overview/lib/index.js';
 import { BURST, burstSectors, burstSlots, formatSeconds, normalizeGoalBurst, timeRadius } from '../lib/index.js';
-import { cornerLines } from '../render/index.js';
+import { cornerLines, sectorTip } from '../render/index.js';
 
 const model = normalizeGoalBurst(defaultFixture);
 const sectors = burstSectors(model);
@@ -22,18 +22,18 @@ describe('normalizeGoalBurst', () => {
       ['RG-MODEL', 'model'],
     ]);
     expect(model.groups.map((g) => g.latency)).toEqual([
-      { p50: 0.24, p95: 0.7 },
-      { p50: 0.3, p95: 0.9 },
-      { p50: 0.62, p95: 1.5 },
-      { p50: 180, p95: 900 },
-      { p50: 0.9, p95: 2.1 },
+      { p50: 0.24, p95: 0.7, measured: true },
+      { p50: 0.3, p95: 0.9, measured: true },
+      { p50: 0.62, p95: 1.5, measured: true },
+      { p50: 180, p95: 900, measured: true },
+      { p50: 0.9, p95: 2.1, measured: true },
     ]);
     expect(model.groups[0]).toMatchObject({ bytes: 12800000, sharedWith: 2 });
     expect(model.groupTotal).toBe(21);
     expect(cornerLines(model)).toEqual(['5 of 21 resource groups', '56 assets · 16.7K calls /min']);
   });
 
-  it('reads a group’s kind from its name, names its assets by it, and takes the answer times sent', () => {
+  it('reads a group’s kind from its name, names its assets by it, and takes the answer times sent, else its kind’s usual, as not measured', () => {
     const bare = normalizeGoalBurst({
       goal: defaultFixture.goal,
       categories: [
@@ -46,8 +46,14 @@ describe('normalizeGoalBurst', () => {
     expect(bare.groups.map((g) => assetCount(g.section))).toEqual(['9 systems of record', '1 model', '3 assets']);
     expect(bare.groups[0]!.latency.p95).toBe(1.4);
     expect(bare.groups[0]!.latency.p50).toBeCloseTo(0.48);
-    expect(bare.groups[1]!.latency).toEqual({ p50: 0.24, p95: 0.7 });
-    expect(bare.groups[2]!.latency).toEqual({ p50: 0.3, p95: 0.9 });
+    expect(bare.groups[1]!.latency).toEqual({ p50: 0.24, p95: 0.7, measured: true });
+    expect(bare.groups[2]!.latency).toEqual({ p50: 0.3, p95: 0.9, measured: false });
+    expect(bare.groups[0]!.latency.measured).toBe(true);
+    // the tip says the times are a guess
+    const rows = (i: number) => sectorTip(bare.goal, burstSectors(bare).find((s) => s.group === bare.groups[i])!).rows;
+    expect(rows(2).find((r) => r.label === 'Answered')!.value).toMatch(/^about 95% within /);
+    expect(rows(2).find((r) => r.label === 'Answer times')!.value).toBe('not sent: usual for a resource group');
+    expect(rows(1).some((r) => r.label === 'Answer times')).toBe(false);
     // no fleet total: the corner counts only the groups drawn
     expect(bare.groupTotal).toBe(3);
     expect(cornerLines(bare)[0]).toBe('3 resource groups');

@@ -140,6 +140,17 @@ describe('ui9000-goal-burst', () => {
     await waitFor(() => !stage.hasAttribute('data-tiny') && root.querySelectorAll('.ah-label').length === 5);
   });
 
+  it('reads the answer times a group was not sent as about its kind’s usual, quietly', async () => {
+    const unsent = { ...defaultFixture, categories: defaultFixture.categories.map(({ latency: _, ...group }) => group) };
+    const el = await mount(unsent);
+    const root = el.shadowRoot!;
+    await sized(el, 1400, 760);
+    await waitFor(() => root.querySelectorAll('.ah-readout').length === 5);
+    const p95 = root.querySelectorAll('.ah-label-body[data-section="RG-SYS"] .ah-reading-value')[1]!;
+    expect(p95.textContent!.trim()).toMatch(/^~0\.\ds$/);
+    expect(p95.classList.contains('is-quiet')).toBe(true);
+  });
+
   it('keeps only the legend at the bottom left, and explains the burst in it', async () => {
     const el = await mount(defaultFixture);
     const root = el.shadowRoot!;

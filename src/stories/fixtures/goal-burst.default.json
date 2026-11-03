@@ -20,6 +20,10 @@
       "id": "RG-SYS",
       "name": "SYSTEM",
       "kind": "system",
+      "latency": {
+        "p50": 0.24,
+        "p95": 0.7
+      },
       "unit": "systems of record",
       "unitOne": "system of record",
       "total": 9,
@@ -77,6 +81,10 @@
       "id": "RG-APP",
       "name": "APP",
       "kind": "app",
+      "latency": {
+        "p50": 0.3,
+        "p95": 0.9
+      },
       "unit": "apps",
       "unitOne": "app",
       "total": 12,
@@ -118,6 +126,10 @@
       "id": "RG-TOOL",
       "name": "TOOL",
       "kind": "tool",
+      "latency": {
+        "p50": 0.62,
+        "p95": 1.5
+      },
       "unit": "tools",
       "unitOne": "tool",
       "total": 24,
@@ -158,6 +170,10 @@
       "id": "RG-HUMAN",
       "name": "HUMAN",
       "kind": "human",
+      "latency": {
+        "p50": "3m",
+        "p95": "15m"
+      },
       "unit": "people",
       "unitOne": "person",
       "total": 5,
@@ -196,6 +212,10 @@
       "id": "RG-MODEL",
       "name": "MODEL",
       "kind": "model",
+      "latency": {
+        "p50": 0.9,
+        "p95": 2.1
+      },
       "unit": "models",
       "unitOne": "model",
       "total": 6,

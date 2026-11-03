@@ -61,7 +61,7 @@
                 "type": { "type": "string", "description": "Alias of kind." },
                 "latency": {
                   "type": "object",
-                  "description": "How long its calls take to be answered, when it is not the kind's usual: seconds, or \"240ms\" / \"0.7s\" / \"3m\". One sent alone keeps the kind's spread to the other.",
+                  "description": "How long its calls take to be answered, when it is not the kind's usual: seconds, or \"240ms\" / \"0.7s\" / \"3m\". One sent alone keeps the kind's spread to the other. Without either, the kind's usual is drawn, and the label and tip read it as about (~0.7s).",
                   "properties": {
                     "p50": { "type": ["number", "string"] },
                     "p95": { "type": ["number", "string"] }

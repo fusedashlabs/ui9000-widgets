@@ -328,7 +328,8 @@ export function renderGoalBurst(container: HTMLElement, options: RenderGoalBurst
     const s = sector.group.section;
     return [
       { caption: 'Calls /min', value: s.calls === null ? '—' : formatShort(s.calls), cls: 'w-calls', quiet: s.calls === null },
-      { caption: '95% within', value: sector.p95 === null ? '—' : formatSeconds(sector.p95), cls: 'w-p95', quiet: sector.p95 === null },
+      // times the payload did not send are the kind's usual: read as about, and quietly
+      { caption: '95% within', value: sector.p95 === null ? '—' : `${sector.group.latency.measured ? '' : '~'}${formatSeconds(sector.p95)}`, cls: 'w-p95', quiet: sector.p95 === null || !sector.group.latency.measured },
       { caption: 'Held up', value: formatPercent(s.slowed), cls: 'w-held', quiet: s.slowed < 0.005 },
     ];
   };

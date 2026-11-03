@@ -28,7 +28,7 @@ export function goalTip(goal: AssetHealthGoal): ChartTooltipContent {
 
 /** What the pointer reads off a group's sector of the burst. */
 export function sectorTip(goal: AssetHealthGoal, sector: BurstSector): ChartTooltipContent {
-  const { section: s, bytes, sharedWith } = sector.group;
+  const { section: s, kind, latency, bytes, sharedWith } = sector.group;
   const held = s.crew.held;
   const body =
     held > 0
@@ -38,7 +38,8 @@ export function sectorTip(goal: AssetHealthGoal, sector: BurstSector): ChartTool
         : `A resource group ${goal.name} draws on. Its calls here are answered. Click to pick the sector out.`;
   const rows: ChartTooltipRow[] = [];
   if (s.calls !== null) rows.push(row('Calls', `${formatShort(s.calls)} a minute · ${formatPercent(s.share)} of the goal’s`));
-  rows.push(row('Answered', sector.p95 === null ? 'none' : `95% within ${formatSeconds(sector.p95)}`));
+  rows.push(row('Answered', sector.p95 === null ? 'none' : `${latency.measured ? '' : 'about '}95% within ${formatSeconds(sector.p95)}`));
+  if (!latency.measured && sector.p95 !== null) rows.push(row('Answer times', kind ? `not sent: usual for ${s.unit[1]}` : 'not sent: usual for a resource group'));
   if (bytes !== null) rows.push(row('Volume', `${formatShort(bytes)}B a minute`));
   rows.push(row('Traffic', trafficMix(sector)));
   if (s.rules.length) rows.push(row('Rules on it', s.rules.join(' · ')));

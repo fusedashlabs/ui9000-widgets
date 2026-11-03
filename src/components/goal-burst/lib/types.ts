@@ -45,8 +45,8 @@ export interface GoalBurstPayload extends Omit<AssetHealthPayload, 'categories' 
 export interface BurstGroup {
   section: AssetHealthSection;
   kind: ResourceKind | null;
-  /** Seconds: the median call, and nineteen in twenty. */
-  latency: { p50: number; p95: number };
+  /** Seconds: the median call, and nineteen in twenty; not measured where the payload sent neither and they are the kind's usual. */
+  latency: { p50: number; p95: number; measured: boolean };
   bytes: number | null;
   sharedWith: number | null;
 }

@@ -70,16 +70,16 @@ function kindOf(row: Record<string, unknown>, name: string): ResourceKind | null
   return null;
 }
 
-/** The answer times sent, or the kind's usual; one sent alone keeps the usual spread to the other. */
-function latencyOf(row: Record<string, unknown>, kind: ResourceKind | null): { p50: number; p95: number } {
+/** The answer times sent, or the kind's usual, marked as not measured; one sent alone keeps the usual spread to the other. */
+function latencyOf(row: Record<string, unknown>, kind: ResourceKind | null): BurstGroup['latency'] {
   const [p50, p95] = kind ? KIND_LATENCY[kind] : DEFAULT_LATENCY;
   const given = row.latency && typeof row.latency === 'object' ? (row.latency as Record<string, unknown>) : {};
   const median = seconds(given.p50);
   const tail = seconds(given.p95);
-  if (median && tail) return { p50: Math.min(median, tail), p95: Math.max(median, tail) };
-  if (median) return { p50: median, p95: (median * p95) / p50 };
-  if (tail) return { p50: (tail * p50) / p95, p95: tail };
-  return { p50, p95 };
+  if (median && tail) return { p50: Math.min(median, tail), p95: Math.max(median, tail), measured: true };
+  if (median) return { p50: median, p95: (median * p95) / p50, measured: true };
+  if (tail) return { p50: (tail * p50) / p95, p95: tail, measured: true };
+  return { p50, p95, measured: false };
 }
 
 /**

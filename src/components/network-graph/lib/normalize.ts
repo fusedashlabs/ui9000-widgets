@@ -3,6 +3,7 @@ import { generateBreakPoints } from '../../../utils/breakpoints.js';
 
 
 import type {
+  MetricPoint,
   NetworkGraphFusePayload,
   NetworkGraphInput,
   NetworkGraphModel,
@@ -43,9 +44,26 @@ function optionalString(value: unknown): string | undefined {
   return typeof value === 'string' && value.trim() ? value : undefined;
 }
 
+/** A number, or a string holding one; `null`, blanks and booleans are not numbers. */
 function finiteNumber(value: unknown): number | undefined {
-  const n = typeof value === 'number' ? value : Number(value);
+  if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+  if (typeof value !== 'string' || !value.trim()) return undefined;
+  const n = Number(value);
   return Number.isFinite(n) ? n : undefined;
+}
+
+/**
+ * Payload colours are written into `style` attributes, so only a plain colour
+ * passes: a hex, a word, rgb()/hsl() or a custom property. Anything that could
+ * end the declaration (`;`, `!`, quotes, `url(…)`) is dropped.
+ */
+const PLAIN_COLOR =
+  /^(?:#(?:[\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})|[a-z]+|(?:rgb|hsl)a?\([\w\s.,%/+-]*\)|var\(--[\w-]+\))$/i;
+
+function plainColor(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const color = value.trim();
+  return PLAIN_COLOR.test(color) ? color : undefined;
 }
 
 function toNode(raw: unknown): NetworkNode | null {
@@ -58,13 +76,13 @@ function toNode(raw: unknown): NetworkNode | null {
     value: finiteNumber(raw.value),
     // Trimmed once here, so colours, the legend and the topics group the same way.
     type: raw.type == null ? '' : String(raw.type).trim(),
-    color: optionalString(raw.color),
+    color: plainColor(raw.color),
     img: optionalString(raw.img),
     topics: stringList(raw.topics),
     date: optionalString(raw.date),
     events: stringList(raw.events),
     role: optionalString(raw.role),
-    metrics: Array.isArray(raw.metrics) ? (raw.metrics as TopicMetric[]) : undefined,
+    metrics: listOf(raw.metrics, toMetric),
     bio: optionalString(raw.bio),
     eventsLabel: optionalString(raw.eventsLabel),
     linksLabel: optionalString(raw.linksLabel),
@@ -73,6 +91,83 @@ function toNode(raw: unknown): NetworkNode | null {
 
 function stringList(value: unknown): string[] | undefined {
   return Array.isArray(value) ? value.filter((item) => typeof item === 'string') : undefined;
+}
+
+function listOf<T>(value: unknown, toItem: (raw: unknown) => T | null): T[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.map(toItem).filter((item): item is T => item !== null);
+}
+
+/** Name of a panel entry: text, or a number such as a year. */
+function entryName(value: unknown): string | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return optionalString(value);
+}
+
+// Panel entries are formatted with `toFixed` and sorted by subtraction, so
+// their numbers are parsed here like node and link values. Units keep their
+// spaces: " pt" is a unit of its own.
+
+function toMetricPoint(raw: unknown): MetricPoint | null {
+  if (!isRecord(raw)) return null;
+  const date = optionalString(raw.date);
+  const value = finiteNumber(raw.value);
+  return date && value !== undefined ? { date, value } : null;
+}
+
+function toMetric(raw: unknown): TopicMetric | null {
+  if (!isRecord(raw)) return null;
+  const label = entryName(raw.label);
+  const value = finiteNumber(raw.value);
+  if (!label || value === undefined) return null;
+  return {
+    label,
+    value,
+    unit: optionalString(raw.unit),
+    change: finiteNumber(raw.change),
+    changeUnit: optionalString(raw.changeUnit),
+    description: optionalString(raw.description),
+    series: listOf(raw.series, toMetricPoint),
+  };
+}
+
+function toRankingEntry(raw: unknown): RankingEntry | null {
+  if (!isRecord(raw)) return null;
+  const name = entryName(raw.name);
+  const value = finiteNumber(raw.value);
+  if (!name || value === undefined) return null;
+  return {
+    name,
+    value,
+    unit: optionalString(raw.unit),
+    change: finiteNumber(raw.change),
+    changeUnit: optionalString(raw.changeUnit),
+    connections: finiteNumber(raw.connections),
+  };
+}
+
+function toTopic(raw: unknown): NetworkTopic | null {
+  if (!isRecord(raw)) return null;
+  const name = entryName(raw.name);
+  if (!name) return null;
+  return {
+    name,
+    // A topic without a figure still picks its nodes; the list shows it as 0.
+    value: finiteNumber(raw.value) ?? 0,
+    unit: optionalString(raw.unit),
+    change: finiteNumber(raw.change),
+    changeUnit: optionalString(raw.changeUnit),
+    color: plainColor(raw.color),
+    selected: raw.selected === true || undefined,
+    metrics: listOf(raw.metrics, toMetric),
+    ranking: listOf(raw.ranking, toRankingEntry),
+  };
+}
+
+function toLabels(raw: Record<string, unknown>): NetworkLabels {
+  return Object.fromEntries(
+    Object.entries(raw).filter(([, value]) => optionalString(value) !== undefined),
+  ) as NetworkLabels;
 }
 
 function toLinkKind(raw: unknown): NetworkLinkKind {
@@ -151,9 +246,9 @@ function paintNodeGroups(nodes: NetworkNode[]): void {
 /** Topics, ranking and words of the panels: on the graph itself or in `data[0]`. */
 function extrasOf(source: Record<string, unknown>): Partial<NetworkGraphModel> {
   return {
-    ...(Array.isArray(source.topics) ? { topics: source.topics as NetworkTopic[] } : {}),
-    ...(Array.isArray(source.ranking) ? { ranking: source.ranking as RankingEntry[] } : {}),
-    ...(isRecord(source.labels) ? { labels: source.labels as NetworkLabels } : {}),
+    ...(Array.isArray(source.topics) ? { topics: listOf(source.topics, toTopic) } : {}),
+    ...(Array.isArray(source.ranking) ? { ranking: listOf(source.ranking, toRankingEntry) } : {}),
+    ...(isRecord(source.labels) ? { labels: toLabels(source.labels) } : {}),
   };
 }
 

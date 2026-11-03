@@ -40,7 +40,7 @@ function compile(gl: WebGL2RenderingContext, type: number, source: string): WebG
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) && !gl.isContextLost()) {
     const log = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
-    throw new Error(`goals-perimeter: shader did not compile: ${log}`);
+    throw new Error(`goals-dependency-graph: shader did not compile: ${log}`);
   }
   return shader;
 }
@@ -58,7 +58,7 @@ export function createProgram(gl: WebGL2RenderingContext, vertex: string, fragme
   gl.deleteShader(vs);
   gl.deleteShader(fs);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS) && !gl.isContextLost()) {
-    throw new Error(`goals-perimeter: program did not link: ${gl.getProgramInfoLog(program)}`);
+    throw new Error(`goals-dependency-graph: program did not link: ${gl.getProgramInfoLog(program)}`);
   }
 
   const attributes: Record<string, number> = {};

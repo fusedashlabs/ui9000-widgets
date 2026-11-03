@@ -335,7 +335,8 @@ export function renderGoalsDependencyGraph(container: HTMLElement, options: Rend
   // ── the trees' places: one clock, so a tree gliding to the centre never comes apart from its agents ──
   const glide = { from: {} as Record<string, Stand>, to: {} as Record<string, Stand>, room: { from: 0, to: 0 }, start: 0, duration: 0 };
   const now = () => (typeof performance !== 'undefined' ? performance.now() : 0);
-  const glidedAt = (at: number) => (at >= glide.start + glide.duration ? 1 : easeGlide(Math.max(0, (at - glide.start) / glide.duration)));
+  // a glide without motion has no length: it has landed, whatever the frame's clock says (a frame's time can run behind `now()`)
+  const glidedAt = (at: number) => (!glide.duration || at >= glide.start + glide.duration ? 1 : easeGlide(Math.max(0, (at - glide.start) / glide.duration)));
   const standAt = (id: string, at: number): Stand => {
     const to = glide.to[id]!;
     const e = glidedAt(at);
@@ -362,15 +363,41 @@ export function renderGoalsDependencyGraph(container: HTMLElement, options: Rend
     glide.duration = duration;
   };
   standTo(0);
-  const gliding = (at: number) => at < glide.start + glide.duration;
+  const gliding = (at: number) => glide.duration > 0 && at < glide.start + glide.duration;
 
-  // each goal's agents follow its emphasis, eased
+  /**
+   * What is lit — the goal under the pointer or in focus, the group pointed at
+   * or traced — and how far each goal steps back. The picture and the overlay
+   * both read it, so the agents take a change on the frame the trees do.
+   */
+  const emphasis = () => {
+    const sets = focusSets(model, hover ?? focus, pointed ?? resource);
+    // a goal only pointed at leaves the others readable; one in focus or a traced group sets them back
+    const aside = focus || resource || tracedEdge !== null ? 0.22 : 0.5;
+    const goalDim = (g: GraphGoal) =>
+      (!sets.active || sets.lit.has(`g:${g.id}`) ? 1 : sets.soft.has(`g:${g.id}`) ? 0.62 : aside) * goalShown(g, problemsOnly);
+    return { sets, aside, goalDim };
+  };
+
+  // each goal's agents follow its emphasis, eased by `k` (1 lands them); true while any is still on its way
   const alpha: Record<string, number> = Object.fromEntries(model.goals.map((g) => [g.id, 1]));
-  let alphaTarget: Record<string, number> = { ...alpha };
+  const followEmphasis = (k: number) => {
+    const { goalDim } = emphasis();
+    let fading = false;
+    for (const g of model.goals) {
+      const want = goalDim(g);
+      const next = alpha[g.id]! + (want - alpha[g.id]!) * k;
+      alpha[g.id] = Math.abs(want - next) < 0.003 ? want : next;
+      if (alpha[g.id] !== want) fading = true;
+    }
+    return fading;
+  };
 
   // ── one frame of the graph ──
   const drawFrame = (at: number, overlay: boolean) => {
     if (destroyed) return;
+    // without motion nothing eases: the agents stand at their emphasis on every paint, however it is asked for
+    if (!motion) followEmphasis(1);
     const frame = mapFrame();
     const fit = fitScene(size, frame);
     // the band from the groups to the goals' labels sits in the middle of the window
@@ -417,15 +444,9 @@ export function renderGoalsDependencyGraph(container: HTMLElement, options: Rend
     compact = u > COMPACT_ABOVE;
     stage.toggleAttribute('data-compact', compact);
 
-    // what is lit: the goal under the pointer or in focus, the group pointed at or traced
-    const sets = focusSets(model, hover ?? focus, pointed ?? resource);
-    // a goal only pointed at leaves the others readable; one in focus or a traced group sets them back
-    const aside = focus || resource || tracedEdge !== null ? 0.22 : 0.5;
-    const goalDim = (g: GraphGoal) =>
-      (!sets.active || sets.lit.has(`g:${g.id}`) ? 1 : sets.soft.has(`g:${g.id}`) ? 0.62 : aside) * goalShown(g, problemsOnly);
+    const { sets, aside, goalDim } = emphasis();
     const resourceDim = (id: string) =>
       (!sets.active || sets.lit.has(`r:${id}`) ? 1 : aside + 0.1) * (pointed === id ? 1 : healthShown(standings.get(id)!.health, problemsOnly));
-    alphaTarget = Object.fromEntries(model.goals.map((g) => [g.id, goalDim(g)]));
 
     // the traced line: the one clicked, else the traced group, else what holds most of the centre goal's agents
     const worst = worstHold(model, center);
@@ -991,15 +1012,8 @@ export function renderGoalsDependencyGraph(container: HTMLElement, options: Rend
       const slide = 1 - Math.exp(-dt / EASE_PAN_MS);
       eased = { zoom: eased.zoom * Math.exp(gap.zoom * scale), panX: eased.panX + gap.panX * slide, panY: eased.panY + gap.panY * slide };
     } else eased = { ...target };
-    // the agents follow their goal's emphasis
-    let fading = false;
-    const k = motion ? 1 - Math.exp(-dt / EASE_ALPHA_MS) : 1;
-    for (const id of Object.keys(alpha)) {
-      const want = alphaTarget[id] ?? 1;
-      const next = alpha[id]! + (want - alpha[id]!) * k;
-      alpha[id] = Math.abs(want - next) < 0.003 ? want : next;
-      if (alpha[id] !== want) fading = true;
-    }
+    // the agents follow their goal's emphasis, read before the paint
+    const fading = followEmphasis(motion ? 1 - Math.exp(-dt / EASE_ALPHA_MS) : 1);
 
     const moving = gliding(at) || chasing;
     // the frame that lands a glide or a camera move draws the instruments where they come to rest

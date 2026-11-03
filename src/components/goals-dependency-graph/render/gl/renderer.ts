@@ -1,5 +1,6 @@
 import { FIELD_STATES, type AgentField, type PaintOptions } from '../../lib/field.js';
 import { BOARD } from '../../lib/geometry.js';
+import { MAX_GOALS } from '../../lib/normalize.js';
 import { PIVOT_X, PIVOT_Y, projector } from '../../lib/scene.js';
 import { STATUS, type ScenePalette } from '../scene-palette.js';
 import {
@@ -40,10 +41,10 @@ import {
  * (../field-painter.ts), which stays as the fallback.
  *
  * Nothing here is drawn that is not the scene's light or its data: a point is
- * always an agent.
+ * always an agent. The shaders' per-goal arrays hold MAX_GOALS, the most goals
+ * the model keeps, so every goal drawn has its place.
  */
 
-const MAX_GOALS = 8;
 /** How far the grade pulls colours apart at the frame's corners, as a share of the frame. */
 const SPLIT = 0.012;
 /** The smoke is drawn at this share of the canvas and stretched. */
@@ -149,7 +150,7 @@ export function createFieldRenderer(canvas: HTMLCanvasElement, field: AgentField
   const programs: Program[] = [];
   const meshes: Mesh[] = [];
   const program = (vertex: string, fragment: string, defines?: Record<string, number>) => {
-    const p = createProgram(gl, vertex, fragment, defines);
+    const p = createProgram(gl, vertex, fragment, { GOALS: MAX_GOALS, ...defines });
     programs.push(p);
     return p;
   };

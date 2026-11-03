@@ -14,6 +14,7 @@
  * Written as three.js would take them (GLSL ES 1.00 words, `position` and
  * `uv` given); `vertex()` and `fragment()` in ./program.ts add the GLSL ES
  * 3.00 prelude three.js adds, so uniform arrays can be indexed per goal.
+ * Those arrays hold `GOALS` goals, defined by the renderer as MAX_GOALS.
  */
 
 /** Camera, canvas mapping and per-goal data shared by every program. */
@@ -29,12 +30,12 @@ uniform float uTime;
 uniform float uIntro;   // 0–1 while the scene settles in
 uniform float uHealthy; // brightness of working and idle agents
 uniform float uCount;   // goals
-uniform vec4 uGoal[8];  // world x, y, z, radius
-uniform vec4 uGoalB[8]; // spin angle, alpha, heat, pulse
-uniform vec4 uLight[8]; // projected x, y, radius; intensity
-uniform vec3 uLightCol[8];
+uniform vec4 uGoal[GOALS];  // world x, y, z, radius
+uniform vec4 uGoalB[GOALS]; // spin angle, alpha, heat, pulse
+uniform vec4 uLight[GOALS]; // projected x, y, radius; intensity
+uniform vec3 uLightCol[GOALS];
 uniform float uDrift;   // how far working agents wander about their places: 1 in a cloud
-uniform float uScale[8]; // each goal's agents drawn in from or out about its centre: 1 in a cloud
+uniform float uScale[GOALS]; // each goal's agents drawn in from or out about its centre: 1 in a cloud
 uniform vec3 uGlass;    // light the glass catches at its limb, from the page's palette
 
 vec3 project(vec3 w) {
@@ -117,7 +118,7 @@ void main() {
   vec3 col = uCool * (dens * 0.0002 + mix(0.5, dens, 0.3) * cone * rays * 0.02);
 
   // every goal lights the smoke round it
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < GOALS; i++) {
     if (float(i) >= uCount) break;
     vec4 L = uLight[i];
     vec2 d = (vD - L.xy) / L.z;

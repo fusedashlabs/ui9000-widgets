@@ -189,7 +189,7 @@ function claimOf(raw: unknown, index: number, fallbackGoal: string): RawClaim | 
     polarity,
     state,
     sources,
-    records: count(raw.records) ?? Math.round(sources * (24 + (h % 70)) + (state === 'accepted' ? 180 : 0)),
+    records: count(raw.records) ?? null,
     weight: weight === undefined ? Math.round(derived * 100) / 100 : Math.max(0.02, Math.min(0.95, weight > 1 ? weight / 100 : weight)),
     agent: text(raw.agent, 60) || null,
     age: hours,

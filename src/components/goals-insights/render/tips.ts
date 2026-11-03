@@ -56,7 +56,7 @@ const goalName = (model: GoalsInsightsModel, id: string) => [model.goal, ...mode
 export function claimTip(model: GoalsInsightsModel, c: Claim): ChartTooltipContent {
   const rows: ChartTooltipRow[] = [row('Filed under', goalName(model, c.goal))];
   if (c.also.length) rows.push(row('Bears on', c.also.map((id) => goalName(model, id)).join(' · ')));
-  rows.push(row('Filed', ageWord(c.age)), row('Sources', `${num(c.sources)} · ${plural(c.records, 'record')}`), row('State', stateWord(c)));
+  rows.push(row('Filed', ageWord(c.age)), row('Sources', c.records === null ? num(c.sources) : `${num(c.sources)} · ${plural(c.records, 'record')}`), row('State', stateWord(c)));
   if (c.asset) rows.push(row('About', c.asset));
   if (c.agent) rows.push(row('Agent', c.agent));
   return { title: `${c.id} · ${EVIDENCE_LABEL[c.evidence]}`, body: `${c.text} — ${plural(c.sources, 'source')}. Click to pick it out.`, rows };

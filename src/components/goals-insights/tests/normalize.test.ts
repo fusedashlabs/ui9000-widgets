@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import defaultFixture from '../../../stories/fixtures/goals-insights.default.json';
-import { MAX_CLAIMS, MAX_CONNECTED, normalizeGoalsInsights } from '../lib/index.js';
+import { claimRadius, MAX_CLAIMS, MAX_CONNECTED, normalizeGoalsInsights } from '../lib/index.js';
 
 describe('normalizeGoalsInsights', () => {
   it('reads the design’s Perimeter Watch: its claims first, then its connected goals’ other claims', () => {
@@ -48,7 +48,10 @@ describe('normalizeGoalsInsights', () => {
     const [b, a] = model.claims;
     expect(a).toMatchObject({ theme: 'latency', polarity: 'contradicting', age: 2.5, sources: 4, asset: 'model', state: 'corroborated', evidence: 'contradicting', goal: 'G-1' });
     expect(a!.weight).toBeGreaterThan(0.06);
-    expect(a!.records).toBeGreaterThan(0);
+    // a volume not sent is not made up
+    expect(a!.records).toBeNull();
+    expect(b!.records).toBeNull();
+    expect(claimRadius(a!.records)).toBe(claimRadius(b!.records));
     expect(b).toMatchObject({ state: 'open', evidence: 'unverified' });
     expect(model.dropped).toBe(1);
   });

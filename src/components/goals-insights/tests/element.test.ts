@@ -173,6 +173,7 @@ describe('ui9000-goals-insights', () => {
     expect(tooltip()).toContain('Rack row C-07 power fault took 5 PIR sensors offline — 6 sources');
     expect(tipRows()).toContain('Filed under Perimeter Watch');
     expect(tipRows()).toContain('State Pinned');
+    expect(tipRows().find((r) => r.startsWith('Sources'))).toMatch(/^Sources 6 · [\d,]+ records$/);
 
     pointer(claim.querySelector('path')!, 'click');
     await flush();
@@ -187,6 +188,17 @@ describe('ui9000-goals-insights', () => {
     await flush();
     expect(el.picks.claim).toBeNull();
     expect(root.querySelector('.gi-picked')).toBeNull();
+  });
+
+  it('names no records for a claim that sent none', async () => {
+    const el = await mount({
+      goal: { id: 'G-1', name: 'Goal one' },
+      claims: [{ id: 'C-1', claim: 'Gateway p95 over threshold', age: 3, sources: 3 }],
+    });
+    pointer(claimEl(el.shadowRoot!, 'C-1').querySelector('path')!, 'pointermove');
+    await waitFor(() => tooltip().startsWith('C-1'));
+    expect(tipRows()).toContain('Sources 3');
+    expect(tooltip()).not.toContain('record');
   });
 
   it('picks out a connected goal by click or by key, stepping the other back', async () => {

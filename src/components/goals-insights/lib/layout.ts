@@ -244,9 +244,12 @@ export function columnFlow(claims: Claim[]): ColumnFlow {
     .sort((a, b) => a.age - b.age)
     .flatMap((c) => Array.from({ length: Math.max(1, Math.round(c.sources / per)) }, (): SourceMote => ({ evidence: c.evidence, fresh: c.age < 24 })))
     .slice(0, MAX_SOURCES);
+  // a claim that sent no volume stands for as many records a source as the claims that did, or one when none did
+  const sent = claims.filter((c) => c.records !== null);
+  const usual = sent.length ? sent.reduce((sum, c) => sum + c.records! / c.sources, 0) / sent.length : 1;
   const records = Array.from({ length: CYCLES }, () => 0);
   for (const c of claims) {
-    const each = c.records / c.sources;
+    const each = c.records === null ? usual : c.records / c.sources;
     for (let k = 0; k < c.sources; k++) records[cycleOf(c.age * (1 - Math.pow(k / c.sources, 0.7)))]! += each;
   }
   const sum = records.reduce((a, n) => a + n, 0) || 1;

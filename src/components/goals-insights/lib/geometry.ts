@@ -44,8 +44,8 @@ export function hoursY(hours: number): number {
 /** The cycle of something filed `hours` ago. */
 export const cycleOf = (hours: number) => Math.min(CYCLES - 1, Math.floor(Math.max(0, hours) / CYCLE_HOURS));
 
-/** A claim's diamond, half its diagonal, from its evidence volume: 5 for a usual claim, a little more with more records behind it. */
-export const claimRadius = (records: number) => Math.max(4.5, Math.min(7, 2.4 + Math.log10(1 + records) * 1.4));
+/** A claim's diamond, half its diagonal, from its evidence volume: 5 for a usual claim, and for one whose volume was not sent; a little more with more records behind it. */
+export const claimRadius = (records: number | null) => (records === null ? 5 : Math.max(4.5, Math.min(7, 2.4 + Math.log10(1 + records) * 1.4)));
 
 export interface Stratum {
   /** Cycle index, 0 = the most recent 2 hours. */

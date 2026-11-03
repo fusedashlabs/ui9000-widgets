@@ -60,8 +60,8 @@ export interface Claim {
   state: ClaimState;
   /** Independent sources behind it. */
   sources: number;
-  /** Evidence records behind it: the larger its diamond. */
-  records: number;
+  /** Evidence records behind it: the larger its diamond; null where the payload sent none. */
+  records: number | null;
   /** How much it moves its goal's confidence, 0–1: the more, the nearer the axis. */
   weight: number;
   /** The agent that filed it, as given. */

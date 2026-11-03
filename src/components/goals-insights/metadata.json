@@ -90,7 +90,7 @@
                 },
                 "type": { "enum": ["gap", "observation", "correlation", "anomaly", "recommendation"], "description": "A gap or an anomaly against the goal moves it more than an observation, when weight is omitted." },
                 "sources": { "type": ["number", "string"], "description": "Independent sources behind it, 1–99. Under 2, a supporting claim is single-source. Three or more run it up to its goal." },
-                "records": { "type": ["number", "string"], "description": "Evidence records behind it: the larger its diamond, and the denser the dust in the rings. Defaults from its sources." },
+                "records": { "type": ["number", "string"], "description": "Evidence records behind it: the larger its diamond, and the denser the dust in the rings. Without it, its diamond is drawn at the usual size and its tip names no records." },
                 "weight": { "type": ["number", "string"], "description": "How much it moves its goal's confidence, 0–1 (or a percent): the nearer the axis and the bolder its line. Defaults from its polarity, type and sources." },
                 "agent": { "type": "string", "description": "The agent that filed it, for its tip." },
                 "asset": { "type": "string", "description": "The kind of asset it is about (camera, system, model…): written beside it zoomed in, and claims about one kind filed within six hours of each other are joined. Aliases: assetKind, kind." },

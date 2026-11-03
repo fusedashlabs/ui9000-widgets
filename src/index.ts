@@ -212,6 +212,7 @@ import {
   Ui9000AssetHealthOverview,
 } from './components/asset-health-overview/index.js';
 import { registerGoalsInsights, Ui9000GoalsInsights } from './components/goals-insights/index.js';
+import { registerGoalBurst, Ui9000GoalBurst } from './components/goal-burst/index.js';
 import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
@@ -369,6 +370,8 @@ export {
   registerAssetHealthOverview,
   Ui9000GoalsInsights,
   registerGoalsInsights,
+  Ui9000GoalBurst,
+  registerGoalBurst,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -452,6 +455,7 @@ export function registerAllCharts(): void {
   registerGoalsDependencyGraph();
   registerAssetHealthOverview();
   registerGoalsInsights();
+  registerGoalBurst();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -947,6 +951,14 @@ export {
   type GoalsInsightsPayload,
   goalsInsightsMetadata,
 } from './components/goals-insights/index.js';
+
+export {
+  normalizeGoalBurst,
+  type GoalBurstCategoryInput,
+  type GoalBurstModel,
+  type GoalBurstPayload,
+  goalBurstMetadata,
+} from './components/goal-burst/index.js';
 
 export {
   normalizeCustomWidget,

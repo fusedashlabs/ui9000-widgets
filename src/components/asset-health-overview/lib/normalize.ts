@@ -141,10 +141,21 @@ interface Draft {
   traffic: Partial<Record<FlowState, number>> | null;
 }
 
+/** What a category row is called; a row without a name is no section. */
+const categoryName = (c: Record<string, unknown>) =>
+  text(c.name) || text(c.category) || text(c.label) || text(cell(c, CATEGORY_KEYS)) || text(c.id);
+
+/** The payload's rows that become sections, in their order: the model's `sections` line up with them. */
+export function categoryRows(raw: unknown): Record<string, unknown>[] {
+  if (!isRecord(raw)) return [];
+  const rows: unknown[] = Array.isArray(raw.categories) ? raw.categories : Array.isArray(raw.data) ? raw.data : [];
+  return rows.filter((c): c is Record<string, unknown> => isRecord(c) && !!categoryName(c)).slice(0, MAX_CATEGORIES);
+}
+
 function draftCategory(input: unknown, index: number, taken: Set<string>): Draft | null {
   if (!isRecord(input)) return null;
   const c = input as AssetHealthCategoryInput & Record<string, unknown>;
-  const name = text(c.name) || text(c.category) || text(c.label) || text(cell(c, CATEGORY_KEYS)) || text(c.id);
+  const name = categoryName(c);
   if (!name) return null;
 
   let id = text(c.id) || slug(name);

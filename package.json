@@ -200,6 +200,10 @@
       "types": "./dist/components/goals-insights/index.d.ts",
       "import": "./dist/components/goals-insights/index.js"
     },
+    "./goal-burst": {
+      "types": "./dist/components/goal-burst/index.d.ts",
+      "import": "./dist/components/goal-burst/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -391,6 +395,10 @@
     "./lazy/goals-insights": {
       "types": "./dist/lazy/goals-insights.d.ts",
       "import": "./dist/lazy/goals-insights.js"
+    },
+    "./lazy/goal-burst": {
+      "types": "./dist/lazy/goal-burst.d.ts",
+      "import": "./dist/lazy/goal-burst.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

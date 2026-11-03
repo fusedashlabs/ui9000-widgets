@@ -159,6 +159,7 @@ const entries = {
     'src/components/asset-health-overview/index.ts',
   ),
   'components/goals-insights/index': resolve(__dirname, 'src/components/goals-insights/index.ts'),
+  'components/goal-burst/index': resolve(__dirname, 'src/components/goal-burst/index.ts'),
   'components/custom-widget/index': resolve(
     __dirname,
     'src/components/custom-widget/index.ts',
@@ -237,6 +238,7 @@ const entries = {
   'lazy/goals-dependency-graph': resolve(__dirname, 'src/lazy/goals-dependency-graph.ts'),
   'lazy/asset-health-overview': resolve(__dirname, 'src/lazy/asset-health-overview.ts'),
   'lazy/goals-insights': resolve(__dirname, 'src/lazy/goals-insights.ts'),
+  'lazy/goal-burst': resolve(__dirname, 'src/lazy/goal-burst.ts'),
   'lazy/gini-impurity-entropy-chart': resolve(
     __dirname,
     'src/lazy/gini-impurity-entropy-chart.ts',

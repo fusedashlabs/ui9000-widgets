@@ -116,7 +116,7 @@ function paintAgentField(
   // the field gathers from a slightly tighter ball as it settles in
   const grow = 0.74 + 0.26 * intro;
   // dots keep to the map's scale a little: finer when it is drawn small, fuller when zoomed in
-  const grain = clamp(Math.sqrt(1 / (REFERENCE_SCALE * u)), 0.62, 1.9) * u;
+  const grain = clamp(Math.sqrt(1 / (REFERENCE_SCALE * u)), 0.62, 1.9) * u * (opts.grain ?? 1);
   const spark = glow(TINT.healthy);
   const trafficGlow = glow(TRAFFIC);
 

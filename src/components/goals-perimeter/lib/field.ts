@@ -161,6 +161,10 @@ export interface FieldOptions {
   region: { x: number; y: number; w: number; h: number };
   /** The camera's zoom: zoomed in, the lens focuses on the goal in the middle of the frame. */
   zoom: number;
+  /** An agent's dot against its usual size: goals drawn small take a finer dot, to keep their agents apart. Default 1. */
+  grain?: number;
+  /** How far the colours part at the frame's corners, against the usual. Default 1. */
+  aberration?: number;
 }
 
 export interface PaintOptions extends FieldOptions {

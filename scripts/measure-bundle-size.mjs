@@ -48,6 +48,7 @@ const CHART_ENTRIES = [
   'components/power-path-card/index.js',
   'components/component-asset-card/index.js',
   'components/goals-perimeter/index.js',
+  'components/bipartite-graph/index.js',
   'components/reasoning-orchestration-graph/index.js',
   'components/goals-dependency-graph/index.js',
   'components/asset-health-overview/index.js',

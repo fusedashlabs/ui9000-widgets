@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.0 — 2026-11-04
+
 ### Breaking
 
 - **goals-perimeter**: clicking a goal no longer opens it. The open-goal view is gone, with its `goal-open` and `goal-close` events and the `GoalOpenDetail` type. `fitBoard` and `COMPACT_SCALE` are no longer exported from `@fusedashlabs/widgets/goals-perimeter`.

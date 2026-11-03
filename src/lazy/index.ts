@@ -40,6 +40,7 @@ export type ChartKind =
   | 'reasoning-orchestration-graph'
   | 'goals-dependency-graph'
   | 'asset-health-overview'
+  | 'goals-insights'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
   | 'custom-widget'
@@ -231,6 +232,10 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
   'asset-health-overview': async () => {
     const mod = await import('../components/asset-health-overview/index.js');
     return { register: mod.registerAssetHealthOverview };
+  },
+  'goals-insights': async () => {
+    const mod = await import('../components/goals-insights/index.js');
+    return { register: mod.registerGoalsInsights };
   },
   'gini-impurity-entropy-chart': async () => {
     const mod = await import('../components/gini-impurity-entropy-chart/index.js');
@@ -477,6 +482,10 @@ export async function loadGoalsDependencyGraph(): Promise<LazyChartModule> {
 
 export async function loadAssetHealthOverview(): Promise<LazyChartModule> {
   return loadChart('asset-health-overview');
+}
+
+export async function loadGoalsInsights(): Promise<LazyChartModule> {
+  return loadChart('goals-insights');
 }
 
 export async function loadGiniImpurityEntropyChart(): Promise<LazyChartModule> {

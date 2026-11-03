@@ -51,6 +51,7 @@ const CHART_ENTRIES = [
   'components/reasoning-orchestration-graph/index.js',
   'components/goals-dependency-graph/index.js',
   'components/asset-health-overview/index.js',
+  'components/goals-insights/index.js',
   'components/gini-impurity-entropy-chart/index.js',
   'components/custom-widget/index.js',
   'components/inspector/index.js',

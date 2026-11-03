@@ -192,6 +192,10 @@
       "types": "./dist/components/asset-health-overview/index.d.ts",
       "import": "./dist/components/asset-health-overview/index.js"
     },
+    "./goals-insights": {
+      "types": "./dist/components/goals-insights/index.d.ts",
+      "import": "./dist/components/goals-insights/index.js"
+    },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
       "import": "./dist/components/network-graph/index.js"
@@ -375,6 +379,10 @@
     "./lazy/asset-health-overview": {
       "types": "./dist/lazy/asset-health-overview.d.ts",
       "import": "./dist/lazy/asset-health-overview.js"
+    },
+    "./lazy/goals-insights": {
+      "types": "./dist/lazy/goals-insights.d.ts",
+      "import": "./dist/lazy/goals-insights.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

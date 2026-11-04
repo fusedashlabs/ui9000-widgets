@@ -66,7 +66,7 @@ const SPLIT = 0.012;
 const FOG_SCALE = 1 / 3;
 /** Bloom as the design sets it: strength, radius, threshold. */
 const BLOOM = { strength: 0.35, radius: 0.5, threshold: 0.62 };
-const BLOOM_KERNELS = [6, 10, 14, 18, 22];
+export const BLOOM_KERNELS = [6, 10, 14, 18, 22];
 
 type RGB = [number, number, number];
 
@@ -98,7 +98,7 @@ export interface FieldRenderer {
 }
 
 /** three.js's gaussian, with neighbouring taps merged into single bilinear fetches. */
-function blurKernel(kernelRadius: number) {
+export function blurKernel(kernelRadius: number) {
   const sigma = kernelRadius / 3;
   const coefficients = Array.from({ length: kernelRadius }, (_, i) => (0.39894 * Math.exp((-0.5 * i * i) / (sigma * sigma))) / sigma);
   const offsets: number[] = [];
@@ -362,7 +362,7 @@ export function createFieldRenderer(
       U.uIntro = o.intro;
       U.uHealthy = o.healthy;
       // dots keep to the map's scale a little: finer when it is drawn small, fuller when zoomed in
-      U.uGrain = Math.max(0.62, Math.min(1.9, Math.sqrt(1 / (1.42 * u)))) * u;
+      U.uGrain = Math.max(0.62, Math.min(1.9, Math.sqrt(1 / (1.42 * u)))) * u * (o.grain ?? 1);
       U.uOrbit = o.orbit;
       U.uFlat = o.flat ? 1 : 0;
       U.uShift.set([pose.yaw * 0.5, pose.pitch * 0.45]);
@@ -521,7 +521,7 @@ export function createFieldRenderer(
       gl.disable(gl.BLEND);
       runPass(
         grade,
-        { tDiffuse: { texture: picture.texture }, uTime: t, uSplit: SPLIT, uLightMode: light ? 1 : 0, uInk: Float32Array.from(palette.ink) },
+        { tDiffuse: { texture: picture.texture }, uTime: t, uSplit: SPLIT * (o.aberration ?? 1), uLightMode: light ? 1 : 0, uInk: Float32Array.from(palette.ink) },
         null,
       );
     },

@@ -37,8 +37,12 @@ export type ChartKind =
   | 'power-path-card'
   | 'component-asset-card'
   | 'goals-perimeter'
+  | 'bipartite-graph'
   | 'reasoning-orchestration-graph'
+  | 'goals-dependency-graph'
   | 'asset-health-overview'
+  | 'goals-insights'
+  | 'goal-burst'
   | 'gini-impurity-entropy-chart'
   | 'map-chart'
   | 'custom-widget'
@@ -219,13 +223,29 @@ const loaders: Record<ChartKind, () => Promise<LazyChartModule>> = {
     const mod = await import('../components/goals-perimeter/index.js');
     return { register: mod.registerGoalsPerimeterChart };
   },
+  'bipartite-graph': async () => {
+    const mod = await import('../components/bipartite-graph/index.js');
+    return { register: mod.registerBipartiteGraph };
+  },
   'reasoning-orchestration-graph': async () => {
     const mod = await import('../components/reasoning-orchestration-graph/index.js');
     return { register: mod.registerReasoningOrchestrationGraph };
   },
+  'goals-dependency-graph': async () => {
+    const mod = await import('../components/goals-dependency-graph/index.js');
+    return { register: mod.registerGoalsDependencyGraph };
+  },
   'asset-health-overview': async () => {
     const mod = await import('../components/asset-health-overview/index.js');
     return { register: mod.registerAssetHealthOverview };
+  },
+  'goals-insights': async () => {
+    const mod = await import('../components/goals-insights/index.js');
+    return { register: mod.registerGoalsInsights };
+  },
+  'goal-burst': async () => {
+    const mod = await import('../components/goal-burst/index.js');
+    return { register: mod.registerGoalBurst };
   },
   'gini-impurity-entropy-chart': async () => {
     const mod = await import('../components/gini-impurity-entropy-chart/index.js');
@@ -462,12 +482,28 @@ export async function loadGoalsPerimeterChart(): Promise<LazyChartModule> {
   return loadChart('goals-perimeter');
 }
 
+export async function loadBipartiteGraph(): Promise<LazyChartModule> {
+  return loadChart('bipartite-graph');
+}
+
 export async function loadReasoningOrchestrationGraph(): Promise<LazyChartModule> {
   return loadChart('reasoning-orchestration-graph');
 }
 
+export async function loadGoalsDependencyGraph(): Promise<LazyChartModule> {
+  return loadChart('goals-dependency-graph');
+}
+
 export async function loadAssetHealthOverview(): Promise<LazyChartModule> {
   return loadChart('asset-health-overview');
+}
+
+export async function loadGoalsInsights(): Promise<LazyChartModule> {
+  return loadChart('goals-insights');
+}
+
+export async function loadGoalBurst(): Promise<LazyChartModule> {
+  return loadChart('goal-burst');
 }
 
 export async function loadGiniImpurityEntropyChart(): Promise<LazyChartModule> {

@@ -8,7 +8,7 @@ export {
   formatShort,
   TROUBLE_WORD,
 } from './format.js';
-export { apportion, normalizeAssetHealth, MAX_CATEGORIES } from './normalize.js';
+export { apportion, categoryRows, normalizeAssetHealth, MAX_CATEGORIES } from './normalize.js';
 export * from './arena.js';
 export * from './camera.js';
 export * from './field.js';

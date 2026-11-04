@@ -22,7 +22,17 @@ jobs:
         with:
           node-version: '20'
           cache: yarn
-      - run: yarn install --immutable
+      # Fork PRs receive no secrets. Hardened mode then refreshes the lockfile
+      # against GitHub Packages with no token. The design-system package is
+      # already in the cache restored above, so install from that cache.
+      - name: Install
+        run: |
+          if [ -z "${FUSELAB_TOKEN}" ]; then
+            echo "Fork pull request: no registry token. Installing from the restored Yarn cache."
+            export YARN_ENABLE_HARDENED_MODE=0
+            export YARN_ENABLE_OFFLINE_MODE=1
+          fi
+          yarn install --immutable
       - run: yarn typecheck
       - run: yarn test
       - run: yarn build
@@ -44,7 +54,14 @@ jobs:
         with:
           node-version: '20'
           cache: yarn
-      - run: yarn install --immutable
+      - name: Install
+        run: |
+          if [ -z "${FUSELAB_TOKEN}" ]; then
+            echo "Fork pull request: no registry token. Installing from the restored Yarn cache."
+            export YARN_ENABLE_HARDENED_MODE=0
+            export YARN_ENABLE_OFFLINE_MODE=1
+          fi
+          yarn install --immutable
       - run: yarn build
       - run: yarn build:playground
 
@@ -63,7 +80,14 @@ jobs:
         with:
           node-version: '20'
           cache: yarn
-      - run: yarn install --immutable
+      - name: Install
+        run: |
+          if [ -z "${FUSELAB_TOKEN}" ]; then
+            echo "Fork pull request: no registry token. Installing from the restored Yarn cache."
+            export YARN_ENABLE_HARDENED_MODE=0
+            export YARN_ENABLE_OFFLINE_MODE=1
+          fi
+          yarn install --immutable
       - name: Build Storybook
         env:
           STORYBOOK_BASE: /storybook/

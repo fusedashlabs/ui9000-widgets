@@ -29,6 +29,16 @@ export interface GroupLabelOptions {
   enter: number;
   /** The place a label is leaving: it only fades out. */
   ghost?: boolean;
+  /** The readout, when the picture it labels reads the section otherwise than the arena does (agents, calls, held up). */
+  readings?: LabelReading[];
+}
+
+/** A column of a label's readout: its caption, its figure, the class that fixes its width, and whether the figure is nothing to speak of. */
+export interface LabelReading {
+  caption: string;
+  value: string;
+  cls: string;
+  quiet: boolean;
 }
 
 /** A line of trouble under a section's readout: the asset, and how many agents it holds. */
@@ -65,7 +75,7 @@ export function groupLabel(o: GroupLabelOptions): TemplateResult {
   const word = state ? `${num(s.crew.held)} ${TROUBLE_WORD[state]}` : s.health === 'degraded' ? 'Slowed' : 'Flows';
   const width = compact ? LABEL.compactWidth : LABEL.width;
   const agents = crewSize(s);
-  const readings = [
+  const readings: LabelReading[] = o.readings ?? [
     { caption: 'Agents', value: num(agents), cls: 'w-agents', quiet: false },
     { caption: 'Calls /min', value: s.calls === null ? '—' : formatShort(s.calls), cls: 'w-calls', quiet: s.calls === null },
     { caption: 'Held up', value: formatPercent(s.slowed), cls: 'w-held', quiet: s.slowed < 0.005 },

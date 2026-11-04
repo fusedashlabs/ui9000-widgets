@@ -198,14 +198,21 @@ import {
   registerGoalsPerimeterChart,
   Ui9000GoalsPerimeterChart,
 } from './components/goals-perimeter/index.js';
+import { registerBipartiteGraph, Ui9000BipartiteGraph } from './components/bipartite-graph/index.js';
 import {
   registerReasoningOrchestrationGraph,
   Ui9000ReasoningOrchestrationGraph,
 } from './components/reasoning-orchestration-graph/index.js';
 import {
+  registerGoalsDependencyGraph,
+  Ui9000GoalsDependencyGraph,
+} from './components/goals-dependency-graph/index.js';
+import {
   registerAssetHealthOverview,
   Ui9000AssetHealthOverview,
 } from './components/asset-health-overview/index.js';
+import { registerGoalsInsights, Ui9000GoalsInsights } from './components/goals-insights/index.js';
+import { registerGoalBurst, Ui9000GoalBurst } from './components/goal-burst/index.js';
 import {
   registerGiniImpurityEntropyChart,
   Ui9000GiniImpurityEntropyChart,
@@ -353,10 +360,18 @@ export {
   registerComponentAssetCard,
   Ui9000GoalsPerimeterChart,
   registerGoalsPerimeterChart,
+  Ui9000BipartiteGraph,
+  registerBipartiteGraph,
   Ui9000ReasoningOrchestrationGraph,
   registerReasoningOrchestrationGraph,
+  Ui9000GoalsDependencyGraph,
+  registerGoalsDependencyGraph,
   Ui9000AssetHealthOverview,
   registerAssetHealthOverview,
+  Ui9000GoalsInsights,
+  registerGoalsInsights,
+  Ui9000GoalBurst,
+  registerGoalBurst,
   Ui9000GiniImpurityEntropyChart,
   registerGiniImpurityEntropyChart,
   Ui9000MapChart,
@@ -435,8 +450,12 @@ export function registerAllCharts(): void {
   registerPowerPathCard();
   registerComponentAssetCard();
   registerGoalsPerimeterChart();
+  registerBipartiteGraph();
   registerReasoningOrchestrationGraph();
+  registerGoalsDependencyGraph();
   registerAssetHealthOverview();
+  registerGoalsInsights();
+  registerGoalBurst();
   registerGiniImpurityEntropyChart();
   registerMapChart();
   registerCustomWidget();
@@ -891,6 +910,14 @@ export {
 } from './components/goals-perimeter/index.js';
 
 export {
+  normalizeBipartiteGraph,
+  type BipartiteGraphModel,
+  type BipartiteGraphPayload,
+  type BipartiteResource,
+  bipartiteGraphMetadata,
+} from './components/bipartite-graph/index.js';
+
+export {
   normalizeReasoningOrchestration,
   type PathSelectDetail,
   type ReasoningModel,
@@ -901,6 +928,16 @@ export {
   type ReasoningStage,
   reasoningOrchestrationGraphMetadata,
 } from './components/reasoning-orchestration-graph/index.js';
+
+export {
+  normalizeGoalsDependencyGraph,
+  type GoalsDependencyGraphModel,
+  type GoalsDependencyGraphPayload,
+  type GraphEdge as GoalsDependencyGraphEdge,
+  type GraphGoal as GoalsDependencyGraphGoal,
+  type GraphResource as GoalsDependencyGraphResource,
+  goalsDependencyGraphMetadata,
+} from './components/goals-dependency-graph/index.js';
 
 export {
   normalizeAssetHealth,
@@ -914,6 +951,23 @@ export {
   type AssetHealthTrouble,
   assetHealthOverviewMetadata,
 } from './components/asset-health-overview/index.js';
+
+export {
+  normalizeGoalsInsights,
+  type ClaimInput as GoalsInsightsClaimInput,
+  type GoalInput as GoalsInsightsGoalInput,
+  type GoalsInsightsModel,
+  type GoalsInsightsPayload,
+  goalsInsightsMetadata,
+} from './components/goals-insights/index.js';
+
+export {
+  normalizeGoalBurst,
+  type GoalBurstCategoryInput,
+  type GoalBurstModel,
+  type GoalBurstPayload,
+  goalBurstMetadata,
+} from './components/goal-burst/index.js';
 
 export {
   normalizeCustomWidget,

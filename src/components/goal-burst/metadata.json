@@ -1,0 +1,143 @@
+{
+  "id": "goal-burst",
+  "tag": "ui9000-goal-burst",
+  "title": "Goal Burst",
+  "description": "One goal drawn as its traffic (the Agent operations goal burst): its agents as a cloud in the middle, one dot each, with its progress ring; out of the cloud its calls thrown as spikes into one sector per resource group it draws on, the sector as wide as the group's share of the calls. A spike is as long as its call took to be answered on the time scale the floor carries (dotted rings at 0.1s, 0.5s, 1s and 2s), white where it got through, amber where it was throttled; a call held up runs out to the asset that stops it, in the colour of what holds the agents (orange blocked, red failed, purple awaiting), so they fan into it. An arc across each sector marks where 95% of its calls are answered; round it a band carries the group's assets, a tick each, with a ringed mark on each asset in trouble. A label beside the burst reads each group: calls a minute, 95% within, held up, and its assets in trouble. The line under the title reads the goal, with the spikes' colour key on the right; the map's corner reads the groups drawn of the fleet's, their assets and calls a minute. Takes the asset health overview's payload, plus a kind (or latency) per group and resourceGroupTotal. Drag to turn, scroll to zoom, shift-drag to pan, double-click to reset, click a sector to pick it out. WebGL agents with a canvas fallback; SVG instruments in Lit.",
+  "chartTypeKeys": ["goalBurst", "burst"],
+  "stack": "lit",
+  "lazyImport": "@ui9000/widgets/lazy/goal-burst",
+  "entry": "@ui9000/widgets/goal-burst",
+  "usageConditions": {
+    "host": "mcp-chat",
+    "notFor": "fusedash-editor",
+    "mapsExcluded": true
+  },
+  "allowedActions": ["hover", "zoom", "resize"],
+  "tier": "host",
+  "propsSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "chartType": { "enum": ["goalBurst", "burst"] },
+          "title": { "type": "string", "description": "Widget title. Defaults to name, then the goal's name." },
+          "name": { "type": "string" },
+          "goal": {
+            "type": "object",
+            "description": "Agent counts are drawn as given and never recomputed. Alias: agents.",
+            "properties": {
+              "id": { "type": "string" },
+              "code": { "type": "string", "description": "Shown under the title, e.g. G-007. Defaults to id." },
+              "name": { "type": "string" },
+              "total": { "type": ["number", "string"], "description": "Agents on the goal. Defaults to the states' sum." },
+              "working": { "type": ["number", "string"], "description": "Agents at work, not counting those over budget. Defaults to total less held and idle." },
+              "idle": { "type": ["number", "string"] },
+              "awaiting": { "type": ["number", "string"], "description": "Agents waiting on a person or a slow dependency." },
+              "blocked": { "type": ["number", "string"] },
+              "failed": { "type": ["number", "string"] },
+              "overBudget": { "type": ["number", "string"], "description": "Agents at work past 80% of their token budget." },
+              "progress": { "type": ["number", "string"], "description": "Progress to target: 0.41, 41 or \"41%\". Fills the ring round the cloud; omitted, the ring stays unlit." },
+              "burn": { "type": ["number", "string"], "description": "Burn against baseline: the cloud turns a little faster the hotter it burns, and its tip reads it." },
+              "status": { "type": "string", "description": "on track, at risk or blocked (and aliases). Omitted, no status is shown." }
+            },
+            "required": ["total"]
+          },
+          "agents": { "$ref": "#/properties/data/properties/goal" },
+          "categories": {
+            "type": "array",
+            "description": "One sector per resource group the goal draws on, up to 12, the busiest first. Alias: data (WidgetItem rows).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "category": { "type": "string" },
+                "kind": {
+                  "type": "string",
+                  "description": "camera, store, system, app, tool, model or human: how long its calls usually take to be answered (system 0.24s / 0.7s at the median and 95th percentile, model 0.9s / 2.1s, human minutes), and what its assets are called when unit is not sent. Alias: type. Read from the name when omitted."
+                },
+                "type": { "type": "string", "description": "Alias of kind." },
+                "latency": {
+                  "type": "object",
+                  "description": "How long its calls take to be answered, when it is not the kind's usual: seconds, or \"240ms\" / \"0.7s\" / \"3m\". One sent alone keeps the kind's spread to the other. Without either, the kind's usual is drawn, and the label and tip read it as about (~0.7s).",
+                  "properties": {
+                    "p50": { "type": ["number", "string"] },
+                    "p95": { "type": ["number", "string"] }
+                  }
+                },
+                "unit": { "type": "string", "description": "What its assets are called, plural: systems of record. Defaults by kind, else assets." },
+                "unitOne": { "type": "string", "description": "The same, singular." },
+                "total": { "type": ["number", "string"], "description": "Assets the goal works with here: one tick each on the band. Defaults to healthy + degraded + failing, else what is listed." },
+                "healthy": { "type": ["number", "string"] },
+                "degraded": { "type": ["number", "string"] },
+                "failing": { "type": ["number", "string"], "description": "Alias: failed_assets." },
+                "failed_assets": { "type": ["number", "string"] },
+                "items": { "type": "array", "items": { "type": ["string", "number"] }, "description": "Names of its assets, in band order: a longer tick each. Assets in trouble may be among them." },
+                "problems": {
+                  "type": "array",
+                  "description": "Assets in trouble: a ringed mark on the band where the calls held up on it fan in, and a line in the label.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "type": { "type": "string" },
+                      "why": { "type": "string" },
+                      "where": { "type": "string", "description": "Alias: loc." },
+                      "loc": { "type": "string" },
+                      "state": { "type": "string", "description": "blocked, failed, awaiting or slowed. Alias: sev. Free text maps: degrad / warn / slow / throttl / elevat → slowed; wait / pending → awaiting; impaired / error / down → failed." },
+                      "sev": { "type": "string" },
+                      "agents": { "type": ["number", "string"], "description": "Agents of the goal it holds: the calls held up run to it in proportion." },
+                      "since": { "type": ["number", "string"], "description": "Minutes since it began." },
+                      "rule": { "type": "string" }
+                    },
+                    "required": ["name"]
+                  }
+                },
+                "held": { "type": ["number", "string"], "description": "Agents held here, for the label's head. Defaults to its problems' agents." },
+                "hold": { "type": "string", "description": "awaiting, blocked or failed. Defaults to the state of the problems holding most agents." },
+                "calls": { "type": ["number", "string"], "description": "Calls a minute the goal makes to it: the sector's width and its share of the spikes. Alias: cpm." },
+                "traffic": {
+                  "type": "object",
+                  "description": "Shares of its calls (fractions or counts) by what becomes of them: flowing, throttled, awaiting, blocked, failed — the spikes' colours.",
+                  "properties": {
+                    "flowing": { "type": ["number", "string"] },
+                    "throttled": { "type": ["number", "string"] },
+                    "awaiting": { "type": ["number", "string"] },
+                    "blocked": { "type": ["number", "string"] },
+                    "failed": { "type": ["number", "string"] }
+                  }
+                },
+                "heldUp": { "type": ["number", "string"], "description": "Share of the calls that do not get through, when no traffic mix is sent." },
+                "rules": { "type": "array", "items": { "type": "string" } },
+                "bytes": { "type": ["number", "string"], "description": "Bytes a minute the goal's calls move, for the tip's Volume. Alias: bpm." },
+                "bpm": { "type": ["number", "string"] },
+                "sharedWith": { "type": ["number", "string"], "description": "How many other goals draw on the group, for the tip." }
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "description": "WidgetItem rows. Same item shape as categories; the goal's agent columns (agents, awaiting, blocked, failed) may sit on a row.",
+            "items": { "$ref": "#/properties/data/properties/categories/items" }
+          },
+          "resourceGroupTotal": {
+            "type": ["number", "string"],
+            "description": "Resource groups across the fleet, for the map's corner: 5 of 21 resource groups. Omitted, it counts only those drawn."
+          }
+        }
+      },
+      "chart-title": { "type": "string" },
+      "show-header": { "type": "boolean", "default": true },
+      "flat": { "type": "boolean", "default": false, "description": "Plan view: seen from straight overhead, without turning." },
+      "problems-only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Only problems stand out: agents at work and the calls that get through all but go out, and sectors where traffic flows step back."
+      },
+      "show-legend": { "type": "boolean", "default": true, "description": "Shows the legend button at the bottom left." },
+      "show-tooltip": { "type": "boolean", "default": true }
+    }
+  }
+}

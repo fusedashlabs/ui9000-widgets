@@ -1,6 +1,6 @@
 {
   "name": "@fusedashlabs/widgets",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Props-only chart web components for UI9000 / FuseDash MCP resources",
   "license": "Apache-2.0",
   "type": "module",
@@ -180,13 +180,29 @@
       "types": "./dist/components/goals-perimeter/index.d.ts",
       "import": "./dist/components/goals-perimeter/index.js"
     },
+    "./bipartite-graph": {
+      "types": "./dist/components/bipartite-graph/index.d.ts",
+      "import": "./dist/components/bipartite-graph/index.js"
+    },
     "./reasoning-orchestration-graph": {
       "types": "./dist/components/reasoning-orchestration-graph/index.d.ts",
       "import": "./dist/components/reasoning-orchestration-graph/index.js"
     },
+    "./goals-dependency-graph": {
+      "types": "./dist/components/goals-dependency-graph/index.d.ts",
+      "import": "./dist/components/goals-dependency-graph/index.js"
+    },
     "./asset-health-overview": {
       "types": "./dist/components/asset-health-overview/index.d.ts",
       "import": "./dist/components/asset-health-overview/index.js"
+    },
+    "./goals-insights": {
+      "types": "./dist/components/goals-insights/index.d.ts",
+      "import": "./dist/components/goals-insights/index.js"
+    },
+    "./goal-burst": {
+      "types": "./dist/components/goal-burst/index.d.ts",
+      "import": "./dist/components/goal-burst/index.js"
     },
     "./network-graph": {
       "types": "./dist/components/network-graph/index.d.ts",
@@ -360,13 +376,29 @@
       "types": "./dist/lazy/goals-perimeter.d.ts",
       "import": "./dist/lazy/goals-perimeter.js"
     },
+    "./lazy/bipartite-graph": {
+      "types": "./dist/lazy/bipartite-graph.d.ts",
+      "import": "./dist/lazy/bipartite-graph.js"
+    },
     "./lazy/reasoning-orchestration-graph": {
       "types": "./dist/lazy/reasoning-orchestration-graph.d.ts",
       "import": "./dist/lazy/reasoning-orchestration-graph.js"
     },
+    "./lazy/goals-dependency-graph": {
+      "types": "./dist/lazy/goals-dependency-graph.d.ts",
+      "import": "./dist/lazy/goals-dependency-graph.js"
+    },
     "./lazy/asset-health-overview": {
       "types": "./dist/lazy/asset-health-overview.d.ts",
       "import": "./dist/lazy/asset-health-overview.js"
+    },
+    "./lazy/goals-insights": {
+      "types": "./dist/lazy/goals-insights.d.ts",
+      "import": "./dist/lazy/goals-insights.js"
+    },
+    "./lazy/goal-burst": {
+      "types": "./dist/lazy/goal-burst.d.ts",
+      "import": "./dist/lazy/goal-burst.js"
     },
     "./lazy/custom-widget": {
       "types": "./dist/lazy/custom-widget.d.ts",

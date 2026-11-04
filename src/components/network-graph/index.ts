@@ -7,7 +7,6 @@ export {
   resizeNetworkGraph,
   stopNetworkGraph,
   updateNetworkGraphVisibility,
-  type NetworkGraphController,
   type RenderNetworkGraphOptions,
 } from './render/index.js';
 export {
@@ -31,13 +30,18 @@ export {
   rangeIndexOf,
   scaleLinkWidthByMax,
   visibleNodeIds,
+  type MetricPoint,
   type NetworkGraphInput,
   type NetworkGraphModel,
+  type NetworkLabels,
   type NetworkLegendRange,
   type NetworkLink,
   type NetworkLinkKind,
   type NetworkNode,
   type NetworkRange,
   type NetworkSizeKey,
+  type NetworkTopic,
+  type RankingEntry,
+  type TopicMetric,
 } from './lib/index.js';
 export { default as networkGraphMetadata } from './metadata.json';

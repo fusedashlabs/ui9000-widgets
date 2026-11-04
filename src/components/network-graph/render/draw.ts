@@ -7,959 +7,783 @@ import {
   forceSimulation,
   forceX,
   forceY,
+  type ForceLink,
   type Simulation,
   type SimulationLinkDatum,
-  type SimulationNodeDatum,
 } from 'd3-force';
 import { select, type Selection } from 'd3-selection';
-import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform } from 'd3-zoom';
+import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom';
 
-import type { WidgetTheme } from '../../../types/index.js';
-import { fdColors } from '../../../utils/fusedash-visual.js';
+import { createTextMeasure, type MeasureText } from '../../matrix-chart/lib/heatmap-layout.js';
+import { forceBoxCollide, forceDragPush, separateFootprints } from '../lib/box-collide.js';
+import { forceCircleBounds } from '../lib/circle-bounds.js';
+import { getCharge, getCircleFitTransform, getLayoutRadius, getLinkLength, getLinkPoint } from '../lib/fit.js';
 import {
+  ACTIVE_LINK_WIDTH,
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  CENTER_PULL,
+  CIRCLE_BOUNDS_STRENGTH,
+  COLLIDE_GAP,
+  FOCUS_HALO_RATIO,
   INITIAL_NODE_RADIUS_RATIO,
-  LABEL_ALWAYS_ABOVE,
-  LINK_COLORS,
-  LINK_LABEL_COLORS,
+  ISOLATED_NODE_PULL,
+  LAYOUT_EDGE_GAP,
+  LAYOUT_MAX_FILL,
+  LAYOUT_RADIUS_RATIO,
   LINK_WIDTH,
+  MAX_LINK_SHARE,
+  MAX_ZOOM,
+  MIN_LINK_SHARE,
+  MIN_ZOOM,
   NODE_BORDER_WIDTH,
-  NODE_COLORS,
-  NODE_LABEL_COLORS,
-  formatLinkValue,
-  formatNodeValue,
-  networkForces,
-  nodeColor,
-  nodeRadius,
-  scaleLinkWidthByMax,
-  shadowRadius,
+  NODE_DISPLAY_SCALE,
+  NODE_HALO_WIDTH,
+  NODE_LABEL_GAP,
+  NODE_RING_SHARE,
+  PLUS_BADGE_RADIUS,
+  RING_NODE_MAX_SIZE,
+  SELECTED_RING_WIDTH,
+  VIEWBOX_OFFSET_X,
+  VIEWBOX_OFFSET_Y,
+  WARM_UP_TICKS,
+} from '../lib/graph-constants.js';
+import { getNodeArea, getNodeFootprint, getNodeLabelLayout, type Footprint } from '../lib/label-layout.js';
+import type { SimNode } from '../lib/layout-types.js';
+import {
+  DEFAULT_NODE_COLOR,
+  graphThemeColors,
+  NODE_SIZES,
+  nodeRadius as bucketRadius,
+  type GraphThemeColors,
   type NetworkGraphModel,
   type NetworkLink,
   type NetworkNode,
 } from '../lib/index.js';
+import { drawGraphDecor } from './decor.js';
 
-/** Node label box (client `createNodeLabel`). */
-const LABEL_PADDING_TOP = 14;
-const LABEL_PADDING_BOTTOM = 4;
-const LABEL_PADDING_GAP = 5;
-const LABEL_TITLE_SIZE = 12;
-const LABEL_TITLE_LINE = 16;
-const LABEL_VALUE_SIZE = 10;
-const LABEL_VALUE_LINE = 14;
-/** Link pill (client `createLinkLabelBackground`). */
-const LINK_LABEL_SIZE = 8;
-const LINK_LABEL_PAD_X = 2;
-const LINK_LABEL_PAD_Y = 1;
-const LINK_LABEL_OFFSET = 10;
-/** Invisible grab ring around each node (client `.node-drag-area`). */
-const DRAG_AREA_PAD = 10;
-/** Pointer travel that turns a click into a drag (client). */
-const DRAG_SLOP = 5;
-const ZOOM_EXTENT: [number, number] = [0.3, 4];
-/**
- * The client animates the layout in from the canvas centre. A chat card is read
- * at a glance, so the simulation is stepped to rest before the first paint and
- * then left idle — dragging a node restarts it, exactly as in the client.
- */
-const PRESETTLE_TICKS = 250;
-/** Padding kept around the graph when it is fitted to the container. */
-const FIT_PADDING = 32;
-/** Fitting may enlarge a sparse graph, but never past readable label sizes. */
-const FIT_SCALE_EXTENT: [number, number] = [0.4, 1.25];
-/** Even seed ring so the first frame is reproducible across renders. */
+type SimLink = SimulationLinkDatum<SimNode> & NetworkLink;
+type NodeGroup = Selection<SVGGElement, SimNode, null, undefined>;
+
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
-
-type SimNode = NetworkNode & SimulationNodeDatum;
-type SimLink = Omit<NetworkLink, 'source' | 'target'> &
-  SimulationLinkDatum<SimNode> & { source: string | SimNode; target: string | SimNode };
+const DRAG_SLOP = 5;
 
 export interface RenderNetworkGraphOptions {
   model: NetworkGraphModel;
-  /** `null` shows every node; otherwise only these ids stay visible. */
+  /** Nodes shown by the legend window and the timeline; null shows them all. */
   visibleIds: Set<string> | null;
-  width: number;
-  height: number;
-  theme: WidgetTheme;
+  /** Links shown by the timeline; null shows every link between shown nodes. */
+  visibleLinkIds?: Set<string> | null;
   themeMode?: 'light' | 'dark';
-  /** Selection carried across a redraw (legend filtering keeps it). */
+  fontFamily?: string;
   activeNodeId?: string | null;
-  /** Fired when a node is clicked; `null` when the same node is clicked again. */
+  /** A plain wheel zooms; otherwise it needs Ctrl / Cmd and a plain wheel scrolls the page. */
+  wheelZoom?: boolean;
+  /** Nodes moved on screen (a layout step, a drag, a zoom or a pan). */
+  onMove?: () => void;
+  measure?: MeasureText;
   onSelect?: (id: string | null) => void;
-  /** Drag-to-pan plus ctrl/cmd + wheel zoom. */
-  enableZoom?: boolean;
-}
-
-interface NodeParts {
-  datum: SimNode;
-  group: SVGGElement;
-  background: SVGCircleElement;
-  /** Invisible ring that carries the pointer handlers. */
-  grab: SVGCircleElement | null;
-  label: SVGGElement | null;
-  labelBg: SVGRectElement | null;
-  labelTitle: SVGTextElement | null;
-  labelValue: SVGTextElement | null;
-  radius: number;
-  hasImage: boolean;
-  alwaysLabelled: boolean;
-}
-
-/** How far a node's always-on label reaches past the circle itself. */
-interface LabelExtent {
-  right: number;
-  half: number;
-}
-
-interface LinkParts {
-  datum: SimLink;
-  line: SVGLineElement;
-  label: SVGGElement | null;
-  visible: boolean;
-}
-
-/**
- * Live handle on a mounted graph. The element keeps this so the legend filter
- * and container resizes can update the plot in place instead of rebuilding it.
- */
-export interface NetworkGraphController {
-  /**
-   * Legend filter — hides nodes/links in place. Isolated visible nodes stay
-   * pinned in their zone; ghost links to hidden nodes leave the force.
-   */
-  setVisibleIds(visibleIds: Set<string> | null): void;
-  /** Container resize — re-frames the settled layout, runs no new force ticks. */
-  resize(width: number, height: number): void;
+  /** Click on the "+" of the selected node. */
+  onOpenFocus?: (id: string) => void;
 }
 
 interface GraphState {
-  simulation: Simulation<SimNode, SimLink> | null;
-  positions: Map<string, { x: number; y: number }>;
-  controller: NetworkGraphController | null;
+  simulation: Simulation<SimNode, SimLink>;
+  svg: SVGSVGElement;
+  zoomBehavior: ZoomBehavior<SVGSVGElement, unknown>;
+  nodeElements: Map<string, SVGGElement>;
+  refresh: () => void;
+  setActive: (id: string | null) => void;
+  setColors: (colors: GraphThemeColors, nodes: NetworkNode[]) => void;
+  setVisible: (ids: Set<string> | null, linkIds?: Set<string> | null) => void;
+  setWheelZoom: (on: boolean) => void;
+  dispose: () => void;
 }
 
 const GRAPHS = new WeakMap<HTMLElement, GraphState>();
+let nextDecorId = 0;
 
-let instanceCount = 0;
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
+/** A colour made `steps` darker, the way d3's `darker` does. */
+function darken(color: string, steps: number): string {
+  const hex = /^#([0-9a-f]{6})$/i.exec(color)?.[1];
+  if (!steps || !hex) return color;
+  const factor = 0.7 ** steps;
+  const channel = (index: number): string =>
+    Math.round(parseInt(hex.slice(index, index + 2), 16) * factor)
+      .toString(16)
+      .padStart(2, '0');
+  return `#${channel(0)}${channel(2)}${channel(4)}`;
 }
 
-function endpointId(end: string | SimNode): string {
-  return typeof end === 'string' ? end : end.id;
-}
+const isRingNode = (radius: number): boolean => radius <= RING_NODE_MAX_SIZE;
 
-/** `getBBox` is unavailable outside a real layout engine (jsdom, detached DOM). */
-function measure(el: SVGGraphicsElement | null): DOMRect | null {
-  if (!el || typeof el.getBBox !== 'function') return null;
-  try {
-    return el.getBBox();
-  } catch {
-    return null;
+function createNodeElements(group: NodeGroup, node: SimNode, radius: number): void {
+  const visual = group.append('g').attr('class', 'node-visual').style('pointer-events', 'none');
+  visual
+    .append('circle')
+    .attr('class', 'node-focus-halo')
+    .attr('r', Math.max(radius * FOCUS_HALO_RATIO, 40))
+    .style('opacity', 0);
+  visual.append('circle').attr('class', 'node-halo').attr('r', radius + NODE_HALO_WIDTH);
+
+  const ring = isRingNode(radius);
+  visual
+    .append('circle')
+    .attr('class', 'node-background')
+    .attr('data-ring', ring ? 'true' : 'false')
+    .attr('r', ring ? radius * (1 - NODE_RING_SHARE / 2) : radius)
+    .attr('stroke-width', ring ? radius * NODE_RING_SHARE : 0);
+
+  if (node.img) {
+    visual
+      .append('image')
+      .attr('class', 'node-image')
+      .attr('href', node.img)
+      .attr('preserveAspectRatio', 'xMidYMid slice')
+      .attr('width', radius * 2)
+      .attr('height', radius * 2)
+      .attr('x', -radius)
+      .attr('y', -radius)
+      .attr('clip-path', `circle(${radius}px at ${radius}px ${radius}px)`);
   }
+
+  visual
+    .append('circle')
+    .attr('class', 'node-selected-ring')
+    .attr('r', radius + NODE_HALO_WIDTH)
+    .attr('fill', 'none')
+    .attr('stroke-width', SELECTED_RING_WIDTH)
+    .style('opacity', 0);
+
+  const offset = (radius + NODE_HALO_WIDTH) * Math.SQRT1_2;
+  const plus = visual
+    .append('g')
+    .attr('class', 'node-plus')
+    .attr('transform', `translate(${offset}, ${-offset})`)
+    .style('opacity', 0);
+  plus.append('circle').attr('class', 'node-plus-badge').attr('r', PLUS_BADGE_RADIUS);
+  plus
+    .append('path')
+    .attr('d', 'M-5 0 H5 M0 -5 V5')
+    .attr('stroke', '#FFFFFF')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-linecap', 'round');
 }
 
-/**
- * Client `getLinkPoint` — pull an endpoint out to the rim of its node so the
- * stroke starts where the circle ends.
- */
-function rimPoint(
-  x: number,
-  y: number,
-  towardX: number,
-  towardY: number,
+/** Node name under the circle, on up to two lines. */
+function createNodeLabel(
+  group: NodeGroup,
+  node: SimNode,
   radius: number,
-): { x: number; y: number } {
-  const dx = towardX - x;
-  const dy = towardY - y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  if (distance === 0) return { x, y };
-  return { x: x + (dx / distance) * radius, y: y + (dy / distance) * radius };
-}
-
-/** Stop the simulation attached to `container`, keeping its layout for the next draw. */
-export function stopNetworkGraph(container: HTMLElement): void {
-  const state = GRAPHS.get(container);
-  if (!state) return;
-  state.controller = null;
-  if (!state.simulation) return;
-  for (const node of state.simulation.nodes()) {
-    if (typeof node.x === 'number' && typeof node.y === 'number') {
-      state.positions.set(node.id, { x: node.x, y: node.y });
-    }
+  measure: MeasureText,
+): void {
+  const label = String(node.label ?? node.id);
+  const { fontSize, lineHeight, lines } = getNodeLabelLayout(label, radius, measure);
+  const labelGroup = group
+    .select<SVGGElement>('.node-visual')
+    .append('g')
+    .attr('class', 'node-label')
+    .attr('transform', `translate(0, ${radius + NODE_LABEL_GAP})`);
+  // A cut name shows whole on hover.
+  if (lines.join(' ') !== label.replace(/\s+/g, ' ').trim()) {
+    labelGroup.append('title').text(label);
   }
-  state.simulation.stop();
-  state.simulation = null;
+  const text = labelGroup
+    .append('text')
+    .attr('class', 'node-label-title')
+    .attr('font-size', fontSize)
+    .attr('text-anchor', 'middle');
+  lines.forEach((line, index) => {
+    text
+      .append('tspan')
+      .attr('x', 0)
+      .attr('y', index * lineHeight)
+      .attr('dominant-baseline', 'hanging')
+      .text(line);
+  });
 }
 
-/**
- * Legend filter. Returns `false` when no graph is mounted so the caller can fall
- * back to a full render; on success nothing is rebuilt and the camera holds.
- */
+interface NodeVisualState {
+  isActive: boolean;
+  isHovered: boolean;
+  isNeighbor: boolean;
+  hasActive: boolean;
+}
+
+/** Colours and visibility of every layer of a node for its current state. */
+function applyNodeState(
+  group: NodeGroup,
+  node: SimNode,
+  radius: number,
+  state: NodeVisualState,
+  colors: GraphThemeColors,
+): void {
+  const { isActive, isHovered, isNeighbor, hasActive } = state;
+  const ring = isRingNode(radius);
+  const color = node.color ?? DEFAULT_NODE_COLOR;
+  const related = isActive || isNeighbor;
+
+  group
+    .select('.node-visual')
+    .style('opacity', hasActive && !related && !isHovered ? colors.dimmedOpacity : 1);
+  group.select('.node-halo').attr('fill', colors.nodeHalo);
+
+  let strength = ring ? colors.smallNodeRestOpacity : colors.nodeRestOpacity;
+  if (related || isHovered) strength = 1;
+  const background = group
+    .select('.node-background')
+    .attr('fill', ring ? colors.ringFill : color)
+    .attr('fill-opacity', ring ? 1 : strength)
+    .attr('stroke', darken(color, colors.nodeEdgeDarker))
+    .attr('stroke-opacity', strength)
+    .style('opacity', node.img ? 0 : 1);
+  // A ring's width comes with its size.
+  if (!ring) background.attr('stroke-width', colors.nodeEdgeWidth);
+
+  group
+    .select('.node-focus-halo')
+    .attr('fill', colors.focusHalo)
+    .style('opacity', isActive ? 1 : 0);
+  group
+    .select('.node-selected-ring')
+    .attr('stroke', colors.selectedRing)
+    .attr('stroke-opacity', isActive ? 1 : 0.6)
+    .style('opacity', isActive || isHovered ? 1 : 0);
+  group.select('.node-plus-badge').attr('fill', colors.accent);
+  group
+    .select('.node-plus')
+    .style('opacity', isActive ? 1 : 0)
+    .style('pointer-events', isActive ? 'all' : 'none');
+
+  let labelColor = colors.labelMuted;
+  if (radius >= NODE_SIZES.lg * 1.5) labelColor = colors.label;
+  else if (radius > RING_NODE_MAX_SIZE) labelColor = colors.labelMid;
+  if (isNeighbor || isHovered) labelColor = colors.labelStrong;
+  if (isActive) labelColor = colors.labelActive;
+  group
+    .select('.node-label-title')
+    .attr('fill', labelColor)
+    .attr('font-weight', isActive ? 600 : 400);
+}
+
+const endpoint = (end: string | SimNode): string => (typeof end === 'object' ? end.id : end);
+
+
+export function stopNetworkGraph(container: HTMLElement): void {
+  GRAPHS.get(container)?.dispose();
+  GRAPHS.delete(container);
+}
+
+/** Applies the legend window and the timeline in place: no node moves unless the laid-out graph changes. */
 export function updateNetworkGraphVisibility(
   container: HTMLElement,
   visibleIds: Set<string> | null,
+  visibleLinkIds?: Set<string> | null,
 ): boolean {
-  const controller = GRAPHS.get(container)?.controller;
-  if (!controller) return false;
-  controller.setVisibleIds(visibleIds);
+  const state = GRAPHS.get(container);
+  if (!state) return false;
+  state.setVisible(visibleIds, visibleLinkIds);
   return true;
 }
 
-/**
- * Container resize. Returns `false` when no graph is mounted; otherwise the
- * settled layout is re-framed without re-running the force simulation.
- */
-export function resizeNetworkGraph(
+/** The SVG scales with its view box, so a resize never touches the layout. */
+export function resizeNetworkGraph(container: HTMLElement, width: number, height: number): boolean {
+  return GRAPHS.has(container) && width > 0 && height > 0;
+}
+
+/** Selection made outside the graph (heatmap row, connections panel). */
+export function setNetworkGraphActive(container: HTMLElement, id: string | null): boolean {
+  const state = GRAPHS.get(container);
+  if (!state) return false;
+  state.setActive(id);
+  return true;
+}
+
+/** Theme or page style changed: repaints in place. `nodes` carry the new node colours. */
+export function setNetworkGraphColors(
   container: HTMLElement,
-  width: number,
-  height: number,
+  mode: 'light' | 'dark',
+  nodes: NetworkNode[],
 ): boolean {
-  const controller = GRAPHS.get(container)?.controller;
-  if (!controller || width <= 0 || height <= 0) return false;
-  controller.resize(width, height);
+  const state = GRAPHS.get(container);
+  if (!state) return false;
+  state.setColors(graphThemeColors(mode), nodes);
+  return true;
+}
+
+/** Turns plain-wheel zoom on or off without drawing the graph again. */
+export function setNetworkGraphWheelZoom(container: HTMLElement, on: boolean): boolean {
+  const state = GRAPHS.get(container);
+  if (!state) return false;
+  state.setWheelZoom(on);
   return true;
 }
 
 /**
- * FuseDash NetworkGraph — a d3-force layout of image/colour nodes joined by
- * value-weighted links. The client lays out on a fixed 2000x1375 canvas and
- * zooms into it; chat gives the chart its container instead, so the simulation
- * runs in container coordinates with the spatial forces scaled to match.
+ * Which pointer and wheel events pan or zoom the canvas. A plain wheel
+ * scrolls the page unless `wheelZoom`; only the main button pans (ctrl+click
+ * is a right click on macOS); a press on a node drags the node instead.
+ */
+export function allowZoomEvent(
+  event: { type: string; ctrlKey?: boolean; metaKey?: boolean; button?: number; target?: EventTarget | null },
+  wheelZoom: boolean,
+): boolean {
+  if (event.type === 'wheel') return wheelZoom || !!event.ctrlKey || !!event.metaKey;
+  if ((event.button ?? 0) !== 0 || event.ctrlKey) return false;
+  return !(event.target as Element | null)?.closest?.('g.node');
+}
+
+/** Zooms around the centre of the canvas; `factor` > 1 zooms in. */
+export function zoomNetworkGraph(container: HTMLElement, factor: number): void {
+  const state = GRAPHS.get(container);
+  if (state) select(state.svg).call(state.zoomBehavior.scaleBy, factor);
+}
+
+/** Circle of a node, used to anchor overlays to it. */
+export function networkNodeElement(container: HTMLElement, id: string): SVGCircleElement | null {
+  return GRAPHS.get(container)?.nodeElements.get(id)?.querySelector('.node-background') ?? null;
+}
+
+/**
+ * Network design: the graph fills a dashed circle on a fixed canvas that the
+ * SVG view box scales to the widget. Laid out before the first paint, so it
+ * opens settled; dragging, the legend window and the theme keep the layout.
  */
 export function renderNetworkGraph(
   container: HTMLElement,
   options: RenderNetworkGraphOptions,
-): NetworkGraphController | null {
-  const { model, theme, onSelect, themeMode = 'light' } = options;
-  // Mutated in place by the controller — a filter or a resize must not rebuild.
-  let visibleIds = options.visibleIds;
-  let width = options.width;
-  let height = options.height;
+): void {
+  const { model, visibleIds, themeMode = 'light', fontFamily, onSelect, onOpenFocus } = options;
+  const { visibleLinkIds = null, onMove } = options;
+  let wheelZoom = options.wheelZoom ?? false;
 
   stopNetworkGraph(container);
   container.replaceChildren();
-  if (!model.nodes.length || width <= 0 || height <= 0) return null;
+  if (!model.nodes.length) return;
 
-  const positions = GRAPHS.get(container)?.positions ?? new Map();
-  const instance = ++instanceCount;
-  const blurId = `ui9000-ng-blur-${instance}`;
-  const shadowId = `ui9000-ng-shadow-${instance}`;
+  const width = CANVAS_WIDTH;
+  const height = CANVAS_HEIGHT;
+  const centerX = width / 2;
+  const centerY = height / 2;
+  let colors = graphThemeColors(themeMode);
+  let activeId = options.activeNodeId ?? null;
+  let hoveredId: string | null = null;
+  let dragging = false;
+  let moved = false;
+  let dragStart: { x: number; y: number } | null = null;
 
-  const radiusById = new Map(
-    model.nodes.map((node) => [node.id, nodeRadius(node, model.breakpoints)]),
-  );
-  const maxNodeRadius = Math.max(...radiusById.values());
-
-  const simNodes: SimNode[] = model.nodes.map((node, index) => {
-    const seed = positions.get(node.id) ?? seedPosition(index, model.nodes.length, width, height);
-    return { ...node, x: seed.x, y: seed.y };
-  });
-  const nodeById = new Map(simNodes.map((node) => [node.id, node]));
-  const simLinks: SimLink[] = model.links.map((link) => ({ ...link }));
-
-  const isNodeVisible = (id: string): boolean => !visibleIds || visibleIds.has(id);
-  const isLinkVisible = (link: SimLink): boolean =>
-    isNodeVisible(endpointId(link.source)) && isNodeVisible(endpointId(link.target));
-
-  const neighbours = new Map<string, Set<string>>();
-  for (const link of simLinks) {
-    const source = endpointId(link.source);
-    const target = endpointId(link.target);
-    if (!neighbours.has(source)) neighbours.set(source, new Set());
-    if (!neighbours.has(target)) neighbours.set(target, new Set());
-    neighbours.get(source)!.add(target);
-    neighbours.get(target)!.add(source);
-  }
-
-  let activeNodeId = options.activeNodeId ?? null;
-  let hoveredNodeId: string | null = null;
-
-  const svg = select(container)
+  const svgSelection = select(container)
     .append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('role', 'img')
+    .attr('aria-label', 'Network graph')
+    .attr('viewBox', `${VIEWBOX_OFFSET_X} ${VIEWBOX_OFFSET_Y} ${width} ${height}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
-    .style('display', 'block')
-    .style('font-family', theme.fontFamily);
+    .style('display', 'block');
+  const svgNode = svgSelection.node() as SVGSVGElement;
+  if (fontFamily) svgSelection.style('font-family', fontFamily);
 
-  appendDefs(svg, blurId, shadowId);
-
-  const root = svg.append('g').attr('class', 'graph-root');
+  const measure = options.measure ?? createTextMeasure(fontFamily || 'sans-serif');
+  const root = svgSelection.append('g').attr('class', 'graph-root');
+  const decor = root.append('g').attr('class', 'graph-decor').style('pointer-events', 'none');
   const linkLayer = root.append('g').attr('class', 'link-layer');
-  const linkLabelLayer = root.append('g').attr('class', 'link-label-layer');
   const nodeLayer = root.append('g').attr('class', 'node-layer');
 
-  const links = buildLinks(linkLayer, linkLabelLayer, simLinks);
-  const nodes = buildNodes({
-    layer: nodeLayer,
-    simNodes,
-    model,
-    radiusById,
-    blurId,
-    shadowId,
-    themeMode,
+  const radiusOf = (node: SimNode): number =>
+    bucketRadius(node, model.breakpoints) * NODE_DISPLAY_SCALE;
+
+  const maxStart = Math.min(width, height) * INITIAL_NODE_RADIUS_RATIO;
+  const nodes: SimNode[] = model.nodes.map((node, index) => {
+    const angle = index * GOLDEN_ANGLE;
+    const distance = maxStart * Math.sqrt((index + 0.5) / model.nodes.length);
+    return {
+      ...node,
+      x: centerX + Math.cos(angle) * distance,
+      y: centerY + Math.sin(angle) * distance,
+    };
   });
+  const links: SimLink[] = model.links.map((link) => ({ ...link }));
+  const byId = new Map(nodes.map((node) => [node.id, node]));
 
-  // Labels hang off the right of their node and are taller than a small circle,
-  // so the camera has to allow for them or a narrow frame clips them.
-  const labelExtent = new Map<string, LabelExtent>();
-  for (const part of nodes) {
-    if (!part.alwaysLabelled || !part.labelBg) continue;
-    const right = Number(part.labelBg.getAttribute('width')) || 0;
-    const half = (Number(part.labelBg.getAttribute('height')) || 0) / 2;
-    if (right || half) labelExtent.set(part.datum.id, { right, half });
-  }
-
-  const forces = networkForces(width, height, maxNodeRadius);
-  // Centring forces are kept by reference: a resize retargets them instead of
-  // rebuilding the simulation.
-  const centerForce = forceCenter<SimNode>(width / 2, height / 2).strength(0.1);
-  const xForce = forceX<SimNode>(width / 2).strength(0.05);
-  const yForce = forceY<SimNode>(height / 2).strength(0.05);
-  // The first settle uses every link so each node lands in its network zone.
-  // After a legend filter, only visible–visible edges stay in the force.
-  const linkForce = forceLink<SimNode, SimLink>(simLinks)
-    .id((d) => d.id)
-    .distance(forces.linkDistance)
-    .strength(0.5);
-  const simulation = forceSimulation<SimNode>(simNodes)
-    .stop()
-    .force('link', linkForce)
-    .force(
-      'charge',
-      forceManyBody<SimNode>().strength((d) => (isNodeVisible(d.id) ? forces.charge : 0)),
-    )
-    .force('center', centerForce)
-    .force(
-      'collision',
-      forceCollide<SimNode>().radius((d) => (isNodeVisible(d.id) ? forces.collide : 0)),
-    )
-    .force('x', xForce)
-    .force('y', yForce);
-
-  /**
-   * A node with no remaining visible edge stays where it is. Hidden nodes are
-   * pinned too so they cannot pull or shove the rest of the graph.
-   */
-  function pinIndependentNodes(): void {
-    const linked = new Set<string>();
-    for (const link of simLinks) {
-      if (!isLinkVisible(link)) continue;
-      linked.add(endpointId(link.source));
-      linked.add(endpointId(link.target));
+  const neighborsOf = (id: string | null): Set<string> => {
+    const neighbors = new Set<string>();
+    if (!id) return neighbors;
+    for (const link of links) {
+      const source = endpoint(link.source as string | SimNode);
+      const target = endpoint(link.target as string | SimNode);
+      if (source === id) neighbors.add(target);
+      if (target === id) neighbors.add(source);
     }
-    for (const node of simNodes) {
-      if (isNodeVisible(node.id) && linked.has(node.id)) {
-        node.fx = null;
-        node.fy = null;
-      } else {
-        node.fx = node.x;
-        node.fy = node.y;
-      }
-    }
-  }
-
-  GRAPHS.set(container, { simulation, positions, controller: null });
-
-  const isConnected = (id: string): boolean =>
-    !!activeNodeId && activeNodeId !== id && !!neighbours.get(activeNodeId)?.has(id);
-
-  const isLinkActive = (link: SimLink): boolean =>
-    !!activeNodeId &&
-    (endpointId(link.source) === activeNodeId || endpointId(link.target) === activeNodeId);
-
-  /** Geometry — runs on every simulation tick. */
-  function updateFrame(): void {
-    for (const node of simNodes) {
-      const radius = radiusById.get(node.id) ?? 0;
-      node.x = clamp(node.x ?? width / 2, radius, width - radius);
-      node.y = clamp(node.y ?? height / 2, radius, height - radius);
-    }
-
-    for (const part of links) {
-      const source = nodeById.get(endpointId(part.datum.source));
-      const target = nodeById.get(endpointId(part.datum.target));
-      if (!source || !target) continue;
-
-      const sx = source.x ?? 0;
-      const sy = source.y ?? 0;
-      const tx = target.x ?? 0;
-      const ty = target.y ?? 0;
-      const from = rimPoint(sx, sy, tx, ty, radiusById.get(source.id) ?? 0);
-      const to = rimPoint(tx, ty, sx, sy, radiusById.get(target.id) ?? 0);
-
-      part.line.setAttribute('x1', String(from.x));
-      part.line.setAttribute('y1', String(from.y));
-      part.line.setAttribute('x2', String(to.x));
-      part.line.setAttribute('y2', String(to.y));
-
-      if (!part.label) continue;
-      const show = part.visible && isLinkActive(part.datum);
-      part.label.style.opacity = show ? '1' : '0';
-      if (!show) continue;
-
-      const angle = (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI;
-      const upright = angle > 90 || angle < -90 ? angle + 180 : angle;
-      const perpendicular = ((angle - 90) * Math.PI) / 180;
-      const cx = (from.x + to.x) / 2 + Math.cos(perpendicular) * LINK_LABEL_OFFSET;
-      const cy = (from.y + to.y) / 2 + Math.sin(perpendicular) * LINK_LABEL_OFFSET;
-      part.label.setAttribute('transform', `translate(${cx}, ${cy}) rotate(${upright})`);
-    }
-
-    for (const part of nodes) {
-      part.group.setAttribute(
-        'transform',
-        `translate(${part.datum.x ?? 0}, ${part.datum.y ?? 0})`,
-      );
-    }
-  }
-
-  /** Selection / hover styling — runs only when the interaction state changes. */
-  function applyState(): void {
-    for (const part of nodes) {
-      const id = part.datum.id;
-      const active = activeNodeId === id;
-      const hovered = hoveredNodeId === id;
-      const connected = isConnected(id);
-
-      part.background.setAttribute(
-        'fill',
-        active && !part.hasImage ? NODE_COLORS.activeFill : nodeColor(part.datum, themeMode),
-      );
-
-      if (!part.label) continue;
-      const show = part.alwaysLabelled || active || hovered || connected;
-      part.label.style.opacity = show ? '1' : '0';
-
-      if (part.labelBg) {
-        part.labelBg.setAttribute(
-          'fill',
-          active
-            ? NODE_LABEL_COLORS.backgroundActive
-            : hovered
-              ? fdColors(themeMode).networkLabelHover
-              : NODE_LABEL_COLORS.background,
-        );
-      }
-      const textFill = active ? NODE_LABEL_COLORS.textActive : fdColors(themeMode).networkLabelText;
-      part.labelTitle?.setAttribute('fill', textFill);
-      part.labelTitle?.setAttribute('font-weight', active || connected ? '600' : '400');
-      part.labelValue?.setAttribute('fill', textFill);
-    }
-
-    for (const part of links) {
-      part.line.setAttribute(
-        'stroke-width',
-        String(
-          isLinkActive(part.datum)
-            ? scaleLinkWidthByMax(part.datum.value, model.maxLinkValue)
-            : LINK_WIDTH,
-        ),
-      );
-    }
-  }
-
-  function setActive(id: string | null): void {
-    activeNodeId = id;
-    applyState();
-    updateFrame();
-    onSelect?.(id);
-  }
-
-  /**
-   * Legend filter. Hidden nodes and their edges leave the picture and the
-   * force; remaining nodes keep their zone — isolated ones are pinned so the
-   * centre forces cannot pile them together.
-   */
-  function applyVisibility(): void {
-    for (const part of nodes) {
-      const visible = isNodeVisible(part.datum.id);
-      part.group.style.opacity = visible ? '1' : '0';
-      part.group.style.pointerEvents = visible ? 'all' : 'none';
-      if (part.grab) part.grab.style.pointerEvents = visible ? 'all' : 'none';
-    }
-    for (const part of links) {
-      part.visible = isLinkVisible(part.datum);
-      part.line.style.opacity = part.visible ? '1' : '0';
-    }
-    linkForce.links(simLinks.filter((link) => isLinkVisible(link)));
-    pinIndependentNodes();
-    // A node filtered out of view must not stay selected or hovered.
-    if (hoveredNodeId && !isNodeVisible(hoveredNodeId)) hoveredNodeId = null;
-    if (activeNodeId && !isNodeVisible(activeNodeId)) setActive(null);
-    else {
-      applyState();
-      updateFrame();
-    }
-  }
-
-  /** Centre the visible nodes in the current frame. */
-  function applyFit(): void {
-    const fitted = fitTransform(
-      simNodes.filter((node) => isNodeVisible(node.id)),
-      radiusById,
-      width,
-      height,
-      labelExtent,
-    );
-    if (!fitted) return;
-    if (zoomBehaviour) svg.call(zoomBehaviour.transform, fitted);
-    else root.attr('transform', fitted.toString());
-  }
-
-  /**
-   * Container resize. The settled layout is still good, so only the viewBox, the
-   * clamp bounds, the centring force targets and the camera move — re-running
-   * PRESETTLE_TICKS here would reshuffle the graph under the reader.
-   */
-  function resize(nextWidth: number, nextHeight: number): void {
-    width = nextWidth;
-    height = nextHeight;
-    svg.attr('viewBox', `0 0 ${width} ${height}`);
-    centerForce.x(width / 2).y(height / 2);
-    xForce.x(width / 2);
-    yForce.y(height / 2);
-    updateFrame();
-    applyFit();
-  }
-
-  attachNodeInteractions({
-    nodes,
-    simulation,
-    getBounds: () => ({ width, height }),
-    radiusById,
-    onHover: (id) => {
-      hoveredNodeId = id;
-      applyState();
-    },
-    onClick: (id) => setActive(activeNodeId === id ? null : id),
-    onDragEnd: pinIndependentNodes,
-  });
-
-  let zoomBehaviour: ZoomBehavior<SVGSVGElement, unknown> | null = null;
-
-  if (options.enableZoom !== false) {
-    zoomBehaviour = zoom<SVGSVGElement, unknown>()
-      .scaleExtent(ZOOM_EXTENT)
-      .filter((event: Event & { ctrlKey?: boolean; metaKey?: boolean; button?: number }) => {
-        // Chat scrolls the transcript — plain wheel must pass through.
-        if (event.type === 'wheel') return !!(event.ctrlKey || event.metaKey);
-        if (event.button != null && event.button !== 0) return false;
-        return !(event.target as Element | null)?.closest?.('g.node');
-      })
-      .on('zoom', (event: { transform: ZoomTransform }) => {
-        root.attr('transform', event.transform.toString());
-      });
-    svg.call(zoomBehaviour);
-  }
-
-  // The only place the layout is settled: first mount and data changes.
-  simulation.tick(PRESETTLE_TICKS);
-  applyVisibility();
-  applyFit();
-  simulation.on('tick', updateFrame);
-
-  const controller: NetworkGraphController = {
-    setVisibleIds(next) {
-      visibleIds = next;
-      applyVisibility();
-    },
-    resize,
+    return neighbors;
   };
-  GRAPHS.set(container, { simulation, positions, controller });
-  return controller;
-}
 
-/**
- * Centre the settled layout in the container. The client zooms into a fixed
- * canvas; here the canvas *is* the container, so a graph that condenses into a
- * corner is nudged back into view. Filtered-out nodes stay in the simulation to
- * hold the layout steady, so only the visible ones frame the camera.
- */
-function fitTransform(
-  nodes: SimNode[],
-  radiusById: Map<string, number>,
-  width: number,
-  height: number,
-  labelExtent: Map<string, LabelExtent>,
-): ZoomTransform | null {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-
-  for (const node of nodes) {
-    if (typeof node.x !== 'number' || typeof node.y !== 'number') continue;
-    const radius = radiusById.get(node.id) ?? 0;
-    const label = labelExtent.get(node.id);
-    const vertical = Math.max(radius, label?.half ?? 0);
-    minX = Math.min(minX, node.x - radius);
-    minY = Math.min(minY, node.y - vertical);
-    maxX = Math.max(maxX, node.x + radius + (label?.right ?? 0));
-    maxY = Math.max(maxY, node.y + vertical);
-  }
-  if (!Number.isFinite(minX)) return null;
-
-  const spanX = Math.max(maxX - minX, 1);
-  const spanY = Math.max(maxY - minY, 1);
-  const scale = clamp(
-    Math.min((width - FIT_PADDING * 2) / spanX, (height - FIT_PADDING * 2) / spanY),
-    FIT_SCALE_EXTENT[0],
-    FIT_SCALE_EXTENT[1],
-  );
-
-  return zoomIdentity
-    .translate(width / 2 - ((minX + maxX) / 2) * scale, height / 2 - ((minY + maxY) / 2) * scale)
-    .scale(scale);
-}
-
-function seedPosition(
-  index: number,
-  count: number,
-  width: number,
-  height: number,
-): { x: number; y: number } {
-  const maxRadius = Math.min(width, height) * INITIAL_NODE_RADIUS_RATIO;
-  const radius = maxRadius * Math.sqrt(count <= 1 ? 0 : index / (count - 1));
-  const angle = index * GOLDEN_ANGLE;
-  return {
-    x: width / 2 + Math.cos(angle) * radius,
-    y: height / 2 + Math.sin(angle) * radius,
-  };
-}
-
-function appendDefs(
-  svg: Selection<SVGSVGElement, unknown, null, undefined>,
-  blurId: string,
-  shadowId: string,
-): void {
-  const defs = svg.append('defs');
-  defs
-    .append('filter')
-    .attr('id', blurId)
-    .attr('x', '-50%')
-    .attr('y', '-50%')
-    .attr('width', '200%')
-    .attr('height', '200%')
-    .append('feGaussianBlur')
-    .attr('stdDeviation', 12);
-
-  const radial = defs.append('radialGradient').attr('id', shadowId);
-  radial
-    .append('stop')
-    .attr('offset', '0%')
-    .attr('stop-color', NODE_COLORS.shadowInner)
-    .attr('stop-opacity', 1);
-  radial
-    .append('stop')
-    .attr('offset', '100%')
-    .attr('stop-color', NODE_COLORS.shadowOuter)
-    .attr('stop-opacity', 0.12);
-}
-
-/** Every link is built once; the legend filter only toggles what is painted. */
-function buildLinks(
-  linkLayer: Selection<SVGGElement, unknown, null, undefined>,
-  labelLayer: Selection<SVGGElement, unknown, null, undefined>,
-  simLinks: SimLink[],
-): LinkParts[] {
-  return simLinks.map((datum) => {
+  const lineElements = new Map<string, SVGLineElement>();
+  for (const link of links) {
     const line = linkLayer
       .append('line')
       .attr('class', 'link-line')
-      .attr('stroke', LINK_COLORS[datum.type])
-      .attr('stroke-width', LINK_WIDTH)
       .attr('stroke-linecap', 'round')
-      .style('opacity', 1)
-      .style('pointer-events', 'none')
       .node() as SVGLineElement;
-
-    let label: SVGGElement | null = null;
-    {
-      const group = labelLayer
-        .append('g')
-        .attr('class', 'link-label')
-        .style('opacity', 0)
-        .style('pointer-events', 'none');
-
-      const background = group
-        .append('rect')
-        .attr('class', 'link-label-background')
-        .attr('rx', 5)
-        .attr('ry', 5)
-        .attr('fill', LINK_LABEL_COLORS.background);
-
-      const text = group
-        .append('text')
-        .attr('class', 'link-label-text')
-        .text(formatLinkValue(datum.value))
-        .attr('font-size', LINK_LABEL_SIZE)
-        .attr('fill', LINK_LABEL_COLORS.text)
-        .attr('dominant-baseline', 'middle')
-        .attr('text-anchor', 'middle');
-
-      const box = measure(text.node());
-      if (box) {
-        background
-          .attr('x', box.x - LINK_LABEL_PAD_X)
-          .attr('y', box.y - LINK_LABEL_PAD_Y)
-          .attr('width', box.width + LINK_LABEL_PAD_X * 2)
-          .attr('height', box.height + LINK_LABEL_PAD_Y * 2);
-      }
-      label = group.node();
-    }
-
-    return { datum, line, label, visible: true };
-  });
-}
-
-function buildNodes(params: {
-  layer: Selection<SVGGElement, unknown, null, undefined>;
-  simNodes: SimNode[];
-  model: NetworkGraphModel;
-  radiusById: Map<string, number>;
-  blurId: string;
-  shadowId: string;
-  themeMode: 'light' | 'dark';
-}): NodeParts[] {
-  const { layer, simNodes, model, radiusById, blurId, shadowId, themeMode } = params;
-
-  return simNodes.map((datum) => {
-    const radius = radiusById.get(datum.id) ?? 0;
-    const shadow = shadowRadius(datum, model.breakpoints);
-    const hasImage = !!datum.img;
-
-    const group = layer
-      .append('g')
-      .datum(datum)
-      .attr('class', 'node')
-      .style('cursor', 'grab')
-      .style('opacity', 1)
-      .style('pointer-events', 'all');
-
-    // Client stacking order: label behind the bloom, chrome on top of it.
-    const label = appendNodeLabel(group, datum, radius, themeMode);
-
-    group
-      .append('circle')
-      .attr('class', 'node-shadow-blue')
-      .attr('r', shadow)
-      .attr('fill', NODE_COLORS.glow)
-      .attr('opacity', 0.15)
-      .attr('filter', `url(#${blurId})`)
-      .style('pointer-events', 'none');
-
-    const grab = group
-      .append('circle')
-      .attr('class', 'node-drag-area')
-      .attr('r', radius + NODE_BORDER_WIDTH + DRAG_AREA_PAD)
-      .attr('fill', 'transparent')
-      .style('cursor', 'grab')
-      .style('pointer-events', 'all')
-      .node() as SVGCircleElement;
-
-    group
-      .append('circle')
-      .attr('class', 'node-shadow-dark')
-      .attr('r', shadow)
-      .attr('fill', `url(#${shadowId})`)
-      .attr('opacity', 0.1)
-      .attr('filter', `url(#${blurId})`)
-      .style('pointer-events', 'none');
-
-    const background = group
-      .append('circle')
-      .attr('class', 'node-background')
-      .attr('r', radius)
-      .attr('fill', nodeColor(datum, themeMode))
-      .style('opacity', hasImage ? 0 : 1)
-      .style('pointer-events', 'none')
-      .node() as SVGCircleElement;
-
-    group
-      .append('circle')
-      .attr('class', 'node-border-white')
-      .attr('r', radius)
-      .attr('fill', 'none')
-      .attr('stroke', NODE_COLORS.innerBorder)
-      .attr('stroke-width', NODE_BORDER_WIDTH)
-      .style('pointer-events', 'none');
-
-    if (hasImage) {
-      group
-        .append('image')
-        .attr('class', 'node-image')
-        .attr('href', datum.img as string)
-        .attr('width', radius * 2)
-        .attr('height', radius * 2)
-        .attr('x', -radius)
-        .attr('y', -radius)
-        .attr('clip-path', `circle(${radius}px at ${radius}px ${radius}px)`)
-        .attr('preserveAspectRatio', 'xMidYMid slice')
-        .style('pointer-events', 'none');
-    }
-
-    group
-      .append('circle')
-      .attr('class', 'node-border-purple')
-      .attr('r', radius + NODE_BORDER_WIDTH)
-      .attr('fill', 'none')
-      .attr('stroke', NODE_COLORS.outerBorder)
-      .attr('stroke-width', NODE_BORDER_WIDTH)
-      .style('pointer-events', 'none');
-
-    return {
-      datum,
-      group: group.node() as SVGGElement,
-      background,
-      grab,
-      label: label.group,
-      labelBg: label.background,
-      labelTitle: label.title,
-      labelValue: label.value,
-      radius,
-      hasImage,
-      alwaysLabelled: radius > LABEL_ALWAYS_ABOVE,
-    };
-  });
-}
-
-function appendNodeLabel(
-  group: Selection<SVGGElement, SimNode, null, undefined>,
-  datum: SimNode,
-  radius: number,
-  themeMode: 'light' | 'dark',
-): {
-  group: SVGGElement | null;
-  background: SVGRectElement | null;
-  title: SVGTextElement | null;
-  value: SVGTextElement | null;
-} {
-  const valueText = formatNodeValue(datum.value);
-  if (!datum.label && !valueText) {
-    return { group: null, background: null, title: null, value: null };
+    lineElements.set(link.id, line);
   }
 
-  const labelGroup = group
-    .append('g')
-    .attr('class', 'node-label')
-    .attr('transform', 'translate(1, 0)')
-    .style('opacity', 0)
-    .style('pointer-events', 'none');
-
-  const background = labelGroup
-    .append('rect')
-    .attr('class', 'node-label-background')
-    .attr('rx', 4)
-    .attr('ry', 4)
-    .attr('fill', NODE_LABEL_COLORS.background);
-
-  const title = labelGroup
-    .append('text')
-    .attr('class', 'node-label-title')
-    .text(datum.label)
-    .attr('font-size', LABEL_TITLE_SIZE)
-    .attr('font-weight', '400')
-    .attr('fill', fdColors(themeMode).networkLabelText)
-    .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'hanging');
-
-  const value = labelGroup
-    .append('text')
-    .attr('class', 'node-label-value')
-    .text(valueText)
-    .attr('font-size', LABEL_VALUE_SIZE)
-    .attr('fill', fdColors(themeMode).networkLabelText)
-    .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'hanging');
-
-  const paddingX = radius + LABEL_PADDING_GAP;
-  const titleBox = measure(title.node());
-  const valueBox = measure(value.node());
-  const contentWidth = Math.max(titleBox?.width ?? 0, valueBox?.width ?? 0);
-  const boxWidth = paddingX * 2 + contentWidth;
-  const boxHeight =
-    LABEL_PADDING_TOP + LABEL_TITLE_LINE + LABEL_VALUE_LINE + LABEL_PADDING_BOTTOM;
-  const centerX = paddingX + contentWidth / 2;
-
-  background
-    .attr('x', 0)
-    .attr('y', -boxHeight / 2)
-    .attr('width', boxWidth)
-    .attr('height', boxHeight);
-  title.attr('x', centerX).attr('y', -boxHeight / 2 + LABEL_PADDING_TOP);
-  value
-    .attr('x', centerX)
-    .attr('y', -boxHeight / 2 + LABEL_PADDING_TOP + LABEL_TITLE_LINE);
-
-  return {
-    group: labelGroup.node(),
-    background: background.node(),
-    title: title.node(),
-    value: value.node(),
+  const nodeElements = new Map<string, SVGGElement>();
+  const refresh = (): void => {
+    decor.style('color', colors.decor);
+    const neighbors = neighborsOf(activeId);
+    for (const node of nodes) {
+      const element = nodeElements.get(node.id);
+      if (!element) continue;
+      applyNodeState(
+        select(element) as NodeGroup,
+        node,
+        radiusOf(node),
+        {
+          isActive: activeId === node.id,
+          isHovered: hoveredId === node.id,
+          isNeighbor: neighbors.has(node.id),
+          hasActive: !!activeId,
+        },
+        colors,
+      );
+    }
+    for (const link of links) {
+      const source = endpoint(link.source as string | SimNode);
+      const target = endpoint(link.target as string | SimNode);
+      const active = !!activeId && (source === activeId || target === activeId);
+      let stroke = colors.link;
+      if (activeId) stroke = active ? colors.linkActive : colors.linkDimmed;
+      lineElements
+        .get(link.id)
+        ?.setAttribute('stroke', stroke);
+      lineElements
+        .get(link.id)
+        ?.setAttribute('stroke-width', String(active ? ACTIVE_LINK_WIDTH : LINK_WIDTH));
+    }
   };
-}
 
-function attachNodeInteractions(params: {
-  nodes: NodeParts[];
-  simulation: Simulation<SimNode, SimLink>;
-  /** Read per event — the frame changes on resize without a rebuild. */
-  getBounds: () => { width: number; height: number };
-  radiusById: Map<string, number>;
-  onHover: (id: string | null) => void;
-  onClick: (id: string) => void;
-  /** Re-pin isolated / hidden nodes after a drag so they keep their zone. */
-  onDragEnd: () => void;
-}): void {
-  const { nodes, simulation, getBounds, radiusById, onHover, onClick, onDragEnd } = params;
-  let moved = false;
-  let start: { x: number; y: number } | null = null;
+  const setActive = (id: string | null): void => {
+    activeId = id;
+    refresh();
+  };
+  const pick = (id: string | null): void => {
+    setActive(id);
+    onSelect?.(id);
+  };
 
-  const behaviour = drag<SVGGElement, SimNode>()
+  const zoomBehavior = zoom<SVGSVGElement, unknown>()
+    .scaleExtent([MIN_ZOOM, MAX_ZOOM])
+    .filter((event) => allowZoomEvent(event, wheelZoom))
+    .on('zoom', (event) => {
+      root.attr('transform', event.transform);
+      onMove?.();
+    });
+  svgSelection.call(zoomBehavior);
+  // A click on the empty canvas clears the selection.
+  svgSelection.on('click', (event: MouseEvent) => {
+    if (!(event.target as SVGElement).closest?.('g.node') && activeId) pick(null);
+  });
+
+  let simulation: Simulation<SimNode, SimLink>;
+  const dragBehavior = drag<SVGGElement, SimNode>()
     .filter((event: MouseEvent) => event.button === 0)
-    .on('start', (event: D3DragEvent<SVGGElement, SimNode, unknown>, d) => {
+    .on('start', (event: D3DragEvent<SVGGElement, SimNode, unknown>, node) => {
       event.sourceEvent.stopPropagation();
-      start = { x: event.sourceEvent.clientX, y: event.sourceEvent.clientY };
+      dragStart = { x: event.sourceEvent.clientX, y: event.sourceEvent.clientY };
       moved = false;
       if (!event.active) simulation.alphaTarget(0.3).restart();
-      const { width, height } = getBounds();
-      d.fx = d.x ?? width / 2;
-      d.fy = d.y ?? height / 2;
+      node.fx = node.x ?? centerX;
+      node.fy = node.y ?? centerY;
+      const element = nodeElements.get(node.id);
+      if (element) element.style.cursor = 'grabbing';
     })
-    .on('drag', (event: D3DragEvent<SVGGElement, SimNode, unknown>, d) => {
-      if (start) {
-        const dx = event.sourceEvent.clientX - start.x;
-        const dy = event.sourceEvent.clientY - start.y;
-        if (Math.sqrt(dx * dx + dy * dy) > DRAG_SLOP) moved = true;
+    .on('drag', (event: D3DragEvent<SVGGElement, SimNode, unknown>, node) => {
+      if (dragStart) {
+        const distance = Math.hypot(
+          event.sourceEvent.clientX - dragStart.x,
+          event.sourceEvent.clientY - dragStart.y,
+        );
+        if (distance > DRAG_SLOP) {
+          moved = true;
+          dragging = true;
+        }
       }
-      const { width, height } = getBounds();
-      const radius = radiusById.get(d.id) ?? 0;
-      d.fx = clamp((d.fx ?? d.x ?? 0) + event.dx, radius, width - radius);
-      d.fy = clamp((d.fy ?? d.y ?? 0) + event.dy, radius, height - radius);
+      const size = radiusOf(node);
+      const nextX = (node.fx ?? node.x ?? centerX) + event.dx;
+      const nextY = (node.fy ?? node.y ?? centerY) + event.dy;
+      node.fx = Math.max(size, Math.min(width - size, nextX));
+      node.fy = Math.max(size, Math.min(height - size, nextY));
     })
-    .on('end', (event: D3DragEvent<SVGGElement, SimNode, unknown>, d) => {
+    .on('end', (event: D3DragEvent<SVGGElement, SimNode, unknown>, node) => {
       if (!event.active) simulation.alphaTarget(0);
-      d.x = d.fx ?? d.x;
-      d.y = d.fy ?? d.y;
-      onDragEnd();
-      start = null;
+      node.fx = null;
+      node.fy = null;
+      dragging = false;
+      dragStart = null;
+      const element = nodeElements.get(node.id);
+      if (element) element.style.cursor = 'grab';
     });
 
-  for (const part of nodes) {
-    const group = select<SVGGElement, SimNode>(part.group);
-    group.call(behaviour);
+  for (const node of nodes) {
+    const radius = radiusOf(node);
+    const group = nodeLayer
+      .append('g')
+      .datum(node)
+      .attr('class', 'node')
+      .style('cursor', 'grab')
+      .style('pointer-events', 'all') as unknown as NodeGroup;
+    group.call(dragBehavior);
+    nodeElements.set(node.id, group.node() as SVGGElement);
 
-    const grab = group.select<SVGCircleElement>('.node-drag-area');
-    grab.on('click', (event: MouseEvent) => {
-      event.stopPropagation();
-      if (moved) {
+    group
+      .append('circle')
+      .attr('class', 'node-drag-area')
+      .attr('r', radius + NODE_BORDER_WIDTH + 10)
+      .attr('fill', 'transparent')
+      .attr('opacity', 0)
+      .style('cursor', 'grab')
+      .style('pointer-events', 'all')
+      .on('click', (event: MouseEvent) => {
+        event.stopPropagation();
+        if (!dragging && !moved) pick(activeId === node.id ? null : node.id);
         moved = false;
-        return;
-      }
-      onClick(part.datum.id);
-    });
-    grab.on('mouseenter', () => onHover(part.datum.id));
-    grab.on('mouseleave', () => onHover(null));
+        dragStart = null;
+      })
+      .on('mouseenter', () => {
+        hoveredId = node.id;
+        refresh();
+      })
+      .on('mouseleave', () => {
+        hoveredId = null;
+        refresh();
+      });
+
+    createNodeElements(group, node, radius);
+    createNodeLabel(group, node, radius, measure);
+    group
+      .select('.node-plus')
+      .style('cursor', 'pointer')
+      // Keep the press from starting a node drag.
+      .on('mousedown', (event: MouseEvent) => event.stopPropagation())
+      .on('click', (event: MouseEvent) => {
+        event.stopPropagation();
+        onOpenFocus?.(node.id);
+      });
   }
+  refresh();
+
+  // Box of each node and its name, measured once per node.
+  const footprints = new Map<string, Footprint>();
+  const footprintOf = (node: SimNode): Footprint => {
+    let footprint = footprints.get(node.id);
+    if (!footprint) {
+      footprint = getNodeFootprint(String(node.label ?? node.id), radiusOf(node), measure);
+      footprints.set(node.id, footprint);
+    }
+    return footprint;
+  };
+  const layoutRadius = getLayoutRadius(
+    Math.min(width, height) * LAYOUT_RADIUS_RATIO,
+    nodes.map((node) => getNodeArea(radiusOf(node) + COLLIDE_GAP, footprintOf(node))),
+    LAYOUT_EDGE_GAP,
+    LAYOUT_MAX_FILL,
+  );
+  const limitOf = (node: SimNode): number => layoutRadius - radiusOf(node) - LAYOUT_EDGE_GAP;
+  const keepInside = (node: SimNode): void => {
+    if (node.x == null || node.y == null || node.fx != null || node.fy != null) return;
+    const limit = limitOf(node);
+    const dx = node.x - centerX;
+    const dy = node.y - centerY;
+    const distance = Math.hypot(dx, dy);
+    if (distance > limit) {
+      node.x = centerX + (dx / distance) * limit;
+      node.y = centerY + (dy / distance) * limit;
+    }
+  };
+
+  const renderPositions = (): void => {
+    for (const link of links) {
+      const source = link.source as SimNode;
+      const target = link.target as SimNode;
+      const line = lineElements.get(link.id);
+      if (!line || typeof source !== 'object' || typeof target !== 'object') continue;
+      const sx = source.x ?? centerX;
+      const sy = source.y ?? centerY;
+      const tx = target.x ?? centerX;
+      const ty = target.y ?? centerY;
+      const from = getLinkPoint(sx, sy, tx, ty, radiusOf(source));
+      const to = getLinkPoint(tx, ty, sx, sy, radiusOf(target));
+      line.setAttribute('x1', String(from.x));
+      line.setAttribute('y1', String(from.y));
+      line.setAttribute('x2', String(to.x));
+      line.setAttribute('y2', String(to.y));
+    }
+    for (const node of nodes) {
+      nodeElements
+        .get(node.id)
+        ?.setAttribute('transform', `translate(${node.x ?? centerX}, ${node.y ?? centerY})`);
+    }
+    onMove?.();
+  };
+
+  // Nodes the dragged one pushed in the last tick glide back instead of jumping.
+  const pushedByDrag = new Set<string>();
+  const pullFor = (shown: SimLink[]) => {
+    const linked = new Set(
+      shown.flatMap((link) => [
+        endpoint(link.source as string | SimNode),
+        endpoint(link.target as string | SimNode),
+      ]),
+    );
+    return (node: SimNode): number => (linked.has(node.id) ? CENTER_PULL : ISOLATED_NODE_PULL);
+  };
+  const applyPull = (shown: SimLink[]): void => {
+    const pull = pullFor(shown);
+    simulation.force('x', forceX<SimNode>(centerX).strength(pull));
+    simulation.force('y', forceY<SimNode>(centerY).strength(pull));
+  };
+
+  simulation = forceSimulation<SimNode, SimLink>(nodes)
+    .force(
+      'link',
+      forceLink<SimNode, SimLink>(links)
+        .id((node) => node.id)
+        .distance((link) => getLinkLength(link, layoutRadius, MIN_LINK_SHARE, MAX_LINK_SHARE))
+        .strength(0.3),
+    )
+    .force('charge', forceManyBody<SimNode>().strength(getCharge(layoutRadius, nodes.length)))
+    .force('center', forceCenter<SimNode>(centerX, centerY).strength(0.05))
+    .force(
+      'collision',
+      // Two passes per tick: stiffer, so nodes overlap less on the way.
+      forceCollide<SimNode>()
+        .radius((node) => radiusOf(node) + COLLIDE_GAP)
+        .iterations(2),
+    );
+  applyPull(links);
+  simulation
+    // Names neither overlap each other nor lie on other nodes.
+    .force('labels', forceBoxCollide(footprintOf))
+    .force(
+      'bounds',
+      forceCircleBounds(centerX, centerY, limitOf, CIRCLE_BOUNDS_STRENGTH, (node) =>
+        pushedByDrag.has(node.id),
+      ),
+    )
+    // Last: a dragged node pushes what it meets out of its way.
+    .force('drag', forceDragPush(footprintOf, pushedByDrag))
+    .stop();
+
+  // Lay the graph out before the first paint, so it opens settled and fitted.
+  for (let i = 0; i < WARM_UP_TICKS; i += 1) {
+    simulation.tick();
+    nodes.forEach(keepInside);
+  }
+  // What the forces leave overlapping at the rim is moved apart at rest.
+  const settle = (): void => separateFootprints(nodes, footprintOf, keepInside);
+  settle();
+  renderPositions();
+  const fit = getCircleFitTransform(centerX, centerY, layoutRadius, {
+    x: VIEWBOX_OFFSET_X,
+    y: VIEWBOX_OFFSET_Y,
+    width,
+    height,
+  });
+  svgSelection.call(zoomBehavior.transform, zoomIdentity.translate(fit.x, fit.y).scale(fit.k));
+
+  nextDecorId += 1;
+  drawGraphDecor(decor, centerX, centerY, layoutRadius, `graph-decor-fade-${nextDecorId}`);
+
+  const setVisible = (ids: Set<string> | null, linkIds: Set<string> | null = null): void => {
+    const shownNodes = ids ?? new Set(byId.keys());
+    for (const [id, element] of nodeElements) {
+      const visible = shownNodes.has(id);
+      element.style.opacity = visible ? '1' : '0';
+      element.style.pointerEvents = visible ? 'all' : 'none';
+      const area = element.querySelector<SVGCircleElement>('.node-drag-area');
+      if (area) area.style.pointerEvents = visible ? 'all' : 'none';
+    }
+    const shownLinks: SimLink[] = [];
+    for (const link of links) {
+      const show =
+        shownNodes.has(endpoint(link.source as string | SimNode)) &&
+        shownNodes.has(endpoint(link.target as string | SimNode)) &&
+        (!linkIds || linkIds.has(link.id));
+      const line = lineElements.get(link.id);
+      if (line) line.style.opacity = show ? '1' : '0';
+      if (show) shownLinks.push(link);
+    }
+    // A paint change only: the layout holds. The next drag pulls on the shown links.
+    (simulation.force('link') as ForceLink<SimNode, SimLink>).links(shownLinks);
+    applyPull(shownLinks);
+    // A hidden node does not stay selected or hovered.
+    if (hoveredId && !shownNodes.has(hoveredId)) hoveredId = null;
+    if (activeId && !shownNodes.has(activeId)) pick(null);
+    else refresh();
+  };
+  setVisible(visibleIds, visibleLinkIds);
+
+  simulation
+    .on('tick', renderPositions)
+    .on('end', () => {
+      settle();
+      renderPositions();
+    })
+    .restart();
+
+  // The names' web font can arrive after this first layout: measure again and,
+  // if the names changed size, draw them again and let the layout make room.
+  const fonts = typeof document === 'undefined' ? undefined : document.fonts;
+  const onFontsLoaded = (): void => {
+    const resized = nodes.some((node) => {
+      const before = footprints.get(node.id);
+      if (!before) return false;
+      const after = getNodeFootprint(String(node.label ?? node.id), radiusOf(node), measure);
+      return (
+        Math.abs(after.halfWidth - before.halfWidth) > 0.5 ||
+        Math.abs(after.bottom - before.bottom) > 0.5
+      );
+    });
+    if (!resized) return;
+    for (const node of nodes) {
+      const element = nodeElements.get(node.id);
+      if (!element) continue;
+      const group = select(element) as NodeGroup;
+      group.select('.node-label').remove();
+      createNodeLabel(group, node, radiusOf(node), measure);
+    }
+    refresh();
+    footprints.clear();
+    simulation.force('labels', forceBoxCollide(footprintOf));
+    simulation.force('drag', forceDragPush(footprintOf, pushedByDrag));
+    simulation.alpha(Math.max(simulation.alpha(), 0.3)).restart();
+  };
+  fonts?.addEventListener?.('loadingdone', onFontsLoaded);
+
+  GRAPHS.set(container, {
+    simulation,
+    svg: svgNode,
+    zoomBehavior,
+    nodeElements,
+    refresh,
+    setActive,
+    setColors: (next, painted) => {
+      colors = next;
+      for (const { id, color } of painted) {
+        const node = byId.get(id);
+        if (node) node.color = color;
+      }
+      refresh();
+    },
+    setVisible,
+    setWheelZoom: (on) => {
+      wheelZoom = on;
+    },
+    dispose: () => {
+      fonts?.removeEventListener?.('loadingdone', onFontsLoaded);
+      simulation.stop();
+      svgSelection.on('click', null);
+    },
+  });
 }

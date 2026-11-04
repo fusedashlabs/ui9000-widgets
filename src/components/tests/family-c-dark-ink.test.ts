@@ -107,7 +107,7 @@ describe('family C dark ink', () => {
     el.remove();
   });
 
-  it('network graph paints the hover pill and its text from the host theme', async () => {
+  it('network graph paints the hovered name from the host theme', async () => {
     const el = await mount('ui9000-network-graph', {
       nodes: [
         { id: 'a', label: 'Alpha', value: 10 },
@@ -134,9 +134,7 @@ describe('family C dark ink', () => {
     expect(node).not.toBeNull();
     node!.querySelector('.node-drag-area')!.dispatchEvent(new MouseEvent('mouseenter'));
     const title = node!.querySelector('.node-label-title');
-    const pill = node!.querySelector('.node-label-background');
     expect(title?.getAttribute('fill')?.toLowerCase()).toBe('#eff0f1');
-    expect(pill?.getAttribute('fill')?.toLowerCase()).toBe('#282e37');
     el.remove();
   });
 

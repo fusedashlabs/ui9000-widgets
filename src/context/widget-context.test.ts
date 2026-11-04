@@ -14,7 +14,8 @@ describe('WidgetContext', () => {
   it('exports the only page style allowlist', () => {
     expect([...CHART_STYLE_IDS]).toEqual([...themeStyleIds]);
     expect(parseChartStyleId('palette1')).toBe('palette1');
-    expect(parseChartStyleId('palette5')).toBe('default');
+    expect(parseChartStyleId('palette5')).toBe('palette5');
+    expect(parseChartStyleId('palette9')).toBe('default');
     expect(parseChartStyleId('')).toBe('default');
   });
 

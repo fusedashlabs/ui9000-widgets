@@ -180,12 +180,13 @@ describe('FuseDash client fixtures (apps/charts constants)', () => {
     expect(model.yDomain.length).toBe(7);
   });
 
-  it('matrix.fusedash.json → sparse cells on a 94x50 domain', () => {
+  it('matrix.fusedash.json → sparse cells on a 93x50 domain', () => {
     const model = normalizeMatrixData(matrixFixture as never);
-    expect(model.xDomain.length).toBe(94);
+    // 'Blocky ' and 'Blocky' are one column.
+    expect(model.xDomain.length).toBe(93);
     expect(model.yDomain.length).toBe(50);
-    expect(model.cells.length).toBe(matrixFixture.data.length);
-    expect(model.cells.length).toBeLessThan(94 * 50);
+    expect(model.cells.length).toBeLessThanOrEqual(matrixFixture.data.length);
+    expect(model.cells.length).toBeLessThan(93 * 50);
   });
 
   it('boxplot.fusedash.json → grouped boxes', () => {

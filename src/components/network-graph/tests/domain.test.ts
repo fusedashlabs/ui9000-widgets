@@ -12,6 +12,8 @@ import {
   scaleLinkWidthByMax,
   visibleNodeIds,
 } from '../lib/domain.js';
+import { heatmapCellKey } from '../../matrix-chart/lib/heatmap-layout.js';
+import { buildNetworkHeatmap } from '../lib/heatmap.js';
 import { formatLegendValue, formatLinkValue, formatNodeValue } from '../lib/format.js';
 import { normalizeNetworkGraphData } from '../lib/normalize.js';
 import type { NetworkGraphInput } from '../lib/types.js';
@@ -104,14 +106,59 @@ describe('networkForces', () => {
   });
 });
 
+describe('buildNetworkHeatmap', () => {
+  const model = normalizeNetworkGraphData({
+    nodes: [
+      { id: 'a', label: 'Alpha' },
+      { id: 'b', label: 'Beta' },
+      { id: 'c', label: 'Gamma' },
+    ],
+    links: [
+      { source: 'a', target: 'b', value: 2 },
+      { source: 'b', target: 'a', value: 3 },
+      { source: 'b', target: 'c', value: 1 },
+    ],
+  });
+
+  it('adds up both directions of a pair in both cells', () => {
+    const { values } = buildNetworkHeatmap(model);
+    expect(values.get(heatmapCellKey('a', 'b'))).toBe(5);
+    expect(values.get(heatmapCellKey('b', 'a'))).toBe(5);
+  });
+
+  it('puts the most connected nodes first', () => {
+    expect(buildNetworkHeatmap(model).ids).toEqual(['b', 'a', 'c']);
+  });
+});
+
 describe('formatting', () => {
   it('matches the client label helpers', () => {
     expect(formatLinkValue(12600)).toBe('12.6K');
     expect(formatLinkValue(2000)).toBe('2K');
     expect(formatLinkValue(950)).toBe('950');
-    expect(formatNodeValue(2405.7)).toBe('$2405.70');
+  });
+
+  it('shows node values as plain numbers, never as money', () => {
+    expect(formatNodeValue(2686)).toBe('2,686');
+    expect(formatNodeValue(2405.7)).toBe('2,405.7');
+    expect(formatNodeValue(0.123)).toBe('0.12');
+    expect(formatNodeValue(12)).toBe('12');
     expect(formatNodeValue(undefined)).toBe('');
-    expect(formatLegendValue(65, 2)).toBe('65.00');
-    expect(formatLegendValue(2405.7, 2)).toBe('2.4 K');
+    expect(formatNodeValue(Number.NaN)).toBe('');
+  });
+
+  it('keeps legend values full below 10,000 and without decimals on counts', () => {
+    expect(formatLegendValue(953, true)).toBe('953');
+    expect(formatLegendValue(1598.4, true)).toBe('1,598');
+    expect(formatLegendValue(1598.45)).toBe('1,598.45');
+    expect(formatLegendValue(0.5)).toBe('0.5');
+    expect(formatLegendValue(Number.NaN)).toBe('0');
+  });
+
+  it('abbreviates legend values from 10,000', () => {
+    expect(formatLegendValue(12_600)).toBe('12.6 K');
+    expect(formatLegendValue(2_000_000)).toBe('2 M');
+    expect(formatLegendValue(3_500_000_000)).toBe('3.5 B');
+    expect(formatLegendValue(-12_600)).toBe('-12.6 K');
   });
 });

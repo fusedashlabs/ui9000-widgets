@@ -1,0 +1,1327 @@
+{
+  "name": "Service network",
+  "data": [
+    {
+      "nodes": [
+        {
+          "id": "north",
+          "label": "North Office",
+          "type": "Office",
+          "value": 4200,
+          "date": "2026-03-02",
+          "role": "Office",
+          "topics": [],
+          "events": [],
+          "bio": "North Office is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 4200,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "south",
+          "label": "South Office",
+          "type": "Office",
+          "value": 3100,
+          "date": "2026-03-02",
+          "role": "Office",
+          "topics": [],
+          "events": [],
+          "bio": "South Office is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 3100,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "east",
+          "label": "East Office",
+          "type": "Office",
+          "value": 2600,
+          "date": "2026-04-06",
+          "role": "Office",
+          "topics": [],
+          "events": [],
+          "bio": "East Office is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 2600,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "west",
+          "label": "West Office",
+          "type": "Office",
+          "value": 1900,
+          "date": "2026-05-04",
+          "role": "Office",
+          "topics": [],
+          "events": [],
+          "bio": "West Office is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 1900,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "payroll",
+          "label": "Payroll",
+          "type": "Service",
+          "value": 3800,
+          "date": "2026-03-02",
+          "role": "Service",
+          "topics": [
+            "Payments"
+          ],
+          "events": [
+            "Quarterly review",
+            "Contract renewal",
+            "System migration"
+          ],
+          "bio": "Payroll is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 3800,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "billing",
+          "label": "Billing",
+          "type": "Service",
+          "value": 2900,
+          "date": "2026-03-02",
+          "role": "Service",
+          "topics": [
+            "Payments"
+          ],
+          "events": [
+            "Quarterly review",
+            "Contract renewal",
+            "System migration"
+          ],
+          "bio": "Billing is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 2900,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "label": "Support Desk",
+          "type": "Service",
+          "value": 2300,
+          "date": "2026-04-06",
+          "role": "Service",
+          "topics": [
+            "Service quality"
+          ],
+          "events": [
+            "Quarterly review",
+            "Contract renewal",
+            "System migration"
+          ],
+          "bio": "Support Desk is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 2300,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "audit",
+          "label": "Audit",
+          "type": "Service",
+          "value": 1500,
+          "date": "2026-06-01",
+          "role": "Service",
+          "topics": [
+            "Service quality"
+          ],
+          "events": [
+            "Quarterly review",
+            "Contract renewal",
+            "System migration"
+          ],
+          "bio": "Audit is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 1500,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vendors",
+          "label": "Vendor Portal",
+          "type": "Partner",
+          "value": 1200,
+          "date": "2026-05-04",
+          "role": "Partner",
+          "topics": [],
+          "events": [],
+          "bio": "Vendor Portal is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 1200,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "couriers",
+          "label": "Courier Network",
+          "type": "Partner",
+          "value": 900,
+          "date": "2026-07-06",
+          "role": "Partner",
+          "topics": [],
+          "events": [],
+          "bio": "Courier Network is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 900,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "banks",
+          "label": "Partner Banks",
+          "type": "Partner",
+          "value": 700,
+          "date": "2026-06-01",
+          "role": "Partner",
+          "topics": [
+            "Payments"
+          ],
+          "events": [],
+          "bio": "Partner Banks is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 700,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "insurers",
+          "label": "Insurers and Brokers of the Northern Region",
+          "type": "Partner",
+          "value": 420,
+          "date": "2026-08-03",
+          "role": "Partner",
+          "topics": [],
+          "events": [],
+          "bio": "Insurers and Brokers of the Northern Region is part of the sample network used in the widget stories.",
+          "metrics": [
+            {
+              "label": "Requests",
+              "value": 420,
+              "unit": "",
+              "change": 2.4,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 28
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 36
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 44
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 52
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Resolved",
+              "value": 71.5,
+              "unit": "%",
+              "change": -1.2,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 40
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 45
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 50
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 55
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 60
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "id": "l0",
+          "source": "north",
+          "target": "payroll",
+          "value": 82,
+          "date": "2026-03-02"
+        },
+        {
+          "id": "l1",
+          "source": "north",
+          "target": "billing",
+          "value": 64,
+          "date": "2026-03-02"
+        },
+        {
+          "id": "l2",
+          "source": "south",
+          "target": "payroll",
+          "value": 51,
+          "date": "2026-03-02"
+        },
+        {
+          "id": "l3",
+          "source": "south",
+          "target": "support",
+          "value": 47,
+          "date": "2026-04-06"
+        },
+        {
+          "id": "l4",
+          "source": "east",
+          "target": "billing",
+          "value": 33,
+          "date": "2026-04-06"
+        },
+        {
+          "id": "l5",
+          "source": "east",
+          "target": "support",
+          "value": 29,
+          "date": "2026-05-04"
+        },
+        {
+          "id": "l6",
+          "source": "west",
+          "target": "payroll",
+          "value": 24,
+          "date": "2026-05-04"
+        },
+        {
+          "id": "l7",
+          "source": "west",
+          "target": "audit",
+          "value": 18,
+          "date": "2026-06-01"
+        },
+        {
+          "id": "l8",
+          "source": "payroll",
+          "target": "banks",
+          "value": 41,
+          "date": "2026-06-01"
+        },
+        {
+          "id": "l9",
+          "source": "billing",
+          "target": "vendors",
+          "value": 37,
+          "date": "2026-05-04"
+        },
+        {
+          "id": "l10",
+          "source": "billing",
+          "target": "banks",
+          "value": 22,
+          "date": "2026-06-01"
+        },
+        {
+          "id": "l11",
+          "source": "support",
+          "target": "vendors",
+          "value": 16,
+          "date": "2026-05-04"
+        },
+        {
+          "id": "l12",
+          "source": "support",
+          "target": "couriers",
+          "value": 14,
+          "date": "2026-07-06"
+        },
+        {
+          "id": "l13",
+          "source": "audit",
+          "target": "insurers",
+          "value": 9,
+          "date": "2026-08-03"
+        },
+        {
+          "id": "l14",
+          "source": "vendors",
+          "target": "couriers",
+          "value": 11,
+          "date": "2026-07-06"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Payments",
+          "value": 62,
+          "unit": "%",
+          "change": 2.3,
+          "selected": true,
+          "metrics": [
+            {
+              "label": "Share",
+              "value": 62.0,
+              "unit": "%",
+              "change": 2.3,
+              "changeUnit": "%",
+              "description": "Share of requests about payments.",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 30
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 36
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 42
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 48
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 54
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            },
+            {
+              "label": "Volume",
+              "value": 1840,
+              "unit": "",
+              "change": 4.0,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 20
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 29
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 38
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 47
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 56
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 65
+                }
+              ]
+            },
+            {
+              "label": "Open",
+              "value": 38,
+              "unit": "",
+              "change": -3.0,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 60
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 54
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 48
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 42
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 36
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 30
+                }
+              ]
+            }
+          ],
+          "ranking": [
+            {
+              "name": "North Office",
+              "value": 48,
+              "unit": "%",
+              "change": 3.1,
+              "connections": 2
+            },
+            {
+              "name": "South Office",
+              "value": 36,
+              "unit": "%",
+              "change": -1.4
+            },
+            {
+              "name": "East Office",
+              "value": 29,
+              "unit": "%",
+              "change": 0.8
+            }
+          ]
+        },
+        {
+          "name": "Service quality",
+          "value": 54,
+          "unit": "%",
+          "change": -1.1,
+          "metrics": [
+            {
+              "label": "Score",
+              "value": 54.0,
+              "unit": "%",
+              "change": -1.1,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 70
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 66
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 62
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 58
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 54
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 50
+                }
+              ]
+            },
+            {
+              "label": "Reviews",
+              "value": 412,
+              "unit": "",
+              "change": 1.0,
+              "changeUnit": "%",
+              "series": [
+                {
+                  "date": "2026-03-02",
+                  "value": 10
+                },
+                {
+                  "date": "2026-04-06",
+                  "value": 20
+                },
+                {
+                  "date": "2026-05-04",
+                  "value": 30
+                },
+                {
+                  "date": "2026-06-01",
+                  "value": 40
+                },
+                {
+                  "date": "2026-07-06",
+                  "value": 50
+                },
+                {
+                  "date": "2026-08-03",
+                  "value": 60
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Onboarding",
+          "value": 41,
+          "unit": "%",
+          "change": 0.6
+        }
+      ],
+      "ranking": [
+        {
+          "name": "North Office",
+          "value": 48,
+          "unit": "%",
+          "change": 3.1
+        },
+        {
+          "name": "Payroll",
+          "value": 41,
+          "unit": "%",
+          "change": 1.2
+        }
+      ],
+      "labels": {
+        "linkValue": "requests",
+        "nodeValue": "staff",
+        "topic": "Issue",
+        "topics": "Requests by issue",
+        "topicChange": "Change against the previous month",
+        "ranking": "Top offices",
+        "rankingName": "Office",
+        "rankingValue": "Share",
+        "rankingChange": "Change"
+      }
+    }
+  ]
+}

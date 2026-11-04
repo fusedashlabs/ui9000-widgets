@@ -1,260 +1,276 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import fusedashFixture from '../../../stories/fixtures/matrix.fusedash.json';
-import { DEFAULT_THEME } from '../../../types/index.js';
-import { normalizeMatrixData } from '../lib/index.js';
-import { renderMatrixChart } from '../render/draw.js';
+import { heatmapTokens, normalizeMatrixData } from '../lib/index.js';
+import { matrixColorRanges, matrixView, renderMatrixChart } from '../render/draw.js';
+import { heatmapGridLayout, renderHeatmapGrid } from '../render/heatmap-grid.js';
+import { heatmapCellKey } from '../lib/heatmap-layout.js';
 
-function hosts() {
-  const plot = document.createElement('div');
-  const topAxis = document.createElement('div');
-  document.body.append(plot, topAxis);
-  return { plot, topAxis };
+const measure = (text: string) => text.length * 6;
+
+function plot(): HTMLElement {
+  const container = document.createElement('div');
+  document.body.append(container);
+  return container;
 }
 
-const model = normalizeMatrixData(fusedashFixture);
+const CELLS = [
+  { x: 'A', y: 'one', value: 1 },
+  { x: 'B', y: 'one', value: 4 },
+  { x: 'A', y: 'two', value: 8 },
+];
 
-describe('renderMatrixChart', () => {
-  it('paints one rect per grid cell and pins the header when rows overflow', () => {
-    const { plot, topAxis } = hosts();
-    renderMatrixChart(plot, {
-      model,
-      width: 900,
-      height: 400,
-      theme: DEFAULT_THEME,
-      topAxisContainer: topAxis,
-    });
-
-    expect(plot.querySelectorAll('rect.matrix-cell')).toHaveLength(94 * 50);
-    // Header lives in the pinned container, not in the scrolling plot
-    expect(topAxis.querySelectorAll('svg text')).toHaveLength(94);
-    expect(plot.querySelectorAll('.x-axis')).toHaveLength(0);
-    expect(plot.querySelectorAll('.y-axis text')).toHaveLength(50);
-    expect(plot.querySelector('pattern#ui9000-matrix-no-data')).not.toBeNull();
+const draw = (container: HTMLElement, cells = CELLS, extra = {}) =>
+  renderMatrixChart(container, {
+    model: normalizeMatrixData(cells),
+    width: 600,
+    height: 400,
+    measure,
+    ...extra,
   });
 
-  it('draws the header inline for a short grid', () => {
-    const { plot, topAxis } = hosts();
-    const small = normalizeMatrixData([
-      { x: 'A', y: 'one', value: 1 },
-      { x: 'B', y: 'two', value: 2 },
-    ]);
-    renderMatrixChart(plot, {
-      model: small,
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-      topAxisContainer: topAxis,
-    });
-
-    expect(plot.querySelectorAll('.x-axis text')).toHaveLength(2);
-    expect(topAxis.children).toHaveLength(0);
+describe('matrixView', () => {
+  it('puts the largest totals first', () => {
+    const { rows, columns } = matrixView(normalizeMatrixData(CELLS));
+    expect(rows).toEqual(['two', 'one']);
+    expect(columns).toEqual(['A', 'B']);
   });
 
-  it('paints a declared column with no rows as empty cells', () => {
-    const { plot } = hosts();
-    const model = normalizeMatrixData({
-      data: [{ day: 'Mon', channel: 'Web', orders: 12 }],
-      xAxe: ['day'],
-      yAxe: ['orders'],
-      groupBy: ['channel'],
-      uniqueValues: {
-        day: ['Mon', 'Tue'],
-        channel: ['Web', 'Retail'],
-      },
-    });
-    renderMatrixChart(plot, {
-      model,
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-    });
-
-    const fills = [...plot.querySelectorAll('rect.matrix-cell')].map((node) =>
-      node.getAttribute('fill'),
-    );
-    // Mon/Tue × Retail/Web. Only Mon × Web carries 12.
-    expect(fills).toHaveLength(4);
-    expect(fills.filter((fill) => fill === 'url(#ui9000-matrix-no-data)')).toHaveLength(3);
-    expect(fills.filter((fill) => fill !== 'url(#ui9000-matrix-no-data)')).toHaveLength(1);
-  });
-
-  it('stops painting empty slots once the grid passes the cell cap', () => {
-    const { plot } = hosts();
-    const xDomain = Array.from({ length: 101 }, (_, i) => `c${i}`);
-    const yDomain = Array.from({ length: 100 }, (_, i) => `r${i}`);
-    renderMatrixChart(plot, {
-      model: normalizeMatrixData({
-        cells: [{ x: 'c0', y: 'r0', value: 3 }],
-        xDomain,
-        yDomain,
-      }),
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-    });
-
-    expect(plot.querySelectorAll('rect.matrix-cell')).toHaveLength(1);
-  });
-
-  it('paints a missing intersection as an empty cell and colors a stored value', () => {
-    const { plot } = hosts();
-    const sparse = normalizeMatrixData([
-      { x: 'A', y: 'one', value: 4 },
-      { x: 'B', y: 'two', value: 8 },
-    ]);
-    renderMatrixChart(plot, {
-      model: sparse,
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-    });
-
-    const fills = [...plot.querySelectorAll('rect.matrix-cell')].map((r) =>
-      r.getAttribute('fill'),
-    );
-    // one × two is the full domain; the two holes were never in the data
-    expect(fills).toHaveLength(4);
-    expect(fills.filter((fill) => fill === 'url(#ui9000-matrix-no-data)')).toHaveLength(2);
-    expect(sparse.cells).toHaveLength(2);
-  });
-
-  it('fills zero cells with the no-data hatch and negatives flat grey', () => {
-    const { plot } = hosts();
-    renderMatrixChart(plot, {
-      model: normalizeMatrixData([
-        { x: 'A', y: 'r', value: 0 },
-        { x: 'B', y: 'r', value: -5 },
-        { x: 'C', y: 'r', value: 10 },
+  it('keeps an axis with an order of its own', () => {
+    const { columns } = matrixView(
+      normalizeMatrixData([
+        { x: 'Mon', y: 'a', value: 1 },
+        { x: 'Tue', y: 'a', value: 9 },
       ]),
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-    });
-
-    const fills = [...plot.querySelectorAll('rect.matrix-cell')].map((r) =>
-      r.getAttribute('fill'),
     );
-    expect(fills[0]).toBe('url(#ui9000-matrix-no-data)');
-    expect(fills[1]).toBe('#DADAE1');
-    expect(fills[2]).toMatch(/^#[0-9A-F]{6}$/i);
-  });
-
-  it('reports hovered cells and clears on leave without redrawing', () => {
-    const { plot } = hosts();
-    const seen: string[] = [];
-    let left = 0;
-    renderMatrixChart(plot, {
-      model: normalizeMatrixData([
-        { x: 'A', y: 'r', value: 1 },
-        { x: 'B', y: 'r', value: 2 },
-      ]),
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-      onCellHover: ({ cell }) => seen.push(`${cell.x}:${cell.value}`),
-      onCellLeave: () => {
-        left += 1;
-      },
-    });
-
-    const cells = plot.querySelectorAll('rect.matrix-cell');
-    cells[1].dispatchEvent(new MouseEvent('mouseenter'));
-    cells[1].dispatchEvent(new MouseEvent('mouseleave'));
-    expect(seen).toEqual(['B:2']);
-    expect(left).toBe(1);
-    // Hover must never rebuild the plot
-    expect(plot.querySelectorAll('rect.matrix-cell')).toHaveLength(2);
-  });
-
-  it('offers the full text of a truncated row label on hover', () => {
-    const { plot } = hosts();
-    const hovered: string[] = [];
-    renderMatrixChart(plot, {
-      model: normalizeMatrixData([
-        { x: 'A', y: 'Cauliflower White Spring', value: 1 },
-      ]),
-      width: 400,
-      height: 300,
-      theme: DEFAULT_THEME,
-      onAxisLabelHover: (text) => hovered.push(text),
-    });
-
-    const label = plot.querySelector('.y-axis text')!;
-    expect(label.textContent).toBe('Cauliflow...');
-    label.dispatchEvent(new MouseEvent('mouseenter'));
-    expect(hovered).toEqual(['Cauliflower White Spring']);
-  });
-
-  it('renders nothing for an empty model instead of throwing', () => {
-    const { plot, topAxis } = hosts();
-    expect(() =>
-      renderMatrixChart(plot, {
-        model: normalizeMatrixData(null),
-        width: 400,
-        height: 300,
-        theme: DEFAULT_THEME,
-        topAxisContainer: topAxis,
-      }),
-    ).not.toThrow();
-    expect(plot.children).toHaveLength(0);
+    expect(columns).toEqual(['Mon', 'Tue']);
   });
 });
 
-/**
- * The pinned header sits above the scroll area, so its height changes the
- * scroll viewport, which fires the resize observer, which redraws. If the
- * header's own size depended on that viewport there would be no fixed point
- * and the chart would visibly jitter up and down forever (FUS-3992).
- */
-describe('pinned header sizing', () => {
-  // Long column labels over the 7-row limit — enough to pin and rotate the
-  // header, small enough to redraw dozens of times cheaply.
-  const tall = normalizeMatrixData(
-    Array.from({ length: 12 }, (_, col) =>
-      Array.from({ length: 10 }, (_, row) => ({
-        x: `Column heading number ${col}`,
-        y: `Row ${row}`,
-        value: col + row + 1,
-      })),
-    ).flat(),
-  );
-
-  function headerHeight(bodyHeight: number, previousHeader: number): number {
-    const { plot, topAxis } = hosts();
-    renderMatrixChart(plot, {
-      model: tall,
-      width: 968,
-      // What the scroll viewport would measure with that header in place
-      height: bodyHeight - previousHeader,
-      bodyHeight,
-      theme: DEFAULT_THEME,
-      topAxisContainer: topAxis,
-    });
-    const height = Number(topAxis.querySelector('svg')?.getAttribute('height'));
-    plot.remove();
-    topAxis.remove();
-    return height;
-  }
-
-  it('does not depend on the header height of the previous draw', () => {
-    for (const bodyHeight of [300, 380, 420, 460, 560, 700, 820]) {
-      const heights = [41, 98, 120, 160].map((previous) =>
-        headerHeight(bodyHeight, previous),
-      );
-      expect(
-        new Set(heights).size,
-        `body ${bodyHeight}px settled to ${heights.join('/')}`,
-      ).toBe(1);
-    }
+describe('renderMatrixChart', () => {
+  it('draws one rect per filled cell and a run for the empty ones', () => {
+    const container = plot();
+    draw(container);
+    expect(container.querySelectorAll('rect.matrix-cell')).toHaveLength(3);
+    expect(container.querySelectorAll('rect.matrix-empty')).toHaveLength(1);
   });
 
-  it('stays within its share of the widget', () => {
-    for (const bodyHeight of [300, 420, 560, 820]) {
-      const height = headerHeight(bodyHeight, 41);
-      expect(height).toBeLessThanOrEqual(
-        Math.max(41, Math.round(bodyHeight * 0.35)),
-      );
+  it('keeps the column names and totals in a header above the rows', () => {
+    const container = plot();
+    draw(container);
+    const header = container.querySelector('.heatmap-header')!;
+    expect(header.querySelectorAll('g.heatmap-column')).toHaveLength(2);
+    expect(header.querySelectorAll('g.heatmap-column-total')).toHaveLength(2);
+    expect(header.querySelector('.heatmap-totals-icon')).not.toBeNull();
+    expect(container.querySelectorAll('svg > g.heatmap-row')).toHaveLength(2);
+  });
+
+  it('follows the value with the opacity of the cell', () => {
+    const container = plot();
+    draw(container);
+    const opacities = [...container.querySelectorAll('rect.matrix-cell')].map((cell) =>
+      Number(cell.getAttribute('fill-opacity')),
+    );
+    expect(Math.max(...opacities)).toBe(1);
+    expect(Math.min(...opacities)).toBe(0.125);
+  });
+
+  it('paints a negative value flat', () => {
+    const container = plot();
+    draw(container, [
+      { x: 'A', y: 'one', value: 5 },
+      { x: 'B', y: 'one', value: -2 },
+    ]);
+    const cells = [...container.querySelectorAll('rect.matrix-cell')];
+    const negative = cells.find((cell) => cell.getAttribute('fill') !== heatmapTokens('light').cell)!;
+    expect(negative.getAttribute('fill')).toBe(heatmapTokens('light').negativeCell);
+    expect(negative.getAttribute('fill-opacity')).toBe('1');
+  });
+
+  it('counts only positive values in the totals', () => {
+    const { rowTotals } = matrixView(
+      normalizeMatrixData([
+        { x: 'A', y: 'one', value: 5 },
+        { x: 'B', y: 'one', value: -2 },
+      ]),
+    );
+    expect(rowTotals.get('one')).toBe(5);
+  });
+
+  it('scales the bar behind the row name to the row total', () => {
+    const container = plot();
+    draw(container);
+    const [largest, smaller] = [...container.querySelectorAll('rect.heatmap-row-bar')].map(
+      (bar) => Number(bar.getAttribute('width')),
+    );
+    expect(smaller / largest).toBeCloseTo(5 / 8, 1);
+  });
+
+  it('leaves one pixel between the row bars', () => {
+    const container = plot();
+    draw(container);
+    const bars = [...container.querySelectorAll('rect.heatmap-row-bar')];
+    const top = (bar: Element): number => Number(bar.getAttribute('y'));
+    const bottom = (bar: Element): number => top(bar) + Number(bar.getAttribute('height'));
+    expect(top(bars[1]) - bottom(bars[0])).toBe(1);
+  });
+
+  it('reports the cell under the pointer once and clears on leave', () => {
+    const container = plot();
+    const onCellHover = vi.fn();
+    const onCellLeave = vi.fn();
+    draw(container, CELLS, { onCellHover, onCellLeave });
+
+    const overlay = container.querySelector('rect.heatmap-overlay')!;
+    overlay.dispatchEvent(new MouseEvent('mousemove', { clientX: 1, clientY: 1 }));
+    overlay.dispatchEvent(new MouseEvent('mousemove', { clientX: 2, clientY: 2 }));
+    expect(onCellHover).toHaveBeenCalledOnce();
+    expect(onCellHover.mock.calls[0][0].cell).toEqual({ x: 'A', y: 'two', value: 8 });
+    const hover = container.querySelector('rect.heatmap-hover')!;
+    expect(hover.getAttribute('visibility')).toBe('visible');
+
+    overlay.dispatchEvent(new MouseEvent('mouseleave'));
+    expect(onCellLeave).toHaveBeenCalledOnce();
+    expect(hover.getAttribute('visibility')).toBe('hidden');
+  });
+
+  it('reports the total of a row', () => {
+    const container = plot();
+    const onRowHover = vi.fn();
+    draw(container, CELLS, { onRowHover });
+    container.querySelector('g.heatmap-row')!.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(onRowHover.mock.calls[0][0]).toMatchObject({ row: 'two', total: 8 });
+  });
+
+  it('shows only the cells in a KPI tile', () => {
+    const container = plot();
+    draw(container, CELLS, { isInKpi: true });
+    expect(container.querySelector('.heatmap-header')).toBeNull();
+    expect(container.querySelector('g.heatmap-row')).toBeNull();
+    expect(container.querySelectorAll('rect.matrix-cell')).toHaveLength(3);
+  });
+
+  it('renders nothing for an empty model instead of throwing', () => {
+    const container = plot();
+    draw(container, []);
+    expect(container.childElementCount).toBe(0);
+  });
+
+  it('uses the colours of the dark theme', () => {
+    const container = plot();
+    draw(container, CELLS, { themeMode: 'dark' });
+    const header = container.querySelector('g.heatmap-column rect')!;
+    expect(header.getAttribute('fill')).toBe(heatmapTokens('dark').header);
+  });
+
+  it('paints the legend in the colour of the cells in each theme', () => {
+    const model = normalizeMatrixData([{ x: 'A', y: 'one', value: 5 }]);
+    for (const mode of ['light', 'dark'] as const) {
+      const [range] = matrixColorRanges(model, mode);
+      expect(range.color).toContain(heatmapTokens(mode).cell);
     }
+    expect(heatmapTokens('dark').cell).not.toBe(heatmapTokens('light').cell);
+  });
+});
+
+describe('heatmapGridLayout', () => {
+  const rows = Array.from({ length: 40 }, (_, i) => `row ${i}`);
+  const options = {
+    rows,
+    columns: ['A', 'B'],
+    rowLabels: rows,
+    columnLabels: ['A', 'B'],
+    values: new Map<string, number>(),
+    width: 600,
+    height: 400,
+    idPrefix: 'test',
+    measure,
+  };
+
+  it('lets rows scroll at the design pitch when they do not fit', () => {
+    const layout = heatmapGridLayout({ ...options, fillHeight: true, fitRows: true });
+    expect(layout.rowPitch).toBe(32);
+    expect(layout.rowsHeight).toBe(1280);
+  });
+
+  it('shrinks a few rows to fit a low widget', () => {
+    const few = rows.slice(0, 8);
+    const layout = heatmapGridLayout({
+      ...options,
+      rows: few,
+      rowLabels: few,
+      height: 300,
+      fillHeight: true,
+      fitRows: true,
+    });
+    expect(layout.rowPitch).toBeLessThan(32);
+    expect(layout.rowPitch).toBeGreaterThanOrEqual(22);
+    expect(layout.gridTop + layout.rowsHeight).toBeLessThanOrEqual(300);
+  });
+
+  it('keeps the full header under a title', () => {
+    const layout = heatmapGridLayout({ ...options, title: 'Heatmap' });
+    expect(layout.headerHeight).toBe(135);
+  });
+
+  it('narrows the name column with the widget', () => {
+    expect(heatmapGridLayout({ ...options, width: 300 }).labelWidth).toBe(90);
+    expect(heatmapGridLayout(options).labelWidth).toBe(134);
+  });
+});
+
+describe('renderHeatmapGrid', () => {
+  const values = new Map([[heatmapCellKey('r1', 'c1'), 3]]);
+  const base = {
+    rows: ['r1', 'r2'],
+    columns: ['c1'],
+    rowLabels: ['r1', 'r2'],
+    columnLabels: ['c1'],
+    values,
+    width: 500,
+    height: 400,
+    idPrefix: 'grid',
+    measure,
+  };
+
+  it('draws the selected row and the row colours it is given', () => {
+    const container = plot();
+    renderHeatmapGrid(container, { ...base, selectedRow: 'r2', rowColors: ['#111111', '#222222'] });
+    expect(container.querySelector('rect.heatmap-selected-row')?.getAttribute('y')).toBe('33');
+    expect(container.querySelector('circle')?.getAttribute('fill')).toBe('#111111');
+  });
+
+  it('cuts a long corner title and keeps the whole text on hover', () => {
+    const container = plot();
+    const title = 'A corner title far too long for the name column';
+    renderHeatmapGrid(container, { ...base, title });
+    const text = container.querySelector('.heatmap-header text title')!;
+    expect(text.textContent).toBe(title);
+    expect(text.parentElement?.textContent).toContain('...');
+  });
+
+  it('calls a row click', () => {
+    const container = plot();
+    const onRowClick = vi.fn();
+    renderHeatmapGrid(container, { ...base, onRowClick });
+    container.querySelector('g.heatmap-row')!.dispatchEvent(new MouseEvent('click'));
+    expect(onRowClick).toHaveBeenCalledWith('r1');
+  });
+
+  it('reports a column under the pointer', () => {
+    const container = plot();
+    const onColumnEnter = vi.fn();
+    renderHeatmapGrid(container, { ...base, onColumnEnter });
+    container.querySelector('g.heatmap-column')!.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(onColumnEnter.mock.calls[0][1]).toEqual({ column: 'c1', total: 3 });
+  });
+
+  it('picks readable totals with the auto colour', () => {
+    const container = plot();
+    renderHeatmapGrid(container, {
+      ...base,
+      tokens: { ...heatmapTokens('light'), totalsText: 'auto' },
+    });
+    const text = container.querySelector('g.heatmap-column-total text');
+    expect(text?.getAttribute('fill')).toBe('#2E2156');
   });
 });

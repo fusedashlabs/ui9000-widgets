@@ -1,7 +1,7 @@
 /**
  * Chart appearance — the only file to edit when series colors change.
  *
- * Palettes mirror the client page styles (`default`, `palette1` … `palette4`):
+ * Palettes mirror the client page styles (`default`, `palette1` … `palette5`):
  * Qualitative 2 / 4 / 12 and SequentialColors1. Charts read them through
  * `pickQualitativePalette`, `seriesColor`, and `sequentialColors`.
  *
@@ -163,6 +163,25 @@ export const QUALITATIVE: Record<ChartStyleId, QualitativeSet> = {
       '#025B9E',
     ],
   },
+  /** Network + Heatmap design: group colours first, then its blues and the shared neutrals. */
+  palette5: {
+    q2: ['#C093F9', '#A0F1E3'],
+    q4: ['#A0F1E3', '#6FCF97', '#C093F9', '#EB5757'],
+    q12: [
+      '#A0F1E3',
+      '#6FCF97',
+      '#C093F9',
+      '#EB5757',
+      '#F5C02A',
+      '#FF5977',
+      '#FB865C',
+      '#0098E6',
+      '#8CD1F4',
+      '#3ED1C3',
+      '#BDBCC8',
+      '#56546D',
+    ],
+  },
 };
 
 /** Client `SequentialColors1` — low → high, one ramp per page style. */
@@ -172,6 +191,7 @@ export const SEQUENTIAL: Record<ChartStyleId, string[]> = {
   palette2: ['#EAC1C8', '#E0A3AE', '#D27989', '#C95F72', '#BC374F', '#AB3248', '#852738'],
   palette3: ['#D1DBD8', '#BAC9C6', '#9BB1AB', '#88A19B', '#6A8A82', '#607E76', '#4B625C'],
   palette4: ['#77C59D', '#55B685', '#3D9E6E', '#309263', '#248657', '#187A4C', '#0C6E40'],
+  palette5: ['#DBF1FC', '#B8E2F8', '#94D4F4', '#70C5F1', '#4CB7EE', '#26A7EA', '#0098E6'],
 };
 
 /** Same rule as the client: ≤2 → Q2, 3–4 → Q4, >4 → Q12. */

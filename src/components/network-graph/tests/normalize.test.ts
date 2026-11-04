@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { useSeriesMode } from '../../../utils/fuse-palette.js';
 
 import {
   MAX_NETWORK_NODES,
@@ -40,22 +39,22 @@ describe('normalizeNetworkGraphData', () => {
     expect(model.links[0].type).toBe('primary');
   });
 
-  it('lifts an unknown category in dark and keeps an explicit brand purple', () => {
-    const lifted = useSeriesMode('dark', () =>
-      normalizeNetworkGraphData({
-        nodes: [{ id: 'a', type: 'investment_bank' }],
-        links: [],
-      }),
-    );
-    expect(lifted.nodes[0].color).toBe('#584FDC');
-
-    const explicit = useSeriesMode('dark', () =>
-      normalizeNetworkGraphData({
-        nodes: [{ id: 'a', type: 'investment_bank', color: '#473DD9' }],
-        links: [],
-      }),
-    );
-    expect(explicit.nodes[0].color).toBe('#473DD9');
+  it('gives each type the next page colour and keeps an explicit one', () => {
+    const { nodes } = normalizeNetworkGraphData({
+      nodes: [
+        { id: 'a', type: 'investment_bank' },
+        { id: 'b', type: 'fund' },
+        { id: 'c', type: 'investment_bank' },
+        { id: 'd', type: 'fund', color: '#123456' },
+      ],
+      links: [],
+    });
+    expect(nodes.map((node) => node.color)).toEqual([
+      '#473DD9',
+      '#36C4A5',
+      '#473DD9',
+      '#123456',
+    ]);
   });
 
   it('derives nodes from a links-only payload', () => {
@@ -92,6 +91,135 @@ describe('normalizeNetworkGraphData', () => {
 
     expect(model.nodes).toHaveLength(MAX_NETWORK_NODES);
     expect(model.nodes[0].id).toBe(`n${MAX_NETWORK_NODES + 39}`);
+  });
+
+  it('keeps what the panels draw, in data[0] and on a bare graph', () => {
+    const graph = {
+      nodes: [
+        {
+          id: 'a',
+          date: '2026-01-05',
+          topics: ['Trade', 3],
+          events: ['Summit'],
+          role: 'Analyst',
+          bio: 'Text',
+          metrics: [{ label: 'Share', value: 4 }],
+          eventsLabel: 'Meetings',
+          linksLabel: 'Partners',
+        },
+        { id: 'b' },
+      ],
+      links: [{ id: 'l', source: 'a', target: 'b', value: 1, date: '2026-02-02' }],
+      topics: [{ name: 'Trade', value: 1 }],
+      ranking: [{ name: 'a', value: 1 }],
+      labels: { linkValue: 'votes' },
+    };
+
+    for (const model of [
+      normalizeNetworkGraphData(graph),
+      normalizeNetworkGraphData({ data: [graph] }),
+    ]) {
+      expect(model.topics).toEqual(graph.topics);
+      expect(model.ranking).toEqual(graph.ranking);
+      expect(model.labels).toEqual(graph.labels);
+      expect(model.links[0].date).toBe('2026-02-02');
+      expect(model.nodes[0]).toMatchObject({
+        date: '2026-01-05',
+        topics: ['Trade'],
+        events: ['Summit'],
+        role: 'Analyst',
+        bio: 'Text',
+        metrics: [{ label: 'Share', value: 4 }],
+        eventsLabel: 'Meetings',
+        linksLabel: 'Partners',
+      });
+    }
+  });
+
+  it('turns numeric strings of the panels into numbers and drops entries without one', () => {
+    const graph = {
+      nodes: [
+        {
+          id: 'a',
+          metrics: [
+            {
+              label: 'Share',
+              value: '62.5',
+              unit: '%',
+              change: '-1.5',
+              changeUnit: ' pt',
+              series: [
+                { date: '2026-01-01', value: '4' },
+                { date: '2026-02-01', value: 'n/a' },
+              ],
+            },
+            { label: 'Broken', value: 'n/a' },
+            'junk',
+          ],
+        },
+      ],
+      links: [],
+      topics: [
+        { name: 'Trade', value: '62', unit: '%', change: null, selected: 'yes' },
+        { name: 2026, value: 'n/a' },
+        { name: ' ', value: 1 },
+        null,
+      ],
+      ranking: [
+        { name: 'a', value: '7', change: '2', connections: '3' },
+        { name: 'b', value: 'many' },
+      ],
+      labels: { linkValue: 'votes', nodeValue: 5 },
+    };
+    const model = normalizeNetworkGraphData(graph);
+
+    expect(model.nodes[0].metrics).toEqual([
+      {
+        label: 'Share',
+        value: 62.5,
+        unit: '%',
+        change: -1.5,
+        changeUnit: ' pt',
+        series: [{ date: '2026-01-01', value: 4 }],
+      },
+    ]);
+    expect(model.topics).toEqual([
+      { name: 'Trade', value: 62, unit: '%' },
+      { name: '2026', value: 0 },
+    ]);
+    expect(model.ranking).toEqual([{ name: 'a', value: 7, change: 2, connections: 3 }]);
+    expect(model.labels).toEqual({ linkValue: 'votes' });
+  });
+
+  it('keeps only plain colours, since they are written into style attributes', () => {
+    const colors = [
+      '#123',
+      '#a1b2c3',
+      'teal',
+      'rgb(1, 2, 3)',
+      'hsl(120deg 50% 40% / 0.5)',
+      'var(--graph-accent)',
+      'red; background-image: url(https://example.com/x)',
+      'url(https://example.com/x)',
+      'var(--x); position: fixed',
+      'rgb(1,2,3) !important',
+      '"red"',
+    ];
+    const graph = {
+      nodes: colors.map((color, index) => ({ id: `n${index}`, type: 't', color })),
+      links: [],
+      topics: colors.map((color, index) => ({ name: `t${index}`, value: 1, color })),
+    };
+    const model = normalizeNetworkGraphData(graph);
+
+    const kept = colors.slice(0, 6);
+    expect(model.topics?.map((topic) => topic.color)).toEqual([
+      ...kept,
+      ...colors.slice(6).map(() => undefined),
+    ]);
+    expect(model.nodes.slice(0, 6).map((node) => node.color)).toEqual(kept);
+    // A rejected colour falls back to the page palette like a node without one.
+    for (const node of model.nodes.slice(6)) expect(node.color).toBe('#473DD9');
   });
 
   it('returns an empty model for invalid payloads', () => {

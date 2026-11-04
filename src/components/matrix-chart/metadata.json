@@ -2,7 +2,7 @@
   "id": "matrix-chart",
   "tag": "ui9000-matrix-chart",
   "title": "Matrix Chart",
-  "description": "Chat-optimized matrix / heatmap rewritten in D3 (Visx → D3). Sequential-palette cell grid with a pinned column header, no Redux.",
+  "description": "Chat-optimized matrix / heatmap rewritten in D3 (Visx → D3). A cell grid with column and row totals, row names over a bar of the row total, and a header that stays while the rows scroll. No Redux.",
   "chartTypeKeys": ["matrixChart"],
   "source": "client/libs/shared/components/src/Widgets/MatrixChart/",
   "stack": "d3",

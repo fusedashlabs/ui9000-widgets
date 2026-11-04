@@ -49,15 +49,58 @@ function uniqueInOrder(values: string[]): string[] {
   return out;
 }
 
-/** Categories that define an axis: the declared list, plus any value a row actually carries. */
-function categoryDomain(listed: unknown, seen: unknown[]): string[] {
+/**
+ * Categories that differ only in outer or repeated spaces ("Red", "Red  ",
+ * "Red  wine" and "Red wine") are one category. "New York" and "NewYork" stay two.
+ */
+function axisKey(value: unknown): string {
+  return String(value ?? '').trim().replace(/\s+/g, ' ');
+}
+
+/** Exact category: used when rows on one cell cannot be combined. */
+function exactKey(value: unknown): string {
+  return String(value ?? '');
+}
+
+/**
+ * Categories that define an axis: the declared list, plus any value a row
+ * actually carries. `canonical` gives the category as the axis lists it.
+ */
+function categoryAxis(
+  listed: unknown,
+  seen: unknown[],
+  keyOf: (value: unknown) => string,
+): { domain: string[]; canonical: Map<string, string> } {
   const fromList = Array.isArray(listed) ? listed : [];
-  return sortAxisDomain(
-    [...new Set([...fromList, ...seen])].filter((v) => v != null && v !== '') as (
-      | string
-      | number
-    )[],
-  ).map(String);
+  const canonical = new Map<string, string>();
+  for (const value of [...fromList, ...seen]) {
+    if (value == null || value === '') continue;
+    const key = keyOf(value);
+    if (key && !canonical.has(key)) canonical.set(key, keyOf === exactKey ? key : String(value).trim());
+  }
+  return {
+    domain: sortAxisDomain([...canonical.values()]).map(String),
+    canonical,
+  };
+}
+
+type Combiner = (current: number, next: number, count: number) => number;
+
+/**
+ * Values of rows that fall on one cell, combined the way the widget aggregates.
+ * Null for an aggregation that cannot be rebuilt from its parts (median,
+ * distinct count, first, last): those categories are not merged at all.
+ */
+function combinerFor(aggregation: unknown): Combiner | null {
+  const name = String(aggregation ?? '').trim().toLowerCase();
+  if (['', 'sum', 'count'].includes(name)) return (current, next) => current + next;
+  if (name === 'min') return (current, next) => Math.min(current, next);
+  if (name === 'max') return (current, next) => Math.max(current, next);
+  // Rows carry averages without their counts, so the parts weigh the same.
+  if (['avg', 'average', 'mean'].includes(name)) {
+    return (current, next, count) => (current * count + next) / (count + 1);
+  }
+  return null;
 }
 
 function modelFromCells(
@@ -132,32 +175,44 @@ function fromFuseWidget(widget: FuseWidgetLike): MatrixModel {
   const uniqueValues = widget.uniqueValues ?? {};
   // A category with no measurement stays on the axis so the plot can paint it empty.
   // Row values are unioned in so a measurement never falls off the scale.
-  const yDomain = categoryDomain(
+  const combine = combinerFor(
+    (widget as { aggregationFunction?: unknown }).aggregationFunction,
+  );
+  const keyOf = combine ? axisKey : exactKey;
+  const yAxis = categoryAxis(
     uniqueValues[categoryKey],
     rows.map((row) => row[categoryKey]),
+    keyOf,
   );
-  const xDomain = categoryDomain(
+  const xAxis = categoryAxis(
     uniqueValues[xKey],
     rows.map((row) => row[xKey]),
+    keyOf,
   );
-
-  const cells: MatrixCell[] = [];
+  const cellsByKey = new Map<string, { cell: MatrixCell; count: number }>();
   for (const row of rows) {
-    const x = row[xKey];
-    const y = row[categoryKey];
-    if (x == null || y == null) continue;
-    const value = Number(row.value ?? row[valueKey] ?? 0);
-    cells.push({
-      x: String(x),
-      y: String(y),
-      value: Number.isFinite(value) ? value : 0,
-    });
+    const rawX = row[xKey];
+    const rawY = row[categoryKey];
+    if (rawX == null || rawY == null) continue;
+    const x = xAxis.canonical.get(keyOf(rawX)) ?? String(rawX);
+    const y = yAxis.canonical.get(keyOf(rawY)) ?? String(rawY);
+    const number = Number(row.value ?? row[valueKey] ?? 0);
+    const value = Number.isFinite(number) ? number : 0;
+    const key = `${x}\0${y}`;
+    const existing = cellsByKey.get(key);
+    if (existing) {
+      // Without a combiner the last row wins, as before categories were merged.
+      existing.cell.value = combine ? combine(existing.cell.value, value, existing.count) : value;
+      existing.count += 1;
+    } else {
+      cellsByKey.set(key, { cell: { x, y, value }, count: 1 });
+    }
   }
 
   return {
-    cells,
-    xDomain,
-    yDomain,
+    cells: [...cellsByKey.values()].map(({ cell }) => cell),
+    xDomain: xAxis.domain,
+    yDomain: yAxis.domain,
     rawValues,
     categoryKey,
     valueKey,

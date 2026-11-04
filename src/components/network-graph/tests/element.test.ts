@@ -1,6 +1,8 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
+import { applyWidgetContext, notifyHostTheme } from '../../../context/index.js';
 import networkFixture from '../../../stories/fixtures/network-graph.fusedash.json';
+import panelsFixture from '../../../stories/fixtures/network-graph.panels.json';
 
 let observed: (() => void)[] = [];
 
@@ -24,6 +26,8 @@ type Shadowed = HTMLElement & {
   updateComplete: Promise<unknown>;
   showLegend: boolean;
   showTooltip: boolean;
+  wheelZoom: boolean;
+  message: string;
 };
 
 const flush = () => new Promise((r) => setTimeout(r, 40));
@@ -55,23 +59,88 @@ async function mount(
   return el;
 }
 
+/** Waits for the simulation to stop moving what `read` reports. */
+async function settled(read: () => unknown): Promise<void> {
+  let last = '';
+  for (let step = 0; step < 120; step += 1) {
+    const now = JSON.stringify(read());
+    if (now === last) return;
+    last = now;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  throw new Error('the graph did not settle');
+}
+
+async function openLegend(el: Shadowed): Promise<void> {
+  (el.shadowRoot.querySelector('.legend-chevron') as HTMLButtonElement).click();
+  await el.updateComplete;
+}
+
+const click = async (el: Shadowed, selector: string): Promise<void> => {
+  (el.shadowRoot.querySelector(selector) as HTMLElement).dispatchEvent(
+    new MouseEvent('click', { bubbles: true, composed: true }),
+  );
+  await el.updateComplete;
+};
+
+const text = (el: Shadowed, selector: string): string =>
+  el.shadowRoot.querySelector(selector)?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+
 describe('ui9000-network-graph', () => {
-  it('repaints an unknown category when the page style id changes', async () => {
+  it('paints node types from the group palette in order of appearance', async () => {
     const el = await mount({
-      nodes: [{ id: 'a', label: 'A', type: 'investment_bank', value: 1 }],
+      nodes: [
+        { id: 'a', label: 'A', type: 'investment_bank', value: 1 },
+        { id: 'b', label: 'B', type: 'fund', value: 2 },
+      ],
       links: [],
     });
-    const fill = () =>
-      el.shadowRoot.querySelector('.node-background')?.getAttribute('fill')?.toLowerCase();
+    const fills = [...el.shadowRoot.querySelectorAll('.node-background')].map((node) =>
+      node.getAttribute('stroke')?.toLowerCase(),
+    );
+    expect(fills.map((color) => color?.length)).toEqual([7, 7]);
+    expect(new Set(fills).size).toBe(2);
+    el.remove();
+  });
 
-    expect(fill()).toBe('#473dd9');
+  it('switches to the heatmap and back without rebuilding the graph', async () => {
+    const el = await mount();
+    const root = el.shadowRoot;
+    const graph = root.querySelector('.chart-root svg');
+    const button = (label: string) =>
+      [...root.querySelectorAll<HTMLButtonElement>('.view-button')].find(
+        (item) => item.textContent?.trim() === label,
+      )!;
 
-    el.style.setProperty('--ui9000-style-id', 'palette1');
-    document.dispatchEvent(new Event('ui9000-theme'));
-    await flush();
+    expect(button('Network').getAttribute('aria-selected')).toBe('true');
+    expect(root.querySelector('.heatmap-root svg')).toBeNull();
+
+    button('Heatmap').click();
     await el.updateComplete;
+    await flush();
+    expect(button('Heatmap').getAttribute('aria-selected')).toBe('true');
+    expect(root.querySelector('.heatmap-root g.heatmap-row')).not.toBeNull();
+    expect(root.querySelector('.graph-legend')).toBeNull();
+    expect(root.querySelector('.heatmap-header')?.textContent).toContain('Link values');
 
-    expect(fill()).toBe('#2039b4');
+    button('Network').click();
+    await el.updateComplete;
+    await flush();
+    expect(root.querySelector('.heatmap-pane')?.hasAttribute('hidden')).toBe(true);
+    expect(root.querySelector('.chart-root svg')).toBe(graph);
+    el.remove();
+  });
+
+  it('keeps the row picked in the heatmap selected', async () => {
+    const el = await mount();
+    const root = el.shadowRoot;
+    root.querySelectorAll<HTMLButtonElement>('.view-button')[1].click();
+    await el.updateComplete;
+    await flush();
+
+    root.querySelector('.heatmap-root g.heatmap-row')!.dispatchEvent(new MouseEvent('click'));
+    await flush();
+    expect(root.querySelector('rect.heatmap-selected-row')).not.toBeNull();
     el.remove();
   });
 
@@ -80,7 +149,7 @@ describe('ui9000-network-graph', () => {
     const root = el.shadowRoot;
 
     expect(root.querySelector('.empty')?.textContent).toMatch(/Network graph requires/);
-    expect(root.querySelector('.chart-root')?.hasAttribute('hidden')).toBe(true);
+    expect(root.querySelector('.network-layout')?.hasAttribute('hidden')).toBe(true);
     expect(root.querySelector('.chart-root svg')).toBeNull();
     expect(root.querySelector('.graph-legend')).toBeNull();
 
@@ -92,6 +161,7 @@ describe('ui9000-network-graph', () => {
     const svg = el.shadowRoot.querySelector('svg');
     expect(svg).not.toBeNull();
     expect(el.shadowRoot.querySelector('.graph-legend')).not.toBeNull();
+    await openLegend(el);
     expect(el.shadowRoot.querySelectorAll('.legend-thumb')).toHaveLength(2);
     expect(el.shadowRoot.querySelector('.legend-kicker')?.textContent).toBe('Legend');
 
@@ -107,6 +177,7 @@ describe('ui9000-network-graph', () => {
   it('show-tooltip toggles legend-value hover tips without rebuilding', async () => {
     const el = await mount();
     const svg = el.shadowRoot.querySelector('svg');
+    await openLegend(el);
     const value = el.shadowRoot.querySelector('.legend-value')!;
     const labelTip = () => document.querySelector('[data-ui9000-label-tooltip]');
 
@@ -131,10 +202,12 @@ describe('ui9000-network-graph', () => {
   it('collapses the size scale without rebuilding the SVG', async () => {
     const el = await mount();
     const svg = el.shadowRoot.querySelector('svg');
-    const chevron = el.shadowRoot.querySelector('.legend-chevron') as HTMLButtonElement;
+    expect(el.shadowRoot.querySelector('.legend-details')).toBeNull();
+
+    await openLegend(el);
     expect(el.shadowRoot.querySelector('.legend-details')).not.toBeNull();
 
-    chevron.click();
+    (el.shadowRoot.querySelector('.legend-chevron') as HTMLButtonElement).click();
     await el.updateComplete;
 
     expect(el.shadowRoot.querySelector('.legend-details')).toBeNull();
@@ -142,5 +215,335 @@ describe('ui9000-network-graph', () => {
     expect(el.shadowRoot.querySelector('svg')).toBe(svg);
 
     el.remove();
+  });
+
+  describe('panels', () => {
+    it('opens on the latest date and the selected topic of the data', async () => {
+      const el = await mount(panelsFixture);
+
+      expect(text(el, '.timeline-bubble')).toBe('Aug, 3');
+      expect(el.shadowRoot.querySelector('.topic-card[data-selected]')?.textContent).toMatch(
+        /Payments/,
+      );
+      expect(text(el, '.sidebar-title')).toBe('Payments');
+      expect(el.shadowRoot.querySelectorAll('.ranking-table tbody tr')).toHaveLength(3);
+
+      el.remove();
+    });
+
+    it('leaves out the timeline and the sidebar for data without them', async () => {
+      const el = await mount();
+
+      expect(el.shadowRoot.querySelector('.timeline-bar')).toBeNull();
+      expect(el.shadowRoot.querySelector('.sidebar')).toBeNull();
+      expect(el.shadowRoot.querySelector('.topic-card')).not.toBeNull();
+
+      el.remove();
+    });
+
+    it('walks the dates without moving the graph', { timeout: 15000 }, async () => {
+      const el = await mount(panelsFixture);
+      const svg = el.shadowRoot.querySelector('.chart-root svg');
+      const places = (): (string | null)[] =>
+        [...el.shadowRoot.querySelectorAll('g.node')].map((node) => node.getAttribute('transform'));
+      await settled(places);
+      const before = places();
+      const shown = (): number =>
+        [...el.shadowRoot.querySelectorAll<SVGGElement>('g.node')].filter(
+          (node) => node.style.opacity !== '0',
+        ).length;
+      expect(shown()).toBe(12);
+
+      await click(el, '[aria-label="Previous date"]');
+
+      expect(text(el, '.timeline-bubble')).toBe('Jul, 6');
+      expect(shown()).toBe(11);
+      expect(el.shadowRoot.querySelector('.chart-root svg')).toBe(svg);
+      await new Promise((r) => setTimeout(r, 300));
+      expect(places()).toEqual(before);
+
+      el.remove();
+    });
+
+    it('sorts the ranking both ways', async () => {
+      const el = await mount(panelsFixture);
+      const first = (): string => text(el, '.ranking-table tbody tr td:nth-child(2)');
+      expect(first()).toBe('North Office');
+
+      await click(el, '.sidebar-title .icon-button');
+
+      expect(first()).toBe('East Office');
+
+      el.remove();
+    });
+
+    it('clears the sidebar metrics when the selected topic is picked again', async () => {
+      const el = await mount(panelsFixture);
+      expect(el.shadowRoot.querySelector('.metric-tabs')).not.toBeNull();
+
+      await click(el, '.topic-card[data-selected]');
+
+      expect(el.shadowRoot.querySelector('.metric-tabs')).toBeNull();
+      expect(text(el, '.sidebar-title')).toMatch(/^Top offices/);
+
+      el.remove();
+    });
+
+    it('opens a focus view from the node, with a card for its links', async () => {
+      const el = await mount(panelsFixture);
+      const plus = el.shadowRoot.querySelector('g.node .node-plus') as SVGElement;
+
+      plus.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+
+      const overlay = el.shadowRoot.querySelector('.focus-overlay') as HTMLElement;
+      expect(overlay).not.toBeNull();
+      expect(el.shadowRoot.querySelector('.view-toggle')?.hasAttribute('hidden')).toBe(true);
+      expect(el.shadowRoot.querySelector('.graph-legend')).toBeNull();
+      expect(el.shadowRoot.querySelector('.node-card')).not.toBeNull();
+      expect(el.shadowRoot.querySelector('.sidebar')).toBeNull();
+
+      overlay.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await el.updateComplete;
+
+      expect(el.shadowRoot.querySelector('.focus-overlay')).toBeNull();
+      expect(el.shadowRoot.querySelector('.sidebar')).not.toBeNull();
+
+      el.remove();
+    });
+
+    it('keeps keyboard focus on the picked item, so Escape still closes', async () => {
+      const el = await mount(panelsFixture);
+      (el.shadowRoot.querySelector('g.node .node-plus') as SVGElement).dispatchEvent(
+        new MouseEvent('click', { bubbles: true }),
+      );
+      await el.updateComplete;
+      const canvas = el.shadowRoot.querySelector('.focus-canvas') as HTMLElement;
+      Object.defineProperty(canvas, 'clientWidth', { value: 700, configurable: true });
+      Object.defineProperty(canvas, 'clientHeight', { value: 480, configurable: true });
+      for (const cb of observed) cb();
+      await flush();
+      const item = el.shadowRoot.querySelector('.focus-item') as SVGGElement;
+      item.focus();
+
+      item.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+
+      expect(el.shadowRoot.querySelector('.focus-item')).toBe(item);
+      expect(el.shadowRoot.activeElement).toBe(item);
+      expect(item.getAttribute('aria-pressed')).toBe('true');
+      item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.focus-overlay')).toBeNull();
+
+      el.remove();
+    });
+
+    it('closes the focus view of a node the timeline hides', async () => {
+      const el = await mount(panelsFixture);
+      const node = [...el.shadowRoot.querySelectorAll('g.node')].at(-1) as SVGGElement;
+      (node.querySelector('.node-plus') as SVGElement).dispatchEvent(
+        new MouseEvent('click', { bubbles: true }),
+      );
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.focus-overlay')).not.toBeNull();
+
+      await click(el, '[aria-label="Previous date"]');
+
+      expect(el.shadowRoot.querySelector('.focus-overlay')).toBeNull();
+
+      el.remove();
+    });
+
+    it('moves the selected heatmap row without redrawing the grid', async () => {
+      const el = await mount(panelsFixture);
+      const toggle = el.shadowRoot.querySelectorAll('.view-button')[1] as HTMLElement;
+      const heatmap = el.shadowRoot.querySelector('.heatmap-root') as HTMLElement;
+      Object.defineProperty(heatmap, 'clientWidth', { value: 700, configurable: true });
+      Object.defineProperty(heatmap, 'clientHeight', { value: 480, configurable: true });
+      toggle.click();
+      await flush();
+      const svg = heatmap.querySelector('svg');
+      const row = heatmap.querySelector('.heatmap-row-bar') as SVGElement;
+      expect(svg).not.toBeNull();
+
+      row.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await flush();
+
+      expect(heatmap.querySelector('svg')).toBe(svg);
+      expect(heatmap.querySelector('.heatmap-selected-row')?.getAttribute('visibility')).toBe(
+        'visible',
+      );
+
+      el.remove();
+    });
+
+    it('follows the page style in node colours and the accent', async () => {
+      const el = await mount(panelsFixture);
+      const fills = (): (string | null | undefined)[] =>
+        [...el.shadowRoot.querySelectorAll('g.node .node-background')].map((node) =>
+          node.getAttribute('stroke'),
+        );
+      const before = fills();
+      const accent = (el.shadowRoot.querySelector('.network-layout') as HTMLElement).style.getPropertyValue('--graph-accent');
+
+      applyWidgetContext(el, { mode: 'light', styleId: 'palette1' });
+      notifyHostTheme();
+      await flush();
+      await el.updateComplete;
+
+      expect(fills()).not.toEqual(before);
+      expect(
+        (el.shadowRoot.querySelector('.network-layout') as HTMLElement).style.getPropertyValue('--graph-accent'),
+      ).not.toBe(accent);
+
+      el.remove();
+    });
+
+    it('picks the period from the chart-menu list', async () => {
+      const el = await mount(panelsFixture);
+      const button = (): HTMLButtonElement =>
+        el.shadowRoot.querySelector('[data-picker="period"] .picker-btn') as HTMLButtonElement;
+      expect(button().textContent).toContain('Last 6 months');
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
+
+      button().click();
+      await el.updateComplete;
+      const options = [...el.shadowRoot.querySelectorAll('.picker-menu [role="option"]')];
+      expect(options.map((option) => option.textContent?.trim())).toEqual([
+        'Last 3 months',
+        'Last 6 months',
+        'Last 12 months',
+      ]);
+      expect(button().getAttribute('aria-expanded')).toBe('true');
+
+      (options[0] as HTMLButtonElement).click();
+      await el.updateComplete;
+
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
+      expect(button().textContent).toContain('Last 3 months');
+
+      el.remove();
+    });
+
+    it('closes the picker on Escape and on a click elsewhere', async () => {
+      const el = await mount(panelsFixture);
+      const button = el.shadowRoot.querySelector('[data-picker="period"] .picker-btn') as HTMLElement;
+      button.click();
+      await el.updateComplete;
+      button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
+
+      button.click();
+      await el.updateComplete;
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.picker-menu')).toBeNull();
+
+      el.remove();
+    });
+
+    it('drops the selection of a node the timeline hides', async () => {
+      const el = await mount(panelsFixture);
+      const last = [...el.shadowRoot.querySelectorAll('g.node')].find((node) =>
+        node.textContent?.includes('Insurers'),
+      ) as SVGGElement;
+      last.querySelector('.node-drag-area')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      expect(el.shadowRoot.querySelector('.connections-panel')).not.toBeNull();
+
+      await click(el, '[aria-label="Previous date"]');
+
+      expect(el.shadowRoot.querySelector('.connections-panel')).toBeNull();
+      const opacities = [...el.shadowRoot.querySelectorAll<SVGGElement>('.node-visual')].map(
+        (node) => node.style.opacity,
+      );
+      expect(opacities.every((opacity) => opacity === '1')).toBe(true);
+
+      el.remove();
+    });
+
+    it('draws the connection curves only when something moves', { timeout: 20000 }, async () => {
+      const el = await mount(panelsFixture);
+      const places = (): (string | null)[] =>
+        [...el.shadowRoot.querySelectorAll('g.node')].map((node) => node.getAttribute('transform'));
+      await settled(places);
+      el.shadowRoot
+        .querySelector('g.node .node-drag-area')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      await flush();
+      expect(el.shadowRoot.querySelector('.connections-panel')).not.toBeNull();
+
+      const frames = vi.spyOn(window, 'requestAnimationFrame');
+      await new Promise((r) => setTimeout(r, 300));
+      expect(frames).not.toHaveBeenCalled();
+      frames.mockRestore();
+
+      el.remove();
+    });
+
+    it('turns plain-wheel zoom on after the graph is drawn', async () => {
+      const el = await mount(panelsFixture);
+      const svg = el.shadowRoot.querySelector('.chart-root svg') as SVGSVGElement;
+      const layer = (): string | null | undefined =>
+        [...svg.children].find((child) => child.getAttribute('transform')?.includes('scale'))
+          ?.getAttribute('transform');
+      const wheel = (): void => {
+        svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -120, bubbles: true, cancelable: true }));
+      };
+      const before = layer();
+      wheel();
+      expect(layer()).toBe(before);
+
+      (el as Shadowed).wheelZoom = true;
+      await el.updateComplete;
+      wheel();
+
+      expect(layer()).not.toBe(before);
+      expect(el.shadowRoot.querySelector('.chart-root svg')).toBe(svg);
+      el.remove();
+    });
+
+    it('lays the names out again when the theme brings another font', async () => {
+      const el = await mount(panelsFixture);
+      const svg = el.shadowRoot.querySelector('.chart-root svg');
+      applyWidgetContext(el, { mode: 'dark', theme: { fontFamily: 'Georgia, serif' } });
+      notifyHostTheme();
+      await flush();
+      await el.updateComplete;
+      await flush();
+      expect(el.shadowRoot.querySelector('.chart-root svg')).not.toBe(svg);
+      el.remove();
+    });
+
+    it('says the words of the data in the legend', async () => {
+      const el = await mount(panelsFixture);
+      await openLegend(el);
+
+      const captions = [...el.shadowRoot.querySelectorAll('.legend-caption')].map(
+        (node) => node.textContent,
+      );
+      expect(captions).toEqual(['Node size: staff', 'Colour: node type']);
+      expect(el.shadowRoot.querySelectorAll('.legend-type')).toHaveLength(3);
+
+      el.remove();
+    });
+
+    it('shows the message of the host in place of the empty text', async () => {
+      const el = document.createElement('ui9000-network-graph') as Shadowed;
+      el.message = 'Pick a dataset';
+      el.setAttribute('data', JSON.stringify({ nodes: [], links: [] }));
+      document.body.append(el);
+      await el.updateComplete;
+      await flush();
+      await el.updateComplete;
+
+      expect(text(el, '.stage-message')).toBe('Pick a dataset');
+      expect(el.shadowRoot.querySelector('.empty')).toBeNull();
+
+      el.remove();
+    });
   });
 });

@@ -4,7 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { chartShellStyles, Ui9000ChartElement } from '../../../element/ui9000-chart-base.js';
 import { readThemeFromElement } from '../../../context/widget-context.js';
 import { axisFieldLabel, formatValueWithUnit } from '../../../utils/axis-units.js';
-import { getMatrixDimensions, parseJsonAttr } from '../../../utils/chart-helpers.js';
+import { parseJsonAttr } from '../../../utils/chart-helpers.js';
 import { chartPropsChanged } from '../../../utils/lit-draw.js';
 import {
   formatCategoryLabel,
@@ -14,13 +14,11 @@ import {
   type MatrixInput,
   type MatrixModel,
 } from '../lib/index.js';
-import {
-  matrixColorRanges,
-  matrixLayout,
-  renderMatrixChart,
-} from '../render/draw.js';
+import { matrixColorRanges, renderMatrixChart } from '../render/draw.js';
 import { matrixStyles } from './styles.js';
 import { dsText } from '../../../element/ds-text.js';
+
+let nextChartId = 0;
 
 @customElement('ui9000-matrix-chart')
 export class Ui9000MatrixChart extends Ui9000ChartElement {
@@ -32,16 +30,19 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
   @property({ type: Boolean, attribute: 'show-tooltip' })
   showTooltip = true;
 
-  @state()
-  private _empty = false;
+  /** KPI tiles show only the cells, without names and totals. */
+  @property({ type: Boolean, attribute: 'in-kpi' })
+  inKpi = false;
 
   @state()
-  private _pinnedTopAxis = false;
+  private _empty = false;
 
   private _resizeObserver?: ResizeObserver;
   private _raf = 0;
   private _drawnSignature: string | null = null;
   private _drawnModel: MatrixModel | null = null;
+  private _revealed = false;
+  private readonly _chartId = `ui9000-matrix-${(nextChartId += 1)}`;
   private _modelJson: string | null = null;
   private _model: MatrixModel = {
     cells: [],
@@ -89,67 +90,80 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
     return this._model;
   }
 
+  /** The legend is Lit chrome and the grid is SVG: both take the new colours. */
   protected override onThemeChange(): void {
+    this.requestUpdate();
     this.scheduleDraw();
   }
 
   private draw(): void {
-    const chartBody = this.shadowRoot?.querySelector('.chart-body') as HTMLElement | null;
     const scroll = this.shadowRoot?.querySelector('.chart-scroll') as HTMLElement | null;
     const root = this.shadowRoot?.querySelector('.chart-root') as HTMLElement | null;
-    const topAxis = this.shadowRoot?.querySelector('.chart-top-axis') as HTMLElement | null;
-    if (!chartBody || !scroll || !root) return;
+    if (!scroll || !root) return;
 
     const model = this.parseData();
     this._empty = model.cells.length === 0;
     if (this._empty) {
       root.replaceChildren();
-      topAxis?.replaceChildren();
-      this._pinnedTopAxis = false;
       this._drawnSignature = null;
       this._drawnModel = null;
       return;
     }
 
-    const { width, margin } = getMatrixDimensions(chartBody);
-    const bodyHeight = chartBody.clientHeight || 300;
-    const viewportHeight = scroll.clientHeight || 300;
+    const width = scroll.clientWidth || 400;
+    const height = scroll.clientHeight || 300;
     const themeMode = this.themeMode();
 
-    // Drawing the header changes the scroll viewport, which fires the resize
-    // observer again — skip redraws whose inputs are unchanged so that
-    // settling costs one extra pass instead of running forever.
-    const signature = [
-      width,
-      bodyHeight,
-      viewportHeight,
-      themeMode,
-      this.styleId(),
-      this.showTooltip,
-    ].join('|');
+    // Skip redraws whose inputs are unchanged: a redraw resets the scroll and
+    // settling after a resize would cost a pass for nothing.
+    const signature = [width, height, themeMode, this.styleId(), this.inKpi, this.showTooltip].join('|');
     if (this._drawnSignature === signature && this._drawnModel === model) return;
     this._drawnSignature = signature;
     this._drawnModel = model;
 
-    this._pinnedTopAxis = matrixLayout(model, viewportHeight, margin).separateTopAxis;
+    // The reveal runs once, when the grid opens, not on every redraw.
+    const reveal = !this._revealed;
+    this._revealed = true;
 
-    this.withSeriesMode(() => renderMatrixChart(root, {
+    this.withSeriesMode(() =>
+      renderMatrixChart(root, {
       model,
       width,
-      height: viewportHeight,
-      bodyHeight,
-      margin,
-      theme: readThemeFromElement(this),
+      height,
       themeMode,
-      topAxisContainer: topAxis,
-      ...this.axisLabelHandlers(),
+      fontFamily: readThemeFromElement(this).fontFamily,
+      idPrefix: this._chartId,
+      isInKpi: this.inKpi,
+      reveal,
       onCellHover: this.showTooltip
         ? ({ cell, event }) => {
             this.openTooltip(event, this.tooltipContent(model, cell));
           }
         : undefined,
+      onRowHover: this.showTooltip
+        ? ({ row, total, event }) => {
+            this.openTooltip(event, this.tooltipContent(model, { x: '', y: row, value: total }, 'Total'));
+          }
+        : undefined,
+      onColumnHover: this.showTooltip
+        ? ({ column, total, event }) => {
+            this.openTooltip(event, {
+              title: formatCategoryLabel(column),
+              rows: [
+                {
+                  label: 'Total',
+                  value: formatValueWithUnit(
+                    formatMatrixValue(total),
+                    model.axisDetails?.[model.valueKey],
+                  ),
+                },
+              ],
+            });
+          }
+        : undefined,
       onCellLeave: this.showTooltip ? () => this.closeTooltip() : undefined,
-    }));
+    }),
+    );
   }
 
   /**
@@ -159,6 +173,7 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
   private tooltipContent(
     model: MatrixModel,
     cell: MatrixCell,
+    valueLabel = 'Value',
   ): { title?: string; rows: { label: string; value: string }[] } {
     const rowValue = formatValueWithUnit(
       formatCategoryLabel(cell.y),
@@ -173,20 +188,20 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
         title: axisFieldLabel(model.categoryKey, model.axisDetails),
         rows: [
           { label: '', value: rowValue },
-          { label: 'Value', value },
+          { label: valueLabel, value },
         ],
       };
     }
     return {
       title: rowValue,
-      rows: [{ label: 'Value', value }],
+      rows: [{ label: valueLabel, value }],
     };
   }
 
   /** FuseDash `ChartLegend legendType="palette"` — Low → High swatch ramp. */
   private renderPaletteLegend(model: MatrixModel) {
     if (!this.showLegend) return nothing;
-    const ranges = this.withSeriesMode(() => matrixColorRanges(model));
+    const ranges = this.withSeriesMode(() => matrixColorRanges(model, this.themeMode()));
     if (!ranges.length) return nothing;
     return html`
       <div class="palette-legend" part="legend">
@@ -214,11 +229,6 @@ export class Ui9000MatrixChart extends Ui9000ChartElement {
         <div class="widget-body">
           <div class="chart-body" part="chart-body">
             ${this._empty ? nothing : this.renderPaletteLegend(model)}
-            <div
-              class="chart-top-axis"
-              part="top-axis"
-              ?hidden=${!this._pinnedTopAxis}
-            ></div>
             <div class="chart-scroll" part="scroll">
               <div
                 class="chart-root"

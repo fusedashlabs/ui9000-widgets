@@ -25,6 +25,9 @@ export const chartShellStyles = css`
     --ui9000-font-size-empty: ${unsafeCSS(CHART_TYPE.empty)};
     --ui9000-font-weight-empty: ${unsafeCSS(String(CHART_TYPE.emptyWeight))};
     --ui9000-line-height-empty: ${unsafeCSS(String(CHART_TYPE.emptyLine))}px;
+    --ui9000-font-size-heading: ${unsafeCSS(String(CHART_TYPE.heading))}px;
+    --ui9000-font-weight-heading: ${unsafeCSS(String(CHART_TYPE.headingWeight))};
+    --ui9000-line-height-heading: ${unsafeCSS(String(CHART_TYPE.headingLine))}px;
     font-family: var(--ui9000-font-family, ${unsafeCSS(CHART_TYPE.fontFamily)});
   }
 

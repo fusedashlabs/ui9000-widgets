@@ -41,6 +41,15 @@ function isAllWeekdays(values: (string | number)[]): boolean {
   return values.every((v) => weekdayIndex(String(v)) >= 0);
 }
 
+/** Whether the values have an order of their own: numbers, dates, weekdays. */
+export function hasNaturalOrder(values: (string | number)[]): boolean {
+  const normalized = values.map((v) => (typeof v === 'number' ? v : String(v ?? '')));
+  return (
+    normalized.length > 0 &&
+    (isAllNumeric(normalized) || isAllDates(normalized) || isAllWeekdays(normalized))
+  );
+}
+
 export function sortAxisDomain(
   values: (string | number)[],
 ): (string | number)[] {

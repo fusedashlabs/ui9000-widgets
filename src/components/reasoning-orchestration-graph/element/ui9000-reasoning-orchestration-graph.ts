@@ -22,15 +22,12 @@ import {
 } from '../lib/index.js';
 import {
   entropyColors,
-  formatScalingX,
-  formatScalingY,
   highlightedChain,
   modelColor,
   MONO_FONT,
   orchestrationPalette,
   renderEntropyStrip,
   renderReasoningOrchestration,
-  renderScalingChart,
   renderTopChart,
   type OrchestrationController,
   type OrchestrationSelection,
@@ -64,9 +61,9 @@ const NO_SELECTION: OrchestrationSelection = { pathId: null, nodeId: null };
 /**
  * Reasoning orchestration graph (AM-1): reasoning stages, candidate paths,
  * models and refinement steps, with the active path highlighted and the
- * alternatives subordinate. The top chart compares a stage metric across
- * depth; step entropy, the refinement pipeline and compute scaling sit in
- * panels under the plot. Hover explains a node, a path or a stage; a click
+ * alternatives subordinate. Step entropy and the benchmarks sit under the
+ * plot; the stage chart above it (readouts and a stage metric across depth)
+ * is off by default. Hover explains a node, a path or a stage; a click
  * highlights a path (or the path to a node), Escape returns to the active one.
  */
 @customElement('ui9000-reasoning-orchestration-graph')
@@ -79,11 +76,11 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
   @property({ converter: flagConverter, attribute: 'show-tooltip' })
   showTooltip = true;
 
-  /** Readouts and the stage chart above the plot. */
+  /** Readouts and the stage chart above the plot. Off by default; `show-top-chart` turns it on. */
   @property({ converter: flagConverter, attribute: 'show-top-chart' })
-  showTopChart = true;
+  showTopChart = false;
 
-  /** Step entropy, refinement pipeline and compute scaling under the plot. */
+  /** Step entropy and the benchmarks under the plot. */
   @property({ converter: flagConverter, attribute: 'show-panels' })
   showPanels = true;
 
@@ -250,27 +247,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
           this.tip(event, {
             title: `Step ${step + 1}`,
             rows: values.map((item) => ({ label: item.label, value: formatNumber(item.value) })),
-          }),
-        onLeave: () => this.closeTooltip(),
-      });
-    }
-    const scaling = this.shadowPart('.ro-scaling');
-    if (scaling && model.scaling) {
-      const spec = model.scaling;
-      renderScalingChart(scaling, {
-        scaling: spec,
-        model,
-        width: scaling.clientWidth || 240,
-        height: scaling.clientHeight || 56,
-        themeMode: mode,
-        styleId: this.styleId(),
-        onPointHover: (series, point, event) =>
-          this.tip(event, {
-            title: series.label,
-            rows: [
-              { label: spec.xLabel, value: formatScalingX(point.x) },
-              { label: spec.yLabel, value: formatScalingY(spec, point.y) },
-            ],
           }),
         onLeave: () => this.closeTooltip(),
       });
@@ -483,13 +459,12 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
   }
 
   private renderPanels() {
-    const { entropy, pipeline, scaling, benchmarks, empty, models } = this._model;
+    const { entropy, benchmarks, empty, models } = this._model;
     if (!this.showPanels || empty) return nothing;
-    if (!entropy && !pipeline && !scaling && !benchmarks.length) return nothing;
+    if (!entropy && !benchmarks.length) return nothing;
     const mode = this.mode();
     const colors = entropy ? entropyColors(entropy, this._model, mode, this.styleId()) : [];
     const head = entropy?.title || (benchmarks.length ? 'Benchmarks' : '');
-    const activeStep = this.highlightColor();
     return html`<div class="ro-panels" part="panels">
       ${head || benchmarks.length
         ? html`<div class="ro-readouts">
@@ -508,8 +483,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
           </div>`
         : nothing}
       ${entropy ? html`<div class="ro-entropy" part="entropy"></div>` : nothing}
-      <div class="ro-panel-grid">
-        ${entropy
+      ${entropy
           ? html`<section class="ro-panel" data-panel="entropy">
               <span class="ro-panel-title"
                 >${entropy.label}${entropy.series.length > 1
@@ -528,35 +502,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
               </span>
             </section>`
           : nothing}
-        ${pipeline
-          ? html`<section class="ro-panel" data-panel="pipeline">
-              <span class="ro-panel-title">${pipeline.label} · ${pipeline.stages.length} stages</span>
-              <ol class="ro-pipeline" style="--ro-active:${activeStep}">
-                ${pipeline.stages.map(
-                  (step, i) => html`<li class="ro-step-item">
-                    ${i ? html`<span class="ro-step-arrow" aria-hidden="true">→</span>` : nothing}
-                    <span
-                      class="ro-step"
-                      data-status=${step.status}
-                      title=${`${step.label}: ${STATUS_NAME[step.status]}${step.detail ? ` · ${step.detail}` : ''}`}
-                    >
-                      <span class="ro-step-mark" aria-hidden="true"></span>${step.label}
-                      <span class="sr-only">${STATUS_NAME[step.status]}</span>
-                    </span>
-                  </li>`,
-                )}
-              </ol>
-            </section>`
-          : nothing}
-        ${scaling
-          ? html`<section class="ro-panel" data-panel="scaling">
-              <span class="ro-panel-title"
-                >${scaling.label} · ${scaling.series.map((series) => series.label).join(' vs ')}</span
-              >
-              <div class="ro-scaling"></div>
-            </section>`
-          : nothing}
-      </div>
     </div>`;
   }
 

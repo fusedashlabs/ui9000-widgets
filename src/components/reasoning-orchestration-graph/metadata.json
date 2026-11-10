@@ -2,7 +2,7 @@
   "id": "reasoning-orchestration-graph",
   "tag": "ui9000-reasoning-orchestration-graph",
   "title": "Reasoning Orchestration Graph",
-  "description": "Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps, with the active path highlighted. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc and deeper stages climb toward the top. Links are hairlines coloured by model, red and dashed into a pruned node; candidate paths sit above them, subordinate; the active path glows from the root and warms to its model's colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. The top chart compares a stage metric across depth over the breadth at each depth; step entropy, the refinement pipeline and compute scaling sit in panels under the plot. Hover explains a node, a path or a stage; a click highlights a path, or the path to a node (path-select), and Escape returns to the active path. Not a free-form node–link graph (that is network-graph) and not a workflow editor. D3, no Redux.",
+  "description": "Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps, with the active path highlighted. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc and deeper stages climb toward the top. Links are hairlines coloured by model, red and dashed into a pruned node; candidate paths sit above them, subordinate; the active path glows from the root and warms to its model's colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. Step entropy and the benchmarks sit in a panel under the plot; a stage chart above it (readouts and a stage metric across depth over the breadth at each depth) is off by default and turned on with show-top-chart. Hover explains a node, a path or a stage; a click highlights a path, or the path to a node (path-select), and Escape returns to the active path. Not a free-form node–link graph (that is network-graph) and not a workflow editor. D3, no Redux.",
   "chartTypeKeys": ["reasoningOrchestrationGraph"],
   "stack": "d3",
   "lazyImport": "@ui9000/widgets/lazy/reasoning-orchestration-graph",
@@ -34,7 +34,7 @@
           },
           "stages": {
             "type": "array",
-            "description": "Reasoning stages in order. Drawn as bands outward from the root, named on the right edge, and compared in the top chart. With a status they are also the refinement pipeline.",
+            "description": "Reasoning stages in order. Drawn as bands outward from the root, named on the right edge, and compared in the stage chart (show-top-chart).",
             "items": { "$ref": "#/$defs/stage" }
           },
           "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
@@ -110,61 +110,6 @@
                 }
               }
             ]
-          },
-          "pipeline": {
-            "description": "Refinement pipeline status. Without it, stages that carry a status are the pipeline.",
-            "oneOf": [
-              { "type": "array", "items": { "$ref": "#/$defs/pipelineStage" } },
-              {
-                "type": "object",
-                "required": ["stages"],
-                "properties": {
-                  "label": { "type": "string", "default": "Refinement pipeline" },
-                  "stages": { "type": "array", "items": { "$ref": "#/$defs/pipelineStage" } }
-                }
-              }
-            ]
-          },
-          "scaling": { "$ref": "#/properties/data/properties/computeScaling", "description": "Alias of computeScaling." },
-          "computeScaling": {
-            "type": "object",
-            "description": "Metric against compute, one line per strategy (resample vs refine). Alias: scaling.",
-            "required": ["series"],
-            "properties": {
-              "label": { "type": "string", "default": "Compute scaling" },
-              "xLabel": { "type": "string", "default": "Compute" },
-              "yLabel": { "type": "string", "default": "Accuracy" },
-              "yUnit": { "type": "string", "description": "% prints y as a percentage." },
-              "series": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["points"],
-                  "properties": {
-                    "id": { "type": "string" },
-                    "label": { "type": "string" },
-                    "model": { "type": ["string", "number"] },
-                    "points": {
-                      "type": "array",
-                      "items": {
-                        "oneOf": [
-                          { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "x": { "type": ["number", "string"] },
-                              "y": { "type": ["number", "string"] },
-                              "compute": { "type": ["number", "string"] },
-                              "accuracy": { "type": ["number", "string"] }
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         },
         "anyOf": [{ "required": ["nodes"] }, { "required": ["links"] }, { "required": ["paths"] }]
@@ -173,7 +118,7 @@
       "show-header": { "type": "boolean", "default": true },
       "show-legend": { "type": "boolean", "default": true },
       "show-tooltip": { "type": "boolean", "default": true },
-      "show-top-chart": { "type": "boolean", "default": true },
+      "show-top-chart": { "type": "boolean", "default": false, "description": "Readouts and the stage chart above the plot." },
       "show-panels": { "type": "boolean", "default": true },
       "show-annotations": { "type": "boolean", "default": true },
       "selected-path": { "type": "string", "description": "Path id to highlight instead of the active path." }
@@ -265,15 +210,6 @@
           "value": { "type": ["number", "string"] },
           "delta": { "type": ["number", "string"] },
           "unit": { "type": "string" }
-        }
-      },
-      "pipelineStage": {
-        "type": "object",
-        "properties": {
-          "label": { "type": "string", "description": "Alias: name." },
-          "name": { "type": "string", "description": "Alias of label." },
-          "status": { "enum": ["done", "complete", "completed", "ok", "success", "passed", "active", "running", "current", "inprogress", "pending", "queued", "waiting", "todo", "skipped", "failed", "error", "blocked"] },
-          "detail": { "type": "string" }
         }
       }
     }

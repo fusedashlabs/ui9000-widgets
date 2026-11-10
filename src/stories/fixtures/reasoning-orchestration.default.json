@@ -122,26 +122,6 @@
       {"from": 44, "to": 52, "label": "Recovery"}
     ]
   },
-  "computeScaling": {
-    "label": "Compute scaling",
-    "xLabel": "Compute",
-    "yLabel": "MATH500",
-    "yUnit": "%",
-    "series": [
-      {
-        "id": "resample",
-        "label": "Resample",
-        "model": "astra",
-        "points": [[1, 0.308], [2, 0.352], [4, 0.389], [8, 0.41], [16, 0.421]]
-      },
-      {
-        "id": "refine",
-        "label": "Refinement",
-        "model": "opus",
-        "points": [[1, 0.308], [2, 0.412], [4, 0.526], [8, 0.571], [16, 0.588]]
-      }
-    ]
-  },
   "nodes": [
     {"id": "prompt", "label": "Prompt", "depth": 0, "state": "verified", "score": 1},
     {"id": "s1", "label": "Sample 1", "depth": 2, "score": 0.46},

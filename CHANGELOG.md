@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- **reasoning-orchestration-graph**: simpler, closer to the design. The refinement pipeline and compute scaling panels are gone; step entropy and the benchmarks stay under the plot. The stage chart above the plot (readouts and a stage metric across depth) is off by default, and `show-top-chart` turns it on.
+
 ## 0.9.0 — 2026-11-04
 
 ### Breaking

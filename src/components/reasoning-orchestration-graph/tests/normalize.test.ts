@@ -45,9 +45,6 @@ describe('normalizeReasoningOrchestration', () => {
       ['T=0.0', 'opus', 96],
     ]);
     expect(model.entropy?.highlight).toEqual([{ from: 44, to: 52, label: 'Recovery' }]);
-    // Stages carry a status, so they are the pipeline.
-    expect(model.pipeline?.stages.map((s) => s.status)).toEqual(['done', 'done', 'done', 'active']);
-    expect(model.scaling?.series.map((s) => s.label)).toEqual(['Resample', 'Refinement']);
     expect(model.dropped).toEqual({ nodes: 0, links: 0 });
   });
 

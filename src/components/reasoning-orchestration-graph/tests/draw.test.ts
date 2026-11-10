@@ -6,7 +6,6 @@ import {
   orchestrationPalette,
   renderEntropyStrip,
   renderReasoningOrchestration,
-  renderScalingChart,
   renderTopChart,
 } from '../render/index.js';
 
@@ -193,15 +192,6 @@ describe('supporting strips', () => {
     const band = el.querySelector('.ro-entropy-band')!;
     expect(Number(band.getAttribute('x'))).toBe(44 * 10);
     expect(Number(band.getAttribute('width'))).toBe(9 * 10);
-    el.remove();
-  });
-
-  it('compute scaling: one line per strategy with its last value', () => {
-    const el = mount();
-    renderScalingChart(el, { scaling: model.scaling!, model, width: 260, height: 56, themeMode: 'light' });
-    expect(el.querySelectorAll('.ro-scaling-series')).toHaveLength(2);
-    expect([...el.querySelectorAll('.ro-scaling-end')].map((t) => t.textContent)).toEqual(['42.1%', '58.8%']);
-    expect([...el.querySelectorAll('.ro-scaling-tick')].map((t) => t.textContent)).toEqual(['1×', '16×']);
     el.remove();
   });
 });

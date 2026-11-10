@@ -1,18 +1,14 @@
-import { scaleLinear, scaleLog } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 
 import { CHART_TYPE } from '../../../utils/chart-theme.js';
 
 import {
   breadthByDepth,
-  formatNumber,
-  formatShare,
   formatStageMetric,
-  type ComputeScaling,
   type EntropyStrip,
   type ReasoningOrchestrationModel,
   type ReasoningStage,
-  type ScalingSeries,
 } from '../lib/index.js';
 import { MONO_ADVANCE, MONO_FONT } from './draw.js';
 import { modelColors, orchestrationPalette } from './palette.js';
@@ -279,115 +275,4 @@ export function renderEntropyStrip(container: HTMLElement, options: EntropyStrip
       );
     })
     .on('mouseleave', () => options.onLeave?.());
-}
-
-export interface ScalingChartOptions {
-  scaling: ComputeScaling;
-  model: ReasoningOrchestrationModel;
-  width: number;
-  height: number;
-  themeMode: 'light' | 'dark';
-  styleId?: string;
-  onPointHover?: (series: ScalingSeries, point: { x: number; y: number }, event: MouseEvent) => void;
-  onLeave?: () => void;
-}
-
-export function formatScalingY(scaling: ComputeScaling, value: number): string {
-  if (scaling.yUnit === '%') return Math.abs(value) <= 1 ? formatShare(value) : `${formatNumber(value)}%`;
-  return `${formatNumber(value)}${scaling.yUnit}`;
-}
-
-export function formatScalingX(value: number): string {
-  return `${formatNumber(value)}×`;
-}
-
-/**
- * Compute scaling: one line per strategy, metric against compute. A log x
- * axis once compute spans eight times or more.
- */
-export function renderScalingChart(container: HTMLElement, options: ScalingChartOptions): void {
-  const { scaling, width, height, themeMode, styleId } = options;
-  container.replaceChildren();
-  if (width <= 0 || height <= 0) return;
-  const palette = orchestrationPalette(themeMode, styleId);
-  const colorOf = modelColors(palette, options.model.models);
-  const xs = scaling.series.flatMap((series) => series.points.map((p) => p.x));
-  const ys = scaling.series.flatMap((series) => series.points.map((p) => p.y));
-  const [xMin, xMax] = [Math.min(...xs), Math.max(...xs)];
-  const [yMin, yMax] = [Math.min(...ys), Math.max(...ys)];
-  const pad = { left: 2, right: 44, top: 5, bottom: 13 };
-  const range: [number, number] = [pad.left, Math.max(pad.left + 1, width - pad.right)];
-  const x =
-    xMin > 0 && xMax / xMin >= 8
-      ? scaleLog().domain([xMin, xMax]).range(range)
-      : scaleLinear().domain([xMin, xMax === xMin ? xMin + 1 : xMax]).range(range);
-  const y = scaleLinear()
-    .domain([yMin, yMax === yMin ? yMin + 1 : yMax])
-    .range([height - pad.bottom, pad.top]);
-
-  const svg = select(container)
-    .append('svg')
-    .attr('class', 'ro-scaling-svg')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .attr('role', 'img')
-    .attr(
-      'aria-label',
-      `${scaling.label}: ${scaling.series
-        .map((series) => `${series.label} ${formatScalingY(scaling, series.points[series.points.length - 1]!.y)}`)
-        .join(', ')}`,
-    )
-    .style('display', 'block')
-    .style('font-family', MONO_FONT);
-
-  svg
-    .append('line')
-    .attr('x1', range[0])
-    .attr('x2', range[1])
-    .attr('y1', height - pad.bottom + 0.5)
-    .attr('y2', height - pad.bottom + 0.5)
-    .attr('stroke', palette.rule);
-  for (const [value, anchor] of [
-    [xMin, 'start'],
-    [xMax, 'end'],
-  ] as const) {
-    svg
-      .append('text')
-      .attr('class', 'ro-scaling-tick')
-      .attr('x', x(value))
-      .attr('y', height - 2)
-      .attr('text-anchor', anchor)
-      .attr('font-size', LABEL_FONT)
-      .attr('fill', palette.label)
-      .text(formatScalingX(value));
-  }
-
-  scaling.series.forEach((series, i) => {
-    const color = colorOf(series.modelId) ?? palette.models[i % palette.models.length]!;
-    const g = svg.append('g').attr('class', 'ro-scaling-series').attr('data-series', series.id);
-    g.append('path')
-      .attr('d', series.points.map((p, j) => `${j ? 'L' : 'M'}${x(p.x).toFixed(1)},${y(p.y).toFixed(1)}`).join(''))
-      .attr('fill', 'none')
-      .attr('stroke', color)
-      .attr('stroke-width', 1.5);
-    g.selectAll('circle')
-      .data(series.points)
-      .join('circle')
-      .attr('cx', (p) => x(p.x))
-      .attr('cy', (p) => y(p.y))
-      .attr('r', 2.2)
-      .attr('fill', color)
-      .on('mouseenter', (event: MouseEvent, p) => options.onPointHover?.(series, p, event))
-      .on('mouseleave', () => options.onLeave?.());
-    const last = series.points[series.points.length - 1]!;
-    g.append('text')
-      .attr('class', 'ro-scaling-end')
-      .attr('x', x(last.x) + 4)
-      .attr('y', y(last.y))
-      .attr('dy', '0.32em')
-      .attr('font-size', LABEL_FONT)
-      .attr('fill', color)
-      .text(formatScalingY(scaling, last.y));
-  });
 }

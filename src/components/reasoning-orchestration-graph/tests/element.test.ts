@@ -57,7 +57,7 @@ describe('ui9000-reasoning-orchestration-graph', () => {
     el.remove();
   });
 
-  it('renders the sample: header, readouts, graph, model labels, legend and panels', async () => {
+  it('renders the sample: header, graph, model labels, legend and the entropy panel', async () => {
     const el = await mount(fixture);
     const root = el.shadowRoot!;
     // The whole title on its own line, not cut at the header's length limit; the metadata under it.
@@ -68,12 +68,9 @@ describe('ui9000-reasoning-orchestration-graph', () => {
       'Stanford refining over resampling · arXiv:2608.05643 · Run 0214',
     );
     expect(root.querySelector('.widget-aside')).toBeNull();
-    expect(root.querySelector('.ro-summary')?.textContent?.replace(/\s+/g, ' ')).toContain(
-      'Search topology · Candidates 387 · Refinements 71 · Accuracy 58.8% (+28.4) · PRM Verified',
-    );
-    expect(root.querySelector('.ro-criterion')?.textContent).toContain('breadth–depth assignment');
+    // The stage chart above the plot is off by default.
+    expect(root.querySelector('.ro-top')).toBeNull();
     expect(root.querySelector('.chart-root svg.ro-svg')).not.toBeNull();
-    expect(root.querySelector('.ro-top-chart svg')).not.toBeNull();
     expect(texts(root, '.ro-models-side:first-child .ro-chip')).toEqual(['GPT-6 Astra · Breadth T=0.8']);
     expect(texts(root, '.ro-models-side--right .ro-chip')).toEqual(['Claude Opus 5.5 · Depth T=0.0']);
     expect(texts(root, '.ro-legend-item')).toEqual([
@@ -83,20 +80,21 @@ describe('ui9000-reasoning-orchestration-graph', () => {
       '✕Pruned',
     ]);
     expect(root.querySelector('.ro-entropy svg')).not.toBeNull();
-    expect(texts(root, '.ro-panel-title')).toEqual([
-      'Step entropy · T=0.8 vs T=0.0',
-      'Refinement pipeline · 4 stages',
-      'Compute scaling · Resample vs Refinement',
-    ]);
-    expect([...root.querySelectorAll('.ro-step')].map((s) => s.getAttribute('data-status'))).toEqual([
-      'done',
-      'done',
-      'done',
-      'active',
-    ]);
+    // Step entropy is the only panel: no pipeline, no compute scaling.
+    expect(texts(root, '.ro-panel-title')).toEqual(['Step entropy · T=0.8 vs T=0.0']);
+    expect(root.querySelector('[data-panel="pipeline"], [data-panel="scaling"], .ro-step, .ro-scaling')).toBeNull();
     expect(texts(root, '.ro-benchmark')).toEqual(['MATH500 58.8% (+28.0)', 'AMC 81.2% (+7.5)', 'Olympiad 35.1%']);
-    expect(root.querySelector('.ro-scaling svg')).not.toBeNull();
     expect(root.querySelector('.ro-reset')).toBeNull();
+  });
+
+  it('shows the readouts and the stage chart above the plot with show-top-chart', async () => {
+    const el = await mount(fixture, { 'show-top-chart': '' });
+    const root = el.shadowRoot!;
+    expect(root.querySelector('.ro-summary')?.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Search topology · Candidates 387 · Refinements 71 · Accuracy 58.8% (+28.4) · PRM Verified',
+    );
+    expect(root.querySelector('.ro-criterion')?.textContent).toContain('breadth–depth assignment');
+    expect(root.querySelector('.ro-top-chart svg')).not.toBeNull();
   });
 
   it('highlights a clicked path, says so in the legend, and Escape returns to the active path', async () => {

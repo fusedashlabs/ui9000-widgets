@@ -210,7 +210,7 @@ export const reasoningOrchestrationStyles = css`
     stroke-opacity: 0.35;
   }
 
-  /* Bottom panels: step entropy, refinement pipeline, compute scaling. */
+  /* Bottom panels: the step entropy strip, its benchmarks and its series. */
   .ro-panels {
     flex: none;
     display: flex;
@@ -240,11 +240,6 @@ export const reasoningOrchestrationStyles = css`
   .ro-delta[data-trend='down'] {
     color: var(--ro-down);
   }
-  .ro-panel-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 6px 16px;
-  }
   .ro-panel {
     display: flex;
     flex-direction: column;
@@ -269,72 +264,6 @@ export const reasoningOrchestrationStyles = css`
   .ro-series-item strong {
     color: var(--ui9000-color-text, #111827);
     font-weight: 500;
-  }
-  .ro-pipeline {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 3px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .ro-step-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-  .ro-step {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 6px;
-    border: 1px solid var(--ro-rule);
-    border-radius: 2px;
-    white-space: nowrap;
-  }
-  .ro-step[data-status='done'] {
-    color: var(--ui9000-color-text, #111827);
-  }
-  .ro-step[data-status='active'] {
-    color: var(--ui9000-color-text, #111827);
-    border-color: currentColor;
-  }
-  .ro-step[data-status='failed'] {
-    color: var(--ro-down);
-  }
-  .ro-step[data-status='pending'] {
-    opacity: 0.6;
-  }
-  .ro-step-mark {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    border: 1px solid currentColor;
-    box-sizing: border-box;
-  }
-  .ro-step[data-status='done'] .ro-step-mark,
-  .ro-step[data-status='failed'] .ro-step-mark {
-    background: currentColor;
-  }
-  .ro-step[data-status='active'] .ro-step-mark {
-    background: var(--ro-active, currentColor);
-    border-color: var(--ro-active, currentColor);
-  }
-  .ro-step-arrow {
-    opacity: 0.5;
-  }
-  .ro-scaling {
-    width: 100%;
-    height: 56px;
   }
 
   .empty {

@@ -108,41 +108,6 @@ export interface EntropyInput {
   highlight?: ({ from: number; to: number; label?: string } | [number, number])[];
 }
 
-export interface PipelineStageInput {
-  label?: string;
-  name?: string;
-  status?: string;
-  detail?: string;
-}
-
-export interface PipelineInput {
-  label?: string;
-  stages: PipelineStageInput[];
-}
-
-export interface ScalingPointInput {
-  x?: number | string;
-  y?: number | string;
-  compute?: number | string;
-  accuracy?: number | string;
-}
-
-export interface ScalingSeriesInput {
-  id?: Id;
-  label?: string;
-  model?: Id;
-  points: (ScalingPointInput | [number, number])[];
-}
-
-export interface ScalingInput {
-  label?: string;
-  xLabel?: string;
-  yLabel?: string;
-  /** `%` prints y as a percentage (0–1 values are scaled). */
-  yUnit?: string;
-  series: ScalingSeriesInput[];
-}
-
 export interface ReasoningOrchestrationPayload {
   chartType?: string;
   name?: string;
@@ -172,10 +137,6 @@ export interface ReasoningOrchestrationPayload {
   stageMetric?: string;
   benchmarks?: MetricInput[];
   entropy?: EntropyInput | (number | string)[];
-  pipeline?: PipelineInput | PipelineStageInput[];
-  computeScaling?: ScalingInput;
-  /** Alias of computeScaling. */
-  scaling?: ScalingInput;
 }
 
 export interface ReasoningModel {
@@ -256,32 +217,6 @@ export interface EntropyStrip {
   steps: number;
 }
 
-export interface PipelineStage {
-  label: string;
-  status: StageStatus;
-  detail: string;
-}
-
-export interface Pipeline {
-  label: string;
-  stages: PipelineStage[];
-}
-
-export interface ScalingSeries {
-  id: string;
-  label: string;
-  modelId: string | null;
-  points: { x: number; y: number }[];
-}
-
-export interface ComputeScaling {
-  label: string;
-  xLabel: string;
-  yLabel: string;
-  yUnit: string;
-  series: ScalingSeries[];
-}
-
 export interface StageMetric {
   key: string;
   label: string;
@@ -309,8 +244,6 @@ export interface ReasoningOrchestrationModel {
   stageMetric: StageMetric | null;
   benchmarks: Metric[];
   entropy: EntropyStrip | null;
-  pipeline: Pipeline | null;
-  scaling: ComputeScaling | null;
   /** Nodes and links left out past the caps, lowest priority first. */
   dropped: { nodes: number; links: number };
 }

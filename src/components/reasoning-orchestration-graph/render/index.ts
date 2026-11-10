@@ -12,7 +12,5 @@ export { modelColor, modelColors, orchestrationPalette, type OrchestrationPalett
 export {
   entropyColors,
   renderEntropyStrip,
-  renderTopChart,
   type EntropyStripOptions,
-  type TopChartOptions,
 } from './strips.js';

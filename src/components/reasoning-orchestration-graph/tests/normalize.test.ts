@@ -79,8 +79,6 @@ describe('normalizeReasoningOrchestration', () => {
     expect(model.links.find((l) => l.target === 'd')?.kind).toBe('refine');
     expect(model.activePathId).toBe('active');
     expect(model.paths[0]).toMatchObject({ id: 'active', nodes: ['q', 'c', 'd'] });
-    // Readouts default to the graph's own counts.
-    expect(model.summary.map((m) => `${m.label} ${m.value}`)).toEqual(['Candidates 4', 'Refinements 1', 'Paths 1']);
   });
 
   it('adds the links a path implies and the models nodes name', () => {

@@ -11,7 +11,6 @@ export {
 } from './format.js';
 export {
   ANGLE_JITTER,
-  breadthByDepth,
   FAN_THETA,
   hash01,
   JITTER,

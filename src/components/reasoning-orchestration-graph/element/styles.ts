@@ -18,12 +18,15 @@ export const reasoningOrchestrationStyles = css`
     --ro-muted: var(--ui9000-color-text-muted, #6b7280);
     --ro-rule: var(--ui9000-color-border, #e5e7eb);
     --ro-chip: rgba(255, 255, 255, 0.86);
+    /* The legend's right end: the chip colour at 0.4 opacity. */
+    --ro-chip-fade: rgba(255, 255, 255, 0.4);
     --ro-up: #0f9488;
     --ro-down: #e03131;
   }
 
   :host([data-mode='dark']) {
     --ro-chip: rgba(15, 18, 25, 0.82);
+    --ro-chip-fade: rgba(15, 18, 25, 0.4);
     --ro-up: #4fd1c5;
     --ro-down: #ff5d5d;
   }
@@ -52,15 +55,7 @@ export const reasoningOrchestrationStyles = css`
     color: var(--ro-muted);
   }
 
-  /* Top chart: readouts over the breadth-by-depth strip. */
-  .ro-top {
-    flex: none;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--ro-rule);
-  }
+  /* Readouts over the entropy strip: its title and the benchmarks. */
   .ro-readouts {
     display: flex;
     justify-content: space-between;
@@ -77,14 +72,6 @@ export const reasoningOrchestrationStyles = css`
   .ro-readouts strong {
     color: var(--ui9000-color-text, #111827);
     font-weight: 500;
-  }
-  .ro-criterion {
-    text-align: right;
-    flex: 0 1 auto;
-  }
-  .ro-top-chart {
-    width: 100%;
-    height: 40px;
   }
 
   .chart-root {
@@ -151,9 +138,36 @@ export const reasoningOrchestrationStyles = css`
     padding: 5px 8px;
     border: 1px solid var(--ro-rule);
     border-radius: 2px;
-    background: var(--ro-chip);
+    /* Solid behind the colour keys, thinning to 0.4 opacity on the right so the plot shows through the labels. */
+    background: linear-gradient(90deg, var(--ro-chip) 0, var(--ro-chip) 28px, var(--ro-chip-fade) 100%);
     color: var(--ro-muted);
     pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+  /* Under the pointer the legend fades out, so the nodes beneath it show and stay hoverable. */
+  .ro-legend.is-faded {
+    opacity: 0;
+  }
+  /* A click on a stage name fades every stage name until the pointer leaves the plot or a click lands on empty plot; the nodes under them hover meanwhile. */
+  .ro-readout {
+    transition: opacity 160ms ease;
+  }
+  .chart-root.is-stages-faded .ro-readout {
+    opacity: 0;
+  }
+  .chart-root.is-stages-faded .ro-stage-hit {
+    pointer-events: none;
+  }
+  /* A selection other than the active path fades the notes off its chain. */
+  .ro-note {
+    transition: opacity 160ms ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ro-legend,
+    .ro-readout,
+    .ro-note {
+      transition: none;
+    }
   }
   .ro-legend-title {
     color: var(--ui9000-color-text, #111827);

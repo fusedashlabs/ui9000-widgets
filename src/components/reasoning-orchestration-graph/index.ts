@@ -4,7 +4,6 @@ export {
   type PathSelectDetail,
 } from './element/ui9000-reasoning-orchestration-graph.js';
 export {
-  breadthByDepth,
   layoutOrchestration,
   normalizeReasoningOrchestration,
   pathToNode,
@@ -27,7 +26,6 @@ export {
   orchestrationPalette,
   renderEntropyStrip,
   renderReasoningOrchestration,
-  renderTopChart,
   type OrchestrationController,
   type OrchestrationHandlers,
   type OrchestrationSelection,

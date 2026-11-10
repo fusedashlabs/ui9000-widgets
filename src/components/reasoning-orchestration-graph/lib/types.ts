@@ -36,7 +36,7 @@ export interface StageInput {
   status?: string;
   /** Model whose nodes fill this stage, by id or name. */
   model?: Id;
-  /** High-level metrics compared across stages in the top chart. */
+  /** Stage metrics. The one most stages carry (or `stageMetric`) is printed beside the stage name. */
   metrics?: Record<string, number | string>;
 }
 
@@ -127,13 +127,7 @@ export interface ReasoningOrchestrationPayload {
   activePath?: Id | Id[];
   activePathId?: Id;
   annotations?: AnnotationInput[];
-  /** Readouts over the top chart. A plain string is printed as is. */
-  summary?: string | MetricInput[];
-  /** Lead word of the summary line. Defaults to "Search topology". */
-  summaryLabel?: string;
-  /** The right-hand readout over the top chart. */
-  criterion?: string;
-  /** Stage metric the top chart compares. Defaults to the first one stages share. */
+  /** Stage metric printed beside each stage name. Defaults to the one most stages carry. */
   stageMetric?: string;
   benchmarks?: MetricInput[];
   entropy?: EntropyInput | (number | string)[];
@@ -237,10 +231,6 @@ export interface ReasoningOrchestrationModel {
   activePathId: string | null;
   annotations: ReasoningAnnotation[];
   maxDepth: number;
-  summaryLabel: string;
-  summary: Metric[];
-  summaryText: string;
-  criterion: string;
   stageMetric: StageMetric | null;
   benchmarks: Metric[];
   entropy: EntropyStrip | null;

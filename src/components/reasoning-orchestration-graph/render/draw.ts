@@ -1,12 +1,14 @@
 import { select, type Selection } from 'd3-selection';
 
 import {
+  formatStageMetric,
   layoutOrchestration,
   pathToNode,
   type OrchestrationLayout,
   type ReasoningNode,
   type ReasoningOrchestrationModel,
   type ReasoningPath,
+  type ReasoningStage,
 } from '../lib/index.js';
 import { CHART_TYPE } from '../../../utils/chart-theme.js';
 import { modelColors, orchestrationPalette, type OrchestrationPalette } from './palette.js';
@@ -23,6 +25,8 @@ const NOTE_ACCENT = 3;
 const NOTE_MAX_CHARS = 46;
 const NOTE_GAP = 10;
 const READOUT_FONT = CHART_TYPE.axis;
+/** Strength of the hover preview against the highlight. */
+const PREVIEW_OPACITY = 0.5;
 /** A pointer this close to a node hovers it. */
 const HOVER_RADIUS = 14;
 
@@ -34,8 +38,16 @@ export interface OrchestrationSelection {
 export interface OrchestrationHandlers {
   onNodeHover?: (node: ReasoningNode, event: MouseEvent) => void;
   onPathHover?: (path: ReasoningPath, event: MouseEvent | FocusEvent) => void;
+  /** Hover on a stage name down the right edge. */
+  onStageHover?: (stage: ReasoningStage, event: MouseEvent) => void;
+  /** A click on a stage name down the right edge. */
+  onStageClick?: (stage: ReasoningStage, event: MouseEvent) => void;
   onLeave?: () => void;
-  /** A click on a node or a path, or on empty plot (both null). */
+  /**
+   * A click on a node or a path, or on empty plot (both null). A click on the
+   * highlighted path sends the current selection again, or the active path's
+   * id when nothing is selected.
+   */
   onSelect?: (selection: OrchestrationSelection) => void;
 }
 
@@ -67,6 +79,28 @@ export interface OrchestrationController {
 type G = Selection<SVGGElement, unknown, null, undefined>;
 
 let instanceCount = 0;
+
+/** A click this close to the highlighted path's line picks the path. */
+const LINE_HIT = 6;
+
+/** The point lies within LINE_HIT of the polyline. */
+function nearLine(point: { x: number; y: number }, line: { x: number; y: number }[]): boolean {
+  for (let i = 1; i < line.length; i += 1) {
+    const a = line[i - 1]!;
+    const b = line[i]!;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const length = dx * dx + dy * dy;
+    const t = length ? Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / length)) : 0;
+    if ((a.x + t * dx - point.x) ** 2 + (a.y + t * dy - point.y) ** 2 <= LINE_HIT * LINE_HIT) return true;
+  }
+  return false;
+}
+
+/** Width of a stage name on the right edge, with its tick. */
+function readoutWidth(text: string): number {
+  return text.length * READOUT_FONT * MONO_ADVANCE + 9;
+}
 
 function truncate(value: string, max = NOTE_MAX_CHARS): string {
   return value.length > max ? `${value.slice(0, max - 1)}…` : value;
@@ -122,6 +156,7 @@ export function renderReasoningOrchestration(
   const instance = ++instanceCount;
   const glowId = `ui9000-ro-glow-${instance}`;
   const gradientId = `ui9000-ro-path-${instance}`;
+  const previewGradientId = `ui9000-ro-preview-${instance}`;
 
   const svg = select(container)
     .append('svg')
@@ -148,6 +183,10 @@ export function renderReasoningOrchestration(
     .append('linearGradient')
     .attr('id', gradientId)
     .attr('gradientUnits', 'userSpaceOnUse');
+  const previewGradient = defs
+    .append('linearGradient')
+    .attr('id', previewGradientId)
+    .attr('gradientUnits', 'userSpaceOnUse');
 
   const rules = svg.append('g').attr('class', 'ro-rules').attr('pointer-events', 'none');
   const linkLayer = svg.append('g').attr('class', 'ro-links').attr('pointer-events', 'none');
@@ -159,6 +198,12 @@ export function renderReasoningOrchestration(
     .attr('height', height)
     .attr('fill', 'transparent');
   const pathLayer = svg.append('g').attr('class', 'ro-paths');
+  // What a click on the hovered path or node would highlight, drawn like the highlight at half strength.
+  const previewLayer = svg
+    .append('g')
+    .attr('class', 'ro-preview')
+    .attr('pointer-events', 'none')
+    .attr('opacity', PREVIEW_OPACITY);
   const highlightLayer = svg.append('g').attr('class', 'ro-highlight').attr('pointer-events', 'none');
   const rootLayer = svg.append('g').attr('class', 'ro-roots').attr('pointer-events', 'none');
   const hover = svg
@@ -172,43 +217,112 @@ export function renderReasoningOrchestration(
     .attr('pointer-events', 'none');
   const noteLayer = svg.append('g').attr('class', 'ro-notes').attr('pointer-events', 'none');
 
-  drawRules(rules, model, layout, palette, options.readoutCeiling ?? 0, options.readoutFloor ?? height);
+  const readouts = drawRules(rules, model, layout, palette, options.readoutCeiling ?? 0, options.readoutFloor ?? height);
+  // Above the hover overlay and the notes, so a stage name hovers even where the plot is dense.
+  const stageHits = svg
+    .append('g')
+    .attr('class', 'ro-stage-hits')
+    .selectAll<SVGRectElement, Readout>('rect')
+    .data(readouts.filter((mark) => mark.stage))
+    .join('rect')
+    .attr('class', 'ro-stage-hit')
+    .attr('data-stage', (mark) => mark.stage!.id)
+    .attr('x', (mark) => width - 4 - readoutWidth(mark.text))
+    .attr('y', (mark) => mark.y - 8)
+    .attr('width', (mark) => readoutWidth(mark.text))
+    .attr('height', 16)
+    .attr('fill', 'transparent')
+    .on('mousemove', (event: MouseEvent, mark) => handlers.onStageHover?.(mark.stage!, event))
+    .on('mouseleave', () => handlers.onLeave?.())
+    .on('click', (event: MouseEvent, mark) => handlers.onStageClick?.(mark.stage!, event));
   drawLinks(linkLayer, model, layout, palette, colorOf, nodeById);
   drawNodes(nodeLayer, model, layout, palette, colorOf);
   drawRoots(rootLayer, layout, palette);
 
   let selection: OrchestrationSelection = options.selection ?? { pathId: null, nodeId: null };
   let chain: string[] = [];
+  // Notes do not move with the selection: drawn once, then shown or faded.
+  const notes = options.showAnnotations !== false ? drawNotes(noteLayer, model, layout, palette, colorOf, width, height) : [];
+
+  /** A chain's colour at its far end: its path's model, else its end node's, else the palette glow. */
+  const endColorOf = (highlight: { nodes: string[]; path: ReasoningPath | null }) => {
+    const endNode = nodeById.get(highlight.nodes[highlight.nodes.length - 1] ?? '');
+    return colorOf(highlight.path?.modelId) ?? colorOf(endNode?.modelId) ?? (themeMode === 'dark' ? palette.glow : palette.pathMid);
+  };
+  let previewFor = '';
+  /**
+   * Previews what a click would highlight: a hovered candidate path, or the
+   * path to a hovered node. Nothing for a node on the highlighted chain, as a
+   * click there keeps it.
+   */
+  const preview = (target: OrchestrationSelection | null) => {
+    const shown = target && !(target.nodeId && chain.includes(target.nodeId)) ? target : null;
+    const key = shown ? `${shown.pathId ?? ''}|${shown.nodeId ?? ''}` : '';
+    if (key === previewFor) return;
+    previewFor = key;
+    if (!shown) {
+      previewLayer.selectAll('*').remove();
+      return;
+    }
+    const next = highlightedChain(model, shown);
+    drawHighlight(previewLayer, previewGradient, next.nodes, layout, palette, endColorOf(next), glowId, previewGradientId, 'ro-preview');
+  };
+  const pathHandlers: OrchestrationHandlers = {
+    ...handlers,
+    onPathHover: (path, event) => {
+      preview({ pathId: path.id, nodeId: null });
+      handlers.onPathHover?.(path, event);
+    },
+    onLeave: () => {
+      preview(null);
+      handlers.onLeave?.();
+    },
+  };
 
   const paint = () => {
     const highlight = highlightedChain(model, selection);
     chain = highlight.nodes;
-    drawCandidatePaths(pathLayer, model, layout, colorOf, palette, highlight.path, handlers);
-    const endNode = nodeById.get(chain[chain.length - 1] ?? '');
-    const endColor =
-      colorOf(highlight.path?.modelId) ?? colorOf(endNode?.modelId) ?? (themeMode === 'dark' ? palette.glow : palette.pathMid);
-    drawHighlight(highlightLayer, gradient, chain, layout, palette, endColor, glowId, gradientId);
-    noteLayer.selectAll('*').remove();
-    const notes = options.showAnnotations !== false ? drawNotes(noteLayer, model, layout, palette, colorOf, width, height) : [];
-    // A stage name a note covers would only peek out from behind it.
-    rules.selectAll<SVGGElement, { text: string }>('g.ro-readout').attr('visibility', function (mark) {
-      const y = Number(this.getAttribute('data-y'));
-      const w = (mark.text.length * READOUT_FONT * MONO_ADVANCE) + 9;
-      const covered = notes.some(
-        (box) => width - 4 - w < box.x + box.w && width - 4 > box.x && y - 6 < box.y + box.h && y + 6 > box.y,
-      );
-      return covered ? 'hidden' : null;
+    drawCandidatePaths(pathLayer, model, layout, colorOf, palette, highlight.path, pathHandlers);
+    drawHighlight(highlightLayer, gradient, chain, layout, palette, endColorOf(highlight), glowId, gradientId);
+    // The hovered node may now be on the highlighted chain.
+    preview(null);
+    // While the active path is highlighted every note shows. Another selection fades the notes off
+    // its chain, so they cover nothing it may need; selecting the active path again, or clearing,
+    // brings them back.
+    const showsActive = selection.pathId
+      ? selection.pathId === model.activePathId
+      : !selection.nodeId;
+    const shown = notes.filter((box) => showsActive || chain.includes(box.nodeId));
+    const shownIds = new Set(shown.map((box) => box.nodeId));
+    noteLayer.selectAll<SVGGElement, unknown>('g.ro-note').each(function () {
+      const faded = !shownIds.has(this.getAttribute('data-node') ?? '');
+      this.classList.toggle('is-faded', faded);
+      this.style.opacity = faded ? '0' : '';
     });
+    // A stage name a shown note covers would only peek out from behind it, and does not hover.
+    const covered = (mark: Readout) => {
+      const w = readoutWidth(mark.text);
+      return shown.some(
+        (box) => width - 4 - w < box.x + box.w && width - 4 > box.x && mark.y - 6 < box.y + box.h && mark.y + 6 > box.y,
+      );
+    };
+    rules
+      .selectAll<SVGGElement, Readout>('g.ro-readout')
+      .attr('visibility', (mark) => (covered(mark) ? 'hidden' : null));
+    stageHits.attr('display', (mark) => (covered(mark) ? 'none' : null));
   };
   paint();
 
-  // One overlay finds the nearest node, so a dense frontier needs no hit target per node.
-  const nearest = (event: MouseEvent): ReasoningNode | null => {
+  /** The pointer in plot coordinates. */
+  const pointer = (event: MouseEvent): { x: number; y: number } => {
     const rect = (svg.node() as SVGSVGElement).getBoundingClientRect();
     const sx = rect.width ? width / rect.width : 1;
     const sy = rect.height ? height / rect.height : 1;
-    const x = (event.clientX - rect.left) * sx;
-    const y = (event.clientY - rect.top) * sy;
+    return { x: (event.clientX - rect.left) * sx, y: (event.clientY - rect.top) * sy };
+  };
+  // One overlay finds the nearest node, so a dense frontier needs no hit target per node.
+  const nearest = (event: MouseEvent): ReasoningNode | null => {
+    const { x, y } = pointer(event);
     let best: ReasoningNode | null = null;
     let gap = HOVER_RADIUS * HOVER_RADIUS;
     for (const placed of layout.nodes.values()) {
@@ -223,6 +337,7 @@ export function renderReasoningOrchestration(
   hit
     .on('mousemove', (event: MouseEvent) => {
       const node = nearest(event);
+      preview(node ? { pathId: null, nodeId: node.id } : null);
       if (!node) {
         hover.attr('visibility', 'hidden');
         handlers.onLeave?.();
@@ -233,11 +348,23 @@ export function renderReasoningOrchestration(
       handlers.onNodeHover?.(node, event);
     })
     .on('mouseleave', () => {
+      preview(null);
       hover.attr('visibility', 'hidden');
       handlers.onLeave?.();
     })
     .on('click', (event: MouseEvent) => {
       const node = nearest(event);
+      // The highlighted path has no hit target of its own (one would block hover on its nodes), so a
+      // click on one of its nodes or near its line picks it again: the current selection, or the
+      // active path when nothing is selected.
+      const onHighlight =
+        chain.length > 1 &&
+        (node ? chain.includes(node.id) : nearLine(pointer(event), chain.map((id) => at(id)).filter((p) => !!p)));
+      if (onHighlight) {
+        const again = selection.pathId || selection.nodeId ? selection : { pathId: model.activePathId, nodeId: null };
+        handlers.onSelect?.({ ...again });
+        return;
+      }
       handlers.onSelect?.({ pathId: null, nodeId: node?.id ?? null });
     });
 
@@ -260,7 +387,17 @@ function ariaSummary(model: ReasoningOrchestrationModel): string {
   return parts.join(', ');
 }
 
-/** Stage boundaries as faint arcs, and the stage names down the right edge. */
+/** A stage name on the right edge: its stage (none for a plain depth tick), its text and its y. */
+interface Readout {
+  stage: ReasoningStage | null;
+  text: string;
+  y: number;
+}
+
+/**
+ * Stage boundaries as faint arcs, and the stage names down the right edge,
+ * each with its stage metric. Returns the names drawn.
+ */
 function drawRules(
   g: G,
   model: ReasoningOrchestrationModel,
@@ -268,26 +405,36 @@ function drawRules(
   palette: OrchestrationPalette,
   ceiling: number,
   floor: number,
-): void {
+): Readout[] {
   const arc = (rho: number) => {
     const points: { x: number; y: number }[] = [];
     for (let i = 0; i <= 48; i += 1) points.push(layout.point(rho, -Math.PI / 2 + (i / 48) * Math.PI));
     return polyline(points);
   };
+  const metric = model.stageMetric;
   const marks = model.stages.length
     ? model.stages.map((stage) => {
         const range =
           stage.depthTo > stage.depthFrom
             ? `D${Math.round(stage.depthFrom)}–${Math.round(stage.depthTo)}`
             : `D${Math.round(stage.depthFrom)}`;
+        const value = metric ? stage.metrics[metric.key] : undefined;
+        const parts = [stage.label, range, ...(value === undefined ? [] : [formatStageMetric(metric!, value)])];
         return {
           boundary: stage.index > 0 ? layout.rhoOf(stage.depthFrom - 0.5) : null,
           apex: layout.rhoOf((stage.depthFrom + stage.depthTo) / 2),
-          text: `${stage.label} · ${range}`.toUpperCase(),
+          text: parts.join(' · ').toUpperCase(),
           status: stage.status,
+          stage: stage as ReasoningStage | null,
         };
       })
-    : depthTicks(model.maxDepth).map((d) => ({ boundary: layout.rhoOf(d), apex: layout.rhoOf(d), text: `D${d}`, status: null }));
+    : depthTicks(model.maxDepth).map((d) => ({
+        boundary: layout.rhoOf(d),
+        apex: layout.rhoOf(d),
+        text: `D${d}`,
+        status: null,
+        stage: null,
+      }));
 
   g.selectAll('path.ro-stage-arc')
     .data(marks.filter((mark) => mark.boundary !== null && mark.boundary > 0))
@@ -308,19 +455,17 @@ function drawRules(
     .attr('stroke-width', 1);
 
   const right = layout.width - 4;
+  const shown = marks
+    .map((mark) => ({ ...mark, y: Number((layout.base - mark.apex * layout.ry).toFixed(1)) }))
+    .filter((mark) => mark.y >= ceiling && mark.y <= floor);
   const readout = g
     .selectAll('g.ro-readout')
-    .data(
-      marks.filter((mark) => {
-        const y = layout.base - mark.apex * layout.ry;
-        return y >= ceiling && y <= floor;
-      }),
-    )
+    .data(shown)
     .join('g')
     .attr('class', 'ro-readout')
     .attr('data-status', (mark) => mark.status ?? '')
-    .attr('data-y', (mark) => (layout.base - mark.apex * layout.ry).toFixed(1))
-    .attr('transform', (mark) => `translate(${right},${(layout.base - mark.apex * layout.ry).toFixed(1)})`);
+    .attr('data-y', (mark) => mark.y)
+    .attr('transform', (mark) => `translate(${right},${mark.y})`);
   readout
     .append('line')
     .attr('x1', -6)
@@ -341,6 +486,7 @@ function drawRules(
     .style('stroke', `var(--ui9000-color-surface, ${palette.halo})`)
     .style('stroke-width', '3px')
     .text((mark) => mark.text);
+  return shown;
 }
 
 function depthTicks(maxDepth: number): number[] {
@@ -518,6 +664,8 @@ function drawHighlight(
   endColor: string,
   glowId: string,
   gradientId: string,
+  /** Class prefix of the marks: the highlight's, or the hover preview's. */
+  prefix = 'ro-active',
 ): void {
   g.selectAll('*').remove();
   const points = chain.map((id) => layout.nodes.get(id)).filter((p): p is NonNullable<typeof p> => !!p);
@@ -536,7 +684,7 @@ function drawHighlight(
 
   const d = polyline(points);
   g.append('path')
-    .attr('class', 'ro-active-glow')
+    .attr('class', `${prefix}-glow`)
     .attr('d', d)
     .attr('fill', 'none')
     .attr('stroke', endColor)
@@ -545,29 +693,29 @@ function drawHighlight(
     .attr('stroke-linejoin', 'round')
     .attr('filter', `url(#${glowId})`);
   g.append('path')
-    .attr('class', 'ro-active-line')
+    .attr('class', `${prefix}-line`)
     .attr('d', d)
     .attr('fill', 'none')
     .attr('stroke', `url(#${gradientId})`)
     .attr('stroke-width', 2.2)
     .attr('stroke-linejoin', 'round')
     .attr('stroke-linecap', 'round');
-  g.selectAll('circle.ro-active-node')
+  g.selectAll(`circle.${prefix}-node`)
     .data(points.slice(1, -1))
     .join('circle')
-    .attr('class', 'ro-active-node')
+    .attr('class', `${prefix}-node`)
     .attr('cx', (p) => p.x)
     .attr('cy', (p) => p.y)
     .attr('r', 1.7)
     .attr('fill', palette.pathStart);
   g.append('circle')
-    .attr('class', 'ro-active-end')
+    .attr('class', `${prefix}-end`)
     .attr('cx', last.x)
     .attr('cy', last.y)
     .attr('r', 3.4)
     .attr('fill', endColor);
   g.append('circle')
-    .attr('class', 'ro-active-end-ring')
+    .attr('class', `${prefix}-end-ring`)
     .attr('cx', last.x)
     .attr('cy', last.y)
     .attr('r', 6.5)
@@ -589,8 +737,8 @@ function drawNotes(
   colorOf: (id: string | null | undefined) => string | null,
   width: number,
   height: number,
-): { x: number; y: number; w: number; h: number }[] {
-  const placed: { x: number; y: number; w: number; h: number }[] = [];
+): { nodeId: string; x: number; y: number; w: number; h: number }[] {
+  const placed: { nodeId: string; x: number; y: number; w: number; h: number }[] = [];
   const advance = NOTE_FONT * MONO_ADVANCE;
   for (const note of model.annotations) {
     const anchor = layout.nodes.get(note.nodeId);
@@ -607,7 +755,7 @@ function drawNotes(
       const overlaps = x < box.x + box.w && x + w > box.x && y < box.y + box.h && y + h > box.y;
       if (overlaps) y = Math.min(height - 4 - h, box.y + box.h + 6);
     }
-    placed.push({ x, y, w, h });
+    placed.push({ nodeId: note.nodeId, x, y, w, h });
     const accent = colorOf(note.modelId) ?? palette.glow;
 
     const box = g.append('g').attr('class', 'ro-note').attr('data-node', note.nodeId);

@@ -64,7 +64,7 @@ export function metricText(metric: Metric): string {
   return metric.delta ? `${head} (${metric.delta})` : head;
 }
 
-/** A stage metric value as the top chart prints it. */
+/** A stage metric value as the stage readout prints it. */
 export function formatStageMetric(metric: StageMetric, value: number): string {
   return metric.share ? formatShare(value) : formatNumber(value);
 }

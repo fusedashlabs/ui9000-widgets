@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import fixture from '../../../stories/fixtures/reasoning-orchestration.default.json';
 import type { PathSelectDetail, Ui9000ReasoningOrchestrationGraph } from '../index.js';
+import { normalizeReasoningOrchestration } from '../lib/index.js';
 
 beforeAll(async () => {
   class StubResizeObserver {
@@ -68,8 +69,6 @@ describe('ui9000-reasoning-orchestration-graph', () => {
       'Stanford refining over resampling · arXiv:2608.05643 · Run 0214',
     );
     expect(root.querySelector('.widget-aside')).toBeNull();
-    // The stage chart above the plot is off by default.
-    expect(root.querySelector('.ro-top')).toBeNull();
     expect(root.querySelector('.chart-root svg.ro-svg')).not.toBeNull();
     expect(texts(root, '.ro-models-side:first-child .ro-chip')).toEqual(['GPT-6 Astra · Breadth T=0.8']);
     expect(texts(root, '.ro-models-side--right .ro-chip')).toEqual(['Claude Opus 5.5 · Depth T=0.0']);
@@ -87,14 +86,159 @@ describe('ui9000-reasoning-orchestration-graph', () => {
     expect(root.querySelector('.ro-reset')).toBeNull();
   });
 
-  it('shows the readouts and the stage chart above the plot with show-top-chart', async () => {
-    const el = await mount(fixture, { 'show-top-chart': '' });
+  it('explains a stage when its name on the right edge is hovered', async () => {
+    const el = await mount(fixture);
+    const open = vi.spyOn(el as unknown as { openTooltip: (event: MouseEvent, content: unknown) => void }, 'openTooltip');
+    el.shadowRoot!.querySelector('.ro-stage-hit[data-stage="verify"]')!.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+    expect(open).toHaveBeenCalledTimes(1);
+    const nodes = normalizeReasoningOrchestration(fixture).nodes.filter((node) => {
+      const depth = Math.round(node.depth);
+      return depth >= 9 && depth <= 11;
+    }).length;
+    expect(nodes).toBeGreaterThan(0);
+    expect(open.mock.calls[0]![1]).toEqual({
+      title: 'Verify',
+      rows: [
+        { label: 'Depth', value: '9–11' },
+        { label: 'Nodes', value: String(nodes) },
+        { label: 'Status', value: 'Done' },
+        { label: 'Model', value: 'Claude Opus 5.5' },
+        { label: 'Accuracy', value: '52.6%' },
+        { label: 'Compute', value: '3.4' },
+      ],
+    });
+  });
+
+  it('fades the legend while the pointer is over it, without redrawing the plot', async () => {
+    const el = await mount(fixture);
     const root = el.shadowRoot!;
-    expect(root.querySelector('.ro-summary')?.textContent?.replace(/\s+/g, ' ')).toContain(
-      'Search topology · Candidates 387 · Refinements 71 · Accuracy 58.8% (+28.4) · PRM Verified',
-    );
-    expect(root.querySelector('.ro-criterion')?.textContent).toContain('breadth–depth assignment');
-    expect(root.querySelector('.ro-top-chart svg')).not.toBeNull();
+    const plot = root.querySelector<HTMLElement>('.chart-root')!;
+    const legend = root.querySelector<HTMLElement>('.ro-legend')!;
+    legend.getBoundingClientRect = () => ({ left: 700, right: 880, top: 600, bottom: 680, width: 180, height: 80 }) as DOMRect;
+    const svg = root.querySelector('svg.ro-svg');
+    const move = async (clientX: number, clientY: number) => {
+      plot.dispatchEvent(new MouseEvent('pointermove', { clientX, clientY, bubbles: true }));
+      await el.updateComplete;
+    };
+
+    await move(760, 640);
+    expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(true);
+    await move(760, 640);
+    await move(400, 300);
+    expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(false);
+    await move(870, 610);
+    expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(true);
+    plot.dispatchEvent(new MouseEvent('pointerleave'));
+    await el.updateComplete;
+    expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(false);
+    await flush();
+    expect(root.querySelector('svg.ro-svg')).toBe(svg);
+  });
+
+  it('fades the stage names on a click until the pointer leaves the plot, through a redraw', async () => {
+    const el = await mount(fixture);
+    const root = el.shadowRoot!;
+    const plot = root.querySelector<HTMLElement>('.chart-root')!;
+    const close = vi.spyOn(el as unknown as { closeTooltip: () => void }, 'closeTooltip');
+    const open = vi.spyOn(el as unknown as { openTooltip: (event: MouseEvent, content: unknown) => void }, 'openTooltip');
+    const events: PathSelectDetail[] = [];
+    el.addEventListener('path-select', (event) => events.push(event.detail));
+
+    root.querySelector('.ro-stage-hit[data-stage="verify"]')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await el.updateComplete;
+    expect(plot.classList.contains('is-stages-faded')).toBe(true);
+    expect(close).toHaveBeenCalled();
+    expect(events).toEqual([]);
+    // No stage card while the names are faded.
+    root.querySelector('.ro-stage-hit[data-stage="verify"]')!.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+    expect(open).not.toHaveBeenCalled();
+    // Moving within the plot, and a redraw, keep them faded.
+    plot.dispatchEvent(new MouseEvent('pointermove', { clientX: 400, clientY: 300, bubbles: true }));
+    el.draw();
+    await el.updateComplete;
+    expect(plot.classList.contains('is-stages-faded')).toBe(true);
+    expect(root.querySelectorAll('.ro-readout').length).toBeGreaterThan(0);
+
+    plot.dispatchEvent(new MouseEvent('pointerleave'));
+    await el.updateComplete;
+    expect(plot.classList.contains('is-stages-faded')).toBe(false);
+    root.querySelector('.ro-stage-hit[data-stage="verify"]')!.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+    expect(open).toHaveBeenCalledTimes(1);
+  });
+
+  it('brings the stage names back on a click that selects no path, and keeps them hidden on one that does', async () => {
+    const el = await mount(fixture);
+    const root = el.shadowRoot!;
+    const plot = root.querySelector<HTMLElement>('.chart-root')!;
+    const fadeStages = async () => {
+      root.querySelector('.ro-stage-hit[data-stage="verify"]')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+      expect(plot.classList.contains('is-stages-faded')).toBe(true);
+    };
+    // jsdom lays nothing out, so the overlay maps every click to (0, 0): far from any node.
+    const clickEmptyPlot = async () => {
+      root.querySelector('.ro-hit')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await el.updateComplete;
+    };
+
+    // Empty plot, nothing selected.
+    await fadeStages();
+    await clickEmptyPlot();
+    expect(plot.classList.contains('is-stages-faded')).toBe(false);
+
+    // A path click selects a path: the names stay hidden.
+    await fadeStages();
+    root.querySelector('.ro-path[data-path="critic-b"] .ro-path-hit')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await el.updateComplete;
+    expect(el.selection?.pathId).toBe('critic-b');
+    expect(plot.classList.contains('is-stages-faded')).toBe(true);
+
+    // Empty plot with a path selected: the selection clears and the names come back.
+    await clickEmptyPlot();
+    expect(el.selection).toBeNull();
+    expect(plot.classList.contains('is-stages-faded')).toBe(false);
+  });
+
+  it('brings the stage names back when the selected path is clicked again, and keeps the selection', async () => {
+    const el = await mount(fixture);
+    const root = el.shadowRoot!;
+    const plot = root.querySelector<HTMLElement>('.chart-root')!;
+    const events: PathSelectDetail[] = [];
+    el.addEventListener('path-select', (event) => events.push(event.detail));
+    root.querySelector('.ro-path[data-path="critic-b"] .ro-path-hit')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await el.updateComplete;
+    root.querySelector('.ro-stage-hit[data-stage="verify"]')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await el.updateComplete;
+    expect(plot.classList.contains('is-stages-faded')).toBe(true);
+
+    // The second click lands on the highlighted path, which the overlay picks again.
+    const layout = (el as unknown as { _controller: { layout: { nodes: Map<string, { x: number; y: number }> } } })._controller
+      .layout;
+    const node = layout.nodes.get('alt-a10')!;
+    root.querySelector('.ro-hit')!.dispatchEvent(new MouseEvent('click', { clientX: node.x, clientY: node.y, bubbles: true }));
+    await el.updateComplete;
+    expect(plot.classList.contains('is-stages-faded')).toBe(false);
+    expect(el.selection?.pathId).toBe('critic-b');
+    // Selecting the same path again fires nothing.
+    expect(events).toHaveLength(1);
+  });
+
+  it('fades the note while another path is selected, and brings it back with the active path', async () => {
+    const el = await mount(fixture);
+    const note = () => el.shadowRoot!.querySelector<SVGGElement>('.ro-note[data-node="r14"]')!;
+    expect(note().classList.contains('is-faded')).toBe(false);
+    el.selectPath('critic-b');
+    await el.updateComplete;
+    expect(note().classList.contains('is-faded')).toBe(true);
+    el.selectPath('refine');
+    await el.updateComplete;
+    expect(note().classList.contains('is-faded')).toBe(false);
+    el.selectNode('s9b-f1');
+    await el.updateComplete;
+    expect(note().classList.contains('is-faded')).toBe(true);
+    el.clearSelection();
+    await el.updateComplete;
+    expect(note().classList.contains('is-faded')).toBe(false);
   });
 
   it('highlights a clicked path, says so in the legend, and Escape returns to the active path', async () => {
@@ -134,10 +278,9 @@ describe('ui9000-reasoning-orchestration-graph', () => {
   });
 
   it('turns the chrome off with show-* "false" from a host, and the legend without a redraw', async () => {
-    const el = await mount(fixture, { 'show-panels': 'false', 'show-top-chart': 'false', 'show-annotations': 'false' });
+    const el = await mount(fixture, { 'show-panels': 'false', 'show-annotations': 'false' });
     const root = el.shadowRoot!;
     expect(root.querySelector('.ro-panels')).toBeNull();
-    expect(root.querySelector('.ro-top')).toBeNull();
     expect(root.querySelector('.ro-note')).toBeNull();
     const svg = root.querySelector('svg.ro-svg');
     el.showLegend = false;

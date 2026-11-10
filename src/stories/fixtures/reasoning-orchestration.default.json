@@ -52,13 +52,6 @@
     }
   ],
   "stageMetric": "accuracy",
-  "summary": [
-    {"label": "Candidates", "value": 387},
-    {"label": "Refinements", "value": 71},
-    {"label": "Accuracy", "value": "58.8%", "delta": "+28.4"},
-    {"label": "PRM", "value": "Verified"}
-  ],
-  "criterion": "Criterion: breadth–depth assignment · Sampling T=0.8 / T=0.0",
   "paths": [
     {
       "id": "refine",

@@ -538,13 +538,6 @@ export function normalizeReasoningOrchestration(raw: unknown): ReasoningOrchestr
     });
   }
 
-  const summaryInput = payload.summary;
-  const summary: Metric[] = Array.isArray(summaryInput)
-    ? metrics(summaryInput)
-    : typeof summaryInput === 'string'
-      ? []
-      : defaultSummary(outNodes, outLinks, outPaths);
-
   return {
     empty: outNodes.length === 0,
     title: text(payload.title) || text(payload.name),
@@ -557,10 +550,6 @@ export function normalizeReasoningOrchestration(raw: unknown): ReasoningOrchestr
     activePathId,
     annotations,
     maxDepth,
-    summaryLabel: text(payload.summaryLabel) || 'Search topology',
-    summary,
-    summaryText: typeof summaryInput === 'string' ? summaryInput.trim() : '',
-    criterion: text(payload.criterion),
     stageMetric: pickStageMetric(stages, text(payload.stageMetric)),
     benchmarks: metrics(payload.benchmarks),
     entropy: normalizeEntropy(payload.entropy, models),
@@ -572,20 +561,6 @@ function metrics(value: unknown): Metric[] {
   return list<MetricInput>(value)
     .filter((item) => text(item.label) || text(item.value))
     .map((item) => formatMetric(text(item.label), item.value ?? '', item.delta, text(item.unit)));
-}
-
-function defaultSummary(nodes: ReasoningNode[], links: ReasoningLink[], paths: ReasoningPath[]): Metric[] {
-  const candidates = nodes.filter((node) => node.parent !== null).length;
-  const refinements = new Set([
-    ...nodes.filter((node) => node.state === 'refined').map((node) => node.id),
-    ...links.filter((link) => link.kind === 'refine').map((link) => link.target),
-  ]).size;
-  const pruned = nodes.filter((node) => node.state === 'pruned' || node.state === 'failed').length;
-  const out = [formatMetric('Candidates', candidates)];
-  if (refinements) out.push(formatMetric('Refinements', refinements));
-  if (paths.length) out.push(formatMetric('Paths', paths.length));
-  if (pruned) out.push(formatMetric('Pruned', pruned));
-  return out;
 }
 
 function pickStageMetric(stages: ReasoningStage[], requested: string): StageMetric | null {

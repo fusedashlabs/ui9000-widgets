@@ -13,12 +13,11 @@ type ReasoningArgs = {
   selectedPath: string;
   showLegend: boolean;
   showTooltip: boolean;
-  showTopChart: boolean;
   showPanels: boolean;
   showAnnotations: boolean;
 };
 
-/** Same graph, six stages instead of four: the bands and the top chart split, the layout holds. */
+/** Same graph, six stages instead of four: the bands split, the layout holds. */
 const extraStages = {
   ...defaultFixture,
   stages: [
@@ -78,7 +77,6 @@ const frame = (args: ReasoningArgs) => html`
       selected-path=${args.selectedPath}
       .showLegend=${args.showLegend}
       .showTooltip=${args.showTooltip}
-      .showTopChart=${args.showTopChart}
       .showPanels=${args.showPanels}
       .showAnnotations=${args.showAnnotations}
       @path-select=${logSelect}
@@ -95,7 +93,7 @@ const meta: Meta<ReasoningArgs> = {
     docs: {
       description: {
         component:
-          'Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc, and deeper stages climb toward the top. Links are hairlines in their model’s colour, red and dashed into a pruned node. Candidate paths sit above them, subordinate; the active path glows from the root and warms to its model’s colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. Step entropy and the benchmarks sit in a panel under the plot. A stage chart above it (readouts, and a stage metric across depth over the breadth at each depth) is off by default; `show-top-chart` turns it on, as in the “Stage chart” story. Hover a node, a path or a stage for its detail. Click a path (or a node, for the path to it) to highlight it; “← Active path” or Esc returns. Selecting fires `path-select`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
+          'Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc, and deeper stages climb toward the top, named down the right edge with their depths and stage metric. Links are hairlines in their model’s colour, red and dashed into a pruned node. Candidate paths sit above them, subordinate; the active path glows from the root and warms to its model’s colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. Step entropy and the benchmarks sit in a panel under the plot. Hover a node, a path or a stage name for its detail. Click a path (or a node, for the path to it) to highlight it; “← Active path” or Esc returns. Selecting fires `path-select`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
       },
     },
   },
@@ -112,7 +110,6 @@ const meta: Meta<ReasoningArgs> = {
     selectedPath: '',
     showLegend: true,
     showTooltip: true,
-    showTopChart: false,
     showPanels: true,
     showAnnotations: true,
   },
@@ -138,12 +135,6 @@ export const ExtraStages: Story = {
 export const FewerPaths: Story = {
   name: 'Fewer paths',
   args: { data: fewerPaths },
-};
-
-/** The opt-in stage chart above the plot: readouts, and the stage metric across depth. */
-export const StageChart: Story = {
-  name: 'Stage chart',
-  args: { showTopChart: true },
 };
 
 export const Minimal: Story = {

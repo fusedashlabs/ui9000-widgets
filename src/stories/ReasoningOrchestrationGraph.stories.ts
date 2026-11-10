@@ -70,20 +70,30 @@ function logSelect(event: CustomEvent<PathSelectDetail>): void {
     : 'path-select → active path';
 }
 
-const frame = (args: ReasoningArgs) => html`
-  <div style="width:${args.width};height:${args.height};">
-    <ui9000-reasoning-orchestration-graph
-      data=${JSON.stringify(args.data)}
-      selected-path=${args.selectedPath}
-      .showLegend=${args.showLegend}
-      .showTooltip=${args.showTooltip}
-      .showPanels=${args.showPanels}
-      .showAnnotations=${args.showAnnotations}
-      @path-select=${logSelect}
-    ></ui9000-reasoning-orchestration-graph>
-    <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>
+/**
+ * Storybook only: each story starts at its `height` and scales down to stop short of the canvas's bottom edge,
+ * never under 520px tall (the widget's own minimum) or 520px wide. The widget fills whatever box its host gives it.
+ */
+const sized = (args: ReasoningArgs, content: unknown) => html`
+  <div style="width:${args.width};min-width:520px;height:max(520px, min(${args.height}, calc(100dvh - 3rem)));">
+    ${content}
   </div>
 `;
+
+const frame = (args: ReasoningArgs) =>
+  sized(
+    args,
+    html`<ui9000-reasoning-orchestration-graph
+        data=${JSON.stringify(args.data)}
+        selected-path=${args.selectedPath}
+        .showLegend=${args.showLegend}
+        .showTooltip=${args.showTooltip}
+        .showPanels=${args.showPanels}
+        .showAnnotations=${args.showAnnotations}
+        @path-select=${logSelect}
+      ></ui9000-reasoning-orchestration-graph>
+      <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>`,
+  );
 
 const meta: Meta<ReasoningArgs> = {
   title: 'Graph/Reasoning orchestration',
@@ -101,12 +111,12 @@ const meta: Meta<ReasoningArgs> = {
     data: { control: false, table: { disable: true } },
     selectedPath: { control: 'select', options: ['', 'refine', 'critic-b', 'vote', 'breadth'] },
     width: { control: 'text' },
-    height: { control: 'text' },
+    height: { control: 'text', description: 'Frame height, scaled down to fit the canvas.' },
   },
   args: {
     data: defaultFixture,
     width: '100%',
-    height: '860px',
+    height: '720px',
     selectedPath: '',
     showLegend: true,
     showTooltip: true,
@@ -142,11 +152,6 @@ export const Minimal: Story = {
   args: { data: minimal, height: '560px' },
 };
 
-export const Compact: Story = {
-  name: 'Compact',
-  args: { width: '520px', height: '720px' },
-};
-
 export const WithoutPanels: Story = {
   name: 'Graph only',
   args: { showPanels: false, height: '620px' },
@@ -154,9 +159,5 @@ export const WithoutPanels: Story = {
 
 export const ThroughRenderer: Story = {
   name: 'Through chart-renderer',
-  render: (args) => html`
-    <div style="width:${args.width};height:${args.height};">
-      <ui9000-chart-renderer data=${JSON.stringify(args.data)}></ui9000-chart-renderer>
-    </div>
-  `,
+  render: (args) => sized(args, html`<ui9000-chart-renderer data=${JSON.stringify(args.data)}></ui9000-chart-renderer>`),
 };

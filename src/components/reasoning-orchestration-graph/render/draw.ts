@@ -17,14 +17,15 @@ import { modelColors, orchestrationPalette, type OrchestrationPalette } from './
 export const MONO_FONT = `var(--ui9000-font-family, ${CHART_TYPE.fontFamily})`;
 /** Advance of one character, in em. */
 export const MONO_ADVANCE = 0.6;
-const NOTE_FONT = CHART_TYPE.axis;
-const NOTE_LINE = 14;
+/** Notes and stage names are capitals in the subtitle style (body/xs), as the other graphs' labels. */
+const NOTE_FONT = CHART_TYPE.subtitle;
+const NOTE_LINE = CHART_TYPE.subtitleLine;
 const NOTE_PAD_X = 9;
 const NOTE_PAD_Y = 7;
 const NOTE_ACCENT = 3;
 const NOTE_MAX_CHARS = 46;
 const NOTE_GAP = 10;
-const READOUT_FONT = CHART_TYPE.axis;
+const READOUT_FONT = CHART_TYPE.subtitle;
 /** Strength of the hover preview against the highlight. */
 const PREVIEW_OPACITY = 0.5;
 /** A pointer this close to a node hovers it. */
@@ -478,7 +479,7 @@ function drawRules(
     .attr('dy', '0.32em')
     .attr('text-anchor', 'end')
     .attr('font-size', READOUT_FONT)
-    .attr('letter-spacing', '0.04em')
+    .attr('letter-spacing', CHART_TYPE.subtitleTracking)
     .attr('fill', palette.label)
     .attr('fill-opacity', (mark) => (mark.status === 'pending' ? 0.55 : 1))
     .style('font-family', MONO_FONT)
@@ -795,6 +796,7 @@ function drawNotes(
         .attr('x', textX)
         .attr('y', y + NOTE_PAD_Y + i * NOTE_LINE + NOTE_FONT)
         .attr('font-size', NOTE_FONT)
+        .attr('letter-spacing', CHART_TYPE.subtitleTracking)
         .attr('font-weight', i === 0 ? 600 : 400)
         .attr('fill', i === 0 ? palette.noteText : i === 1 ? accent : palette.noteMuted)
         .style('font-family', MONO_FONT)

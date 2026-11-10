@@ -31,17 +31,18 @@ export const reasoningOrchestrationStyles = css`
     --ro-down: #ff5d5d;
   }
 
-  .mono,
+  /* Capitals in the subtitle style (body/xs), as the other graphs' labels and legends. */
   .ro-readouts,
-  .widget-subtitle,
   .ro-chip,
   .ro-legend,
   .ro-panels,
   .ro-reset,
   .cap-note {
     font-family: var(--ui9000-font-family, Inter, sans-serif);
-    font-size: var(--ui9000-font-size-axis, 11px);
-    letter-spacing: 0.04em;
+    font-size: var(--ui9000-font-size-subtitle, 10px);
+    font-weight: var(--ui9000-font-weight-subtitle, 400);
+    line-height: var(--ui9000-line-height-subtitle, 14px);
+    letter-spacing: var(--ui9000-letter-spacing-subtitle, 0.02em);
     text-transform: uppercase;
   }
 
@@ -71,7 +72,7 @@ export const reasoningOrchestrationStyles = css`
   }
   .ro-readouts strong {
     color: var(--ui9000-color-text, #111827);
-    font-weight: 500;
+    font-weight: inherit;
   }
 
   .chart-root {
@@ -189,7 +190,7 @@ export const reasoningOrchestrationStyles = css`
     width: 6px;
     text-align: center;
     line-height: 1;
-    font-size: var(--ui9000-font-size-axis, 11px);
+    font-size: var(--ui9000-font-size-subtitle, 10px);
   }
   .ro-reset {
     position: absolute;
@@ -246,7 +247,7 @@ export const reasoningOrchestrationStyles = css`
   }
   .ro-benchmark strong {
     color: var(--ui9000-color-text, #111827);
-    font-weight: 500;
+    font-weight: inherit;
   }
   .ro-delta[data-trend='up'] {
     color: var(--ro-up);
@@ -277,7 +278,7 @@ export const reasoningOrchestrationStyles = css`
   }
   .ro-series-item strong {
     color: var(--ui9000-color-text, #111827);
-    font-weight: 500;
+    font-weight: inherit;
   }
 
   .empty {

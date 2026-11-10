@@ -8,7 +8,15 @@ export {
   type OrchestrationSelection,
   type RenderOrchestrationOptions,
 } from './draw.js';
-export { modelColor, modelColors, orchestrationPalette, type OrchestrationPalette } from './palette.js';
+export {
+  chainEndColor,
+  isDropped,
+  modelColor,
+  modelColors,
+  orchestrationPalette,
+  pathMid,
+  type OrchestrationPalette,
+} from './palette.js';
 export {
   entropyColors,
   renderEntropyStrip,

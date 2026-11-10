@@ -11,7 +11,7 @@ import {
   type ReasoningStage,
 } from '../lib/index.js';
 import { CHART_TYPE } from '../../../utils/chart-theme.js';
-import { modelColors, orchestrationPalette, type OrchestrationPalette } from './palette.js';
+import { chainEndColor, isDropped, modelColors, orchestrationPalette, pathMid, type OrchestrationPalette } from './palette.js';
 
 /** Same family as bar, line, and lollipop. Text fit still assumes a 0.6em advance. */
 export const MONO_FONT = `var(--ui9000-font-family, ${CHART_TYPE.fontFamily})`;
@@ -245,10 +245,10 @@ export function renderReasoningOrchestration(
   // Notes do not move with the selection: drawn once, then shown or faded.
   const notes = options.showAnnotations !== false ? drawNotes(noteLayer, model, layout, palette, colorOf, width, height) : [];
 
-  /** A chain's colour at its far end: its path's model, else its end node's, else the palette glow. */
+  /** A chain's colour at its far end: red into a pruned node, else its path's model, else its end node's. */
   const endColorOf = (highlight: { nodes: string[]; path: ReasoningPath | null }) => {
     const endNode = nodeById.get(highlight.nodes[highlight.nodes.length - 1] ?? '');
-    return colorOf(highlight.path?.modelId) ?? colorOf(endNode?.modelId) ?? (themeMode === 'dark' ? palette.glow : palette.pathMid);
+    return chainEndColor(palette, endNode, colorOf(highlight.path?.modelId) ?? colorOf(endNode?.modelId));
   };
   let previewFor = '';
   /**
@@ -512,7 +512,7 @@ function drawLinks(
     const b = layout.nodes.get(link.target);
     if (!a || !b) continue;
     const target = nodeById.get(link.target);
-    const dropped = target?.state === 'pruned' || target?.state === 'failed';
+    const dropped = isDropped(target);
     const color = dropped ? palette.pruned : (colorOf(link.modelId ?? target?.modelId) ?? palette.neutralLink);
     const tier = dropped ? 'pruned' : b.fan >= 0 ? 'fan' : color === palette.neutralLink ? 'neutral' : 'model';
     const groupKey = `${tier}|${color}`;
@@ -555,7 +555,7 @@ function drawNodes(
     .attr('cy', (node) => layout.nodes.get(node.id)!.y.toFixed(1))
     .attr('r', (node) => (node.score === null ? 1.1 : 0.8 + node.score * 1.8).toFixed(2))
     .attr('fill', (node) =>
-      node.state === 'pruned' || node.state === 'failed' ? palette.pruned : (colorOf(node.modelId) ?? palette.neutralNode),
+      isDropped(node) ? palette.pruned : (colorOf(node.modelId) ?? palette.neutralNode),
     )
     .attr('fill-opacity', (node) => (node.state === 'pruned' ? 0.55 : node.state === 'failed' ? 0.85 : 0.9));
 }
@@ -680,7 +680,7 @@ function drawHighlight(
     .attr('y2', last.y === first.y ? first.y - 1 : last.y);
   gradient.selectAll('stop').remove();
   gradient.append('stop').attr('offset', '0%').attr('stop-color', palette.pathStart);
-  gradient.append('stop').attr('offset', '62%').attr('stop-color', palette.pathMid);
+  gradient.append('stop').attr('offset', '62%').attr('stop-color', pathMid(palette, endColor));
   gradient.append('stop').attr('offset', '100%').attr('stop-color', endColor);
 
   const d = polyline(points);

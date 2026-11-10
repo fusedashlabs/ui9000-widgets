@@ -21,11 +21,13 @@ import {
   type ReasoningStage,
 } from '../lib/index.js';
 import {
+  chainEndColor,
   entropyColors,
   highlightedChain,
   modelColor,
   MONO_FONT,
   orchestrationPalette,
+  pathMid,
   renderEntropyStrip,
   renderReasoningOrchestration,
   type OrchestrationController,
@@ -259,14 +261,13 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     }
   }
 
-  /** The highlighted path's colour at its far end: its model, else the palette glow. */
+  /** The highlighted path's colour at its far end, as the plot draws it: red into a pruned node, else its model's. */
   private highlightColor(): string {
     const palette = orchestrationPalette(this.mode(), this.styleId());
     const { path, nodes } = highlightedChain(this._model, this._selection);
     const end = this._model.nodes.find((node) => node.id === nodes[nodes.length - 1]);
-    const modelId = path?.modelId ?? end?.modelId;
-    const model = this._model.models.find((item) => item.id === modelId);
-    return model ? modelColor(palette, model) : palette.glow;
+    const model = this._model.models.find((item) => item.id === (path?.modelId ?? end?.modelId));
+    return chainEndColor(palette, end, model ? modelColor(palette, model) : null);
   }
 
   private tip(event: MouseEvent | FocusEvent, content: ChartTooltipContent): void {
@@ -447,7 +448,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
         ? html`<span class="ro-legend-item"
             ><span
               class="ro-swatch-path"
-              style="background:linear-gradient(90deg, ${palette.pathStart}, ${palette.pathMid}, ${highlight})"
+              style="background:linear-gradient(90deg, ${palette.pathStart}, ${pathMid(palette, highlight)}, ${highlight})"
             ></span
             >${pathLabel}</span
           >`

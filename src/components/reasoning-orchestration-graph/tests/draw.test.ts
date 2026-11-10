@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import fixture from '../../../stories/fixtures/reasoning-orchestration.default.json';
 import { normalizeReasoningOrchestration } from '../lib/index.js';
-import { orchestrationPalette, renderEntropyStrip, renderReasoningOrchestration } from '../render/index.js';
+import { orchestrationPalette, pathMid, renderEntropyStrip, renderReasoningOrchestration } from '../render/index.js';
 
 const model = normalizeReasoningOrchestration(fixture);
 
@@ -81,7 +81,7 @@ describe('renderReasoningOrchestration', () => {
       renderReasoningOrchestration(el, { model, width: 880, height: 520, themeMode: mode });
       const palette = orchestrationPalette(mode);
       const stops = [...el.querySelectorAll('linearGradient stop')].map((s) => s.getAttribute('stop-color'));
-      expect(stops).toEqual([palette.pathStart, palette.pathMid, palette.models[1]]);
+      expect(stops).toEqual([palette.pathStart, pathMid(palette, palette.models[1]!), palette.models[1]]);
       expect(el.querySelector('.ro-active-end')?.getAttribute('fill')).toBe(palette.models[1]);
       el.remove();
     }
@@ -170,6 +170,35 @@ describe('renderReasoningOrchestration', () => {
     el.remove();
   });
 
+  it('turns the highlight red when it ends on a pruned or failed node', () => {
+    const el = mount();
+    const palette = orchestrationPalette('dark');
+    const pruned = model.nodes.find((node) => node.state === 'pruned' && node.parent)!;
+    const controller = renderReasoningOrchestration(el, {
+      model,
+      width: 880,
+      height: 520,
+      themeMode: 'dark',
+      selection: { pathId: null, nodeId: pruned.id },
+    })!;
+    expect(controller.highlighted().at(-1)).toBe(pruned.id);
+    expect(el.querySelector('.ro-active-end')?.getAttribute('fill')).toBe(palette.pruned);
+    expect(el.querySelector('.ro-active-glow')?.getAttribute('stroke')).toBe(palette.pruned);
+    const stops = [...el.querySelectorAll('linearGradient[id^="ui9000-ro-path-"] stop')].map((s) => s.getAttribute('stop-color'));
+    expect(stops).toEqual([palette.pathStart, pathMid(palette, palette.pruned), palette.pruned]);
+    // A path ending on a failed node is red too; the active path, ending on a verified node, keeps its model's colour.
+    controller.setSelection({ pathId: 'critic-b', nodeId: null });
+    expect(el.querySelector('.ro-active-end')?.getAttribute('fill')).toBe(palette.pruned);
+    controller.setSelection({ pathId: null, nodeId: null });
+    expect(el.querySelector('.ro-active-end')?.getAttribute('fill')).toBe(palette.models[1]);
+    // On light the red comes deepened, as rgb(); the path's middle still blends into it.
+    const light = orchestrationPalette('light');
+    expect(light.pruned).toMatch(/^rgb\(/);
+    expect(pathMid(light, light.pruned)).toMatch(/^#[0-9A-F]{6}$/);
+    expect(pathMid(light, light.pruned)).not.toBe(light.pathStart);
+    el.remove();
+  });
+
   it('previews what a click on a hovered node or path would highlight, at half strength', () => {
     const el = mount();
     const controller = renderReasoningOrchestration(el, { model, width: 880, height: 520, themeMode: 'dark' })!;
@@ -189,7 +218,8 @@ describe('renderReasoningOrchestration', () => {
     const critic = model.paths.find((path) => path.id === 'critic-b')!;
     expect(layer.querySelectorAll('.ro-preview-node')).toHaveLength(critic.nodes.length - 2);
     expect(layer.querySelector('.ro-preview-glow')).not.toBeNull();
-    expect(layer.querySelector('.ro-preview-end')?.getAttribute('fill')).toBe(orchestrationPalette('dark').models[1]);
+    // It ends on a failed node, so it previews red, as its highlight would be.
+    expect(layer.querySelector('.ro-preview-end')?.getAttribute('fill')).toBe(orchestrationPalette('dark').pruned);
     expect(layer.querySelector('.ro-preview-line')?.getAttribute('stroke')).toMatch(/^url\(#ui9000-ro-preview-\d+\)$/);
     // The highlight itself is untouched.
     expect(el.querySelectorAll('.ro-highlight .ro-active-line')).toHaveLength(1);

@@ -35,6 +35,17 @@ declare module '@fuselab-creative/design-system' {
         qualitative_4: string[];
         qualitative_12: string[];
       };
+      ui: {
+        gray: Record<'01' | '02' | '03' | '04' | '05' | '06' | '07' | '08' | '09' | '10' | '11' | '12' | '13' | '14', string>;
+      };
+      ux: {
+        primary: string;
+        secondary: string;
+        success: string;
+        warning: string;
+        error: string;
+        info: string;
+      };
     };
   };
 

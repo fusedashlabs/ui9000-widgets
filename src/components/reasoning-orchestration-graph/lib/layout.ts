@@ -263,13 +263,3 @@ export function pathToNode(model: ReasoningOrchestrationModel, nodeId: string): 
   }
   return chain.reverse();
 }
-
-/** Node count at each whole depth of the main fan: the breadth profile the top chart draws. */
-export function breadthByDepth(model: ReasoningOrchestrationModel): number[] {
-  const out = Array.from({ length: Math.ceil(model.maxDepth) + 1 }, () => 0);
-  for (const node of model.nodes) {
-    const d = Math.min(out.length - 1, Math.max(0, Math.round(node.depth)));
-    out[d] = out[d]! + 1;
-  }
-  return out;
-}

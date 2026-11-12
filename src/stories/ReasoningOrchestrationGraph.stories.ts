@@ -13,12 +13,11 @@ type ReasoningArgs = {
   selectedPath: string;
   showLegend: boolean;
   showTooltip: boolean;
-  showTopChart: boolean;
   showPanels: boolean;
   showAnnotations: boolean;
 };
 
-/** Same graph, six stages instead of four: the bands and the top chart split, the layout holds. */
+/** Same graph, six stages instead of four: the bands split, the layout holds. */
 const extraStages = {
   ...defaultFixture,
   stages: [
@@ -71,21 +70,30 @@ function logSelect(event: CustomEvent<PathSelectDetail>): void {
     : 'path-select → active path';
 }
 
-const frame = (args: ReasoningArgs) => html`
-  <div style="width:${args.width};height:${args.height};">
-    <ui9000-reasoning-orchestration-graph
-      data=${JSON.stringify(args.data)}
-      selected-path=${args.selectedPath}
-      .showLegend=${args.showLegend}
-      .showTooltip=${args.showTooltip}
-      .showTopChart=${args.showTopChart}
-      .showPanels=${args.showPanels}
-      .showAnnotations=${args.showAnnotations}
-      @path-select=${logSelect}
-    ></ui9000-reasoning-orchestration-graph>
-    <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>
+/**
+ * Storybook only: each story starts at its `height` and scales down to stop short of the canvas's bottom edge,
+ * never under 520px tall (the widget's own minimum) or 520px wide. The widget fills whatever box its host gives it.
+ */
+const sized = (args: ReasoningArgs, content: unknown) => html`
+  <div style="width:${args.width};min-width:520px;height:max(520px, min(${args.height}, calc(100dvh - 3rem)));">
+    ${content}
   </div>
 `;
+
+const frame = (args: ReasoningArgs) =>
+  sized(
+    args,
+    html`<ui9000-reasoning-orchestration-graph
+        data=${JSON.stringify(args.data)}
+        selected-path=${args.selectedPath}
+        .showLegend=${args.showLegend}
+        .showTooltip=${args.showTooltip}
+        .showPanels=${args.showPanels}
+        .showAnnotations=${args.showAnnotations}
+        @path-select=${logSelect}
+      ></ui9000-reasoning-orchestration-graph>
+      <output style="display:block;margin-top:8px;font:12px Inter, sans-serif;color:#737373;"></output>`,
+  );
 
 const meta: Meta<ReasoningArgs> = {
   title: 'Graph/Reasoning orchestration',
@@ -95,7 +103,7 @@ const meta: Meta<ReasoningArgs> = {
     docs: {
       description: {
         component:
-          'Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc, and deeper stages climb toward the top. Links are hairlines in their model’s colour, red and dashed into a pruned node. Candidate paths sit above them, subordinate; the active path glows from the root and warms to its model’s colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. The top chart compares a stage metric across depth over the breadth at each depth; step entropy, the refinement pipeline and compute scaling sit in panels under the plot. Hover a node, a path or a stage for its detail. Click a path (or a node, for the path to it) to highlight it; “← Active path” or Esc returns. Selecting fires `path-select`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
+          'Agents Management reasoning orchestration graph (AM-1): reasoning stages, candidate paths, models and refinement steps. The root sits at the bottom centre and depth grows outward; the widest stage (the exploration frontier) spans the plot as an arc, and deeper stages climb toward the top, named down the right edge with their depths and stage metric. Links are hairlines in their model’s colour, red and dashed into a pruned node. Candidate paths sit above them, subordinate; the active path glows from the root and warms to its model’s colour. Independent resamples grow as small fans on the baseline. Model labels sit in the top corners, the legend bottom right, and up to three refinement notes hang off their nodes. Step entropy and the benchmarks sit in a panel under the plot. Hover a node, a path or a stage name for its detail. Click a path (or a node, for the path to it) to highlight it; “← Active path” or Esc returns. Selecting fires `path-select`. A free-form node–link graph stays network-graph. Use the toolbar for light or dark.',
       },
     },
   },
@@ -103,16 +111,15 @@ const meta: Meta<ReasoningArgs> = {
     data: { control: false, table: { disable: true } },
     selectedPath: { control: 'select', options: ['', 'refine', 'critic-b', 'vote', 'breadth'] },
     width: { control: 'text' },
-    height: { control: 'text' },
+    height: { control: 'text', description: 'Frame height, scaled down to fit the canvas.' },
   },
   args: {
     data: defaultFixture,
     width: '100%',
-    height: '860px',
+    height: '720px',
     selectedPath: '',
     showLegend: true,
     showTooltip: true,
-    showTopChart: true,
     showPanels: true,
     showAnnotations: true,
   },
@@ -145,21 +152,12 @@ export const Minimal: Story = {
   args: { data: minimal, height: '560px' },
 };
 
-export const Compact: Story = {
-  name: 'Compact',
-  args: { width: '520px', height: '720px' },
-};
-
 export const WithoutPanels: Story = {
   name: 'Graph only',
-  args: { showTopChart: false, showPanels: false, height: '620px' },
+  args: { showPanels: false, height: '620px' },
 };
 
 export const ThroughRenderer: Story = {
   name: 'Through chart-renderer',
-  render: (args) => html`
-    <div style="width:${args.width};height:${args.height};">
-      <ui9000-chart-renderer data=${JSON.stringify(args.data)}></ui9000-chart-renderer>
-    </div>
-  `,
+  render: (args) => sized(args, html`<ui9000-chart-renderer data=${JSON.stringify(args.data)}></ui9000-chart-renderer>`),
 };

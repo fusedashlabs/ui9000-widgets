@@ -1,11 +1,18 @@
+import { lightTheme } from '@fuselab-creative/design-system';
+
 import { parseChartStyleId, qualitativePalette, type ChartStyleId } from '../../../utils/chart-theme.js';
-import type { ReasoningModel } from '../lib/index.js';
+import { fdColors, hexWithAlpha } from '../../../utils/fusedash-visual.js';
+import { STATUS, statusCss } from '../../goals-perimeter/render/scene-palette.js';
+import type { ReasoningModel, ReasoningNode } from '../lib/index.js';
 
 /**
- * Dark is sampled from the design board: the explore model's cool blue, the
- * repair model's orange, a red for pruned candidates, and a white active path
- * that warms to its model's colour at the far end. Light keeps the hues one
- * step darker so they hold on white, and draws the path in ink.
+ * Every colour comes from the design system. Models take the page style's
+ * qualitative palette, like every other chart. Pruned and failed take the
+ * dataViz orange-red the goals graphs use for a blocked status and for
+ * claims against a goal, deepened on light so it holds as text, as theirs is.
+ * A path with no model ends in the first model colour. Ink, labels, rules and notes are the design
+ * system's grays: light ink on dark, dark ink on light. The highlighted path
+ * starts in that ink and warms to the colour at its far end.
  */
 export interface OrchestrationPalette {
   /** Model colours in order; a model's own `color` wins. */
@@ -21,9 +28,9 @@ export interface OrchestrationPalette {
   halo: string;
   root: string;
   rootHalo: string;
-  /** Active path from the root (start) to its far end (end defaults to its model). */
+  /** The highlighted path's ink at the root; it warms toward its far end's colour. */
   pathStart: string;
-  pathMid: string;
+  /** Far end of a path, and a note's accent, when no model names a colour: the first model colour. */
   glow: string;
   noteFill: string;
   noteStroke: string;
@@ -31,42 +38,41 @@ export interface OrchestrationPalette {
   noteMuted: string;
 }
 
-const DARK: OrchestrationPalette = {
-  models: [],
-  neutralNode: 'rgba(214, 220, 232, 0.62)',
-  neutralLink: 'rgba(196, 205, 222, 0.17)',
-  pruned: '#ff5d5d',
-  rule: 'rgba(196, 205, 222, 0.16)',
-  label: '#7d8696',
-  halo: '#13161d',
-  root: '#ffffff',
-  rootHalo: 'rgba(255, 255, 255, 0.4)',
-  pathStart: '#ffffff',
-  pathMid: '#ffe4d2',
-  glow: '#ffb08a',
-  noteFill: 'rgba(15, 18, 25, 0.92)',
-  noteStroke: 'rgba(255, 255, 255, 0.14)',
-  noteText: '#e6e9ef',
-  noteMuted: '#9aa3b2',
+const GRAY = lightTheme.colors.ui.gray;
+
+/** What depends only on the theme; the models and the fallback end follow the page style. */
+type ThemeColors = Omit<OrchestrationPalette, 'models' | 'glow'>;
+
+const DARK: ThemeColors = {
+  neutralNode: hexWithAlpha(GRAY['05'], 62),
+  neutralLink: hexWithAlpha(GRAY['05'], 17),
+  pruned: STATUS.blocked,
+  rule: hexWithAlpha(GRAY['05'], 16),
+  label: fdColors('dark').axisLabelFill,
+  halo: fdColors('dark').mapSpikeHalo,
+  root: GRAY['01'],
+  rootHalo: hexWithAlpha(GRAY['01'], 40),
+  pathStart: GRAY['01'],
+  noteFill: hexWithAlpha(GRAY['14'], 92),
+  noteStroke: hexWithAlpha(GRAY['01'], 14),
+  noteText: GRAY['01'],
+  noteMuted: GRAY['05'],
 };
 
-const LIGHT: OrchestrationPalette = {
-  models: [],
-  neutralNode: 'rgba(55, 65, 81, 0.5)',
-  neutralLink: 'rgba(55, 65, 81, 0.15)',
-  pruned: '#e03131',
-  rule: 'rgba(55, 65, 81, 0.16)',
-  label: '#6b7280',
-  halo: '#ffffff',
-  root: '#111827',
-  rootHalo: 'rgba(17, 24, 39, 0.28)',
-  pathStart: '#111827',
-  pathMid: '#7c2d12',
-  glow: '#fb923c',
-  noteFill: 'rgba(255, 255, 255, 0.96)',
-  noteStroke: 'rgba(17, 24, 39, 0.14)',
-  noteText: '#111827',
-  noteMuted: '#4b5563',
+const LIGHT: ThemeColors = {
+  neutralNode: hexWithAlpha(GRAY['09'], 50),
+  neutralLink: hexWithAlpha(GRAY['09'], 15),
+  pruned: statusCss('light').blocked,
+  rule: hexWithAlpha(GRAY['09'], 16),
+  label: fdColors('light').axisLabelFill,
+  halo: '#FFFFFF',
+  root: GRAY['13'],
+  rootHalo: hexWithAlpha(GRAY['13'], 28),
+  pathStart: GRAY['13'],
+  noteFill: hexWithAlpha('#FFFFFF', 96),
+  noteStroke: hexWithAlpha(GRAY['13'], 14),
+  noteText: GRAY['13'],
+  noteMuted: GRAY['09'],
 };
 
 export function orchestrationPalette(
@@ -74,16 +80,45 @@ export function orchestrationPalette(
   styleId: ChartStyleId | string = 'default',
 ): OrchestrationPalette {
   const base = mode === 'dark' ? DARK : LIGHT;
-  return {
-    ...base,
-    models: qualitativePalette(parseChartStyleId(styleId), 12).slice(0, 6),
-  };
+  const models = qualitativePalette(parseChartStyleId(styleId), 12).slice(0, 6);
+  return { ...base, models, glow: models[0]! };
 }
 
 /** A model's colour: its own, else its palette slot. */
 export function modelColor(palette: OrchestrationPalette, model: ReasoningModel | undefined): string {
   if (!model) return palette.neutralNode;
   return model.color ?? palette.models[model.index % palette.models.length]!;
+}
+
+/** Pruned and failed nodes draw in the pruned red. */
+export function isDropped(node: Pick<ReasoningNode, 'state'> | undefined): boolean {
+  return node?.state === 'pruned' || node?.state === 'failed';
+}
+
+/**
+ * The highlighted path's colour at its far end: the pruned red when it ends on
+ * a pruned or failed node, else its model's colour, else the palette's orange.
+ */
+export function chainEndColor(palette: OrchestrationPalette, end: Pick<ReasoningNode, 'state'> | undefined, modelColor: string | null | undefined): string {
+  if (isDropped(end)) return palette.pruned;
+  return modelColor ?? palette.glow;
+}
+
+/** The highlighted path's middle: its start ink, two fifths of the way to its far end's colour. */
+export function pathMid(palette: OrchestrationPalette, end: string): string {
+  /** `#rrggbb` or `rgb(r, g, b)`, as the status colours come on light. */
+  const parse = (color: string): number[] | null => {
+    if (/^#[0-9a-f]{6}/i.test(color)) {
+      const n = Number.parseInt(color.slice(1, 7), 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    const rgb = /^rgb\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/i.exec(color);
+    return rgb ? rgb.slice(1, 4).map(Number) : null;
+  };
+  const a = parse(palette.pathStart);
+  const b = parse(end);
+  if (!a || !b) return palette.pathStart;
+  return `#${a.map((v, i) => Math.round(v + (b[i]! - v) * 0.4).toString(16).padStart(2, '0')).join('').toUpperCase()}`;
 }
 
 /** Colour lookup by model id, neutral when the id names no model. */

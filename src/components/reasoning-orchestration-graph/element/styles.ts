@@ -1,4 +1,17 @@
-import { css } from 'lit';
+import { lightTheme } from '@fuselab-creative/design-system';
+import { css, unsafeCSS } from 'lit';
+
+import { hexWithAlpha } from '../../../utils/fusedash-visual.js';
+import { STATUS, statusCss } from '../../goals-perimeter/render/scene-palette.js';
+
+/** Chips and the legend: white on light, the darkest gray on dark. */
+const CHIP_DARK = lightTheme.colors.ui.gray['14'];
+/**
+ * Benchmark deltas: the dataViz green and orange-red the goals graphs use for an ok and a blocked status, deepened
+ * on light so they hold as text, as theirs are.
+ */
+const UP = { light: statusCss('light').ok, dark: STATUS.ok };
+const DOWN = { light: statusCss('light').blocked, dark: STATUS.blocked };
 
 /**
  * The shell, its text and its rules follow the package theme like every
@@ -14,31 +27,34 @@ export const reasoningOrchestrationStyles = css`
     color: var(--ui9000-color-text, #111827);
     font-family: var(--ui9000-font-family, Inter, sans-serif);
     box-sizing: border-box;
-    --ro-mono: var(--ui9000-font-family, Inter, sans-serif);
     --ro-muted: var(--ui9000-color-text-muted, #6b7280);
     --ro-rule: var(--ui9000-color-border, #e5e7eb);
-    --ro-chip: rgba(255, 255, 255, 0.86);
-    --ro-up: #0f9488;
-    --ro-down: #e03131;
+    --ro-chip: ${unsafeCSS(hexWithAlpha('#FFFFFF', 86))};
+    /* The legend's right end: the chip colour at 0.4 opacity. */
+    --ro-chip-fade: ${unsafeCSS(hexWithAlpha('#FFFFFF', 40))};
+    --ro-up: ${unsafeCSS(UP.light)};
+    --ro-down: ${unsafeCSS(DOWN.light)};
   }
 
   :host([data-mode='dark']) {
-    --ro-chip: rgba(15, 18, 25, 0.82);
-    --ro-up: #4fd1c5;
-    --ro-down: #ff5d5d;
+    --ro-chip: ${unsafeCSS(hexWithAlpha(CHIP_DARK, 82))};
+    --ro-chip-fade: ${unsafeCSS(hexWithAlpha(CHIP_DARK, 40))};
+    --ro-up: ${unsafeCSS(UP.dark)};
+    --ro-down: ${unsafeCSS(DOWN.dark)};
   }
 
-  .mono,
+  /* Capitals in the subtitle style (body/xs), as the other graphs' labels and legends. */
   .ro-readouts,
-  .widget-subtitle,
   .ro-chip,
   .ro-legend,
   .ro-panels,
   .ro-reset,
   .cap-note {
     font-family: var(--ui9000-font-family, Inter, sans-serif);
-    font-size: var(--ui9000-font-size-axis, 11px);
-    letter-spacing: 0.04em;
+    font-size: var(--ui9000-font-size-subtitle, 10px);
+    font-weight: var(--ui9000-font-weight-subtitle, 400);
+    line-height: var(--ui9000-line-height-subtitle, 14px);
+    letter-spacing: var(--ui9000-letter-spacing-subtitle, 0.02em);
     text-transform: uppercase;
   }
 
@@ -52,15 +68,7 @@ export const reasoningOrchestrationStyles = css`
     color: var(--ro-muted);
   }
 
-  /* Top chart: readouts over the breadth-by-depth strip. */
-  .ro-top {
-    flex: none;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--ro-rule);
-  }
+  /* Readouts over the entropy strip: its title and the benchmarks. */
   .ro-readouts {
     display: flex;
     justify-content: space-between;
@@ -76,15 +84,7 @@ export const reasoningOrchestrationStyles = css`
   }
   .ro-readouts strong {
     color: var(--ui9000-color-text, #111827);
-    font-weight: 500;
-  }
-  .ro-criterion {
-    text-align: right;
-    flex: 0 1 auto;
-  }
-  .ro-top-chart {
-    width: 100%;
-    height: 40px;
+    font-weight: inherit;
   }
 
   .chart-root {
@@ -151,9 +151,36 @@ export const reasoningOrchestrationStyles = css`
     padding: 5px 8px;
     border: 1px solid var(--ro-rule);
     border-radius: 2px;
-    background: var(--ro-chip);
+    /* Solid behind the colour keys, thinning to 0.4 opacity on the right so the plot shows through the labels. */
+    background: linear-gradient(90deg, var(--ro-chip) 0, var(--ro-chip) 28px, var(--ro-chip-fade) 100%);
     color: var(--ro-muted);
     pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+  /* Under the pointer the legend fades out, so the nodes beneath it show and stay hoverable. */
+  .ro-legend.is-faded {
+    opacity: 0;
+  }
+  /* A click on a stage name fades every stage name until the pointer leaves the plot or a click lands on empty plot; the nodes under them hover meanwhile. */
+  .ro-readout {
+    transition: opacity 160ms ease;
+  }
+  .chart-root.is-stages-faded .ro-readout {
+    opacity: 0;
+  }
+  .chart-root.is-stages-faded .ro-stage-hit {
+    pointer-events: none;
+  }
+  /* A selection other than the active path fades the notes off its chain. */
+  .ro-note {
+    transition: opacity 160ms ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ro-legend,
+    .ro-readout,
+    .ro-note {
+      transition: none;
+    }
   }
   .ro-legend-title {
     color: var(--ui9000-color-text, #111827);
@@ -175,7 +202,7 @@ export const reasoningOrchestrationStyles = css`
     width: 6px;
     text-align: center;
     line-height: 1;
-    font-size: var(--ui9000-font-size-axis, 11px);
+    font-size: var(--ui9000-font-size-subtitle, 10px);
   }
   .ro-reset {
     position: absolute;
@@ -210,7 +237,7 @@ export const reasoningOrchestrationStyles = css`
     stroke-opacity: 0.35;
   }
 
-  /* Bottom panels: step entropy, refinement pipeline, compute scaling. */
+  /* Bottom panels: the step entropy strip, its benchmarks and its series. */
   .ro-panels {
     flex: none;
     display: flex;
@@ -232,18 +259,13 @@ export const reasoningOrchestrationStyles = css`
   }
   .ro-benchmark strong {
     color: var(--ui9000-color-text, #111827);
-    font-weight: 500;
+    font-weight: inherit;
   }
   .ro-delta[data-trend='up'] {
     color: var(--ro-up);
   }
   .ro-delta[data-trend='down'] {
     color: var(--ro-down);
-  }
-  .ro-panel-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 6px 16px;
   }
   .ro-panel {
     display: flex;
@@ -268,73 +290,7 @@ export const reasoningOrchestrationStyles = css`
   }
   .ro-series-item strong {
     color: var(--ui9000-color-text, #111827);
-    font-weight: 500;
-  }
-  .ro-pipeline {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 3px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .ro-step-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-  .ro-step {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 6px;
-    border: 1px solid var(--ro-rule);
-    border-radius: 2px;
-    white-space: nowrap;
-  }
-  .ro-step[data-status='done'] {
-    color: var(--ui9000-color-text, #111827);
-  }
-  .ro-step[data-status='active'] {
-    color: var(--ui9000-color-text, #111827);
-    border-color: currentColor;
-  }
-  .ro-step[data-status='failed'] {
-    color: var(--ro-down);
-  }
-  .ro-step[data-status='pending'] {
-    opacity: 0.6;
-  }
-  .ro-step-mark {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    border: 1px solid currentColor;
-    box-sizing: border-box;
-  }
-  .ro-step[data-status='done'] .ro-step-mark,
-  .ro-step[data-status='failed'] .ro-step-mark {
-    background: currentColor;
-  }
-  .ro-step[data-status='active'] .ro-step-mark {
-    background: var(--ro-active, currentColor);
-    border-color: var(--ro-active, currentColor);
-  }
-  .ro-step-arrow {
-    opacity: 0.5;
-  }
-  .ro-scaling {
-    width: 100%;
-    height: 56px;
+    font-weight: inherit;
   }
 
   .empty {

@@ -11,7 +11,6 @@ export {
 } from './format.js';
 export {
   ANGLE_JITTER,
-  breadthByDepth,
   FAN_THETA,
   hash01,
   JITTER,
@@ -37,7 +36,6 @@ export {
 } from './normalize.js';
 export type {
   AnnotationInput,
-  ComputeScaling,
   EntropyInput,
   EntropySeries,
   EntropyStrip,
@@ -49,9 +47,6 @@ export type {
   NodeInput,
   NodeState,
   PathInput,
-  Pipeline,
-  PipelineInput,
-  PipelineStage,
   ReasoningAnnotation,
   ReasoningLink,
   ReasoningModel,
@@ -60,8 +55,6 @@ export type {
   ReasoningOrchestrationPayload,
   ReasoningPath,
   ReasoningStage,
-  ScalingInput,
-  ScalingSeries,
   StageInput,
   StageMetric,
   StageStatus,

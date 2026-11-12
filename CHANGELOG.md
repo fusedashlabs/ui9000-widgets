@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Breaking
+
+- **reasoning-orchestration-graph**: the stage chart above the plot is gone, with its `show-top-chart` attribute and `top-chart` part, and the payload's `summary`, `summaryLabel` and `criterion` are no longer read. The refinement pipeline and compute scaling panels are gone too, and the payload's `pipeline` and `scaling` are no longer read. `renderTopChart`, `renderScalingChart`, `breadthByDepth`, `ComputeScaling` and `Pipeline` are no longer exported from `@fusedashlabs/widgets/reasoning-orchestration-graph`. `orchestrationPalette` no longer returns `pathMid`: the highlighted path's middle now follows its two ends.
+
+### Changed
+
+- **reasoning-orchestration-graph**: simpler, closer to the design. The stage names down the right edge now carry the stage metric (`SAMPLE · D0–4 · 30.8%`), and `stageMetric` picks which one. Step entropy and the benchmarks stay under the plot. Hovering a stage name shows what the stage chart's hover did: its depths, node count, status, model and every metric it carries. Clicking a stage name fades all of them, so the nodes under them can be hovered, until the pointer leaves the plot, a click lands on empty plot, or the highlighted path is clicked again. A click on the highlighted path (on one of its nodes or near its line) now picks that path again instead of the path to the node clicked. Selecting anything other than the active path fades the refinement notes that are not on it, so they cover nothing; selecting the active path again, or returning to it, brings them back. Hovering a candidate path, or a node off the highlighted path, previews what a click would highlight: drawn like the highlighted path at half opacity. The legend fades out while the pointer is over it, so the nodes under it show and stay hoverable, and comes back when the pointer leaves. Its background stays solid behind the colour keys and thins to 0.4 opacity on the right.
+- **reasoning-orchestration-graph**: its capitals (stage names, notes, model labels, legend and panels) are in the subtitle style the other graphs' labels use, 10px with its tracking and line height, instead of 12px with wider tracking; values no longer use the off-scale 500 weight, and the line under the title keeps the shared header's case.
+- **reasoning-orchestration-graph**: every colour comes from the design system: pruned and failed nodes take the dataViz orange-red the goals graphs use for a blocked status and for claims against a goal, deepened on light so it holds as text as theirs is; a path with no model ends in the first model colour; ink, labels, rules, notes and chips take its grays. Benchmark deltas use the goals graphs' green and orange-red the same way. A highlighted path that ends on a pruned or failed node, a clicked one included, turns red at its far end instead of its model's colour, in the plot, the hover preview and the legend.
+
 ## 0.9.0 — 2026-11-04
 
 ### Breaking

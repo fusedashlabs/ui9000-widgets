@@ -109,13 +109,20 @@ describe('ui9000-reasoning-orchestration-graph', () => {
     });
   });
 
-  it('fades the legend while the pointer is over it, without redrawing the plot', async () => {
+  it('fades the legend while the pointer is over it, without redrawing the plot or reading layout on a move', async () => {
     const el = await mount(fixture);
     const root = el.shadowRoot!;
     const plot = root.querySelector<HTMLElement>('.chart-root')!;
     const legend = root.querySelector<HTMLElement>('.ro-legend')!;
-    legend.getBoundingClientRect = () => ({ left: 700, right: 880, top: 600, bottom: 680, width: 180, height: 80 }) as DOMRect;
+    for (const [key, value] of Object.entries({ offsetLeft: 600, offsetTop: 550, offsetWidth: 180, offsetHeight: 80 })) {
+      Object.defineProperty(legend, key, { configurable: true, value });
+    }
+    el.draw();
     const svg = root.querySelector('svg.ro-svg');
+    const plotRect = vi.fn(() => ({ left: 100, top: 50 }) as DOMRect);
+    plot.getBoundingClientRect = plotRect;
+    const legendRect = vi.spyOn(legend, 'getBoundingClientRect');
+    plot.dispatchEvent(new MouseEvent('pointerenter'));
     const move = async (clientX: number, clientY: number) => {
       plot.dispatchEvent(new MouseEvent('pointermove', { clientX, clientY, bubbles: true }));
       await el.updateComplete;
@@ -128,11 +135,38 @@ describe('ui9000-reasoning-orchestration-graph', () => {
     expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(false);
     await move(870, 610);
     expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(true);
+    expect(plotRect).toHaveBeenCalledTimes(1);
+    expect(legendRect).not.toHaveBeenCalled();
     plot.dispatchEvent(new MouseEvent('pointerleave'));
     await el.updateComplete;
     expect(root.querySelector('.ro-legend')!.classList.contains('is-faded')).toBe(false);
     await flush();
     expect(root.querySelector('svg.ro-svg')).toBe(svg);
+  });
+
+  it('shows a stage name\'s details on keyboard focus and on a tap, and fades the names on Enter', async () => {
+    const el = await mount(fixture);
+    const root = el.shadowRoot!;
+    const plot = root.querySelector<HTMLElement>('.chart-root')!;
+    const open = vi.spyOn(el as unknown as { openTooltip: (event: MouseEvent, content: { title: string }) => void }, 'openTooltip');
+    const stage = () => root.querySelector<SVGRectElement>('.ro-stage-hit[data-stage="verify"]')!;
+    expect(stage().getAttribute('tabindex')).toBe('0');
+    expect(stage().getAttribute('role')).toBe('button');
+
+    stage().dispatchEvent(new FocusEvent('focus'));
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(open.mock.calls[0]![1].title).toBe(normalizeReasoningOrchestration(fixture).stages.find((item) => item.id === 'verify')!.label);
+
+    const tap = new MouseEvent('click', { bubbles: true });
+    Object.defineProperty(tap, 'pointerType', { value: 'touch' });
+    stage().dispatchEvent(tap);
+    await el.updateComplete;
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(plot.classList.contains('is-stages-faded')).toBe(false);
+
+    stage().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await el.updateComplete;
+    expect(plot.classList.contains('is-stages-faded')).toBe(true);
   });
 
   it('fades the stage names on a click until the pointer leaves the plot, through a redraw', async () => {

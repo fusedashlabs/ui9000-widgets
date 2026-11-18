@@ -28,6 +28,7 @@ declare module '@fuselab-creative/design-system' {
 
   type Theme = {
     colors: {
+      white: string;
       dataViz: {
         sequential_7_1: string[];
         qualitative_2_1: string[];

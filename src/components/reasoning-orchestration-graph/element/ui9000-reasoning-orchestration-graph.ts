@@ -77,7 +77,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
   @property({ converter: flagConverter, attribute: 'show-tooltip' })
   showTooltip = true;
 
-  /** Step entropy and the benchmarks under the plot. */
   @property({ converter: flagConverter, attribute: 'show-panels' })
   showPanels = true;
 
@@ -98,16 +97,15 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
   @state()
   private _legendFaded = false;
 
-  /**
-   * A stage name was clicked: every stage name fades and lets the pointer
-   * through to the nodes under it, until the pointer leaves the plot, a click
-   * lands on empty plot, or the highlighted path is clicked again. A class on
-   * the plot, so a redraw meanwhile keeps them hidden.
-   */
+  /** Faded stage names let the pointer through to the nodes under them. A class on the plot, so a redraw keeps them faded. */
   @state()
   private _stagesFaded = false;
 
   private _controller: OrchestrationController | null = null;
+  /** The legend in plot coordinates, measured on draw so a pointer move reads no layout. */
+  private _legendBox: { left: number; top: number; right: number; bottom: number } | null = null;
+  /** The plot's viewport origin, read once as the pointer enters. */
+  private _plotOrigin: { x: number; y: number } | null = null;
   private _resizeObserver?: ResizeObserver;
   private _raf = 0;
 
@@ -145,6 +143,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
 
   override updated(changed: PropertyValues): void {
     if (changed.has('showTooltip') && !this.showTooltip) this.closeAllTooltips();
+    if (changed.has('showLegend')) this.measureLegend();
     if (this.shouldRedraw(changed)) this.scheduleDraw();
   }
 
@@ -213,8 +212,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
         },
         onLeave: () => this.closeTooltip(),
         onSelect: (selection) => {
-          // A click on empty plot selects no path, and a second click on the highlighted path selects
-          // nothing new: either brings faded stage names back.
+          // Empty plot or the highlighted path again brings faded stage names back.
           const again = this.isHighlighted(selection);
           if (again || (!selection.pathId && !selection.nodeId)) this._stagesFaded = false;
           if (!again) this.select(selection);
@@ -222,6 +220,19 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
       },
     });
     this.drawStrips(width);
+    this.measureLegend();
+  }
+
+  private measureLegend(): void {
+    const legend = this.shadowPart('.chart-root > .ro-legend');
+    this._legendBox = legend?.offsetWidth
+      ? {
+          left: legend.offsetLeft,
+          top: legend.offsetTop,
+          right: legend.offsetLeft + legend.offsetWidth,
+          bottom: legend.offsetTop + legend.offsetHeight,
+        }
+      : null;
   }
 
   /** Bottom of the model labels in the plot's top corners, so stage names on the right edge start below them. */
@@ -236,7 +247,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     return legend?.offsetHeight ? legend.offsetTop - 16 : undefined;
   }
 
-  /** The entropy strip; redrawn with the plot and on every selection. */
   private drawStrips(fallbackWidth: number): void {
     const model = this._model;
     const mode = this.mode();
@@ -261,7 +271,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     }
   }
 
-  /** The highlighted path's colour at its far end, as the plot draws it: red into a pruned node, else its model's. */
   private highlightColor(): string {
     const palette = orchestrationPalette(this.mode(), this.styleId());
     const { path, nodes } = highlightedChain(this._model, this._selection);
@@ -366,7 +375,6 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
     return { title: path.label, rows };
   }
 
-  /** A stage name's detail: its depths, how many nodes it holds, its status, model and every metric it carries. */
   private stageTooltip(stage: ReasoningStage): ChartTooltipContent {
     const from = Math.round(stage.depthFrom);
     const to = Math.round(stage.depthTo);
@@ -415,20 +423,22 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
    * The legend lets the pointer through to the nodes under it, so it cannot
    * take :hover; the plot checks whether the pointer is inside its box.
    */
+  private readonly _onPlotPointerEnter = (event: PointerEvent): void => {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this._plotOrigin = { x: rect.left, y: rect.top };
+  };
+
   private readonly _onPlotPointerMove = (event: PointerEvent): void => {
-    const box = this.shadowPart('.chart-root > .ro-legend')?.getBoundingClientRect();
-    const inside = Boolean(
-      box &&
-        box.width &&
-        event.clientX >= box.left &&
-        event.clientX <= box.right &&
-        event.clientY >= box.top &&
-        event.clientY <= box.bottom,
-    );
+    const box = this._legendBox;
+    const origin = this._plotOrigin;
+    const x = origin ? event.clientX - origin.x : NaN;
+    const y = origin ? event.clientY - origin.y : NaN;
+    const inside = Boolean(box && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
     if (inside !== this._legendFaded) this._legendFaded = inside;
   };
 
   private readonly _onPlotPointerLeave = (): void => {
+    this._plotOrigin = null;
     this._legendFaded = false;
     this._stagesFaded = false;
   };
@@ -553,6 +563,7 @@ export class Ui9000ReasoningOrchestrationGraph extends Ui9000ChartElement {
             class="chart-root ${this._stagesFaded ? 'is-stages-faded' : ''}"
             part="chart"
             ?hidden=${empty}
+            @pointerenter=${this._onPlotPointerEnter}
             @pointermove=${this._onPlotPointerMove}
             @pointerleave=${this._onPlotPointerLeave}
           >

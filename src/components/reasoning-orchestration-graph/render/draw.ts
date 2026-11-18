@@ -39,10 +39,9 @@ export interface OrchestrationSelection {
 export interface OrchestrationHandlers {
   onNodeHover?: (node: ReasoningNode, event: MouseEvent) => void;
   onPathHover?: (path: ReasoningPath, event: MouseEvent | FocusEvent) => void;
-  /** Hover on a stage name down the right edge. */
-  onStageHover?: (stage: ReasoningStage, event: MouseEvent) => void;
-  /** A click on a stage name down the right edge. */
-  onStageClick?: (stage: ReasoningStage, event: MouseEvent) => void;
+  /** Also on keyboard focus, and on a tap, since touch has no hover. */
+  onStageHover?: (stage: ReasoningStage, event: MouseEvent | FocusEvent) => void;
+  onStageClick?: (stage: ReasoningStage, event: MouseEvent | KeyboardEvent) => void;
   onLeave?: () => void;
   /**
    * A click on a node or a path, or on empty plot (both null). A click on the
@@ -84,7 +83,6 @@ let instanceCount = 0;
 /** A click this close to the highlighted path's line picks the path. */
 const LINE_HIT = 6;
 
-/** The point lies within LINE_HIT of the polyline. */
 function nearLine(point: { x: number; y: number }, line: { x: number; y: number }[]): boolean {
   for (let i = 1; i < line.length; i += 1) {
     const a = line[i - 1]!;
@@ -233,29 +231,35 @@ export function renderReasoningOrchestration(
     .attr('width', (mark) => readoutWidth(mark.text))
     .attr('height', 16)
     .attr('fill', 'transparent')
-    .on('mousemove', (event: MouseEvent, mark) => handlers.onStageHover?.(mark.stage!, event))
-    .on('mouseleave', () => handlers.onLeave?.())
-    .on('click', (event: MouseEvent, mark) => handlers.onStageClick?.(mark.stage!, event));
+    .attr('tabindex', 0)
+    .attr('role', 'button')
+    .attr('aria-label', (mark) => `${mark.stage!.label} stage details`)
+    .style('outline', 'none')
+    .on('mousemove focus', (event: MouseEvent | FocusEvent, mark) => handlers.onStageHover?.(mark.stage!, event))
+    .on('mouseleave blur', () => handlers.onLeave?.())
+    .on('click', (event: MouseEvent, mark) => {
+      if ((event as PointerEvent).pointerType === 'touch') handlers.onStageHover?.(mark.stage!, event);
+      else handlers.onStageClick?.(mark.stage!, event);
+    })
+    .on('keydown', (event: KeyboardEvent, mark) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      handlers.onStageClick?.(mark.stage!, event);
+    });
   drawLinks(linkLayer, model, layout, palette, colorOf, nodeById);
   drawNodes(nodeLayer, model, layout, palette, colorOf);
   drawRoots(rootLayer, layout, palette);
 
   let selection: OrchestrationSelection = options.selection ?? { pathId: null, nodeId: null };
   let chain: string[] = [];
-  // Notes do not move with the selection: drawn once, then shown or faded.
   const notes = options.showAnnotations !== false ? drawNotes(noteLayer, model, layout, palette, colorOf, width, height) : [];
 
-  /** A chain's colour at its far end: red into a pruned node, else its path's model, else its end node's. */
   const endColorOf = (highlight: { nodes: string[]; path: ReasoningPath | null }) => {
     const endNode = nodeById.get(highlight.nodes[highlight.nodes.length - 1] ?? '');
     return chainEndColor(palette, endNode, colorOf(highlight.path?.modelId) ?? colorOf(endNode?.modelId));
   };
   let previewFor = '';
-  /**
-   * Previews what a click would highlight: a hovered candidate path, or the
-   * path to a hovered node. Nothing for a node on the highlighted chain, as a
-   * click there keeps it.
-   */
+  /** Nothing for a node on the highlighted chain: a click there keeps it. */
   const preview = (target: OrchestrationSelection | null) => {
     const shown = target && !(target.nodeId && chain.includes(target.nodeId)) ? target : null;
     const key = shown ? `${shown.pathId ?? ''}|${shown.nodeId ?? ''}` : '';
@@ -287,9 +291,7 @@ export function renderReasoningOrchestration(
     drawHighlight(highlightLayer, gradient, chain, layout, palette, endColorOf(highlight), glowId, gradientId);
     // The hovered node may now be on the highlighted chain.
     preview(null);
-    // While the active path is highlighted every note shows. Another selection fades the notes off
-    // its chain, so they cover nothing it may need; selecting the active path again, or clearing,
-    // brings them back.
+    // Another selection fades the notes off its chain, so they cover nothing it may need.
     const showsActive = selection.pathId
       ? selection.pathId === model.activePathId
       : !selection.nodeId;
@@ -314,7 +316,6 @@ export function renderReasoningOrchestration(
   };
   paint();
 
-  /** The pointer in plot coordinates. */
   const pointer = (event: MouseEvent): { x: number; y: number } => {
     const rect = (svg.node() as SVGSVGElement).getBoundingClientRect();
     const sx = rect.width ? width / rect.width : 1;
@@ -355,9 +356,7 @@ export function renderReasoningOrchestration(
     })
     .on('click', (event: MouseEvent) => {
       const node = nearest(event);
-      // The highlighted path has no hit target of its own (one would block hover on its nodes), so a
-      // click on one of its nodes or near its line picks it again: the current selection, or the
-      // active path when nothing is selected.
+      // The highlighted path has no hit target of its own: one would block hover on its nodes.
       const onHighlight =
         chain.length > 1 &&
         (node ? chain.includes(node.id) : nearLine(pointer(event), chain.map((id) => at(id)).filter((p) => !!p)));

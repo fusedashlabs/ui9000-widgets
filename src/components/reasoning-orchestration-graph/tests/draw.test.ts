@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import fixture from '../../../stories/fixtures/reasoning-orchestration.default.json';
 import { normalizeReasoningOrchestration } from '../lib/index.js';
 import { orchestrationPalette, pathMid, renderEntropyStrip, renderReasoningOrchestration } from '../render/index.js';
+import { parseCssColor } from '../render/palette.js';
 
 const model = normalizeReasoningOrchestration(fixture);
 
@@ -197,6 +198,17 @@ describe('renderReasoningOrchestration', () => {
     expect(pathMid(light, light.pruned)).toMatch(/^#[0-9A-F]{6}$/);
     expect(pathMid(light, light.pruned)).not.toBe(light.pathStart);
     el.remove();
+  });
+
+  it('blends a model colour from the payload in any hex, rgb or hsl form, and keeps the ink for a named colour', () => {
+    const palette = orchestrationPalette('dark');
+    const red = pathMid(palette, '#ff0000');
+    for (const color of ['#f00', '#f00f', '#ff0000cc', 'rgb(255, 0, 0)', 'rgba(255 0 0 / 0.5)', 'rgb(100% 0% 0%)', 'hsl(0, 100%, 50%)', 'hsla(360deg 100% 50% / 1)']) {
+      expect(pathMid(palette, color), color).toBe(red);
+    }
+    expect(parseCssColor('hsl(120, 100%, 25%)')).toEqual([0, 128, 0]);
+    expect(parseCssColor('#12345')).toBeNull();
+    expect(pathMid(palette, 'rebeccapurple')).toBe(palette.pathStart);
   });
 
   it('previews what a click on a hovered node or path would highlight, at half strength', () => {

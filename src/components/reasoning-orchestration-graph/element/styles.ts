@@ -2,9 +2,10 @@ import { lightTheme } from '@fuselab-creative/design-system';
 import { css, unsafeCSS } from 'lit';
 
 import { hexWithAlpha } from '../../../utils/fusedash-visual.js';
-import { STATUS, statusCss } from '../../goals-perimeter/render/scene-palette.js';
+import { STATUS, statusCss } from '../../../utils/status-colors.js';
 
 /** Chips and the legend: white on light, the darkest gray on dark. */
+const CHIP_LIGHT = lightTheme.colors.white;
 const CHIP_DARK = lightTheme.colors.ui.gray['14'];
 /**
  * Benchmark deltas: the dataViz green and orange-red the goals graphs use for an ok and a blocked status, deepened
@@ -29,9 +30,9 @@ export const reasoningOrchestrationStyles = css`
     box-sizing: border-box;
     --ro-muted: var(--ui9000-color-text-muted, #6b7280);
     --ro-rule: var(--ui9000-color-border, #e5e7eb);
-    --ro-chip: ${unsafeCSS(hexWithAlpha('#FFFFFF', 86))};
+    --ro-chip: ${unsafeCSS(hexWithAlpha(CHIP_LIGHT, 86))};
     /* The legend's right end: the chip colour at 0.4 opacity. */
-    --ro-chip-fade: ${unsafeCSS(hexWithAlpha('#FFFFFF', 40))};
+    --ro-chip-fade: ${unsafeCSS(hexWithAlpha(CHIP_LIGHT, 40))};
     --ro-up: ${unsafeCSS(UP.light)};
     --ro-down: ${unsafeCSS(DOWN.light)};
   }

@@ -28,12 +28,24 @@ declare module '@fuselab-creative/design-system' {
 
   type Theme = {
     colors: {
+      white: string;
       dataViz: {
         sequential_7_1: string[];
         qualitative_2_1: string[];
         qualitative_2_2: string[];
         qualitative_4: string[];
         qualitative_12: string[];
+      };
+      ui: {
+        gray: Record<'01' | '02' | '03' | '04' | '05' | '06' | '07' | '08' | '09' | '10' | '11' | '12' | '13' | '14', string>;
+      };
+      ux: {
+        primary: string;
+        secondary: string;
+        success: string;
+        warning: string;
+        error: string;
+        info: string;
       };
     };
   };

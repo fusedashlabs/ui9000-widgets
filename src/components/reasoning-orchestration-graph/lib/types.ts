@@ -36,7 +36,7 @@ export interface StageInput {
   status?: string;
   /** Model whose nodes fill this stage, by id or name. */
   model?: Id;
-  /** High-level metrics compared across stages in the top chart. */
+  /** Stage metrics. The one most stages carry (or `stageMetric`) is printed beside the stage name. */
   metrics?: Record<string, number | string>;
 }
 
@@ -108,41 +108,6 @@ export interface EntropyInput {
   highlight?: ({ from: number; to: number; label?: string } | [number, number])[];
 }
 
-export interface PipelineStageInput {
-  label?: string;
-  name?: string;
-  status?: string;
-  detail?: string;
-}
-
-export interface PipelineInput {
-  label?: string;
-  stages: PipelineStageInput[];
-}
-
-export interface ScalingPointInput {
-  x?: number | string;
-  y?: number | string;
-  compute?: number | string;
-  accuracy?: number | string;
-}
-
-export interface ScalingSeriesInput {
-  id?: Id;
-  label?: string;
-  model?: Id;
-  points: (ScalingPointInput | [number, number])[];
-}
-
-export interface ScalingInput {
-  label?: string;
-  xLabel?: string;
-  yLabel?: string;
-  /** `%` prints y as a percentage (0–1 values are scaled). */
-  yUnit?: string;
-  series: ScalingSeriesInput[];
-}
-
 export interface ReasoningOrchestrationPayload {
   chartType?: string;
   name?: string;
@@ -162,20 +127,10 @@ export interface ReasoningOrchestrationPayload {
   activePath?: Id | Id[];
   activePathId?: Id;
   annotations?: AnnotationInput[];
-  /** Readouts over the top chart. A plain string is printed as is. */
-  summary?: string | MetricInput[];
-  /** Lead word of the summary line. Defaults to "Search topology". */
-  summaryLabel?: string;
-  /** The right-hand readout over the top chart. */
-  criterion?: string;
-  /** Stage metric the top chart compares. Defaults to the first one stages share. */
+  /** Stage metric printed beside each stage name. Defaults to the one most stages carry. */
   stageMetric?: string;
   benchmarks?: MetricInput[];
   entropy?: EntropyInput | (number | string)[];
-  pipeline?: PipelineInput | PipelineStageInput[];
-  computeScaling?: ScalingInput;
-  /** Alias of computeScaling. */
-  scaling?: ScalingInput;
 }
 
 export interface ReasoningModel {
@@ -256,32 +211,6 @@ export interface EntropyStrip {
   steps: number;
 }
 
-export interface PipelineStage {
-  label: string;
-  status: StageStatus;
-  detail: string;
-}
-
-export interface Pipeline {
-  label: string;
-  stages: PipelineStage[];
-}
-
-export interface ScalingSeries {
-  id: string;
-  label: string;
-  modelId: string | null;
-  points: { x: number; y: number }[];
-}
-
-export interface ComputeScaling {
-  label: string;
-  xLabel: string;
-  yLabel: string;
-  yUnit: string;
-  series: ScalingSeries[];
-}
-
 export interface StageMetric {
   key: string;
   label: string;
@@ -302,15 +231,9 @@ export interface ReasoningOrchestrationModel {
   activePathId: string | null;
   annotations: ReasoningAnnotation[];
   maxDepth: number;
-  summaryLabel: string;
-  summary: Metric[];
-  summaryText: string;
-  criterion: string;
   stageMetric: StageMetric | null;
   benchmarks: Metric[];
   entropy: EntropyStrip | null;
-  pipeline: Pipeline | null;
-  scaling: ComputeScaling | null;
   /** Nodes and links left out past the caps, lowest priority first. */
   dropped: { nodes: number; links: number };
 }

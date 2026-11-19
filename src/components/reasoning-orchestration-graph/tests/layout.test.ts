@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import fixture from '../../../stories/fixtures/reasoning-orchestration.default.json';
 import {
-  breadthByDepth,
   layoutOrchestration,
   normalizeReasoningOrchestration,
   PAD_BOTTOM,
@@ -74,12 +73,5 @@ describe('layoutOrchestration', () => {
     const stages = [...fixture.stages, { id: 'extra', label: 'Extra', depth: [15, 15] }];
     const more = layoutOrchestration(normalizeReasoningOrchestration({ ...fixture, stages }), W, H);
     expect(more.nodes).toEqual(layout.nodes);
-  });
-
-  it('counts nodes at each depth for the top chart', () => {
-    const breadth = breadthByDepth(model);
-    expect(breadth).toHaveLength(15);
-    expect(breadth.reduce((a, b) => a + b, 0)).toBe(model.nodes.length);
-    expect(Math.max(...breadth.slice(6, 9))).toBeGreaterThan(breadth[12]!);
   });
 });

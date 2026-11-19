@@ -52,13 +52,6 @@
     }
   ],
   "stageMetric": "accuracy",
-  "summary": [
-    {"label": "Candidates", "value": 387},
-    {"label": "Refinements", "value": 71},
-    {"label": "Accuracy", "value": "58.8%", "delta": "+28.4"},
-    {"label": "PRM", "value": "Verified"}
-  ],
-  "criterion": "Criterion: breadth–depth assignment · Sampling T=0.8 / T=0.0",
   "paths": [
     {
       "id": "refine",
@@ -120,26 +113,6 @@
     ],
     "highlight": [
       {"from": 44, "to": 52, "label": "Recovery"}
-    ]
-  },
-  "computeScaling": {
-    "label": "Compute scaling",
-    "xLabel": "Compute",
-    "yLabel": "MATH500",
-    "yUnit": "%",
-    "series": [
-      {
-        "id": "resample",
-        "label": "Resample",
-        "model": "astra",
-        "points": [[1, 0.308], [2, 0.352], [4, 0.389], [8, 0.41], [16, 0.421]]
-      },
-      {
-        "id": "refine",
-        "label": "Refinement",
-        "model": "opus",
-        "points": [[1, 0.308], [2, 0.412], [4, 0.526], [8, 0.571], [16, 0.588]]
-      }
     ]
   },
   "nodes": [

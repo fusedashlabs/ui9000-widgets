@@ -45,9 +45,6 @@ describe('normalizeReasoningOrchestration', () => {
       ['T=0.0', 'opus', 96],
     ]);
     expect(model.entropy?.highlight).toEqual([{ from: 44, to: 52, label: 'Recovery' }]);
-    // Stages carry a status, so they are the pipeline.
-    expect(model.pipeline?.stages.map((s) => s.status)).toEqual(['done', 'done', 'done', 'active']);
-    expect(model.scaling?.series.map((s) => s.label)).toEqual(['Resample', 'Refinement']);
     expect(model.dropped).toEqual({ nodes: 0, links: 0 });
   });
 
@@ -82,8 +79,6 @@ describe('normalizeReasoningOrchestration', () => {
     expect(model.links.find((l) => l.target === 'd')?.kind).toBe('refine');
     expect(model.activePathId).toBe('active');
     expect(model.paths[0]).toMatchObject({ id: 'active', nodes: ['q', 'c', 'd'] });
-    // Readouts default to the graph's own counts.
-    expect(model.summary.map((m) => `${m.label} ${m.value}`)).toEqual(['Candidates 4', 'Refinements 1', 'Paths 1']);
   });
 
   it('adds the links a path implies and the models nodes name', () => {

@@ -1,7 +1,6 @@
 import { formatMetric, humanize, toNumber } from './format.js';
 import type {
   AnnotationInput,
-  ComputeScaling,
   EntropyInput,
   EntropyStrip,
   Id,
@@ -13,9 +12,6 @@ import type {
   NodeInput,
   NodeState,
   PathInput,
-  Pipeline,
-  PipelineInput,
-  PipelineStageInput,
   ReasoningAnnotation,
   ReasoningLink,
   ReasoningModel,
@@ -24,7 +20,6 @@ import type {
   ReasoningOrchestrationPayload,
   ReasoningPath,
   ReasoningStage,
-  ScalingInput,
   StageInput,
   StageMetric,
   StageStatus,
@@ -543,13 +538,6 @@ export function normalizeReasoningOrchestration(raw: unknown): ReasoningOrchestr
     });
   }
 
-  const summaryInput = payload.summary;
-  const summary: Metric[] = Array.isArray(summaryInput)
-    ? metrics(summaryInput)
-    : typeof summaryInput === 'string'
-      ? []
-      : defaultSummary(outNodes, outLinks, outPaths);
-
   return {
     empty: outNodes.length === 0,
     title: text(payload.title) || text(payload.name),
@@ -562,15 +550,9 @@ export function normalizeReasoningOrchestration(raw: unknown): ReasoningOrchestr
     activePathId,
     annotations,
     maxDepth,
-    summaryLabel: text(payload.summaryLabel) || 'Search topology',
-    summary,
-    summaryText: typeof summaryInput === 'string' ? summaryInput.trim() : '',
-    criterion: text(payload.criterion),
     stageMetric: pickStageMetric(stages, text(payload.stageMetric)),
     benchmarks: metrics(payload.benchmarks),
     entropy: normalizeEntropy(payload.entropy, models),
-    pipeline: normalizePipeline(payload.pipeline, stages),
-    scaling: normalizeScaling(payload.computeScaling ?? payload.scaling, models),
     dropped: { nodes: droppedNodes, links: droppedLinks },
   };
 }
@@ -579,20 +561,6 @@ function metrics(value: unknown): Metric[] {
   return list<MetricInput>(value)
     .filter((item) => text(item.label) || text(item.value))
     .map((item) => formatMetric(text(item.label), item.value ?? '', item.delta, text(item.unit)));
-}
-
-function defaultSummary(nodes: ReasoningNode[], links: ReasoningLink[], paths: ReasoningPath[]): Metric[] {
-  const candidates = nodes.filter((node) => node.parent !== null).length;
-  const refinements = new Set([
-    ...nodes.filter((node) => node.state === 'refined').map((node) => node.id),
-    ...links.filter((link) => link.kind === 'refine').map((link) => link.target),
-  ]).size;
-  const pruned = nodes.filter((node) => node.state === 'pruned' || node.state === 'failed').length;
-  const out = [formatMetric('Candidates', candidates)];
-  if (refinements) out.push(formatMetric('Refinements', refinements));
-  if (paths.length) out.push(formatMetric('Paths', paths.length));
-  if (pruned) out.push(formatMetric('Pruned', pruned));
-  return out;
 }
 
 function pickStageMetric(stages: ReasoningStage[], requested: string): StageMetric | null {
@@ -645,59 +613,5 @@ function normalizeEntropy(value: unknown, models: ModelIndex): EntropyStrip | nu
     series,
     highlight,
     steps,
-  };
-}
-
-function normalizePipeline(value: unknown, stages: ReasoningStage[]): Pipeline | null {
-  const input: PipelineInput | null = Array.isArray(value)
-    ? { stages: value as PipelineStageInput[] }
-    : isRecord(value)
-      ? (value as unknown as PipelineInput)
-      : null;
-  const items = input ? list<PipelineStageInput>(input.stages) : [];
-  if (items.length) {
-    return {
-      label: text(input?.label) || 'Refinement pipeline',
-      stages: items
-        .map((item) => ({
-          label: text(item.label) || text(item.name),
-          status: parseStatus(item.status) ?? 'pending',
-          detail: text(item.detail),
-        }))
-        .filter((item) => item.label),
-    };
-  }
-  // The stages carry a status: they are the pipeline.
-  if (!stages.some((stage) => stage.status)) return null;
-  return {
-    label: 'Refinement pipeline',
-    stages: stages.map((stage) => ({ label: stage.label, status: stage.status ?? 'pending', detail: '' })),
-  };
-}
-
-function normalizeScaling(value: unknown, models: ModelIndex): ComputeScaling | null {
-  if (!isRecord(value)) return null;
-  const input = value as unknown as ScalingInput;
-  const series = list<{ id?: Id; label?: string; model?: Id; points?: unknown }>(input.series)
-    .map((item, index) => {
-      const points = (Array.isArray(item.points) ? item.points : [])
-        .map((point) => {
-          if (Array.isArray(point)) return { x: toNumber(point[0]), y: toNumber(point[1]) };
-          if (!isRecord(point)) return { x: null, y: null };
-          return { x: toNumber(point.x ?? point.compute), y: toNumber(point.y ?? point.accuracy) };
-        })
-        .filter((point): point is { x: number; y: number } => point.x !== null && point.y !== null)
-        .sort((a, b) => a.x - b.x);
-      const label = text(item.label) || key(item.id) || `Series ${index + 1}`;
-      return { id: key(item.id) || label, label, modelId: models.resolve(item.model), points };
-    })
-    .filter((item) => item.points.length >= 2);
-  if (!series.length) return null;
-  return {
-    label: text(input.label) || 'Compute scaling',
-    xLabel: text(input.xLabel) || 'Compute',
-    yLabel: text(input.yLabel) || 'Accuracy',
-    yUnit: text(input.yUnit),
-    series,
   };
 }

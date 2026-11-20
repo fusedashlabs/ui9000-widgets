@@ -1,0 +1,349 @@
+/* Search: the header trigger and the dialog. */
+
+/* Trigger: looks like an input (pill, sunken in the header), works as a button. */
+.search-trigger {
+  --surface-edge-high: var(--site-search-edge);
+  --surface-edge-low: var(--site-search-edge);
+  --surface-base: var(--site-search-bg);
+  --surface-highlight: transparent;
+  --surface-shadow: var(--site-search-shadow);
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  width: 100%;
+  height: 36px;
+  padding: 0 6px 0 var(--site-space-3);
+  border-radius: var(--site-radius-pill);
+  color: var(--site-input-placeholder);
+  font-family: var(--site-font-body);
+  font-size: var(--site-type-body-size);
+  line-height: 20px;
+  text-align: left;
+}
+
+.search-trigger:hover {
+  --surface-edge-high: var(--site-search-edge-hover);
+  --surface-edge-low: var(--site-search-edge-hover);
+}
+
+.search-trigger-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--site-input-icon);
+}
+
+.search-trigger-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.search-trigger-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-trigger-kbd,
+.search-footer kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 20px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--site-edge-high);
+  border-radius: var(--site-radius-sm);
+  box-shadow: inset 0 1px 0 var(--site-inner-highlight);
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: 1;
+  font-weight: var(--site-type-caption-weight);
+  white-space: nowrap;
+}
+
+.search-trigger-kbd {
+  height: 24px;
+  border-radius: var(--site-radius-pill);
+  padding: 0 8px;
+}
+
+.search-trigger-compact {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .search-trigger {
+    display: none;
+  }
+
+  .search-trigger-compact {
+    display: inline-flex;
+  }
+}
+
+/*
+ * Dialog: fills the viewport and paints the scrim itself (custom properties do not reach ::backdrop in every
+ * browser). A click on it outside the panel closes it.
+ */
+.search-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 12vh var(--site-space-4) var(--site-space-4);
+  border: 0;
+  background: var(--site-scrim);
+  color: var(--site-text);
+  overflow: hidden;
+}
+
+.search-dialog[open] {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.search-dialog::backdrop {
+  background: transparent;
+}
+
+.search-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: min(600px, 100%);
+  --surface-base: var(--site-popover-bg);
+  --surface-shadow: var(--site-shadow-popover);
+  border-radius: var(--site-radius-xl);
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-3);
+  flex: none;
+  padding: var(--site-space-2) var(--site-space-3) var(--site-space-2) var(--site-space-4);
+  border-bottom: 1px solid var(--site-border-subtle);
+}
+
+.search-field-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--site-input-icon);
+}
+
+.search-field-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* 16px text, so phones do not zoom in on focus. */
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--site-input-text);
+  font-family: var(--site-font-body);
+  font-size: var(--site-type-prose-size);
+  line-height: 24px;
+}
+
+.search-input::placeholder {
+  color: var(--site-input-placeholder);
+}
+
+.search-input:focus-visible {
+  outline: none;
+}
+
+.search-results {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--site-space-2);
+  scrollbar-width: thin;
+}
+
+.search-group + .search-group {
+  margin-top: var(--site-space-2);
+}
+
+.search-group-title {
+  padding: var(--site-space-2) var(--site-space-3) var(--site-space-1);
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  font-weight: var(--site-type-caption-weight);
+}
+
+.search-option {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-3);
+  min-height: 40px;
+  /* 1px less than the 8/12 padding: the transparent border holds the active option's lit edge. */
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--site-radius-md);
+  color: var(--site-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-body-size);
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/* The active result looks like the current sidebar item. */
+.search-option.is-active {
+  --surface-edge: var(--site-icon-active-edge);
+  --surface-fill: var(--site-icon-active-fill);
+  --surface-base: var(--site-icon-active-base);
+  --surface-highlight: var(--site-icon-active-highlight);
+  --surface-shadow: 0 0 transparent;
+}
+
+.search-option.is-soon {
+  color: var(--site-nav-text-disabled);
+  cursor: default;
+}
+
+.search-option-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--site-icon-muted);
+}
+
+.search-option-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.search-swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius-xs);
+}
+
+.search-option-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-option-context {
+  color: var(--site-text-muted);
+}
+
+.search-option.is-soon .search-option-context {
+  color: inherit;
+}
+
+.search-option-sep {
+  margin: 0 var(--site-space-2);
+  color: var(--site-text-subtle);
+}
+
+/* On the active result's fill the muted colour falls below 4.5:1 in light (4.07); the separator takes the secondary. */
+.search-option.is-active .search-option-sep {
+  color: var(--site-text-muted);
+}
+
+.search-option mark {
+  background: none;
+  color: var(--site-mark);
+  font-weight: var(--site-type-label-weight);
+}
+
+.search-option.is-soon mark {
+  color: inherit;
+}
+
+.search-option-hex {
+  flex: none;
+  color: var(--site-text-muted);
+  font-family: var(--site-font-mono);
+  font-size: var(--site-type-caption-size);
+}
+
+.search-option-enter {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--site-icon-muted);
+}
+
+.search-option-enter svg {
+  width: 100%;
+  height: 100%;
+}
+
+.search-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+  padding: var(--site-space-5) var(--site-space-4);
+  color: var(--site-text-muted);
+  text-align: center;
+}
+
+.search-footer {
+  display: flex;
+  gap: var(--site-space-4);
+  flex: none;
+  padding: var(--site-space-2) var(--site-space-4);
+  border-top: 1px solid var(--site-border-subtle);
+  color: var(--site-text-subtle);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+}
+
+.search-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--site-space-1);
+}
+
+.search-footer kbd {
+  height: 20px;
+  min-width: 20px;
+  padding: 0 4px;
+}
+
+@media (max-width: 767px) {
+  .search-dialog {
+    padding: var(--site-space-2);
+  }
+
+  .search-panel {
+    max-height: 100%;
+  }
+
+  .search-footer {
+    display: none;
+  }
+
+  /* Without the footer the last result sits in the panel's bottom corners: its radius plus the gap to it. */
+  .search-panel {
+    border-radius: calc(var(--site-radius-md) + var(--site-space-2) + 1px);
+  }
+}

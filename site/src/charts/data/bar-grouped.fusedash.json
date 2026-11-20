@@ -1,0 +1,210 @@
+{
+  "chartType": "barChart",
+  "name": "Total Revenue by Region and Crop Group",
+  "orientation": "horizontal",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "timeline": true,
+  "xAxe": [
+    "revenue euro"
+  ],
+  "yAxe": [
+    "Region"
+  ],
+  "groupBy": [
+    "MD_Crop_Group  text  autorisatie"
+  ],
+  "formatting": [
+    {
+      "key": "Open field group",
+      "color": "1"
+    },
+    {
+      "key": "Tomato group",
+      "color": "2"
+    },
+    {
+      "key": "Cucumber group",
+      "color": "3"
+    },
+    {
+      "key": "Allium group",
+      "color": "4"
+    },
+    {
+      "key": "Other",
+      "color": "5"
+    }
+  ],
+  "uniqueValues": {
+    "Region": [
+      "Northfield",
+      "Pine Ridge",
+      "Eastport",
+      "Maple Grove",
+      "Westbrook",
+      "Sunset Bay"
+    ],
+    "MD_Crop_Group  text  autorisatie": [
+      "Open field group",
+      "Tomato group",
+      "Cucumber group",
+      "Allium group",
+      "Other"
+    ]
+  },
+  "data": [
+    {
+      "Region": "Northfield",
+      "revenue euro": 818486752.65,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "Region": "Maple Grove",
+      "revenue euro": 702451369.25,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "Region": "Westbrook",
+      "revenue euro": 655230917.45,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "Region": "Pine Ridge",
+      "revenue euro": 624175093.75,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "Region": "Sunset Bay",
+      "revenue euro": 604338157.8,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "Region": "Eastport",
+      "revenue euro": 571308442.15,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "Region": "Pine Ridge",
+      "revenue euro": 548903217.4,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "Region": "Sunset Bay",
+      "revenue euro": 512647389.25,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "Region": "Eastport",
+      "revenue euro": 486215730.9,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "Region": "Maple Grove",
+      "revenue euro": 463872105.6,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "Region": "Sunset Bay",
+      "revenue euro": 437906214.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "Region": "Northfield",
+      "revenue euro": 412316540.5,
+      "MD_Crop_Group  text  autorisatie": "Tomato group"
+    },
+    {
+      "Region": "Eastport",
+      "revenue euro": 392764018.5,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "Region": "Westbrook",
+      "revenue euro": 391674802.5,
+      "MD_Crop_Group  text  autorisatie": "Open field group"
+    },
+    {
+      "Region": "Maple Grove",
+      "revenue euro": 389246710.35,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "Region": "Sunset Bay",
+      "revenue euro": 352081746.9,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "Region": "Maple Grove",
+      "revenue euro": 337019542.8,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "Region": "Pine Ridge",
+      "revenue euro": 318442761.2,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "Region": "Westbrook",
+      "revenue euro": 303157498.25,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "Region": "Northfield",
+      "revenue euro": 297480176,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "Region": "Westbrook",
+      "revenue euro": 284519673.9,
+      "MD_Crop_Group  text  autorisatie": "Cucumber group"
+    },
+    {
+      "Region": "Pine Ridge",
+      "revenue euro": 274630158.5,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "Region": "Sunset Bay",
+      "revenue euro": 264719853.4,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "Region": "Eastport",
+      "revenue euro": 245193876.4,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "Region": "Northfield",
+      "revenue euro": 236118904.25,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "Region": "Maple Grove",
+      "revenue euro": 228513964.2,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "Region": "Pine Ridge",
+      "revenue euro": 221947302.6,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "Region": "Westbrook",
+      "revenue euro": 216843025.6,
+      "MD_Crop_Group  text  autorisatie": "Allium group"
+    },
+    {
+      "Region": "Eastport",
+      "revenue euro": 212608349.75,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    },
+    {
+      "Region": "Northfield",
+      "revenue euro": 205372611.8,
+      "MD_Crop_Group  text  autorisatie": "Other"
+    }
+  ],
+  "kpis": []
+}

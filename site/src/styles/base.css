@@ -1,0 +1,454 @@
+/*
+ * Base styles and shared primitives. Colours and fonts come only from the roles in theme.css and
+ * typography.css. Shape, spacing, effects and motion follow the ui9000.com reference.
+ */
+:root {
+  /* Spacing (reference --numbers scale) */
+  --site-space-1: 4px;
+  --site-space-2: 8px;
+  --site-space-3: 12px;
+  --site-space-4: 16px;
+  --site-space-5: 24px;
+  --site-space-6: 32px;
+  --site-space-7: 48px;
+  --site-space-8: 64px;
+
+  /* Radius (reference: nav button 4, pill 6, filter pill 8, nav bar 12, accordion 16, card 24, dropdown 100) */
+  --site-radius-xs: 4px;
+  --site-radius-sm: 6px;
+  --site-radius-md: 8px;
+  --site-radius-lg: 12px;
+  --site-radius-xl: 16px;
+  --site-radius-2xl: 24px;
+  --site-radius-pill: 100px;
+
+  /* Motion (reference: links and buttons 0.2s, pills and cards 0.3s, nav button 0.35s; all ease) */
+  --site-duration-fast: 0.2s;
+  --site-duration: 0.3s;
+  --site-duration-slow: 0.35s;
+  --site-ease: ease;
+
+  /* Surface radii: the same in both themes (a radius is not a theme token) */
+  --site-radius-header: var(--site-radius-lg);
+  --site-radius-panel: var(--site-radius-xl);
+  /*
+   * A surface that holds another with an even gap has the inner radius plus the gap, so the corners are concentric
+   * (the stage, the segmented track, the Introduction cards, the Spacing page's frames). The chart card's radius is
+   * the library's (.widget-shell, src/element/chart-shell-styles.ts), the same in both themes; the stage adds its frame.
+   */
+  --site-chart-card-radius: 8px;
+
+  /* Layout */
+  --site-topbar-height: 56px;
+  --site-topbar-gap: 12px;
+  --site-topbar-offset: calc(var(--site-topbar-height) + var(--site-topbar-gap));
+  --site-sidebar-width: 264px;
+  --site-gutter: 32px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --site-gutter: 16px;
+  }
+}
+
+/*
+ * The site's own elements only: not <html>, <body>, a chart (anything in a .chart-well) or the tooltips charts put
+ * on <body>, which keep what they would have on a blank page.
+ */
+:where(site-app, site-app :not(.chart-well *)),
+:where(site-app, site-app :not(.chart-well *))::before,
+:where(site-app, site-app :not(.chart-well *))::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--site-bg);
+}
+
+/*
+ * The page's light (theme.css), fixed to the viewport: a fixed layer under everything, not background-attachment:
+ * fixed, which iOS Safari ignores (the light would scroll away with the page there).
+ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--site-bg);
+  background-image: var(--site-page-light);
+  pointer-events: none;
+}
+
+/*
+ * Form controls take the text around them. Before the site text below: both have zero specificity, so on a control
+ * that is itself one of the site's text blocks the site text wins.
+ */
+:where(site-app) :where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+/*
+ * Site text. The inherited text styles (colour scheme, colour, font, size, line height, smoothing, text size
+ * adjustment) are set on the site's own blocks, never on <html>, <body> or anything that holds a chart
+ * (.chart-well: the chart page's stage, the Introduction cards' media, the Motion page's stage). So nothing of the
+ * site's text reaches a chart, nor the tooltips charts put on <body>: they inherit what they would on a blank page.
+ * The blocks are site-app's children and, in any part of the page that holds a chart, each child that holds none.
+ * Zero specificity, so every component's own text styles win. The page's scrollbar takes the colour scheme from
+ * <meta name="color-scheme">, which lib/theme.ts keeps in step with the theme.
+ */
+:where(:where(site-app, site-app :has(.chart-well)) > :not(.chart-well, :has(.chart-well))) {
+  color-scheme: var(--site-color-scheme);
+  color: var(--site-text);
+  font-family: var(--site-font-body);
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+  font-weight: var(--site-type-body-weight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/*
+ * Element rules reach only site-app and what is in it, never the tooltips charts put on <body>. :where(site-app) adds
+ * no specificity, so each rule weighs what it did unscoped.
+ */
+:where(site-app) :is(h1, h2, h3, h4, p, ul, ol, figure) {
+  margin: 0;
+}
+
+:where(site-app) :is(ul, ol) {
+  padding: 0;
+}
+
+:where(site-app) a {
+  color: var(--site-link);
+  text-decoration: none;
+  transition: color var(--site-duration-fast) var(--site-ease);
+}
+
+:where(site-app) a:hover {
+  color: var(--site-link-hover);
+}
+
+:where(site-app) button {
+  cursor: pointer;
+}
+
+:where(site-app) svg {
+  display: block;
+}
+
+:where(site-app) :focus-visible {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 2px;
+}
+
+/* Not `until-found`: the browser's find must still reach it (closed accordion sections). */
+:where(site-app) [hidden]:not([hidden='until-found']) {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--site-space-2);
+  left: var(--site-space-2);
+  z-index: 100;
+  padding: var(--site-space-2) var(--site-space-4);
+  border-radius: var(--site-radius-md);
+  background: var(--site-button-primary-bg);
+  color: var(--site-button-primary-text);
+  font-family: var(--site-font-label);
+  font-weight: var(--site-type-label-weight);
+  transform: translateY(-200%);
+  transition: transform var(--site-duration-fast) var(--site-ease);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+  color: var(--site-button-primary-text);
+}
+
+/* Eyebrow pill (reference "# Our mission"): the "# Section" tag, painted by surfaces.css. */
+.eyebrow {
+  --surface-fill: var(--site-eyebrow-fill);
+  --surface-base: var(--site-eyebrow-base);
+  --surface-edge: var(--site-eyebrow-edge);
+  --surface-highlight: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--site-space-1);
+  padding: 3px 13px;
+  border-radius: var(--site-radius-sm);
+  color: var(--site-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-body-size);
+  line-height: 20px;
+}
+
+/* "Soon" badge: a small dark chip with a lit edge (painted by surfaces.css). */
+.badge {
+  --surface-tint: transparent;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  height: 20px;
+  padding: 0 var(--site-space-2);
+  border-radius: var(--site-radius-sm);
+  color: var(--site-badge-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: 18px;
+  font-weight: var(--site-type-caption-weight);
+}
+
+/* Accent badge: a state on something, such as "Modified" on a preset */
+.badge-accent {
+  --surface-edge-high: var(--site-primary-edge-high);
+  --surface-edge-low: var(--site-accent-border);
+  --surface-tint: var(--site-accent-soft);
+  --surface-base: var(--site-input-bg);
+  color: var(--site-accent);
+}
+
+/*
+ * Tag: a label that is not a control (no hover, no pointer), a filled pill on the secondary button's base, painted by
+ * surfaces.css; the tag tokens (theme.css) keep its edge out of sight in dark. md (24px) is the accordion's summary;
+ * .tag-sm (22px) sits inline, as the Color page's "Default for". The sizes differ only in height, line and side padding.
+ */
+.tag {
+  --surface-edge-high: var(--site-tag-edge);
+  --surface-edge-low: var(--site-tag-edge);
+  --surface-tint: var(--site-tag-tint);
+  --surface-base: var(--site-secondary-base);
+  --surface-highlight: transparent;
+  display: inline-block;
+  height: 24px;
+  padding: 0 var(--site-space-3);
+  border-radius: var(--site-radius-pill);
+  color: var(--site-secondary-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: 22px;
+  font-weight: var(--site-type-caption-weight);
+  white-space: nowrap;
+}
+
+.tag-sm {
+  height: 22px;
+  padding: 0 var(--site-space-2);
+  line-height: 20px;
+}
+
+/* Buttons (reference: radius 16 at 50px tall; scaled to 36px and 32px here) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--site-space-2);
+  height: 36px;
+  padding: 0 var(--site-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--site-radius-lg);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  white-space: nowrap;
+  transition: color var(--site-duration-fast) var(--site-ease);
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.btn-sm {
+  height: 32px;
+  padding: 0 var(--site-space-3);
+  border-radius: var(--site-radius-md);
+}
+
+/* Panel header buttons: Reset, Copy */
+.btn-xs {
+  height: 28px;
+  gap: 6px;
+  padding: 0 10px;
+  border-radius: var(--site-radius-md);
+  font-size: var(--site-type-control-size);
+  line-height: var(--site-type-control-line);
+}
+
+.btn-xs svg {
+  width: 14px;
+  height: 14px;
+}
+
+/*
+ * Lit buttons: painted by the surface rule in surfaces.css; these set its --surface-* parts per state.
+ * Primary (Copy, main actions): an accent tint over what it sits on, an accent edge, an accent label. Secondary
+ * (Reset, Show all, Close, other actions): the panel colour and a quiet edge in dark, white with a soft shadow in
+ * light (the label identifies the button, so it needs no 3:1 boundary), muted label. Pressing pushes either in: a
+ * deeper tint, no highlight. The focus ring is the base outline.
+ */
+/* The primary button's accent look is the shared accent state (surfaces.css). */
+
+.btn-primary:not(:disabled, [aria-disabled='true']):hover {
+  --surface-edge-high: var(--site-primary-edge-high-hover);
+  --surface-tint: var(--site-primary-tint-hover);
+}
+
+.btn-primary:not(:disabled, [aria-disabled='true']):active {
+  --surface-tint: var(--site-primary-tint-active);
+  --surface-highlight: transparent;
+  --surface-shadow: 0 0 transparent;
+}
+
+.btn-secondary {
+  --surface-edge-high: var(--site-secondary-edge-high);
+  --surface-edge-low: var(--site-secondary-edge-low);
+  --surface-tint: transparent;
+  --surface-base: var(--site-secondary-base);
+  --surface-shadow: var(--site-secondary-shadow);
+  color: var(--site-secondary-text);
+}
+
+.btn-secondary:not(:disabled, [aria-disabled='true']):hover {
+  --surface-edge-high: var(--site-secondary-edge-high-hover);
+  --surface-edge-low: var(--site-secondary-edge-low-hover);
+  --surface-tint: var(--site-secondary-tint-hover);
+  color: var(--site-text);
+}
+
+.btn-secondary:not(:disabled, [aria-disabled='true']):active {
+  --surface-tint: var(--site-panel-translucent);
+  --surface-highlight: transparent;
+}
+
+/* Disabled: the shape stays, flat, with the disabled line and label (inactive controls need no 3:1). */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  --surface-edge-high: var(--site-control-edge-disabled);
+  --surface-edge-low: var(--site-control-edge-disabled);
+  --surface-tint: transparent;
+  --surface-highlight: transparent;
+  --surface-shadow: 0 0 transparent;
+  cursor: not-allowed;
+  color: var(--site-button-disabled-text);
+}
+
+/*
+ * Icon button: a rounded square with the secondary edge and highlight. Hover lights it; pressed or open
+ * (aria-pressed, aria-expanded) it rises like the reference's selected sidebar item.
+ */
+.icon-btn {
+  --surface-edge-high: var(--site-secondary-edge-high);
+  --surface-edge-low: var(--site-secondary-edge-low);
+  --surface-tint: transparent;
+  --surface-base: var(--site-secondary-base);
+  --surface-shadow: var(--site-secondary-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border-radius: var(--site-radius-md);
+  color: var(--site-icon);
+  transition: color var(--site-duration-fast) var(--site-ease);
+}
+
+.icon-btn:not(:disabled):hover {
+  --surface-edge-high: var(--site-secondary-edge-high-hover);
+  --surface-edge-low: var(--site-secondary-edge-low-hover);
+  --surface-tint: var(--site-secondary-tint-hover);
+}
+
+.icon-btn:not(:disabled):active,
+.icon-btn[aria-pressed='true'],
+.icon-btn[aria-expanded='true'] {
+  --surface-edge: var(--site-icon-active-edge);
+  --surface-fill: var(--site-icon-active-fill);
+  --surface-tint: transparent;
+  --surface-base: var(--site-icon-active-base);
+  --surface-highlight: var(--site-icon-active-highlight);
+  --surface-shadow: 0 0 transparent;
+}
+
+.icon-btn:disabled {
+  --surface-edge-high: var(--site-control-edge-disabled);
+  --surface-edge-low: var(--site-control-edge-disabled);
+  --surface-highlight: transparent;
+  --surface-shadow: 0 0 transparent;
+  cursor: not-allowed;
+  color: var(--site-text-disabled);
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Panel (Settings, Code, the sections): a .surface with a large soft shadow, lit from above (.lit). */
+.panel {
+  --surface-shadow: var(--site-shadow-panel);
+  border-radius: var(--site-radius-panel);
+}
+
+.panel-title {
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-panel-title-size);
+  line-height: var(--site-type-panel-title-line);
+  font-weight: var(--site-type-panel-title-weight);
+  color: var(--site-text);
+}
+
+/* Briefly marks what a search result pointed to (see lib/reveal.ts). */
+@keyframes site-reveal {
+  0%,
+  45% {
+    background-color: var(--site-accent-soft);
+    box-shadow: 0 0 0 6px var(--site-accent-soft);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+.is-revealed {
+  border-radius: var(--site-radius-md);
+  animation: site-reveal 2s var(--site-ease);
+}
+
+.is-revealed:focus {
+  outline: none;
+}
+
+/* The site's own elements, as for box-sizing above: a chart and its tooltips handle reduced motion themselves. */
+@media (prefers-reduced-motion: reduce) {
+  :where(site-app, site-app :not(.chart-well *)),
+  :where(site-app, site-app :not(.chart-well *))::before,
+  :where(site-app, site-app :not(.chart-well *))::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

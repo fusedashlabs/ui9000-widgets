@@ -1,0 +1,29 @@
+{
+  "chartType": "pieChart",
+  "name": "Electricity Generation by Source",
+  "xAxe": ["source"],
+  "yAxe": ["generation"],
+  "formatting": [
+    { "key": "Solar", "color": "1" },
+    { "key": "Wind", "color": "2" },
+    { "key": "Hydro", "color": "3" },
+    { "key": "Natural gas", "color": "4" },
+    { "key": "Nuclear", "color": "5" },
+    { "key": "Biomass", "color": "6" }
+  ],
+  "uniqueValues": {
+    "source": ["Solar", "Wind", "Hydro", "Natural gas", "Nuclear", "Biomass"]
+  },
+  "axisDetails": {
+    "source": { "label": "Source", "type": "text" },
+    "generation": { "label": "Generation", "type": "metric", "measure_unit_symbol": "GWh" }
+  },
+  "data": [
+    { "source": "Solar", "generation": 4180 },
+    { "source": "Wind", "generation": 3260 },
+    { "source": "Hydro", "generation": 2450 },
+    { "source": "Natural gas", "generation": 1980 },
+    { "source": "Nuclear", "generation": 1120 },
+    { "source": "Biomass", "generation": 610 }
+  ]
+}

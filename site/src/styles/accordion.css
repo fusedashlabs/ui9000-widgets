@@ -1,0 +1,99 @@
+/*
+ * Accordion (components/accordion.ts): sections as rows of one panel, 1px dividers between them. A row's header is
+ * one button: the chevron in an icon button, the title, and a tag with a summary on the right. Open content sits in the
+ * same panel, 24px in.
+ */
+
+site-accordion {
+  display: block;
+  min-width: 0;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion-item + .accordion-item {
+  border-top: 1px solid var(--site-border-subtle);
+}
+
+.accordion-heading {
+  margin: 0;
+  font: inherit;
+  scroll-margin-top: calc(var(--site-topbar-offset) + var(--site-space-5));
+}
+
+/* 56px: 12px, the 32px icon button, 12px. */
+.accordion-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--site-space-3) var(--site-space-5);
+  border: 0;
+  border-radius: var(--site-radius-panel);
+  background: none;
+  color: var(--site-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordion-trigger:focus-visible {
+  outline: 2px solid var(--site-focus);
+  outline-offset: -2px;
+}
+
+/* The whole row lights the icon button, as hovering the button itself would. */
+.accordion-trigger:hover .accordion-chevron {
+  --surface-edge-high: var(--site-secondary-edge-high-hover);
+  --surface-edge-low: var(--site-secondary-edge-low-hover);
+  --surface-tint: var(--site-secondary-tint-hover);
+}
+
+.accordion-chevron svg {
+  transition: transform var(--site-duration) var(--site-ease);
+}
+
+.accordion-trigger[aria-expanded='true'] .accordion-chevron svg {
+  transform: rotate(180deg);
+}
+
+.accordion-title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-h3-size);
+  line-height: var(--site-type-h3-line);
+  font-weight: var(--site-type-h3-weight);
+}
+
+/* The summary, a tag (base.css), md: here only its place in the row, cut with an ellipsis past half the row. */
+.accordion-hint {
+  display: block;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accordion-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  min-width: 0;
+  padding: var(--site-space-1) var(--site-space-5) var(--site-space-5);
+}
+
+@media (max-width: 767px) {
+  .accordion-trigger {
+    padding-inline: var(--site-space-4);
+  }
+
+  .accordion-body {
+    padding-inline: var(--site-space-4);
+  }
+}

@@ -1,0 +1,503 @@
+/*
+ * Colour adapter: site roles → ui9000 tokens.
+ *
+ * This is the only file in site/ that names a colour. Components use the --site-* roles below and never a
+ * --ui9000-* token directly, so when token names change, only this file changes.
+ *
+ * The semantic tokens switch with data-theme on <html> (see tokens.css, copied from UI9000). Dark is the
+ * reference theme; light works because every role points at a semantic token, but it is not tuned yet.
+ * Roles marked "nearest" have no exact match in our tokens: they stand in for a colour of the ui9000.com style reference.
+ */
+@import './tokens.css';
+
+:root {
+  /* The site's blocks take it (base.css); <html> does not, so nothing outside the site inherits it. */
+  --site-color-scheme: dark;
+
+  /* Surfaces */
+  --site-bg: #0D0E12; /* mock: the page, darker than any token */
+  /*
+   * The page is lit too: a faint light from the top left and a darkening towards the bottom right (dark), a white
+   * light from the top (light). Fixed to the viewport, under the page colour's own layer, so it is the same behind
+   * the sticky header's fade as behind the page.
+   */
+  --site-page-light:
+    radial-gradient(1100px 700px at 18% -8%, rgb(120 126 255 / 0.075), transparent 62%),
+    radial-gradient(900px 600px at 100% 100%, rgb(0 0 0 / 0.35), transparent 70%); /* mock */
+  --site-panel: var(--ui9000-neutral-background-background);
+  --site-panel-raised: var(--ui9000-neutral-background-background-hover); /* nearest: reference nav pill */
+  --site-panel-translucent: var(--ui9000-neutral-background-transparent-background-transparent-weaker);
+  --site-panel-translucent-hover: var(--ui9000-neutral-background-transparent-background-transparent-weak);
+  --site-backdrop: var(--ui9000-neutral-background-transparent-backdrop);
+  /* The charts paint their own card on --ui9000-color-surface, which applyWidgetContext writes on <html>. */
+  --site-chart-surface: var(--ui9000-color-surface, var(--ui9000-neutral-background-background-base));
+
+  /* Lines */
+  --site-border: var(--ui9000-neutral-border-border-weaker); /* nearest: reference line */
+  /* Dividers: panel headers, rows, rules (mock: white 6%). */
+  --site-border-subtle: color-mix(in srgb, var(--ui9000-core-white) 6%, transparent);
+  --site-border-strong: var(--ui9000-neutral-border-border-weak);
+
+  /* Text and icons */
+  --site-text: var(--ui9000-neutral-text-text);
+  --site-text-muted: var(--ui9000-neutral-text-text-weak); /* nearest: reference muted text */
+  /* Halfway between gray-06 and gray-07: 4.59:1 on the search dialog, its lightest background, 4.74:1 on the current
+     sidebar item; gray-07 alone is 3.89:1 on a panel. */
+  --site-text-subtle: color-mix(in srgb, var(--ui9000-core-ui-gray-06), var(--ui9000-core-ui-gray-07));
+  --site-text-disabled: var(--ui9000-neutral-text-text-weakest);
+  --site-icon: var(--ui9000-neutral-icon-icon);
+  --site-icon-muted: var(--ui9000-neutral-icon-icon-weak);
+
+  /* Accent */
+  --site-accent: var(--ui9000-primary-text-text);
+  --site-accent-strong: var(--ui9000-primary-background-background-strong);
+  --site-accent-soft: var(--ui9000-primary-background-transparent-background-transparent);
+  --site-accent-border: var(--ui9000-primary-border-border);
+  --site-focus: var(--ui9000-primary-border-border-active);
+
+  /* Links */
+  --site-link: var(--ui9000-components-link-text-link-text);
+  --site-link-hover: var(--ui9000-components-link-text-link-text-hover);
+
+  /* Sidebar navigation */
+  --site-nav-text: var(--ui9000-components-menu-text-menu-text-weak);
+  --site-nav-text-hover: var(--ui9000-components-menu-text-menu-text);
+  --site-nav-text-current: var(--ui9000-primary-text-text);
+  --site-nav-text-disabled: var(--ui9000-components-menu-text-menu-text-disabled);
+  --site-nav-bg-hover: var(--ui9000-components-menu-background-menu-background-hover);
+  --site-nav-icon: var(--ui9000-components-menu-icon-menu-icon);
+
+  /* Buttons */
+  --site-button-primary-bg: var(--ui9000-components-button-background-button-background-primary);
+  --site-button-primary-text: var(--ui9000-components-button-text-button-text-inverted);
+  --site-button-disabled-text: var(--ui9000-components-button-text-button-text-disabled);
+  --site-button-disabled-border: var(--ui9000-components-button-border-button-border-disabled);
+
+  /* Chips: presets and segmented controls */
+  --site-chip-text: var(--ui9000-components-chip-text-chip-text);
+  --site-chip-text-weak: var(--ui9000-components-chip-text-chip-text-weak);
+
+  /* Inputs */
+  /* Fields, tracks, tiles and switches sit sunken, like the search field (dark); white in light. */
+  --site-input-bg: var(--site-search-bg);
+  --site-input-border-focus: var(--ui9000-components-input-textarea-border-input-border-active);
+  --site-input-text: var(--ui9000-components-input-textarea-text-input-text);
+  /* The search field's "Search docs" is its visible label: muted text, 4.5:1. */
+  --site-input-placeholder: var(--site-text-subtle);
+  --site-input-icon: var(--ui9000-components-input-textarea-icon-input-icon-weak);
+
+  /* Switch */
+  --site-switch-track-on: var(--ui9000-primary-background-background-strong);
+  --site-switch-thumb: var(--ui9000-neutral-icon-icon-static);
+  --site-switch-thumb-off: var(--site-switch-thumb);
+
+  /* Badges */
+  --site-badge-text: var(--site-text-subtle);
+
+  /*
+   * Code. The snippet has three levels only: the element's tag name in the accent, attribute names in the text
+   * colour, everything else (values, quotes, =, the JSON, brackets) muted; the comment a step quieter, italic.
+   * Muted and the comment keep 4.5:1 on the code background (numbers in SURFACE-STYLE-REPORT.md); the comment stays
+   * below muted. Line numbers keep 4.5:1 too, a step below the comment.
+   */
+  --site-code-bg: #111317; /* mock: the Code panel, a step darker than the others */
+  --site-code-text: var(--ui9000-neutral-text-text);
+  --site-code-muted: var(--ui9000-neutral-text-text-weak);
+  --site-code-comment: var(--ui9000-core-ui-gray-06); /* 6.18:1 on the dark code background; muted is 7.87:1 */
+  --site-code-line-number: var(--site-text-subtle); /* 5.01:1 on the dark code background, below the comment */
+  --site-code-punct: var(--site-code-muted);
+  --site-code-tag: var(--ui9000-primary-text-text);
+  --site-code-attr: var(--ui9000-neutral-text-text);
+  --site-code-string: var(--site-code-muted);
+
+  /* Status */
+  --site-success: var(--ui9000-system-success-text-text);
+
+  /*
+   * Effects. Their colour comes from tokens too, so shadows, glows and gradients are defined here.
+   * We have no black-alpha token; the shadows mix core black with transparency instead (nearest).
+   */
+  --site-shadow-card-hover: 0 12px 36px color-mix(in srgb, var(--ui9000-core-black) 60%, transparent);
+  --site-shadow-panel: 0 99px 129px -81px color-mix(in srgb, var(--ui9000-core-black) 30%, transparent);
+  --site-shadow-panel-hover:
+    0 10px 16px 3px color-mix(in srgb, var(--ui9000-core-black) 24%, transparent),
+    0 3px 6px -2px color-mix(in srgb, var(--ui9000-core-black) 16%, transparent);
+  --site-shadow-drawer: 0 0 48px color-mix(in srgb, var(--ui9000-core-black) 50%, transparent);
+  --site-gradient-heading-accent: linear-gradient(var(--site-text), var(--ui9000-primary-text-text-weaker));
+  --site-glow-hero: radial-gradient(
+    60% 90% at 30% 0%,
+    var(--ui9000-primary-background-transparent-background-transparent-weak) 0%,
+    transparent 70%
+  );
+
+  /*
+   * The colour a translucent panel shows on the page, as an opaque fill: the panel colour laid over the page
+   * colour. For anything that must cover content with the panel colour (sticky headers, scroll fades).
+   */
+  --site-panel-opaque: var(--site-surface-base);
+
+  /* Popovers and dialogs: an opaque panel over a scrim that dims the page. */
+  /* The search dialog: the panel colour under the raised tint (muted text 4.59:1). */
+  --site-popover-bg: var(--site-surface-base);
+  --site-shadow-popover: 0 24px 64px color-mix(in srgb, var(--ui9000-core-black) 60%, transparent);
+  /* nearest: the backdrop token (gray 13 at 24%) lightens a black page, so dark dims with core black instead. */
+  --site-scrim: color-mix(in srgb, var(--ui9000-core-black) 64%, transparent);
+  --site-mark: var(--site-accent);
+
+  /*
+   * Lit surfaces (see surfaces.css). One light, above the page, on every surface:
+   * - the 1px edge is a gradient from edge-high (the top, facing the light) to edge-low (the bottom);
+   * - inner-highlight is a 1px line just inside the top edge; with the edge it reads as a double edge;
+   * - the light from above (.lit): a line along the top edge, brightest in the middle and gone *-inset from each
+   *   corner, and a spill falling from it, *-width wide and *-height tall. Panels and cards, the header and cards
+   *   raised above it (raised), and the chart stage each have their own;
+   * Edges and lights are white at low alpha, so they sit on any fill. Controls (inputs, selects, segmented controls,
+   * switches, chips, buttons) use the solid control edges instead: their weakest side keeps 3:1 against the panel
+   * and the page (WCAG 1.4.11; numbers in SURFACE-STYLE-REPORT.md).
+   * Values from the surface mock (boards E2 dark and E4 light) that no token matches are literals here, marked
+   * "mock"; the near-blue light (214, 216, 255) and (160, 165, 255) fall between the primary steps.
+   */
+  --site-light-angle: 180deg;
+  --site-edge-high: rgb(214 216 255 / 0.14); /* mock */
+  --site-edge-low: color-mix(in srgb, var(--ui9000-core-white) 4.5%, transparent);
+  --site-inner-highlight: color-mix(in srgb, var(--ui9000-core-white) 5%, transparent);
+  --site-panel-light-line: rgb(214 216 255 / 0.32); /* mock */
+  --site-panel-light-inset: 14%;
+  --site-panel-light-spill: rgb(160 165 255 / 0.075); /* mock */
+  --site-panel-light-height: 170px;
+  --site-panel-light-width: 62%;
+  /* The header (raised) has no light of its own in dark: its edge and highlight carry it. */
+  --site-raised-light-line: transparent;
+  --site-raised-light-inset: 8%;
+  --site-raised-light-spill: transparent;
+  --site-raised-light-height: 70px;
+  --site-raised-light-width: 62%;
+
+  /*
+   * Surface fills: a tint over an opaque base, so the edge layer under them never shows through. A panel (.surface:
+   * Settings, Code, the sections, cards) is an opaque panel colour; Code is a step darker (--site-code-bg).
+   */
+  --site-surface-tint: transparent;
+  --site-surface-base: #14161B; /* mock */
+  /* Raised: the header (and the cards and dialogs raised like it), a faint white over the page. */
+  --site-surface-raised-tint: color-mix(in srgb, var(--ui9000-core-white) 2.5%, transparent);
+  --site-surface-raised-base: var(--site-bg);
+  --site-surface-inset-base: var(--site-input-bg);
+  /* Inset surfaces sit below the panel: a dark line under the top edge instead of a highlight. */
+  --site-inset-shade: color-mix(in srgb, var(--ui9000-core-black) 40%, transparent);
+  --site-edge-raised: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--ui9000-core-white) 16%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 4%, transparent) 45%
+  );
+  --site-edge-raised-hover: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--ui9000-core-white) 28%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 8%, transparent) 45%
+  );
+  --site-shadow-raised: 0 16px 40px -20px color-mix(in srgb, var(--ui9000-core-black) 80%, transparent);
+
+  /* Control edges: solid, so the 3:1 holds on any background they sit on. */
+  --site-control-edge-high: var(--ui9000-core-ui-gray-05);
+  --site-control-edge-low: var(--ui9000-core-ui-gray-07);
+  --site-control-edge-high-hover: var(--ui9000-core-ui-gray-03);
+  --site-control-edge-low-hover: var(--ui9000-core-ui-gray-06);
+  --site-control-edge-disabled: var(--site-button-disabled-border);
+
+  /*
+   * Lit buttons (base.css) and accent controls. Primary (Copy, a selected segment, preset tile or chip): an accent
+   * tint over what it sits on, an accent edge, a light accent label; Copy's tint is lighter than a selected option's.
+   * Secondary and icon buttons: the panel colour, a quiet edge, a muted label. The pressed icon button looks like
+   * the current sidebar item.
+   */
+  --site-primary-edge-high: #6D72F7; /* mock: halfway between primary-06 and primary-07 */
+  --site-primary-edge-low: #6D72F7;
+  --site-primary-edge-high-hover: var(--ui9000-core-ui-primary-05);
+  --site-primary-tint: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 24%, transparent);
+  --site-primary-button-tint: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 16%, transparent);
+  --site-primary-tint-hover: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 24%, transparent);
+  --site-primary-tint-active: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 32%, transparent);
+  /* The page, under an accent control that names no other surface (surfaces.css). */
+  --site-primary-base: var(--site-bg);
+  --site-primary-text: #E6E7FF; /* mock */
+  /* Secondary and icon buttons: a quiet lit edge (their label or icon identifies them, so no 3:1 boundary). */
+  --site-secondary-edge-high: color-mix(in srgb, var(--ui9000-core-white) 20%, transparent);
+  --site-secondary-edge-low: color-mix(in srgb, var(--ui9000-core-white) 7%, transparent);
+  --site-secondary-edge-high-hover: color-mix(in srgb, var(--ui9000-core-white) 32%, transparent);
+  --site-secondary-edge-low-hover: color-mix(in srgb, var(--ui9000-core-white) 12%, transparent);
+  --site-secondary-tint-hover: color-mix(in srgb, var(--ui9000-core-white) 5%, transparent);
+  --site-secondary-base: var(--site-surface-base);
+  --site-secondary-shadow: 0 0 transparent;
+  --site-secondary-text: var(--site-text-muted);
+  /*
+   * Tags (base.css) are labels, not controls: filled, with no visible edge (the border stays, transparent, so the size
+   * does not change). The fill is a translucent tint over the panel colour, opaque, so it is the same on the page and
+   * in a panel.
+   */
+  --site-tag-tint: var(--ui9000-neutral-background-transparent-background-transparent-weak);
+  --site-tag-edge: transparent;
+  /* Segmented track and preset tiles: inset, with the control edges, in dark; their own fills in light. */
+  --site-track-base: var(--site-surface-inset-base);
+  --site-track-edge-high: var(--site-control-edge-high);
+  --site-track-edge-low: var(--site-control-edge-low);
+  --site-track-highlight: var(--site-inset-shade);
+  --site-track-shadow: 0 0 transparent;
+  --site-tile-base: var(--site-surface-inset-base);
+  --site-tile-edge-high: var(--site-control-edge-high);
+  --site-tile-edge-low: var(--site-control-edge-low);
+  --site-tile-highlight: var(--site-inset-shade);
+  /* The current sidebar item, and an icon button pressed or open: a raised fill, an edge lit from above, a highlight. */
+  --site-icon-active-fill: linear-gradient(transparent, transparent);
+  --site-icon-active-base: #17191E; /* mock */
+  --site-icon-active-edge: linear-gradient(
+    color-mix(in srgb, var(--ui9000-core-white) 16%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 4%, transparent)
+  );
+  --site-icon-active-highlight: var(--site-inner-highlight);
+
+  /* Search field: sunken below the header, a quiet edge (mock). */
+  --site-search-bg: #0A0B0E; /* mock */
+  --site-search-edge: color-mix(in srgb, var(--ui9000-core-white) 12%, transparent);
+  --site-search-edge-hover: color-mix(in srgb, var(--ui9000-core-white) 20%, transparent);
+  --site-search-shadow: inset 0 1px 2px rgb(0 0 0 / 0.5); /* mock */
+
+  /*
+   * Theme switch (shell.css), on in dark: a sunken track with an edge that ends in the accent at the bottom right and
+   * a faint accent reflection under the knob; a dark knob with a rim lit at the top left and bottom right, a soft
+   * accent glow and an accent icon (mock).
+   */
+  --site-theme-switch-track: var(--site-search-bg); /* mock: the same sunken colour */
+  --site-theme-switch-edge: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ui9000-core-white) 12%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 4%, transparent) 55%,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-04) 35%, transparent)
+  );
+  --site-theme-switch-inset: inset 0 1px 3px rgb(0 0 0 / 0.7); /* mock */
+  --site-theme-switch-reflection: radial-gradient(
+    38px 26px at 82% 50%,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-06) 20%, transparent),
+    transparent 70%
+  );
+  --site-theme-switch-knob: radial-gradient(circle at 40% 30%, #22252D, #15171C); /* mock */
+  --site-theme-switch-knob-base: #15171C; /* mock */
+  /*
+   * The knob's rim: a neutral ring that keeps 3:1 against the track (and its reflection and the knob's glow) all the
+   * way round, with the mock's accent arcs laid over it (each stop is the accent mixed over the ring, as a layer
+   * would composite): bright at the top left and bottom right, fading between. The arcs carry the look, the ring the
+   * contrast. Dark: halfway between gray-06 and gray-07.
+   */
+  --site-theme-switch-ring: color-mix(in srgb, var(--ui9000-core-ui-gray-06), var(--ui9000-core-ui-gray-07));
+  --site-theme-switch-rim: conic-gradient(
+    from -45deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-04) 90%, var(--site-theme-switch-ring)),
+    color-mix(in srgb, var(--ui9000-core-ui-primary-04) 10%, var(--site-theme-switch-ring)) 70deg 110deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-04) 90%, var(--site-theme-switch-ring)) 180deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-04) 10%, var(--site-theme-switch-ring)) 250deg 290deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-04) 90%, var(--site-theme-switch-ring))
+  );
+  --site-theme-switch-glow: 0 0 10px color-mix(in srgb, var(--ui9000-core-ui-primary-06) 35%, transparent);
+  --site-theme-switch-icon: var(--ui9000-core-ui-primary-04);
+
+  /* "# Section" tag: the panel colour, an edge lit from above. */
+  --site-eyebrow-fill: linear-gradient(transparent, transparent);
+  --site-eyebrow-base: var(--site-surface-base); /* mock: the panel colour */
+  --site-eyebrow-edge: linear-gradient(
+    color-mix(in srgb, var(--ui9000-core-white) 14%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 5%, transparent)
+  );
+
+  /*
+   * Chart stage (chart-page.css): a frame around the chart's own card, never over it, lit from the top: an edge
+   * brightest along the top, the light from above, a deep shadow; a glow under it and a grid beside and below it.
+   * Over the chart and 2px around it the frame is the page colour, as on any page the chart is pasted in.
+   */
+  --site-stage-fill: #0F1015; /* mock */
+  --site-stage-edge: linear-gradient(
+    to bottom,
+    rgb(214 216 255 / 0.42),
+    color-mix(in srgb, var(--ui9000-core-white) 12%, transparent) 35%,
+    color-mix(in srgb, var(--ui9000-core-white) 5%, transparent) 75%,
+    color-mix(in srgb, var(--ui9000-core-white) 4%, transparent)
+  ); /* mock */
+  --site-stage-light-line: rgb(214 216 255 / 0.42); /* mock */
+  --site-stage-light-inset: 12%;
+  --site-stage-light-spill: rgb(160 165 255 / 0.1); /* mock */
+  --site-stage-light-height: 220px;
+  --site-stage-light-width: 60%;
+  --site-stage-shadow: 0 30px 80px rgb(0 0 0 / 0.55); /* mock */
+  --site-stage-glow: radial-gradient(
+    closest-side,
+    rgb(120 126 255 / 0.3),
+    rgb(120 126 255 / 0.08) 60%,
+    transparent
+  ); /* mock */
+  --site-stage-grid-line: color-mix(in srgb, var(--ui9000-core-white) 9%, transparent);
+}
+
+:root[data-theme='light'] {
+  --site-color-scheme: light;
+  /* Light grey cards with a white border on a grey page (mock E4); text in neutral greys. */
+  --site-bg: #E8E9EC; /* mock */
+  --site-page-light: radial-gradient(1200px 700px at 30% -10%, color-mix(in srgb, var(--ui9000-core-white) 55%, transparent), transparent 60%);
+  --site-text: #17191E; /* mock */
+  --site-text-muted: #4D5058; /* mock: secondary */
+  /* The mock's muted #6B6E76 is 4.20:1 on the page; this is the lightest of its hue at 4.5:1 on the page (4.59), the
+     search field (4.51) and the segment track (4.55). */
+  --site-text-subtle: #656870;
+  --site-nav-text: var(--site-text-muted);
+  --site-nav-text-hover: var(--site-text);
+  --site-chip-text: var(--site-text);
+  --site-chip-text-weak: var(--site-text-muted);
+  --site-input-text: var(--site-text);
+  --site-input-icon: var(--site-text-muted);
+  --site-icon: var(--site-text);
+  /* Shadows read too heavy at the dark-theme strength. */
+  --site-shadow-card-hover: 0 12px 36px color-mix(in srgb, var(--ui9000-core-black) 14%, transparent);
+  --site-shadow-panel: 0 16px 40px rgb(16 18 24 / 0.07), 0 1px 3px rgb(16 18 24 / 0.04); /* mock */
+  --site-popover-bg: var(--site-surface-raised-base);
+  --site-border-subtle: rgb(16 18 24 / 0.07); /* mock */
+  /* Code, on the panel colour (mock): tag 6.29:1, muted 6.37:1, comment 5.30:1 (below muted), line numbers 4.63:1. */
+  --site-code-bg: var(--site-surface-base);
+  --site-code-text: var(--site-text);
+  --site-code-attr: var(--site-text);
+  --site-code-tag: var(--site-primary-text); /* mock: the accent label colour */
+  --site-code-muted: #565961; /* mock */
+  --site-code-comment: #62656D; /* mock */
+  --site-code-line-number: #6B6E76; /* the mock's muted grey: 4.63:1 (its #7E818A was 3.54:1) */
+  --site-shadow-popover: 0 24px 64px color-mix(in srgb, var(--ui9000-core-black) 16%, transparent);
+  --site-scrim: var(--site-backdrop);
+
+  /*
+   * Lit surfaces, toned down: a quiet edge from the darker line colour (towards the light) to the lighter one, a
+   * white highlight, a white light from above, and no glow anywhere. Controls keep darker edges for 3:1.
+   */
+  /* Panels and cards: #F3F4F6 under a white border (mock). */
+  --site-surface-base: #F3F4F6; /* mock */
+  --site-edge-high: color-mix(in srgb, var(--ui9000-core-white) 95%, transparent);
+  --site-edge-low: color-mix(in srgb, var(--ui9000-core-white) 95%, transparent);
+  /* The white edges carry the light; no second line under them. */
+  --site-inner-highlight: transparent;
+  --site-panel-light-line: var(--ui9000-core-white);
+  --site-panel-light-inset: 8%;
+  --site-panel-light-spill: color-mix(in srgb, var(--ui9000-core-white) 95%, transparent);
+  --site-raised-light-line: var(--ui9000-core-white);
+  --site-raised-light-spill: color-mix(in srgb, var(--ui9000-core-white) 85%, transparent);
+  --site-surface-raised-base: #F2F3F5; /* mock: the header */
+  --site-inset-shade: color-mix(in srgb, var(--ui9000-core-black) 6%, transparent);
+  --site-edge-raised: linear-gradient(
+    color-mix(in srgb, var(--ui9000-core-white) 95%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 95%, transparent)
+  );
+  --site-edge-raised-hover: linear-gradient(var(--ui9000-core-white), var(--ui9000-core-white));
+  --site-shadow-raised: 0 10px 30px rgb(16 18 24 / 0.06), 0 1px 2px rgb(16 18 24 / 0.04); /* mock */
+  /*
+   * Fields are white; their edge is the mock's #C3C6CD darkened until it keeps 3:1 on everything a control edge sits
+   * on: the panel 3.36:1, the white fill 3.69:1, the header 3.33:1 and the page 3.04:1 (the Color page's chips).
+   * Switches and chips use it too.
+   */
+  --site-control-edge-high: #83858A;
+  --site-control-edge-low: #83858A;
+  --site-control-edge-high-hover: var(--ui9000-core-ui-gray-08);
+  --site-control-edge-low-hover: var(--ui9000-core-ui-gray-08);
+  /* An off switch's knob takes the track's edge grey: a white knob would vanish on the white track (3.69:1). */
+  --site-switch-thumb-off: var(--site-control-edge-high);
+  --site-input-bg: var(--ui9000-core-white);
+  /* Neutral buttons: white, no border, a soft shadow (mock). */
+  --site-secondary-base: var(--ui9000-core-white);
+  --site-secondary-edge-high: var(--ui9000-core-white);
+  --site-secondary-edge-low: var(--ui9000-core-white);
+  --site-secondary-edge-high-hover: var(--ui9000-core-white);
+  --site-secondary-edge-low-hover: var(--ui9000-core-white);
+  --site-secondary-tint-hover: var(--site-panel-translucent-hover);
+  --site-secondary-shadow: 0 1px 2px rgb(16 18 24 / 0.08), 0 3px 10px rgb(16 18 24 / 0.06); /* mock */
+  /* Tags: white on their white edge, as the neutral buttons, without the shadow. */
+  --site-tag-tint: transparent;
+  --site-tag-edge: var(--ui9000-core-white);
+  /* Segment track #E7E8EB, sunken, no border; unselected preset tiles #FAFAFB, no border (mock). */
+  --site-track-base: #E7E8EB; /* mock */
+  --site-track-edge-high: var(--site-track-base);
+  --site-track-edge-low: var(--site-track-base);
+  --site-track-highlight: transparent;
+  --site-track-shadow: inset 0 1px 2px rgb(16 18 24 / 0.1); /* mock */
+  --site-tile-base: #FAFAFB; /* mock */
+  --site-tile-edge-high: var(--site-tile-base);
+  --site-tile-edge-low: var(--site-tile-base);
+  --site-tile-highlight: transparent;
+  /* Accent controls, the dark ones inverted: a light accent tint, a translucent accent edge, an accent label. */
+  --site-primary-edge-high: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 45%, transparent);
+  --site-primary-edge-low: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 45%, transparent);
+  --site-primary-edge-high-hover: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 70%, transparent);
+  --site-primary-tint: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 10%, transparent);
+  --site-primary-button-tint: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 10%, transparent);
+  --site-primary-tint-hover: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 16%, transparent);
+  --site-primary-tint-active: color-mix(in srgb, var(--ui9000-core-ui-primary-07) 22%, transparent);
+  --site-primary-text: #3F45D6; /* mock */
+  /* Sidebar item and tag: a faint dark gradient over the page under a white top edge; the item a bit stronger. */
+  --site-icon-active-fill: linear-gradient(rgb(16 18 24 / 0.06), rgb(16 18 24 / 0.02)); /* mock */
+  --site-icon-active-base: var(--site-bg);
+  --site-icon-active-edge: linear-gradient(
+    color-mix(in srgb, var(--ui9000-core-white) 95%, transparent),
+    rgb(16 18 24 / 0.14)
+  ); /* mock */
+  --site-eyebrow-fill: linear-gradient(160deg, rgb(16 18 24 / 0.06), transparent 65%); /* mock */
+  --site-eyebrow-base: var(--site-bg);
+  --site-eyebrow-edge: linear-gradient(color-mix(in srgb, var(--ui9000-core-white) 95%, transparent), rgb(16 18 24 / 0.08)); /* mock */
+  /* Theme switch, off in light: the dark one inverted, a light track and a white knob with an accent rim and icon. */
+  --site-theme-switch-track: #D9DADE; /* mock */
+  --site-theme-switch-edge: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-07) 35%, transparent),
+    rgb(16 18 24 / 0.06),
+    color-mix(in srgb, var(--ui9000-core-white) 90%, transparent)
+  ); /* mock */
+  --site-theme-switch-inset: inset 0 1px 3px rgb(16 18 24 / 0.16); /* mock */
+  --site-theme-switch-reflection: radial-gradient(
+    38px 26px at 18% 50%,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-07) 16%, transparent),
+    transparent 70%
+  );
+  --site-theme-switch-knob: radial-gradient(circle at 40% 30%, var(--ui9000-core-white), #F1F2F6); /* mock */
+  --site-theme-switch-knob-base: #F1F2F6; /* mock */
+  /*
+   * The rim's ring in light: gray-10. The arcs are primary-08, a step darker than the mock's primary-07: next to the
+   * knob its glow darkens the track (to #B6B9D2), and primary-07 at 85% came out 2.30:1 there.
+   */
+  --site-theme-switch-ring: var(--ui9000-core-ui-gray-10);
+  --site-theme-switch-rim: conic-gradient(
+    from -45deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-08) 85%, var(--site-theme-switch-ring)),
+    color-mix(in srgb, var(--ui9000-core-ui-primary-08) 15%, var(--site-theme-switch-ring)) 70deg 110deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-08) 85%, var(--site-theme-switch-ring)) 180deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-08) 15%, var(--site-theme-switch-ring)) 250deg 290deg,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-08) 85%, var(--site-theme-switch-ring))
+  );
+  --site-theme-switch-glow:
+    0 0 10px color-mix(in srgb, var(--ui9000-core-ui-primary-07) 28%, transparent),
+    0 2px 5px rgb(16 18 24 / 0.12); /* mock */
+  --site-theme-switch-icon: var(--site-primary-text); /* mock: the accent label colour */
+  /* Search field: darker than the header, no shadow. */
+  --site-search-bg: #E6E7EA; /* mock */
+  --site-search-edge: rgb(16 18 24 / 0.06); /* mock */
+  --site-search-edge-hover: rgb(16 18 24 / 0.14);
+  --site-search-shadow: 0 0 transparent;
+
+  /* Stage: #F3F4F6 under a white border, rounder, a white light from above, a softer shadow; an accent glow. */
+  --site-stage-fill: var(--site-surface-base);
+  --site-stage-edge: linear-gradient(
+    color-mix(in srgb, var(--ui9000-core-white) 95%, transparent),
+    color-mix(in srgb, var(--ui9000-core-white) 95%, transparent)
+  );
+  --site-stage-light-line: var(--ui9000-core-white);
+  --site-stage-light-inset: 6%;
+  --site-stage-light-spill: color-mix(in srgb, var(--ui9000-core-white) 95%, transparent);
+  --site-stage-light-height: 200px;
+  --site-stage-shadow: 0 24px 60px rgb(16 18 24 / 0.1), 0 2px 6px rgb(16 18 24 / 0.05); /* mock */
+  --site-stage-glow: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--ui9000-core-ui-primary-07) 22%, transparent),
+    color-mix(in srgb, var(--ui9000-core-ui-primary-07) 6%, transparent) 60%,
+    transparent
+  );
+  --site-stage-grid-line: rgb(16 18 24 / 0.055); /* mock */
+}

@@ -1,0 +1,557 @@
+/* Shell: top bar, sidebar (drawer on narrow screens), content column, footer, page headings. */
+
+site-app {
+  display: block;
+  min-height: 100vh;
+}
+
+/*
+ * Top bar: the reference's floating nav pill (radius 12, padding 12/16, 56px tall), stretched across the page.
+ * Three columns: brand on the left, search centred (at most 480px), actions on the right.
+ * The height alone sets the vertical space, with no vertical padding: the grid row then fills the bar and every
+ * item is centred on the bar's centre line. With 12px padding and the border, the row had 30px for the 36px search
+ * field, overflowed downwards and put everything 3px low.
+ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: var(--site-topbar-gap) var(--site-topbar-gap) 0;
+}
+
+/*
+ * Content scrolls away under a fade of the page itself, so no edge shows: the page colour and its light, fixed to the
+ * viewport like the layer under the page (base.css). The size is the viewport's too: iOS Safari ignores
+ * background-attachment: fixed and places the background on this box instead, which is as wide as the viewport and
+ * always at its top, so the light still lines up there (within 2 levels of the fixed one, measured in Chrome).
+ */
+.topbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--site-bg);
+  background-image: var(--site-page-light);
+  background-size: 100% 100vh;
+  background-attachment: fixed;
+  -webkit-mask-image: linear-gradient(black 72%, transparent);
+  mask-image: linear-gradient(black 72%, transparent);
+  pointer-events: none;
+}
+
+.topbar-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--site-space-4);
+  height: var(--site-topbar-height);
+  padding: 0 var(--site-space-4);
+  border-radius: var(--site-radius-header);
+}
+
+.topbar-start,
+.topbar-end {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  min-width: 0;
+}
+
+.topbar-end {
+  justify-content: flex-end;
+}
+
+.topbar-center {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.topbar-menu {
+  display: none;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  flex: none;
+  color: var(--site-text);
+}
+
+.brand:hover {
+  color: var(--site-text);
+}
+
+/* Logo is 162 × 32; the mark keeps its colours, the wordmark takes the text colour. */
+.brand-logo {
+  display: block;
+  width: 122px;
+  height: 24px;
+}
+
+.brand-logo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Theme switch: a button with role="switch", "Dark theme", checked in dark. A 64 × 34 track and a 28px knob 2px in:
+ * on the right with a moon in dark, on the left with a sun in light. Both are painted by surfaces.css from the
+ * --site-theme-switch-* parts in theme.css. The knob slides over 320ms and the icons cross-fade; with reduced motion
+ * it switches at once. Space and Enter toggle it, as any button; the focus ring is the base outline.
+ */
+.theme-switch {
+  --surface-fill: var(--site-theme-switch-reflection);
+  --surface-base: var(--site-theme-switch-track);
+  --surface-edge: var(--site-theme-switch-edge);
+  --surface-highlight: transparent;
+  --surface-shadow: var(--site-theme-switch-inset);
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  width: 64px;
+  height: 34px;
+  padding: 2px;
+  border-radius: var(--site-radius-pill);
+}
+
+.theme-switch-knob {
+  --surface-fill: var(--site-theme-switch-knob);
+  --surface-base: var(--site-theme-switch-knob-base);
+  --surface-edge: var(--site-theme-switch-rim);
+  --surface-edge-width: 1.5px;
+  --surface-highlight: transparent;
+  --surface-shadow: var(--site-theme-switch-glow);
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--site-theme-switch-icon);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.theme-switch[aria-checked='true'] .theme-switch-knob {
+  transform: translateX(30px);
+}
+
+.theme-switch-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.theme-switch-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.theme-switch[aria-checked='true'] .is-sun,
+.theme-switch[aria-checked='false'] .is-moon {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-knob,
+  .theme-switch-icon {
+    transition: none;
+  }
+}
+
+/* Reference nav button (12px, radius 4, padding 4/4/4/8, accent on soft accent) */
+.brand-tag {
+  padding: var(--site-space-1) var(--site-space-2);
+  border-radius: var(--site-radius-xs);
+  background: var(--site-accent-soft);
+  color: var(--site-accent);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: 12px;
+  font-weight: var(--site-type-body-weight);
+}
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: var(--site-sidebar-width) minmax(0, 1fr);
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--site-topbar-offset);
+  height: calc(100vh - var(--site-topbar-offset));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--site-space-5) var(--site-space-4) var(--site-space-7) var(--site-space-5);
+  scrollbar-width: thin;
+}
+
+.sidebar-drawer-head {
+  display: none;
+}
+
+.drawer-backdrop {
+  display: none;
+}
+
+.content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--site-topbar-offset));
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--site-space-6) var(--site-gutter) var(--site-space-8);
+  /* The chart stage's grid reaches out beside the stage: never over the sidebar, never a horizontal scroll. */
+  overflow-x: clip;
+}
+
+.main:focus {
+  outline: none;
+}
+
+/* Sidebar navigation (reference nav links: 14px, muted, 0.2s colour transition) */
+site-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-5);
+}
+
+.sidebar-heading {
+  margin-bottom: var(--site-space-2);
+  padding: 0 var(--site-space-3);
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  font-weight: var(--site-type-caption-weight);
+}
+
+.nav-list,
+.nav-sublist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-sublist {
+  margin: 2px 0 var(--site-space-2) var(--site-space-3);
+  padding-left: var(--site-space-2);
+  border-left: 1px solid var(--site-border-subtle);
+}
+
+.nav-link,
+.nav-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  width: 100%;
+  min-height: 32px;
+  /* 1px less than 6/12: the transparent border holds the current item's lit edge, so no item moves. */
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--site-radius-md);
+  background: transparent;
+  color: var(--site-nav-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-body-size);
+  line-height: 20px;
+  text-align: left;
+  transition:
+    color var(--site-duration-fast) var(--site-ease),
+    background-color var(--site-duration-fast) var(--site-ease);
+}
+
+.nav-link-label,
+.nav-group-label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hover only where a click does something: not on the current page. */
+a.nav-link:not(.is-current):hover,
+.nav-group-toggle:hover {
+  background: var(--site-nav-bg-hover);
+  color: var(--site-nav-text-hover);
+}
+
+/* The current page rises like the reference's selected sidebar item: a raised fill, an edge lit from above. */
+.nav-link.is-current {
+  --surface-edge: var(--site-icon-active-edge);
+  --surface-fill: var(--site-icon-active-fill);
+  --surface-base: var(--site-icon-active-base);
+  --surface-highlight: var(--site-icon-active-highlight);
+  --surface-shadow: 0 0 transparent;
+  cursor: default;
+  color: var(--site-nav-text-current);
+  font-weight: var(--site-type-label-weight);
+}
+
+.nav-link.is-soon {
+  color: var(--site-nav-text-disabled);
+  cursor: default;
+}
+
+.nav-group-toggle {
+  color: var(--site-nav-text-hover);
+}
+
+.nav-group-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--site-nav-icon);
+  transition: transform var(--site-duration-fast) var(--site-ease);
+}
+
+.nav-group-chevron svg {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-group.is-open .nav-group-chevron {
+  transform: rotate(90deg);
+}
+
+/* Footer (reference: 1px top line, muted 14/21 links, 8px gaps) */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--site-space-2) var(--site-space-5);
+  margin: 0 var(--site-gutter);
+  padding: var(--site-space-6) 0;
+  border-top: 1px solid var(--site-border);
+  color: var(--site-text-muted);
+  font-size: var(--site-type-body-size);
+  line-height: 21px;
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--site-space-4);
+}
+
+.footer a {
+  color: var(--site-text-muted);
+  transition: color var(--site-duration-fast) var(--site-ease);
+}
+
+.footer a:hover {
+  color: var(--site-text);
+}
+
+/* Page headings shared by every page */
+.page {
+  min-width: 0;
+}
+
+.page-title {
+  margin-top: var(--site-space-4);
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-h1-size);
+  line-height: var(--site-type-h1-line);
+  font-weight: var(--site-type-h1-weight);
+  color: var(--site-text);
+}
+
+.page-title:focus,
+.display:focus,
+.section-title:focus {
+  outline: none;
+}
+
+.page-lead {
+  margin-top: var(--site-space-3);
+  max-width: 64ch;
+  color: var(--site-text-muted);
+  font-size: var(--site-type-lead-size);
+  line-height: var(--site-type-lead-line);
+  font-weight: var(--site-type-lead-weight);
+}
+
+.section-title {
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-h2-size);
+  line-height: var(--site-type-h2-line);
+  font-weight: var(--site-type-h2-weight);
+  color: var(--site-text);
+  scroll-margin-top: calc(var(--site-topbar-offset) + var(--site-space-5));
+}
+
+.soon-page .page-lead a {
+  white-space: nowrap;
+}
+
+/* A page with an "On this page" rail (Introduction, Foundations): page-rail.ts */
+.doc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: var(--site-space-7);
+  align-items: start;
+}
+
+/* The rail's nav is the grid item, so it can stick. */
+site-page-rail {
+  display: contents;
+}
+
+.on-this-page {
+  position: sticky;
+  top: calc(var(--site-topbar-offset) + var(--site-space-6));
+  padding-left: var(--site-space-4);
+  border-left: 1px solid var(--site-border-subtle);
+}
+
+.rail-title {
+  margin-bottom: var(--site-space-3);
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  font-weight: var(--site-type-caption-weight);
+}
+
+.on-this-page ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-1);
+}
+
+/* h3 sections, under their h2 */
+.on-this-page .rail-sublist {
+  margin-top: var(--site-space-1);
+}
+
+.rail-link {
+  position: relative;
+  display: block;
+  padding: var(--site-space-1) 0;
+  color: var(--site-text-muted);
+  font-size: var(--site-type-body-size);
+  line-height: 20px;
+}
+
+.rail-sublist .rail-link {
+  padding-left: var(--site-space-3);
+}
+
+.rail-link:hover {
+  color: var(--site-text);
+}
+
+.rail-link.is-active {
+  color: var(--site-accent);
+}
+
+.rail-link.is-active::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--site-space-4) - 1px);
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--site-accent);
+}
+
+@media (max-width: 1279px) {
+  .doc-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .on-this-page {
+    display: none;
+  }
+}
+
+/* Narrow screens: the sidebar becomes a drawer */
+@media (max-width: 1023px) {
+  .topbar {
+    padding: var(--site-space-2) var(--site-space-2) 0;
+  }
+
+  .topbar-inner {
+    column-gap: var(--site-space-2);
+    padding: 0 var(--site-space-2);
+  }
+
+  .topbar-menu {
+    display: inline-flex;
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 50;
+    width: min(320px, 86vw);
+    height: 100%;
+    padding-top: var(--site-space-3);
+    background: var(--site-surface-base);
+    border-right: 1px solid var(--site-edge-high);
+    box-shadow: var(--site-shadow-drawer);
+    transform: translateX(-100%);
+    transition: transform var(--site-duration) var(--site-ease);
+  }
+
+  /* Closed, the drawer is inert (set by site-app), so it is out of the tab order and the accessibility tree. */
+  .sidebar.is-open {
+    transform: none;
+  }
+
+  .sidebar-drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--site-space-4);
+    padding-left: var(--site-space-3);
+  }
+
+  .drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    /* A plain scrim: no blur over the whole viewport. */
+    background: var(--site-backdrop);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--site-duration) var(--site-ease);
+  }
+
+  .drawer-backdrop.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Phone: the search shrinks to an icon button next to the actions, so the centre column only takes its width. */
+  .topbar-inner {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .brand-logo {
+    width: 111px;
+    height: 22px;
+  }
+
+  .main {
+    padding-top: var(--site-space-5);
+  }
+}

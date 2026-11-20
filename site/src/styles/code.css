@@ -1,0 +1,184 @@
+/*
+ * Code panel: header with Copy, then the snippet with line numbers. Collapsed it shows six lines: the last two
+ * fade out towards "Show all N lines", which sits in the solid end of the fade. Expanded it scrolls
+ * inside itself, with Collapse below.
+ */
+
+.code-panel {
+  --code-line: var(--site-type-code-line);
+  --code-pad: var(--site-space-3);
+  /* The collapsed fade: transparent at its top, the solid code background from 72% of its height down. */
+  --code-fade: 96px;
+  --code-fade-solid: calc(var(--code-fade) * 0.28);
+  /* The panel is the code colour, a step darker than Settings in dark. */
+  --surface-base: var(--site-code-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+
+.code-header {
+  flex: none;
+}
+
+/* Copy's accent tint lies over the Code panel's colour. */
+.copy-button {
+  --surface-accent-base: var(--site-code-bg);
+}
+
+.copy-button.is-copied {
+  --surface-edge-high: var(--site-success);
+  --surface-edge-low: var(--site-success);
+  --surface-tint: transparent;
+  --surface-shadow: 0 0 transparent;
+  color: var(--site-success);
+}
+
+.code-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--site-border-subtle);
+  overflow: hidden;
+}
+
+/* One scroller for both directions; the line numbers stay put when it scrolls sideways. */
+.code-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--site-code-bg);
+  scrollbar-width: thin;
+}
+
+.code-scroll:focus-visible {
+  outline-offset: -2px;
+}
+
+.code-panel.is-collapsed .code-scroll {
+  flex: none;
+  /*
+   * The top padding, six lines (PREVIEW_LINES in code-panel.ts) and the fade's solid part below them, so lines 5
+   * and 6 are the ones fading out. The rest is cut off.
+   */
+  height: calc(var(--code-pad) + 6 * var(--code-line) + var(--code-fade-solid));
+  overflow-y: hidden;
+}
+
+/* Code shown on any page (the Typography page's CSS example too). */
+.code {
+  margin: 0;
+  padding: var(--site-space-4) var(--site-space-5);
+  overflow: auto;
+  background: var(--site-code-bg);
+  color: var(--site-code-text);
+  font-family: var(--site-font-mono);
+  font-size: var(--site-type-mono-size);
+  line-height: var(--site-type-mono-line);
+  tab-size: 2;
+  scrollbar-width: thin;
+}
+
+.code:focus-visible {
+  outline-offset: -2px;
+}
+
+/* In the Code panel the scroller around it scrolls, and the line numbers sit beside it. */
+.code-panel .code,
+.code-gutter {
+  margin: 0;
+  padding: var(--code-pad) 0;
+  font-family: var(--site-font-mono);
+  font-size: var(--site-type-code-size);
+  line-height: var(--code-line);
+  white-space: pre;
+}
+
+/* In the snippet, whatever no token colours (spaces, text between tags) is muted, like the values. */
+.code-panel .code {
+  flex: 1 0 auto;
+  padding-right: var(--site-space-5);
+  overflow: visible;
+  background: none;
+  color: var(--site-code-muted);
+}
+
+.code-gutter {
+  position: sticky;
+  left: 0;
+  flex: none;
+  min-width: 44px;
+  padding-right: var(--site-space-3);
+  padding-left: var(--site-space-3);
+  background: var(--site-code-bg);
+  color: var(--site-code-line-number);
+  text-align: right;
+  user-select: none;
+}
+
+/*
+ * The code runs on under the fade instead of stopping at an edge: transparent at the top, the solid code background
+ * from 72% of the height down. Lines 5 and 6 fade out; the button sits in the solid part.
+ */
+.code-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--code-fade);
+  background: linear-gradient(to bottom, transparent, var(--site-code-bg) 72%);
+  pointer-events: none;
+}
+
+.code-footer {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  padding: var(--site-space-2) var(--site-space-4) var(--site-space-3);
+}
+
+/*
+ * Collapsed, the button sits in the fade's solid part, 14px from the bottom; its upper edge lies over line 6, where
+ * the fade is nearly opaque.
+ */
+.code-panel.is-collapsed .code-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  padding: 0;
+  pointer-events: none;
+}
+
+/* Over the fade the button's own opaque fill keeps the code under it from showing through. */
+.code-panel.is-collapsed .code-more {
+  pointer-events: auto;
+}
+
+.tok-comment {
+  color: var(--site-code-comment);
+  font-style: italic;
+}
+
+.tok-tag {
+  color: var(--site-code-tag);
+}
+
+.tok-attr {
+  color: var(--site-code-attr);
+}
+
+.tok-string {
+  color: var(--site-code-string);
+}
+
+.tok-punct {
+  color: var(--site-code-punct);
+}

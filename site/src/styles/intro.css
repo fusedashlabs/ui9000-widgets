@@ -1,0 +1,256 @@
+/* Introduction page */
+
+.intro-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-8);
+}
+
+/* Hero (reference: 64/70.4 headline with a white→accent gradient on the last word, 18px muted subtitle) */
+.intro-hero {
+  position: relative;
+  padding: var(--site-space-5) 0 var(--site-space-2);
+}
+
+.intro-hero::before {
+  content: '';
+  position: absolute;
+  inset: -96px 0 -32px 0;
+  z-index: -1;
+  background: var(--site-glow-hero);
+  pointer-events: none;
+}
+
+.display {
+  margin-top: var(--site-space-5);
+  max-width: 18ch;
+  font-family: var(--site-font-display);
+  font-size: var(--site-type-display-size);
+  line-height: var(--site-type-display-line);
+  font-weight: var(--site-type-display-weight);
+  color: var(--site-text);
+}
+
+.accent-text {
+  background-image: var(--site-gradient-heading-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.intro-hero .page-lead {
+  margin-top: var(--site-space-5);
+  max-width: 58ch;
+}
+
+.doc-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-5);
+}
+
+.section-lead {
+  max-width: 64ch;
+  margin-top: calc(-1 * var(--site-space-2));
+  color: var(--site-text-muted);
+  font-size: var(--site-type-prose-size);
+  line-height: var(--site-type-prose-line);
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  max-width: 68ch;
+  color: var(--site-text-muted);
+  font-size: var(--site-type-prose-size);
+  line-height: var(--site-type-prose-line);
+}
+
+.prose code,
+.when-list code {
+  padding: 1px 6px;
+  border: 1px solid var(--site-border-subtle);
+  border-radius: var(--site-radius-sm);
+  background: var(--site-panel);
+  color: var(--site-text);
+  font-family: var(--site-font-mono);
+  font-size: 0.875em;
+}
+
+/* Steps (reference "why" cards: gradient panel, padding 24, gap 16, hover shadow) */
+.steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--site-space-4);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+  padding: var(--site-space-5);
+  border-radius: var(--site-radius-xl);
+}
+
+.step-number {
+  margin-bottom: var(--site-space-4);
+  color: var(--site-accent);
+  font-family: var(--site-font-numeric);
+  font-variant-numeric: var(--site-numeric-features);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+}
+
+.step-title {
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-h3-size);
+  line-height: var(--site-type-h3-line);
+  font-weight: var(--site-type-h3-weight);
+  color: var(--site-text);
+}
+
+.step-text {
+  color: var(--site-text-muted);
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+}
+
+/* Category cards (reference chart cards: gradient, 1px line, padding 16, gap 16, 12px media radius; the card's radius
+   is the media's plus the gap, 29, not the reference's 24: concentric corners) */
+.category-grid {
+  /* No list-style here: it would reach the charts in the cards. The items are flex boxes, so they have no markers. */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: var(--site-space-2);
+}
+
+.category-item {
+  display: flex;
+  min-width: 0;
+}
+
+.category-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  width: 100%;
+  min-width: 0;
+  --card-pad: var(--site-space-4);
+  padding: var(--card-pad);
+  /* The media's radius plus the gap to it (the padding and the 1px edge): concentric. */
+  border-radius: calc(var(--site-radius-lg) + var(--card-pad) + 1px);
+}
+
+.category-card.is-link:focus-within {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 2px;
+}
+
+.category-media {
+  height: 300px;
+  border-radius: var(--site-radius-lg);
+  overflow: hidden;
+  background: var(--site-chart-surface);
+}
+
+site-story-chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+  padding: 0 var(--site-space-1) var(--site-space-1);
+}
+
+.category-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--site-space-3);
+}
+
+.category-title {
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-h3-size);
+  line-height: var(--site-type-h3-line);
+  font-weight: var(--site-type-h3-weight);
+  color: var(--site-text);
+}
+
+.category-link {
+  color: inherit;
+}
+
+.category-link:hover {
+  color: inherit;
+}
+
+/* The whole card is the link's hit area. */
+.category-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.category-link:focus-visible {
+  outline: none;
+}
+
+.category-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--site-space-1);
+  color: var(--site-accent);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  white-space: nowrap;
+}
+
+.category-cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--site-duration-fast) var(--site-ease);
+}
+
+.category-card.is-link:hover .category-cta svg {
+  transform: translateX(3px);
+}
+
+.category-text {
+  color: var(--site-text-muted);
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+}
+
+.category-types {
+  color: var(--site-text-subtle);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+}
+
+@media (max-width: 899px) {
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .intro-page {
+    gap: var(--site-space-7);
+  }
+
+  .category-media {
+    height: 260px;
+  }
+}

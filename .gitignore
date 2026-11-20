@@ -20,3 +20,4 @@ pnpm-lock.yaml
 docs/BUNDLE_SIZE_REPORT.json
 .env
 .env.local
+site/dist

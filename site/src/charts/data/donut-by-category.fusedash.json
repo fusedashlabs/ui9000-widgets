@@ -1,0 +1,27 @@
+{
+  "chartType": "donutChart",
+  "name": "Website Visits by Channel",
+  "xAxe": ["channel"],
+  "yAxe": ["visits"],
+  "formatting": [
+    { "key": "Organic search", "color": "1" },
+    { "key": "Direct", "color": "2" },
+    { "key": "Social", "color": "3" },
+    { "key": "Email", "color": "4" },
+    { "key": "Referral", "color": "5" }
+  ],
+  "uniqueValues": {
+    "channel": ["Organic search", "Direct", "Social", "Email", "Referral"]
+  },
+  "axisDetails": {
+    "channel": { "label": "Channel", "type": "text" },
+    "visits": { "label": "Visits", "type": "metric", "measure_unit_symbol": "visits" }
+  },
+  "data": [
+    { "channel": "Organic search", "visits": 18420 },
+    { "channel": "Direct", "visits": 10150 },
+    { "channel": "Social", "visits": 6630 },
+    { "channel": "Email", "visits": 4870 },
+    { "channel": "Referral", "visits": 3930 }
+  ]
+}

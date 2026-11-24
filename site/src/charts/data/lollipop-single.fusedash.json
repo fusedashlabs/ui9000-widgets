@@ -1,0 +1,65 @@
+{
+  "chartType": "lollipopChart",
+  "name": "Average Density by Organic and Non-Organic MD",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "default",
+      "shape": "rhombus"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "MD_Organic_non_organic"
+  ],
+  "yAxe": [
+    "dencity"
+  ],
+  "formatting": [
+    {
+      "key": "default",
+      "color": "1"
+    }
+  ],
+  "uniqueValues": {
+    "MD_Organic_non_organic": [
+      "Open Field",
+      "Green House",
+      "Non-heated",
+      "Open F Fruit Crop",
+      "Processing",
+      "Heated"
+    ]
+  },
+  "palette": {},
+  "data": [
+    {
+      "MD_Organic_non_organic": "Open Field",
+      "dencity": 2180000
+    },
+    {
+      "MD_Organic_non_organic": "Green House",
+      "dencity": 1640000
+    },
+    {
+      "MD_Organic_non_organic": "Non-heated",
+      "dencity": 1210000
+    },
+    {
+      "MD_Organic_non_organic": "Open F Fruit Crop",
+      "dencity": 940000
+    },
+    {
+      "MD_Organic_non_organic": "Processing",
+      "dencity": 620000
+    },
+    {
+      "MD_Organic_non_organic": "Heated",
+      "dencity": 1870000
+    }
+  ],
+  "kpis": []
+}

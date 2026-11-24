@@ -1,0 +1,94 @@
+/* Settings panel (components/settings-panel.ts): the preset tiles. The panel, its scroll and the generated controls
+   are in controls.css. */
+
+/* "Preset", and "Modified" at the right once a setting has changed. 20px tall either way, so the tiles stay put. */
+.preset-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 20px;
+  margin-bottom: 6px;
+}
+
+/*
+ * Three tiles to a row on every page, so a tile is the same size whether a chart has one preset or three. Every tile
+ * in a row takes the row's height (stretch), so a name on two lines makes its neighbours as tall, not just itself.
+ */
+.preset-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 6px;
+}
+
+.preset-tile {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+
+/* The radio covers the tile, as in a segmented control: the whole tile is the click target. */
+.preset-tile input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* A .surface-inset like the inputs (painted by surfaces.css); the selected tile is drawn as the selected segment. */
+.preset-face {
+  /* Selected, the shared accent state (surfaces.css) lies over the panel. */
+  --surface-accent-base: var(--site-surface-base);
+  --surface-edge-high: var(--site-tile-edge-high);
+  --surface-edge-low: var(--site-tile-edge-low);
+  --surface-base: var(--site-tile-base);
+  --surface-highlight: var(--site-tile-highlight);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 6px 7px;
+  border-radius: var(--site-radius-lg);
+  color: var(--site-chip-text-weak);
+  transition: color var(--site-duration) var(--site-ease);
+}
+
+.preset-icon {
+  flex: none;
+  display: block;
+  width: 40px;
+  height: 24px;
+}
+
+/* Two lines at most ("Positive and / negative"), balanced, centred under the picture. */
+.preset-label {
+  max-width: 100%;
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: 15px;
+  font-weight: var(--site-type-label-weight);
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* Hover only on a tile a click would pick: not the selected one. */
+.preset-tile input:not(:checked):hover + .preset-face {
+  --surface-edge-high: var(--site-control-edge-high-hover);
+  --surface-edge-low: var(--site-control-edge-low-hover);
+  color: var(--site-chip-text);
+}
+
+.preset-tile input:checked {
+  cursor: default;
+}
+
+
+.preset-tile input:focus-visible + .preset-face {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 1px;
+}

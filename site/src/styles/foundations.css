@@ -1,0 +1,817 @@
+/*
+ * Foundations pages: Color, Typography, Spacing, Motion.
+ * Colours and fonts come only from the roles in theme.css and typography.css. The token swatches and type
+ * samples are the exception by design: their inline styles show the tokens themselves.
+ */
+
+.foundation-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-8);
+  max-width: 1040px;
+}
+
+.foundation-header {
+  padding-top: var(--site-space-5);
+}
+
+.foundation-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  margin-top: var(--site-space-3);
+}
+
+.foundation-subtitle {
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-h3-size);
+  line-height: var(--site-type-h3-line);
+  font-weight: var(--site-type-h3-weight);
+  color: var(--site-text);
+  scroll-margin-top: calc(var(--site-topbar-offset) + var(--site-space-5));
+}
+
+.foundation-text {
+  max-width: 64ch;
+  margin-top: calc(-1 * var(--site-space-2));
+  color: var(--site-text-muted);
+}
+
+.foundation-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+  max-width: 68ch;
+  padding-left: var(--site-space-5);
+  color: var(--site-text-muted);
+  font-size: var(--site-type-prose-size);
+  line-height: var(--site-type-prose-line);
+}
+
+.foundation-page :not(pre) > code {
+  padding: 1px 6px;
+  border: 1px solid var(--site-border-subtle);
+  border-radius: var(--site-radius-sm);
+  background: var(--site-panel);
+  color: var(--site-text);
+  font-family: var(--site-font-mono);
+  font-size: 0.875em;
+}
+
+.foundation-code {
+  --surface-tint: transparent;
+  --surface-base: var(--site-code-bg);
+  flex: none;
+  border-radius: var(--site-radius-lg);
+}
+
+/* ── Color ─────────────────────────────────────────────────────────────────────────────────────────── */
+
+/* One row per palette type: its name and use on the left, its variants on the right. A phone stacks them. */
+.palette-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-7);
+}
+
+.palette-group {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--site-space-6);
+}
+
+.palette-group-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-1);
+}
+
+.palette-group-title {
+  margin: 0;
+}
+
+/* A link to a palette focuses its row's heading, as a page change focuses the title: no ring. */
+.palette-group-title:focus {
+  outline: none;
+}
+
+.palette-group-use {
+  color: var(--site-text-muted);
+}
+
+.palette-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  min-width: 0;
+}
+
+.palette-chips {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--site-space-2);
+}
+
+.palette-chip {
+  position: relative;
+  display: flex;
+}
+
+.palette-chip input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.palette-chip-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px var(--site-space-3);
+  /* A chip with control edges (3:1) (painted by surfaces.css); selected, a primary one. */
+  --surface-edge-high: var(--site-control-edge-high);
+  --surface-edge-low: var(--site-control-edge-low);
+  --surface-tint: transparent;
+  --surface-base: var(--site-secondary-base);
+  border-radius: var(--site-radius-pill);
+  color: var(--site-chip-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  white-space: nowrap;
+  transition: color var(--site-duration) var(--site-ease);
+}
+
+.palette-chip input:not(:checked):hover + .palette-chip-label {
+  --surface-edge-high: var(--site-control-edge-high-hover);
+  --surface-edge-low: var(--site-control-edge-low-hover);
+  --surface-tint: var(--site-secondary-tint-hover);
+}
+
+.palette-chip input:checked {
+  cursor: default;
+}
+
+.palette-chip input:focus-visible + .palette-chip-label {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 1px;
+}
+
+.palette-chip-id {
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-mono);
+  font-size: var(--site-type-caption-size);
+  font-weight: var(--site-type-body-weight);
+}
+
+/* On the selected chip's accent tint the muted colour falls below 4.5:1 (4.1); the id takes the secondary text. */
+.palette-chip input:checked + .palette-chip-label .palette-chip-id {
+  color: var(--site-text-muted);
+}
+
+/* Equal swatches in one row; on a phone, a grid of at most two rows (--count-narrow columns). */
+.palette-row {
+  display: grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  gap: var(--site-space-2) var(--site-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.palette-step {
+  min-width: 0;
+}
+
+.palette-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-1);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.palette-swatch:focus {
+  outline: none;
+}
+
+.palette-color {
+  display: block;
+  height: 72px;
+  border-radius: var(--site-radius-md);
+  box-shadow: inset 0 0 0 1px var(--site-border-subtle);
+  transition: box-shadow var(--site-duration-fast) var(--site-ease);
+}
+
+.palette-swatch:hover .palette-color {
+  box-shadow: inset 0 0 0 1px var(--site-border-strong);
+}
+
+.palette-swatch:focus-visible .palette-color {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 2px;
+}
+
+/* One tooltip for the page, placed over the active swatch by the page (updated()). */
+.color-page {
+  position: relative;
+}
+
+.swatch-tip {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: max-content;
+  max-width: min(320px, 100%);
+  padding: var(--site-space-2) var(--site-space-3);
+  --surface-shadow: var(--site-shadow-panel-hover);
+  border-radius: var(--site-radius-md);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  font-weight: var(--site-type-caption-weight);
+}
+
+.swatch-tip-name,
+.swatch-tip-hex {
+  font-family: var(--site-font-mono);
+  font-weight: var(--site-type-body-weight);
+}
+
+.swatch-tip-name {
+  color: var(--site-text);
+  overflow-wrap: anywhere;
+}
+
+.swatch-tip-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px var(--site-space-2);
+  color: var(--site-text-muted);
+}
+
+.swatch-tip-low {
+  padding: 0 var(--site-space-1);
+  border: 1px solid var(--site-border-strong);
+  border-radius: var(--site-radius-xs);
+  color: var(--site-text);
+}
+
+.swatch-tip-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-1);
+  color: var(--site-text-subtle);
+}
+
+.swatch-tip-hint.is-copied {
+  color: var(--site-success);
+}
+
+.swatch-tip-hint svg {
+  width: 14px;
+  height: 14px;
+}
+
+.palette-step-number {
+  color: var(--site-text-muted);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  font-weight: var(--site-type-caption-weight);
+}
+
+.palette-description {
+  color: var(--site-text-muted);
+}
+
+/* "Default for" and its charts: one row at 1440 with the first six chips; "+N more" wraps the rest in place. */
+.palette-defaults {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--site-space-2);
+  margin-top: var(--site-space-2);
+  color: var(--site-text-muted);
+}
+
+/* The charts are tags (base.css), sm; a chart with a page is a link to it. */
+.palette-default {
+  text-decoration: none;
+}
+
+a.palette-default:hover {
+  --surface-edge-high: var(--site-control-edge-high-hover);
+  --surface-edge-low: var(--site-control-edge-low-hover);
+  --surface-tint: var(--site-secondary-tint-hover);
+  color: var(--site-chip-text);
+}
+
+.palette-default:focus-visible {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 1px;
+}
+
+@media (max-width: 767px) {
+  .palette-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--site-space-3);
+  }
+
+  .palette-row {
+    grid-template-columns: repeat(var(--count-narrow), minmax(0, 1fr));
+  }
+
+  .palette-color {
+    height: 48px;
+  }
+}
+
+.core-colors-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-3);
+  width: fit-content;
+  cursor: pointer;
+  list-style: none;
+}
+
+.core-colors-summary::-webkit-details-marker {
+  display: none;
+}
+
+.core-colors-summary:focus-visible {
+  border-radius: var(--site-radius-sm);
+  outline: 2px solid var(--site-focus);
+  outline-offset: 4px;
+}
+
+.core-colors-count {
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  font-weight: var(--site-type-caption-weight);
+}
+
+.core-colors-chevron {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  color: var(--site-icon-muted);
+  transition: transform var(--site-duration-fast) var(--site-ease);
+}
+
+.core-colors[open] .core-colors-chevron {
+  transform: rotate(180deg);
+}
+
+.core-colors-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-5);
+}
+
+.core-colors-body .foundation-text {
+  margin-top: 0;
+}
+
+.core-family {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+}
+
+.core-family-title {
+  margin: 0;
+  color: var(--site-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+}
+
+.core-family .palette-color {
+  height: 40px;
+}
+
+/* ── Typography ────────────────────────────────────────────────────────────────────────────────────── */
+
+.typeface-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  padding: var(--site-space-5);
+  border-radius: var(--site-radius-xl);
+}
+
+.typeface-name {
+  color: var(--site-text);
+}
+
+.typeface-glyphs {
+  color: var(--site-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.typeface-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--site-space-6);
+  padding-top: var(--site-space-4);
+  border-top: 1px solid var(--site-border-subtle);
+  list-style: none;
+}
+
+.typeface-weight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-1);
+}
+
+.typeface-weight-sample {
+  color: var(--site-text);
+}
+
+.typeface-weight-label,
+.type-spec,
+.type-variants {
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  color: var(--site-text-muted);
+}
+
+.type-scale {
+  list-style: none;
+  border-top: 1px solid var(--site-border-subtle);
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--site-space-5);
+  align-items: center;
+  padding: var(--site-space-4) 0;
+  border-bottom: 1px solid var(--site-border-subtle);
+}
+
+.type-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.type-name {
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  color: var(--site-text);
+}
+
+.type-sample {
+  min-width: 0;
+  color: var(--site-text);
+  overflow-wrap: anywhere;
+}
+
+/* ── Spacing ───────────────────────────────────────────────────────────────────────────────────────── */
+
+.space-scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+  list-style: none;
+}
+
+.space-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--site-space-4);
+  align-items: center;
+}
+
+.space-value {
+  font-family: var(--site-font-numeric);
+  font-variant-numeric: var(--site-numeric-features);
+  color: var(--site-text-muted);
+}
+
+.space-bar {
+  display: block;
+  height: 24px;
+  border-radius: 2px;
+  background: var(--site-accent-strong);
+}
+
+.density-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--site-space-5);
+  list-style: none;
+}
+
+.density-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-1);
+}
+
+/* Every frame is the same size, so only the room around the plot changes. */
+.density-frame {
+  display: flex;
+  height: 152px;
+  margin-bottom: var(--site-space-2);
+  padding: var(--density-pad);
+  border: 1px solid var(--site-accent-border);
+  /* The plot's radius plus the gap to it (the padding and the 1px border): concentric at every density. */
+  border-radius: calc(var(--site-radius-xs) + var(--density-pad) + 1px);
+  background: var(--site-accent-soft);
+}
+
+.density-plot {
+  flex: 1;
+  border: 1px dashed var(--site-border-strong);
+  border-radius: var(--site-radius-xs);
+  background: var(--site-bg);
+}
+
+.density-label {
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  color: var(--site-text);
+}
+
+.density-meta {
+  color: var(--site-text-muted);
+}
+
+/* ── Motion ────────────────────────────────────────────────────────────────────────────────────────── */
+
+.motion-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-3);
+}
+
+.motion-stage {
+  height: 340px;
+  border-radius: var(--site-radius-lg);
+  background: var(--site-chart-surface);
+  overflow: hidden;
+}
+
+.motion-stage site-story-chart {
+  display: block;
+  height: 100%;
+}
+
+.motion-replay {
+  align-self: flex-end;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: var(--site-space-4);
+  align-items: center;
+}
+
+.timeline-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-name {
+  color: var(--site-text);
+}
+
+.timeline-time {
+  font-family: var(--site-font-numeric);
+  font-variant-numeric: var(--site-numeric-features);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  color: var(--site-text-muted);
+}
+
+.timeline-track {
+  position: relative;
+  height: 12px;
+  border-radius: var(--site-radius-pill);
+  background: var(--site-panel);
+}
+
+.timeline-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--site-radius-pill);
+}
+
+.timeline-bar.is-frame,
+.timeline-swatch.is-frame {
+  background: var(--site-border-strong);
+}
+
+.timeline-bar.is-data,
+.timeline-swatch.is-data {
+  background: var(--site-accent-strong);
+}
+
+.timeline-axis .timeline-track {
+  height: 16px;
+  background: none;
+}
+
+.timeline-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-family: var(--site-font-numeric);
+  font-variant-numeric: var(--site-numeric-features);
+  font-size: var(--site-type-caption-size);
+  line-height: 16px;
+  color: var(--site-text-subtle);
+}
+
+.timeline-tick:first-child {
+  transform: none;
+}
+
+.timeline-tick:last-child {
+  transform: translateX(-100%);
+}
+
+.timeline-key {
+  display: flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  font-size: var(--site-type-caption-size);
+  color: var(--site-text-muted);
+}
+
+.timeline-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.timeline-swatch.is-data {
+  margin-left: var(--site-space-3);
+}
+
+.section-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--site-space-3) var(--site-space-4);
+  margin-top: calc(-1 * var(--site-space-2));
+}
+
+.section-row .section-lead {
+  margin-top: 0;
+}
+
+.ease-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--site-space-4);
+  list-style: none;
+}
+
+.ease-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--site-space-4);
+  border-radius: var(--site-radius-xl);
+}
+
+.ease-plot {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ease-guide {
+  stroke: var(--site-border);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.ease-curve {
+  fill: none;
+  stroke: var(--site-accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.ease-track {
+  position: relative;
+  height: 12px;
+  margin: var(--site-space-2) 0 var(--site-space-3);
+}
+
+.ease-track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--site-border-subtle);
+}
+
+.ease-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--site-accent-strong);
+}
+
+.ease-dot.is-playing {
+  animation: ease-move 1000ms both;
+}
+
+@keyframes ease-move {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 12px);
+  }
+}
+
+.ease-name {
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  color: var(--site-text);
+}
+
+.ease-use {
+  color: var(--site-text-muted);
+}
+
+.foundation-page .ease-value {
+  margin-top: var(--site-space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--site-font-mono);
+  font-size: var(--site-type-caption-size);
+  color: var(--site-text-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ease-dot.is-playing {
+    animation: none;
+    left: calc(100% - 12px);
+  }
+}
+
+@media (max-width: 767px) {
+  .type-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--site-space-2);
+  }
+
+  .timeline-row {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: var(--site-space-3);
+  }
+
+  .motion-stage {
+    height: 280px;
+  }
+}

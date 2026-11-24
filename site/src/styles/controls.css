@@ -1,0 +1,329 @@
+/* Settings panel and its generated controls. */
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--site-space-3);
+  padding: 10px 10px 10px var(--site-space-4);
+}
+
+/* The 28px button takes 2px of the padding above and below, so the header stays 44px tall. */
+.panel-header .btn {
+  margin-block: -2px;
+}
+
+.settings-header {
+  flex: none;
+  border-bottom: 1px solid var(--site-border-subtle);
+  border-radius: var(--site-radius-panel) var(--site-radius-panel) 0 0;
+}
+
+/*
+ * The list scrolls inside the panel. A fade in the panel colour marks each edge that has more settings beyond it;
+ * it shows only when there is something in that direction.
+ */
+.settings-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-scroll::before,
+.settings-scroll::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 8px; /* clear of the scrollbar */
+  z-index: 1;
+  height: 40px;
+  background: var(--site-panel-opaque);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--site-duration-fast) var(--site-ease);
+}
+
+.settings-scroll::before {
+  top: 0;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.settings-scroll::after {
+  bottom: 0;
+  border-radius: 0 0 0 var(--site-radius-panel);
+  -webkit-mask-image: linear-gradient(to top, black, transparent);
+  mask-image: linear-gradient(to top, black, transparent);
+}
+
+.settings-scroll.has-more-above::before,
+.settings-scroll.has-more-below::after {
+  opacity: 1;
+}
+
+.settings-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  /* 13px, not 14: at 1440 × 900 the ninth setting (Y axis title) then fits in view without scrolling. */
+  gap: 13px;
+  padding: var(--site-space-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  /* The rows' label column, sized for the longest row label ("Orientation", "X axis title"). */
+  --settings-label-width: 88px;
+  container-type: inline-size;
+}
+
+/* Label, 6px, then the control. */
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.control-label {
+  padding: 0;
+  color: var(--site-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-control-size);
+  line-height: var(--site-type-control-line);
+  font-weight: var(--site-type-label-weight);
+}
+
+/*
+ * A row, as the switches are: the label at the left, in one column for every row so the controls line up, and the
+ * control filling the rest. A segmented control's row is a div inside its fieldset (settings-panel.ts).
+ */
+.control-row {
+  display: grid;
+  grid-template-columns: var(--settings-label-width) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--site-space-3);
+}
+
+.control-row > .control-label {
+  overflow-wrap: anywhere;
+}
+
+/* Under 200px for the control (label column 88 + gap 12 + 200): the label goes above it. */
+@container (width < 300px) {
+  .control-row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 6px;
+  }
+}
+
+/* A titled group of settings, such as "Header": a rule above, then its name. */
+.settings-group {
+  margin: 0;
+  padding-top: var(--site-space-4);
+  border-top: 1px solid var(--site-border-subtle);
+  color: var(--site-text-subtle);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+  font-weight: var(--site-type-caption-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* The track is a .surface-inset; the selected segment is drawn as a primary button (painted by surfaces.css). */
+.segmented {
+  --surface-edge-high: var(--site-track-edge-high);
+  --surface-edge-low: var(--site-track-edge-low);
+  --surface-base: var(--site-track-base);
+  --surface-highlight: var(--site-track-highlight);
+  --surface-shadow: var(--site-track-shadow);
+  --segmented-pad: 2px;
+  display: flex;
+  padding: var(--segmented-pad);
+  /* The segment's radius plus the gap to it (the padding and the 1px edge): concentric. */
+  border-radius: calc(var(--site-radius-md) + var(--segmented-pad) + 1px);
+}
+
+.segment {
+  position: relative;
+  flex: 1;
+  display: flex;
+  min-width: 0;
+}
+
+.segment input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.segment-label {
+  /* Selected, the shared accent state (surfaces.css) lies over the track. */
+  --surface-accent-base: var(--site-track-base);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 var(--site-space-2);
+  border: 1px solid transparent;
+  border-radius: var(--site-radius-md);
+  color: var(--site-chip-text-weak);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-control-size);
+  line-height: var(--site-type-control-line);
+  font-weight: var(--site-type-label-weight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--site-duration) var(--site-ease);
+}
+
+/* Hover only on an option a click would pick: not the selected one. */
+.segment input:not(:checked):hover + .segment-label {
+  color: var(--site-chip-text);
+}
+
+.segment input:checked {
+  cursor: default;
+}
+
+.segment input:focus-visible + .segment-label {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 1px;
+}
+
+/* Switch: 32 × 18, scaled with the 32px controls */
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--site-space-3);
+  position: relative;
+  cursor: pointer;
+}
+
+.switch-input {
+  position: absolute;
+  right: 0;
+  width: 32px;
+  height: 18px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switch-track {
+  position: relative;
+  flex: none;
+  width: 32px;
+  height: 18px;
+  /* Off: an inset track with control edges (painted by surfaces.css). */
+  --surface-edge-high: var(--site-control-edge-high);
+  --surface-edge-low: var(--site-control-edge-low);
+  --surface-tint: transparent;
+  --surface-base: var(--site-surface-inset-base);
+  --surface-highlight: var(--site-inset-shade);
+  border-radius: var(--site-radius-pill);
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--site-switch-thumb-off);
+  transition:
+    transform var(--site-duration-fast) var(--site-ease),
+    background-color var(--site-duration-fast) var(--site-ease);
+}
+
+.switch-input:checked + .switch-track {
+  --surface-edge-high: var(--site-primary-edge-high);
+  --surface-edge-low: var(--site-primary-edge-low);
+  --surface-base: var(--site-switch-track-on);
+  --surface-highlight: transparent;
+}
+
+.switch-input:checked + .switch-track .switch-thumb {
+  background: var(--site-switch-thumb);
+  transform: translateX(14px);
+}
+
+.switch-input:focus-visible + .switch-track {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 2px;
+}
+
+/* Text, number and select inputs (reference dropdown: 1px line, pill radius, hover/focus border change) */
+/* A .surface-inset: control edges (3:1), the input colour. */
+.input {
+  width: 100%;
+  height: 32px;
+  padding: 0 var(--site-space-3);
+  border-radius: var(--site-radius-pill);
+  color: var(--site-input-text);
+  font-family: var(--site-font-body);
+  font-size: var(--site-type-control-size);
+  line-height: var(--site-type-control-line);
+}
+
+.input::placeholder {
+  color: var(--site-input-placeholder);
+}
+
+.input:hover {
+  --surface-edge-high: var(--site-control-edge-high-hover);
+  --surface-edge-low: var(--site-control-edge-low-hover);
+}
+
+/* Focus: the edge and a 1px ring outside it in the focus colour, 2px in all. */
+.input:focus-visible {
+  --surface-edge-high: var(--site-input-border-focus);
+  --surface-edge-low: var(--site-input-border-focus);
+  --surface-shadow: 0 0 0 1px var(--site-input-border-focus);
+  outline: none;
+}
+
+.select-wrap {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.select-icon {
+  position: absolute;
+  top: 50%;
+  right: var(--site-space-3);
+  width: 14px;
+  height: 14px;
+  color: var(--site-input-icon);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select-icon svg {
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,377 @@
+/* Chart page: centre column (title, chart, then the sections' accordion) and the right column (settings, code). */
+
+.chart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-areas:
+    'main aside'
+    'docs aside';
+  grid-template-rows: auto 1fr;
+  column-gap: var(--site-space-6);
+  row-gap: var(--site-space-5);
+  align-items: start;
+}
+
+.chart-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-5);
+  min-width: 0;
+}
+
+.chart-header .page-lead {
+  margin-top: var(--site-space-2);
+}
+
+/*
+ * The chart brings its own card (border, radius, surface); the stage only sizes it. The stage holds the chart
+ * (.chart-well), so the site sets no text style on it or around it (base.css): the chart renders as when pasted.
+ *
+ * The chart sits --stage-pad into the column, 420px tall. Around it, behind it and never over it:
+ * - the stage (.chart-stage) is the frame, --stage-frame around the chart's card, its only child the chart: an
+ *   opaque fill, an edge, the light from above (.lit) and a shadow under it. Over the chart's box and --stage-clear
+ *   around it the frame is the page colour (::after), so the page shows behind the card's rounded corners, as on
+ *   any page it is pasted in, and a chart at a fractional position never has frame pixels in the device pixel its
+ *   edge shares (a capture of the chart's box, rounded out, sees only the page colour);
+ * - the area around the stage draws a glow under it (::after), gradients only, centred on the frame's bottom edge so
+ *   the frame hides its upper half, and a grid (::before) only beside and below it: from 30% of its height down,
+ *   160px out to the sides and below, fading out. The frame's opaque fill keeps both off the chart. On phones the
+ *   grid stays in the column;
+ * - the area keeps --stage-glow-room below it, so the glow's lower half (60px) shows before the next panel: 84px from
+ *   the frame to the sections at 1200px and up, 60px to Settings where the right column moves under the chart (the
+ *   phones' smaller inset takes 8px more room).
+ */
+.chart-stage-area {
+  --stage-pad: 20px;
+  --stage-frame: 8px;
+  --stage-inset: calc(var(--stage-pad) - var(--stage-frame));
+  --stage-clear: 4px;
+  --stage-grid-side: 160px;
+  --stage-glow-height: 120px;
+  --stage-glow-room: var(--site-space-5);
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  margin-bottom: var(--stage-glow-room);
+  padding: var(--stage-inset);
+}
+
+.chart-stage-area::before,
+.chart-stage-area::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.chart-stage-area::before {
+  top: calc(var(--stage-inset) + 0.3 * (100% - 2 * var(--stage-inset)));
+  right: calc(var(--stage-inset) - var(--stage-grid-side));
+  bottom: calc(var(--stage-inset) - 160px);
+  left: calc(var(--stage-inset) - var(--stage-grid-side));
+  background:
+    linear-gradient(to right, var(--site-stage-grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(to bottom, var(--site-stage-grid-line) 1px, transparent 1px) 0 0 / 40px 40px;
+  -webkit-mask-image: radial-gradient(62% 75% at 50% 30%, black 55%, transparent);
+  mask-image: radial-gradient(62% 75% at 50% 30%, black 55%, transparent);
+}
+
+.chart-stage-area::after {
+  top: calc(100% - var(--stage-inset) - var(--stage-glow-height) / 2);
+  right: var(--stage-inset);
+  left: var(--stage-inset);
+  height: var(--stage-glow-height);
+  background: var(--site-stage-glow);
+}
+
+/* The stage's own light, on its light layer (.lit, surfaces.css). */
+.chart-stage::before {
+  --lit-line: var(--site-stage-light-line);
+  --lit-line-inset: var(--site-stage-light-inset);
+  --lit-spill: var(--site-stage-light-spill);
+  --lit-spill-height: var(--site-stage-light-height);
+  --lit-spill-width: var(--site-stage-light-width);
+}
+
+.chart-stage {
+  height: calc(420px + 2 * var(--stage-frame));
+  padding: calc(var(--stage-frame) - 1px);
+  border: 1px solid transparent;
+  border-radius: calc(var(--site-chart-card-radius) + var(--stage-frame));
+  background:
+    linear-gradient(var(--site-stage-fill), var(--site-stage-fill)) padding-box,
+    var(--site-stage-edge) border-box;
+  box-shadow: var(--site-stage-shadow);
+}
+
+/*
+ * The chart's box and --stage-clear around it, in the page colour: above the frame's light, under the chart. Rounded
+ * concentric with the card (its radius plus the clear) and the frame (this radius plus the gap to it). 4px of clear
+ * is the least that still covers the corners of the chart's box with a radius of 8 + clear.
+ */
+.chart-stage::after {
+  content: '';
+  position: absolute;
+  inset: calc(var(--stage-frame) - 1px - var(--stage-clear));
+  border-radius: calc(var(--site-chart-card-radius) + var(--stage-clear));
+  z-index: -1;
+  background: var(--site-bg);
+  pointer-events: none;
+}
+
+.chart-stage > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* When to use */
+.when-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--site-space-5);
+}
+
+.when-title {
+  margin-bottom: var(--site-space-2);
+  font-family: var(--site-font-heading);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  color: var(--site-text);
+}
+
+.when-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-2);
+  padding-left: 18px;
+  color: var(--site-text-muted);
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+}
+
+.when-list li::marker {
+  color: var(--site-text-subtle);
+}
+
+.role-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.role {
+  display: grid;
+  grid-template-columns: 96px auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--site-space-3);
+  padding: var(--site-space-3) 0;
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+}
+
+.role + .role {
+  border-top: 1px solid var(--site-border-subtle);
+}
+
+.role-name {
+  color: var(--site-text);
+  font-weight: var(--site-type-label-weight);
+}
+
+.role-text {
+  color: var(--site-text-muted);
+}
+
+/* When to use, Data format and Attributes: one accordion (components/accordion.ts), from the chart config. */
+.chart-docs {
+  grid-area: docs;
+  margin-top: var(--site-space-5);
+}
+
+.doc-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  min-width: 0;
+}
+
+.doc-lead,
+.doc-note {
+  max-width: 72ch;
+  color: var(--site-text-muted);
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+}
+
+.doc-note {
+  font-size: var(--site-type-caption-size);
+  line-height: var(--site-type-caption-line);
+}
+
+/*
+ * Inside the accordion's panel, tables and the role list are not cards of their own: a divider above them and between
+ * rows (the row's divider closes them), and their text lined up with the section's. Wide tables scroll inside, never
+ * the page.
+ */
+.doc-table-wrap,
+.role-list {
+  border-top: 1px solid var(--site-border-subtle);
+}
+
+.doc-table-wrap {
+  overflow-x: auto;
+}
+
+.doc-table :is(th, td):first-child {
+  padding-left: 0;
+}
+
+.doc-table :is(th, td):last-child {
+  padding-right: 0;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--site-type-body-size);
+  line-height: var(--site-type-body-line);
+}
+
+.doc-table th,
+.doc-table td {
+  padding: var(--site-space-3) var(--site-space-4);
+  text-align: left;
+  vertical-align: baseline;
+  color: var(--site-text-muted);
+}
+
+.doc-table thead th {
+  color: var(--site-text);
+  font-family: var(--site-font-label);
+  font-size: var(--site-type-label-size);
+  line-height: var(--site-type-label-line);
+  font-weight: var(--site-type-label-weight);
+  white-space: nowrap;
+}
+
+.doc-table tbody tr {
+  border-top: 1px solid var(--site-border-subtle);
+}
+
+.doc-table tbody th {
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+.doc-table tr.is-unused th,
+.doc-table tr.is-unused td {
+  color: var(--site-text-subtle);
+}
+
+.chart-docs code {
+  color: var(--site-text);
+  font-family: var(--site-font-mono);
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+
+.doc-table tbody th code,
+.doc-table .doc-default code {
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
+.doc-table tr.is-unused code {
+  color: var(--site-text-subtle);
+}
+
+/*
+ * Right column (desktop): sticky, as tall as the viewport below the header. Settings takes the free height and
+ * scrolls inside itself; Code sits at the bottom, always in view. Expanded, Code takes at most 60% of the column
+ * and Settings keeps at least 180px.
+ */
+.chart-aside {
+  --aside-top: calc(var(--site-topbar-offset) + var(--site-space-6));
+  grid-area: aside;
+  align-self: start;
+  position: sticky;
+  top: var(--aside-top);
+  display: flex;
+  flex-direction: column;
+  gap: var(--site-space-4);
+  height: calc(100vh - var(--aside-top) - var(--site-space-4));
+  min-width: 0;
+}
+
+.chart-aside site-settings-panel {
+  display: flex;
+  /* Basis 0: Settings takes what Code leaves, never pushing Code below its six lines. */
+  flex: 1 1 0;
+  min-height: 180px;
+}
+
+.chart-aside site-code-panel {
+  display: flex;
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 60%;
+}
+
+@media (max-width: 1199px) {
+  /* The right column moves below the chart, before the sections, and is no longer sticky. */
+  .chart-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'main'
+      'aside'
+      'docs';
+    grid-template-rows: auto;
+  }
+
+  .chart-aside {
+    position: static;
+    height: auto;
+  }
+
+  .chart-aside site-settings-panel,
+  .chart-aside site-code-panel {
+    flex: none;
+    max-height: none;
+  }
+
+  /* Settings at full length: the page scrolls, not the panel. */
+  .settings-body {
+    overflow: visible;
+  }
+
+  .code-panel.is-expanded .code-scroll {
+    max-height: 60vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .chart-stage-area {
+    --stage-pad: 12px;
+    --stage-grid-side: var(--stage-inset);
+    --stage-glow-room: calc(var(--site-space-5) + var(--site-space-2));
+  }
+
+  .when-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .role {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .role .badge {
+    justify-self: start;
+  }
+
+  .role-text {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,0 +1,215 @@
+/*
+ * Lit surfaces: .surface (panels), .surface-raised (the header, cards, dialogs), .surface-inset (inputs), and the
+ * primitives of base.css drawn the same way: the buttons (.btn-primary, .btn-secondary, .icon-btn), .badge and .eyebrow.
+ *
+ * One rule paints them all from --surface-* properties, read with the panel look as fallback:
+ * - edge: a transparent 1px border over a border-box gradient layer, from --surface-edge-high (towards the light,
+ *   above) to --surface-edge-low; --surface-edge replaces the whole layer where an edge has more stops, and
+ *   --surface-edge-width its 1px;
+ * - fill: a tint over an opaque base, on the padding box, so the edge layer never shows through it; --surface-fill
+ *   replaces the flat tint where the fill is a gradient;
+ * - highlight: a 1px inset line under the top edge (a shade on inset surfaces), plus an outer shadow.
+ * The light falling on a surface from above is .lit, below.
+ * The properties do not inherit, so a surface inside another starts from the fallbacks, and a class or state sets
+ * only what it changes, in any stylesheet. Tokens are in theme.css. No blur filters: these sit on large areas.
+ */
+@property --surface-edge { syntax: '*'; inherits: false; }
+@property --surface-edge-width { syntax: '*'; inherits: false; }
+@property --surface-edge-high { syntax: '*'; inherits: false; }
+@property --surface-edge-low { syntax: '*'; inherits: false; }
+@property --surface-fill { syntax: '*'; inherits: false; }
+@property --surface-tint { syntax: '*'; inherits: false; }
+@property --surface-base { syntax: '*'; inherits: false; }
+@property --surface-highlight { syntax: '*'; inherits: false; }
+@property --surface-shadow { syntax: '*'; inherits: false; }
+@property --surface-accent-base { syntax: '*'; inherits: false; }
+
+.surface,
+.surface-raised,
+.surface-inset,
+.btn-primary,
+.btn-secondary,
+.icon-btn,
+.badge,
+.tag,
+.eyebrow,
+/* Controls whose parts are set in controls.css and foundations.css: the selected segment, the switch track, chips. */
+.segment input:checked + .segment-label,
+.switch-track,
+.palette-chip-label,
+/* The header's theme switch and its knob (shell.css). */
+.theme-switch,
+.theme-switch-knob {
+  border: var(--surface-edge-width, 1px) solid transparent;
+  background:
+    var(
+        --surface-fill,
+        linear-gradient(var(--surface-tint, var(--site-surface-tint)), var(--surface-tint, var(--site-surface-tint)))
+      )
+      padding-box,
+    linear-gradient(var(--surface-base, var(--site-surface-base)), var(--surface-base, var(--site-surface-base))) padding-box,
+    var(
+        --surface-edge,
+        linear-gradient(
+          var(--site-light-angle),
+          var(--surface-edge-high, var(--site-edge-high)),
+          var(--surface-edge-low, var(--site-edge-low))
+        )
+      )
+      border-box;
+  box-shadow:
+    inset 0 1px 0 var(--surface-highlight, var(--site-inner-highlight)),
+    var(--surface-shadow, 0 0 transparent);
+}
+
+/* Class defaults at zero specificity (:where), so a component's own setting always wins over them. */
+:where(.surface-raised) {
+  --surface-edge: var(--site-edge-raised);
+  --surface-tint: var(--site-surface-raised-tint);
+  --surface-base: var(--site-surface-raised-base);
+  --surface-shadow: var(--site-shadow-raised);
+}
+
+/* The raised light, on the light layer itself (.lit, below). */
+:where(.surface-raised)::before {
+  --lit-line: var(--site-raised-light-line);
+  --lit-line-inset: var(--site-raised-light-inset);
+  --lit-spill: var(--site-raised-light-spill);
+  --lit-spill-height: var(--site-raised-light-height);
+  --lit-spill-width: var(--site-raised-light-width);
+}
+
+/* Panels and cards: the light from above (.lit) draws their top line, so no highlight under it. */
+:where(.surface) {
+  --surface-highlight: transparent;
+}
+
+/* A raised surface that is a link (.is-link: an Introduction category card) brightens its edge and lifts. */
+:where(.surface-raised.is-link:hover, .surface-raised.is-link:focus-within) {
+  --surface-edge: var(--site-edge-raised-hover);
+  --surface-shadow: var(--site-shadow-card-hover);
+}
+
+/* Inputs: control edges (3:1), the input colour, and a shade under the top edge. */
+:where(.surface-inset) {
+  --surface-edge-high: var(--site-control-edge-high);
+  --surface-edge-low: var(--site-control-edge-low);
+  --surface-tint: transparent;
+  --surface-base: var(--site-surface-inset-base);
+  --surface-highlight: var(--site-inset-shade);
+}
+
+/*
+ * Accent: the primary button and a selected segment, preset tile or palette chip share one look: an accent tint
+ * over an opaque base, an accent edge and label, no highlight. The base is the page unless the control's component
+ * names the surface it sits on (--surface-accent-base); opaque, so the edge layer never shows through the tint.
+ * Hover, press and disabled states in base.css are more specific and win.
+ */
+.btn-primary,
+.segment input:checked + .segment-label,
+.preset-tile input:checked + .preset-face,
+.palette-chip input:checked + .palette-chip-label {
+  --surface-edge-high: var(--site-primary-edge-high);
+  --surface-edge-low: var(--site-primary-edge-low);
+  --surface-tint: var(--site-primary-tint);
+  --surface-base: var(--surface-accent-base, var(--site-primary-base));
+  --surface-highlight: transparent;
+  color: var(--site-primary-text);
+}
+
+/* Copy and other primary buttons: a lighter tint than a selected option's. */
+.btn-primary {
+  --surface-tint: var(--site-primary-button-tint);
+}
+
+/*
+ * Light from above (.lit): a light source sits over the page, so a surface is lit from the top in two layers:
+ * - a 1px line along the top edge, brightest in the middle and fading out --lit-line-inset from each corner;
+ * - a soft light falling from that line over the surface: a radial gradient anchored at the top centre,
+ *   --lit-spill-width wide and --lit-spill-height tall, fading out.
+ * Both are one layer box over the surface's border box: above its fill and edge, under its content (z-index -1 in
+ * the surface's own stacking context), never in the way of a pointer. A surface that clips its content clips at its
+ * border box (.lit-clipped, below), so the line on the top edge shows. Fallbacks are the panel's light;
+ * .surface-raised and the chart stage set their own --lit-* on the layer itself (their ::before), not on the surface
+ * (a clipped raised surface also on itself, below): set there, nothing passes them on to a surface inside another,
+ * and no browser has to carry them from the surface to its layer (WebKit gave every layer the header's values when
+ * they came by `inherit` from registered, non-inheriting properties).
+ */
+
+:where(.lit) {
+  position: relative;
+}
+
+.lit {
+  isolation: isolate;
+}
+
+/*
+ * The light's two layers, written once. The light layer (.lit::before) paints them, and a clipped surface's edge copies
+ * them (.lit-clipped, below); each resolves them against its own --lit-*. border-box: the edge copy must start on the
+ * border's row, and the layer has no border, so it changes nothing there.
+ */
+.lit::before,
+.lit-clipped {
+  --lit-line-layer: linear-gradient(
+      90deg,
+      transparent var(--lit-line-inset, var(--site-panel-light-inset)),
+      var(--lit-line, var(--site-panel-light-line)),
+      transparent calc(100% - var(--lit-line-inset, var(--site-panel-light-inset)))
+    )
+    top / 100% 1px no-repeat border-box;
+  --lit-spill-layer: radial-gradient(
+      var(--lit-spill-width, var(--site-panel-light-width)) 100% at 50% 0%,
+      var(--lit-spill, var(--site-panel-light-spill)),
+      transparent 72%
+    )
+    top / 100% var(--lit-spill-height, var(--site-panel-light-height)) no-repeat border-box;
+}
+
+.lit::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--lit-line-layer), var(--lit-spill-layer);
+}
+
+/*
+ * A lit surface that clips its content (.lit-clipped: Settings, Code, the search dialog) clips at its border box
+ * (overflow-clip-margin), so the light layer's line on the top edge shows. Safari (WebKit) has no
+ * overflow-clip-margin: it clips at the padding box and drops the line. There the line, and the spill on that row,
+ * are also painted on the surface's own edge layer, a background no clip reaches (the opaque fill hides the rest of
+ * that copy); the light inside the padding box still shows. Checked in WebKit. A raised clipped surface
+ * sets the raised light on itself for that copy (custom properties inherit, so nothing lit may sit inside it).
+ */
+.lit-clipped {
+  overflow: clip;
+  overflow-clip-margin: 1px;
+}
+
+:where(.surface-raised).lit-clipped {
+  --lit-line: var(--site-raised-light-line);
+  --lit-line-inset: var(--site-raised-light-inset);
+  --lit-spill: var(--site-raised-light-spill);
+  --lit-spill-height: var(--site-raised-light-height);
+  --lit-spill-width: var(--site-raised-light-width);
+}
+
+@supports not (overflow-clip-margin: 1px) {
+  .lit-clipped {
+    --surface-edge:
+      var(--lit-line-layer),
+      var(--lit-spill-layer),
+      linear-gradient(
+        var(--site-light-angle),
+        var(--surface-edge-high, var(--site-edge-high)),
+        var(--surface-edge-low, var(--site-edge-low))
+      );
+  }
+
+  :where(.surface-raised).lit-clipped {
+    --surface-edge: var(--lit-line-layer), var(--lit-spill-layer), var(--site-edge-raised);
+  }
+}

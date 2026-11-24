@@ -1,0 +1,284 @@
+{
+  "chartType": "lollipopChart",
+  "name": "Average Price by Market Segment Over Years",
+  "orientation": "vertical",
+  "stacked": false,
+  "legend": true,
+  "tooltip": false,
+  "markers": [
+    {
+      "key": "Fresh ",
+      "shape": "rhombus"
+    },
+    {
+      "key": "Not specified ",
+      "shape": "rhombus"
+    },
+    {
+      "key": "Fresh market",
+      "shape": "rhombus"
+    },
+    {
+      "key": "Fresh+ Processing",
+      "shape": "rhombus"
+    },
+    {
+      "key": "Other",
+      "shape": "rhombus"
+    }
+  ],
+  "timeline": true,
+  "xAxe": [
+    "year"
+  ],
+  "yAxe": [
+    "price"
+  ],
+  "groupBy": [
+    "MD_Market_segment"
+  ],
+  "formatting": [
+    {
+      "key": "Fresh ",
+      "color": "1"
+    },
+    {
+      "key": "Not specified ",
+      "color": "2"
+    },
+    {
+      "key": "Fresh market",
+      "color": "3"
+    },
+    {
+      "key": "Fresh+ Processing",
+      "color": "4"
+    },
+    {
+      "key": "Other",
+      "color": "5"
+    }
+  ],
+  "uniqueValues": {
+    "year": [
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020"
+    ],
+    "MD_Market_segment": [
+      "Fresh ",
+      "Not specified ",
+      "Fresh market",
+      "Fresh+ Processing",
+      "Other"
+    ]
+  },
+  "palette": {},
+  "data": [
+    {
+      "year": "2013",
+      "price": 38893.14,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2013",
+      "price": 18400,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2013",
+      "price": 15620,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2013",
+      "price": 12890,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2013",
+      "price": 8002.3,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2014",
+      "price": 21214.57,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2014",
+      "price": 16040,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2014",
+      "price": 13910,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2014",
+      "price": 11620,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2014",
+      "price": 5594.5,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2015",
+      "price": 20036,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2015",
+      "price": 14470,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2015",
+      "price": 13300,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2015",
+      "price": 10280,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2015",
+      "price": 4041.47,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2016",
+      "price": 19976.01,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2016",
+      "price": 14470,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2016",
+      "price": 13470,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2016",
+      "price": 10350,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2016",
+      "price": 4071.96,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2017",
+      "price": 20274.14,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2017",
+      "price": 14940,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2017",
+      "price": 13780,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2017",
+      "price": 10490,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2017",
+      "price": 4383.52,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2018",
+      "price": 20437.57,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2018",
+      "price": 15130,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2018",
+      "price": 13860,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2018",
+      "price": 10600,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2018",
+      "price": 4210.88,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2019",
+      "price": 20833.695,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2019",
+      "price": 15575,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2019",
+      "price": 14010,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2019",
+      "price": 10770,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2019",
+      "price": 4402.355,
+      "MD_Market_segment": "Not specified "
+    },
+    {
+      "year": "2020",
+      "price": 21229.82,
+      "MD_Market_segment": "Fresh "
+    },
+    {
+      "year": "2020",
+      "price": 15720,
+      "MD_Market_segment": "Fresh market"
+    },
+    {
+      "year": "2020",
+      "price": 14160,
+      "MD_Market_segment": "Fresh+ Processing"
+    },
+    {
+      "year": "2020",
+      "price": 10940,
+      "MD_Market_segment": "Other"
+    },
+    {
+      "year": "2020",
+      "price": 4593.83,
+      "MD_Market_segment": "Not specified "
+    }
+  ]
+}

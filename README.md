@@ -24,6 +24,8 @@ Installable with no other UI9000 package. FuseDash `apps/charts` still renders i
 
 Demos: [mcp.ui9000.com/storybook](https://mcp.ui9000.com/storybook/) · `Engine/Playground` (one story per engine id). New surfaces are proven there, not via `mcp-ui` `generate_*` tools. FuseDash consumer (`apps/charts`) stays open.
 
+Docs site: [mcp.ui9000.com/storybook/docs](https://mcp.ui9000.com/storybook/docs/), a page per chart with its settings and code. Source in [`site/`](./site/README.md).
+
 ## Porting charts
 
 Follow the project skill: [`.cursor/skills/port-chart/SKILL.md`](./.cursor/skills/port-chart/SKILL.md).

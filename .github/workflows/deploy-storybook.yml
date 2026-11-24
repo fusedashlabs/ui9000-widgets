@@ -1,6 +1,9 @@
-name: Deploy Storybook
+name: Deploy Storybook and docs
 
-# https://mcp.ui9000.com/storybook/
+# https://mcp.ui9000.com/storybook/       Storybook
+# https://mcp.ui9000.com/storybook/docs/  the docs site (site/)
+# The host serves only /storybook/ as static files (every other path goes to the MCP server), so the docs site
+# lives in a folder inside it. Storybook's build has no docs/ folder, and its rsync leaves that folder alone.
 on:
   push:
     branches: [main]
@@ -58,6 +61,36 @@ jobs:
             set -euo pipefail
             test -f /tmp/storybook-static/index.html
             mkdir -p /var/www/storybook-host/storybook
-            rsync -a --delete /tmp/storybook-static/ /var/www/storybook-host/storybook/
+            rsync -a --delete --exclude=/docs/ /tmp/storybook-static/ /var/www/storybook-host/storybook/
             test -f /var/www/storybook-host/storybook/index.html
             rm -rf /tmp/storybook-static
+      # After Storybook, so a failing docs build never holds Storybook back.
+      - name: Build docs site
+        run: yarn build:site
+      - run: test -f site/dist/index.html
+      - name: Upload docs site
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST_STAGING }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.HOST_PORT }}
+          source: site/dist
+          # Lands at /tmp/ui9000-docs-site/site/dist; rm clears only this folder.
+          target: /tmp/ui9000-docs-site
+          overwrite: true
+          rm: true
+      - name: Publish docs site
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.HOST_STAGING }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.HOST_PORT }}
+          script: |
+            set -euo pipefail
+            test -f /tmp/ui9000-docs-site/site/dist/index.html
+            mkdir -p /var/www/storybook-host/storybook/docs
+            rsync -a --delete /tmp/ui9000-docs-site/site/dist/ /var/www/storybook-host/storybook/docs/
+            test -f /var/www/storybook-host/storybook/docs/index.html
+            rm -rf /tmp/ui9000-docs-site

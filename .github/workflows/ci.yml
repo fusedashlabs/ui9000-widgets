@@ -93,3 +93,30 @@ jobs:
           STORYBOOK_BASE: /storybook/
         run: yarn build-storybook
       - run: test -f storybook-static/index.html
+
+  docs-site:
+    runs-on: ubuntu-latest
+    env:
+      FUSELAB_TOKEN: ${{ secrets.FUSELAB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: corepack enable
+      - run: corepack prepare yarn@4.5.0 --activate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - name: Install
+        run: |
+          if [ -z "${FUSELAB_TOKEN}" ]; then
+            echo "Fork pull request: no registry token. Installing from the restored Yarn cache."
+            export YARN_ENABLE_HARDENED_MODE=0
+            export YARN_ENABLE_OFFLINE_MODE=1
+          fi
+          yarn install --immutable
+      - name: Build docs site
+        run: yarn build:site
+      - run: test -f site/dist/index.html

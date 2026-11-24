@@ -5,6 +5,10 @@ chart, a Settings panel (presets and options), the code to copy, and its data fo
 repo's `site/` and is meant to replace Storybook as the place every chart is shown, once it covers what Storybook
 does. Vite + TypeScript + Lit, all already in the repo.
 
+Hosted at https://mcp.ui9000.com/storybook/docs/, next to Storybook: every push to `main` deploys both
+(`.github/workflows/deploy-storybook.yml`). The host serves only `/storybook/` as static files, so the site lives in a
+folder inside it; `base: './'` lets the build work from any folder.
+
 ## Run
 
 From the repo root:

@@ -28,7 +28,7 @@
  * The chart brings its own card (border, radius, surface); the stage only sizes it. The stage holds the chart
  * (.chart-well), so the site sets no text style on it or around it (base.css): the chart renders as when pasted.
  *
- * The chart sits --stage-pad into the column, 420px tall. Around it, behind it and never over it:
+ * The chart sits --stage-pad into the column, 420px tall (--stage-chart-height: a chart config's stageHeight). Around it, behind it and never over it:
  * - the stage (.chart-stage) is the frame, --stage-frame around the chart's card, its only child the chart: an
  *   opaque fill, an edge, the light from above (.lit) and a shadow under it. Over the chart's box and --stage-clear
  *   around it the frame is the page colour (::after), so the page shows behind the card's rounded corners, as on
@@ -95,7 +95,7 @@
 }
 
 .chart-stage {
-  height: calc(420px + 2 * var(--stage-frame));
+  height: calc(var(--stage-chart-height, 420px) + 2 * var(--stage-frame));
   padding: calc(var(--stage-frame) - 1px);
   border: 1px solid transparent;
   border-radius: calc(var(--site-chart-card-radius) + var(--stage-frame));

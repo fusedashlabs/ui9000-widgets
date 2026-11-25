@@ -20,6 +20,13 @@ export interface ChartConfig {
   tag: string;
   /** Other words people use for this chart, for search: "column" finds Bar. */
   keywords: string[];
+  /** Height of the chart in px, for a chart that needs more room than the usual 420. */
+  stageHeight?: number;
+  /**
+   * Attributes the page sets that are not settings: where the element loads its files from. Set on the live element
+   * and listed under Attributes; the code block shows `code`, the value a page of your own would set.
+   */
+  setup?: SetupAttribute[];
   /** Imports and registers the element; may return helpers that need the chart's own code. */
   load: () => Promise<ChartRuntime | void>;
   /** The first preset is the default. */
@@ -97,6 +104,15 @@ export interface ControlConfig {
   inertWhen?: (ctx: AvailabilityContext) => boolean;
   /** A boolean the element also turns off with the attribute value "false" (show-header). */
   falseAttribute?: boolean;
+}
+
+export interface SetupAttribute {
+  attribute: string;
+  /** The value on this site, read when the chart is created. */
+  value: () => string;
+  /** The value the code block shows. */
+  code: string;
+  description: string;
 }
 
 export interface HiddenControl {

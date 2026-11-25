@@ -136,6 +136,61 @@ export const CATEGORIES: CategoryEntry[] = [
     types: [type('Waterfall', ['bridge', 'cascade', 'variance'])],
     preview: { typeId: 'waterfall', load: () => asStoryModule(import('../../src/stories/WaterfallChart.stories.js')), story: 'Horizontal' },
   },
+  {
+    id: 'spatial',
+    label: 'Spatial',
+    description: 'Place values on a world map, as filled countries, bubbles, spikes or markers.',
+    types: [type('Map', ['geo', 'choropleth', 'countries', 'world'])],
+    preview: { typeId: 'map', load: () => asStoryModule(import('../../src/stories/MapChart.stories.js')), story: 'Bubbles' },
+  },
+  {
+    id: 'graph',
+    label: 'Graph',
+    description: 'Show how things connect: networks, and the goals, agents and resources of agent operations.',
+    types: [
+      type('Bipartite', ['two-sided', 'goals', 'resources', 'ribbons']),
+      type('Goal burst', ['radial', 'calls', 'latency', 'agents']),
+      type('Goals & insights', ['evidence', 'claims', 'column']),
+      type('Goals dependencies', ['tree', 'dependency graph', 'resources']),
+      type('Goals perimeter', ['agents', 'clouds', 'orbit']),
+      type('Network', ['node link', 'force', 'relationships']),
+      type('Reasoning orchestration', ['reasoning', 'paths', 'models', 'tree search']),
+    ],
+    preview: { typeId: 'network', load: () => asStoryModule(import('../../src/stories/NetworkGraph.stories.js')), story: 'ChatGraph' },
+  },
+  {
+    id: 'model-dependence',
+    label: 'Model dependence',
+    description: 'Show how a model’s prediction changes with one feature.',
+    types: [type('Partial dependence', ['pdp', 'ice', 'feature effect'])],
+    preview: {
+      typeId: 'partial-dependence',
+      load: () => asStoryModule(import('../../src/stories/PartialDependenceChart.stories.js')),
+      story: 'Default',
+    },
+  },
+  {
+    id: 'model-error',
+    label: 'Model error',
+    description: 'Show how a model’s error splits into bias and variance as it grows more complex.',
+    types: [type('Bias and variance', ['tradeoff', 'complexity', 'overfitting', 'underfitting'])],
+    preview: {
+      typeId: 'bias-and-variance',
+      load: () => asStoryModule(import('../../src/stories/BiasVarianceTradeoffChart.stories.js')),
+      story: 'Default',
+    },
+  },
+  {
+    id: 'model-impurity',
+    label: 'Model impurity',
+    description: 'Compare the impurity measures a decision tree splits on.',
+    types: [type('Gini and entropy', ['impurity', 'decision tree', 'misclassification'])],
+    preview: {
+      typeId: 'gini-and-entropy',
+      load: () => asStoryModule(import('../../src/stories/GiniImpurityEntropyChart.stories.js')),
+      story: 'Default',
+    },
+  },
 ];
 
 export function findChartType(typeId: string): { category: CategoryEntry; type: ChartTypeEntry } | null {

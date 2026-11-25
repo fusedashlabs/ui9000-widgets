@@ -173,8 +173,14 @@ export function snippetImport(tag: string): string {
  * A switch that defaults to on cannot be turned off from HTML (any present boolean attribute reads as on), so
  * those, and only those, are set from a short module script after the element.
  */
-export function embedSnippet(tag: string, controls: ControlSpec[], values: ControlValues, data: unknown): string {
-  const attributes: string[] = [];
+export function embedSnippet(
+  tag: string,
+  controls: ControlSpec[],
+  values: ControlValues,
+  data: unknown,
+  setup: Array<{ attribute: string; code: string }> = [],
+): string {
+  const attributes: string[] = setup.map((s) => `${s.attribute}="${escapeDoubleQuoted(s.code)}"`);
   const scripted: string[] = [];
   for (const control of controls) {
     const value = values[control.name];

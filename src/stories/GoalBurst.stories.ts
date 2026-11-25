@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html, type TemplateResult } from 'lit';
 import type { Meta, StoryContext, StoryObj } from '@storybook/web-components';
 
 import '../components/goal-burst/index.js';
@@ -28,7 +28,7 @@ const bare = {
 };
 
 /** On the docs page a frame wider than the column scrolls across in it rather than being cut off. */
-const inColumn = (context: StoryContext, story: unknown) =>
+const inColumn = (context: StoryContext, story: TemplateResult) =>
   context.viewMode === 'docs' ? html`<div style="max-width: 100%; overflow-x: auto">${story}</div>` : story;
 
 /** On the docs page the story's block is as tall as its frame, so the burst is not cut off at the bottom, with what the story shows. */

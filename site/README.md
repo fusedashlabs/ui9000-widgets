@@ -24,8 +24,9 @@ yarn typecheck       # the library and the site
 
 - **Color, Typography and Motion pages, and Customize** (the header's gear in UI9000). They show UI9000's Figma
   palette chain, text styles and motion engine, which this repo's charts don't have yet.
-- **Charts UI9000's site has no page for**: KPIs, status gauge, maps, graphs, the agents-management widgets, the
-  model charts and the playgrounds. The sidebar doesn't list them yet.
+- **Pages for the Headline charts, the widgets and the playgrounds**: KPIs, status gauge, loss indicator, the
+  Widgets group (cards, custom widget, asset health overview) and Storybook's Playground entries. The sidebar doesn't
+  list them yet.
 - **The checks.** UI9000 runs Playwright checks over every page (`site:check`); they need Playwright as a dev
   dependency here.
 
@@ -43,6 +44,12 @@ yarn typecheck       # the library and the site
 - Sample data comes from the same fixtures as the Storybook stories (`src/stories/fixtures/`), and the
   Introduction cards render through the stories themselves (`src/lib/stories.ts`), so nothing is copied.
 - The code block imports the element's own package entry, `@fusedashlabs/widgets/<name>` (`src/lib/chart-state.ts`).
+- The Map page needs files and a key, the same ones Storybook uses. `vite.config.ts` serves
+  `src/stories/fixtures/geojson` and `pmtiles` at `geojson/` and `pmtiles/` in dev and copies them into the build;
+  the token comes from the repo's `.env` (`VITE_MAPBOX_TOKEN`, `VITE_MAPBOX_DARK_TOKEN`, see `.env.example`), and
+  in the deploy from the Storybook Mapbox secrets. Without a token the map says "Mapbox token required".
+- A chart that needs more room than 420px sets `stageHeight`; attributes a page sets that are not settings (the map's
+  file folders and token) are its `setup`, shown in the code block with the value a page of your own would set.
 - `vite.config.ts` marks the site's modules as having side effects: the package's `sideEffects` field lists only
   the library's registering modules, and without this the build drops the imports that define the site's elements.
 

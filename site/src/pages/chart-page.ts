@@ -88,6 +88,11 @@ export class SiteChartPage extends LightElement {
     this.runtime = runtime ?? {};
   }
 
+  /** A chart that needs more room than the usual height sets its own (`stageHeight`). */
+  private get stageStyle(): string {
+    return this.config.stageHeight ? `--stage-chart-height: ${this.config.stageHeight}px` : '';
+  }
+
   private get preset(): ChartPreset {
     return this.presets.find((p) => p.id === this.chartState.presetId) ?? this.presets[0];
   }
@@ -162,6 +167,7 @@ export class SiteChartPage extends LightElement {
     if (!this.chart) {
       this.chart = document.createElement(this.config.tag);
       this.chart.setAttribute('aria-label', label);
+      for (const s of this.config.setup ?? []) this.chart.setAttribute(s.attribute, s.value());
       stage.append(this.chart);
     }
     applyState(this.chart, this.controls, this.applied, this.preset.data);
@@ -223,8 +229,9 @@ export class SiteChartPage extends LightElement {
       c.options ? c.options.map((o) => `"${o.value}"`).join(' | ') : c.kind === 'switch' ? 'boolean' : c.kind === 'number' ? 'number' : 'string';
     const defaultOf = (c: ControlSpec) => (c.defaultValue === '' ? '—' : String(c.defaultValue));
     const scriptOnly = this.controls.filter((c) => c.kind === 'switch' && c.defaultValue === true && !c.falseAttribute && !c.dataField);
-    // Every row of the table: `data`, then each control (with those set in the data, `data → stacked`).
-    const count = 1 + this.controls.length;
+    const setup = config.setup ?? [];
+    // Every row of the table: `data`, the setup attributes, then each control (with those set in the data, `data → stacked`).
+    const count = 1 + setup.length + this.controls.length;
     return {
       id: 'attributes',
       headingId: `${config.id}-attributes`,
@@ -243,6 +250,14 @@ export class SiteChartPage extends LightElement {
               <td><code>[]</code></td>
               <td>The data, in one of the shapes under Data format.</td>
             </tr>
+            ${setup.map(
+              (s) => html`<tr>
+                <th scope="row"><code>${s.attribute}</code></th>
+                <td><code>string</code></td>
+                <td class="doc-default"><code>—</code></td>
+                <td>${s.description}</td>
+              </tr>`,
+            )}
             ${this.controls.map(
               (c) => html`<tr>
                 <th scope="row"><code>${c.dataField ? `data → ${c.dataField}` : c.attribute}</code></th>
@@ -313,18 +328,18 @@ export class SiteChartPage extends LightElement {
     </header>`;
     if (!this.runtime) {
       return html`<article class="page chart-layout">
-        <div class="chart-main">${header}<div class="chart-stage-area"><div class="chart-stage chart-well lit" aria-busy="true"></div></div></div>
+        <div class="chart-main">${header}<div class="chart-stage-area"><div class="chart-stage chart-well lit" style=${this.stageStyle} aria-busy="true"></div></div></div>
       </article>`;
     }
     const { preset } = this;
     const values = this.chartState.values;
-    const snippet = embedSnippet(config.tag, this.controls, this.applied, preset.data);
+    const snippet = embedSnippet(config.tag, this.controls, this.applied, preset.data, config.setup);
     return html`
       <article class="page chart-layout">
         <div class="chart-main">
           ${header}
 
-          <div class="chart-stage-area"><div class="chart-stage chart-well lit"></div></div>
+          <div class="chart-stage-area"><div class="chart-stage chart-well lit" style=${this.stageStyle}></div></div>
         </div>
 
         <aside class="chart-aside" aria-label="Chart settings and code">

@@ -66,6 +66,9 @@ jobs:
             rm -rf /tmp/storybook-static
       # After Storybook, so a failing docs build never holds Storybook back.
       - name: Build docs site
+        env:
+          VITE_MAPBOX_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_TOKEN }}
+          VITE_MAPBOX_DARK_TOKEN: ${{ secrets.STORYBOOK_MAPBOX_DARK_TOKEN }}
         run: yarn build:site
       - run: test -f site/dist/index.html
       - name: Upload docs site
